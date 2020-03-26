@@ -17,4 +17,9 @@ export default {
       '900': '#206C8A',
     },
   },
+  fonts: {
+    ...theme.fonts,
+    heading: `Inter,${theme.fonts.heading}`,
+    body: `Inter,${theme.fonts.body}`,
+  },
 };
