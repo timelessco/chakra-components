@@ -3,7 +3,7 @@ import { Checkbox as ChakraCheckbox } from '@chakra-ui/core';
 import PropTypes from 'prop-types';
 
 const Checkbox = ({ children }) => (
-  <ChakraCheckbox variantColor="red">{children}</ChakraCheckbox>
+  <ChakraCheckbox variantColor="brand">{children}</ChakraCheckbox>
 );
 
 Checkbox.propTypes = {
