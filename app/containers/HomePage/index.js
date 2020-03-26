@@ -6,13 +6,15 @@
  */
 
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
-import messages from './messages';
+import { Box } from '@chakra-ui/core';
+import Checkbox from '../../components/Checkbox';
+// import { FormattedMessage } from 'react-intl';
+// import messages from './messages';
 
 export default function HomePage() {
   return (
-    <h1>
-      <FormattedMessage {...messages.header} />
-    </h1>
+    <Box p="8">
+      <Checkbox>Checkbox</Checkbox>
+    </Box>
   );
 }
