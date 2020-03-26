@@ -13,8 +13,16 @@ import Checkbox from '../../components/Checkbox';
 
 export default function HomePage() {
   return (
-    <Box p="8">
-      <Checkbox>Checkbox</Checkbox>
-    </Box>
+    <>
+      <Box p="4">
+        <Checkbox>One</Checkbox>
+      </Box>
+      <Box p="4">
+        <Checkbox>Two</Checkbox>
+      </Box>
+      <Box p="4">
+        <Checkbox>Three</Checkbox>
+      </Box>
+    </>
   );
 }
