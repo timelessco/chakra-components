@@ -11,6 +11,9 @@ const Checkbox = ({
   onFocus,
   onChange,
   defaultIsChecked,
+  id,
+  name,
+  value,
 }) => (
   <Box lineHeight="14px">
     <label style={{ lineHeight: 'inherit' }}>
@@ -18,6 +21,9 @@ const Checkbox = ({
       <VisuallyHidden
         as="input"
         type="checkbox"
+        id={id}
+        name={name}
+        value={value}
         disabled={isDisabled}
         checked={isChecked}
         onBlur={onBlur}
@@ -72,6 +78,9 @@ const Checkbox = ({
 
 Checkbox.propTypes = {
   children: PropTypes.string,
+  id: PropTypes.string,
+  name: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   isDisabled: PropTypes.bool,
   isChecked: PropTypes.bool,
   onBlur: PropTypes.func,
