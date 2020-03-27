@@ -19,6 +19,12 @@ export default {
     },
     checkbox: {
       borderColor: '#8C8D8E',
+      color: '#333536',
+      shadow: '#31a7d840',
+    },
+    disabled: {
+      borderColor: '#E7E8E9',
+      color: '#CACBCC',
     },
   },
   fonts: {

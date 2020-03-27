@@ -21,7 +21,7 @@ export default function HomePage() {
         <Checkbox>Two</Checkbox>
       </Box>
       <Box p="4">
-        <Checkbox>Three</Checkbox>
+        <Checkbox isDisabled>Three</Checkbox>
       </Box>
     </>
   );
