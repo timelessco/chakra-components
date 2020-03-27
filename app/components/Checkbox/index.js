@@ -10,6 +10,7 @@ const Checkbox = ({
   onBlur,
   onFocus,
   onChange,
+  defaultIsChecked,
 }) => (
   <Box lineHeight="14px">
     <label style={{ lineHeight: 'inherit' }}>
@@ -22,6 +23,7 @@ const Checkbox = ({
         onBlur={onBlur}
         onFocus={onFocus}
         onChange={onChange}
+        defaultChecked={defaultIsChecked}
       />
 
       {/* This is the control box with a check icon as children */}
@@ -75,6 +77,7 @@ Checkbox.propTypes = {
   onBlur: PropTypes.func,
   onFocus: PropTypes.func,
   onChange: PropTypes.func,
+  defaultIsChecked: PropTypes.bool,
 };
 
 export default Checkbox;
