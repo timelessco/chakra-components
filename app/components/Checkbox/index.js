@@ -13,8 +13,9 @@ const Checkbox = ({ children }) => (
         borderWidth="1.5px"
         size="14px"
         borderColor="checkbox.borderColor"
-        rounded="sm"
+        rounded="md"
         _checked={{ bg: 'brand.500', color: 'white', borderColor: 'brand.500' }}
+        _focus={{ borderColor: 'outline' }}
       >
         <Icon name="check" size="10px" />
       </ControlBox>
@@ -22,7 +23,6 @@ const Checkbox = ({ children }) => (
       {/* You can pass additional text */}
       <Box
         as="span"
-        verticalAlign="top"
         ml={3}
         fontFamily="body"
         fontSize="13px"
