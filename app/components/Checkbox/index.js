@@ -23,7 +23,7 @@ const Checkbox = ({ children }) => (
       {/* You can pass additional text */}
       <Box
         as="span"
-        ml={3}
+        ml={2}
         fontFamily="body"
         fontSize="13px"
         fontWeight="medium"
