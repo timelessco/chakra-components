@@ -18,7 +18,7 @@ const Checkbox = ({ children }) => (
         _focus={{ borderColor: 'outline' }}
         _hover={{
           borderColor: 'brand.500',
-          shadow: '0 0 0 2px #31a7d840, inset 0 0 0 2px #31a7d836',
+          shadow: '0 0 0 2px #31a7d840, inset 0 0 0 2px #31a7d840',
         }}
       >
         <Icon name="check" size="10px" />
