@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { Box, Text } from '@chakra-ui/core';
+import { Box } from '@chakra-ui/core';
 import Checkbox from '../../components/Checkbox';
 // import { FormattedMessage } from 'react-intl';
 // import messages from './messages';
@@ -49,6 +49,12 @@ export default function HomePage() {
           onChange
         </Box>
         <Checkbox onChange={() => console.log('Change')}>Three</Checkbox>
+      </Box>
+      <Box p="4">
+        <Box fontSize="xl" mb="1">
+          defaultIsChecked
+        </Box>
+        <Checkbox defaultIsChecked>Three</Checkbox>
       </Box>
     </>
   );
