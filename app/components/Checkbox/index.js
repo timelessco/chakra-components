@@ -3,11 +3,26 @@ import React from 'react';
 import { VisuallyHidden, ControlBox, Icon, Box } from '@chakra-ui/core';
 import PropTypes from 'prop-types';
 
-const Checkbox = ({ children, isDisabled }) => (
+const Checkbox = ({
+  children,
+  isDisabled,
+  isChecked,
+  onBlur,
+  onFocus,
+  onChange,
+}) => (
   <Box lineHeight="14px">
     <label style={{ lineHeight: 'inherit' }}>
       {/* This is the sibling input, it's visually hidden */}
-      <VisuallyHidden as="input" type="checkbox" disabled={isDisabled} />
+      <VisuallyHidden
+        as="input"
+        type="checkbox"
+        disabled={isDisabled}
+        checked={isChecked}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        onChange={onChange}
+      />
 
       {/* This is the control box with a check icon as children */}
       <ControlBox
@@ -29,7 +44,7 @@ const Checkbox = ({ children, isDisabled }) => (
             ? {}
             : {
                 borderColor: 'brand.500',
-                shadow: `0 0 0 2px #31a7d840, inset 0 0 0 2px #31a7d840`,
+                shadow: '0 0 0 2px #31a7d840, inset 0 0 0 2px #31a7d840',
               }
         }
       >
@@ -56,6 +71,10 @@ const Checkbox = ({ children, isDisabled }) => (
 Checkbox.propTypes = {
   children: PropTypes.string,
   isDisabled: PropTypes.bool,
+  isChecked: PropTypes.bool,
+  onBlur: PropTypes.func,
+  onFocus: PropTypes.func,
+  onChange: PropTypes.func,
 };
 
 export default Checkbox;
