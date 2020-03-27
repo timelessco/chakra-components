@@ -5,13 +5,14 @@
  *
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Box } from '@chakra-ui/core';
 import Checkbox from '../../components/Checkbox';
 // import { FormattedMessage } from 'react-intl';
 // import messages from './messages';
 
 export default function HomePage() {
+  const [isChecked, setIsChecked] = useState(false);
   return (
     <>
       <Box p="4">
@@ -24,7 +25,12 @@ export default function HomePage() {
         <Box fontSize="xl" mb="1">
           Checked
         </Box>
-        <Checkbox isChecked>Checked</Checkbox>
+        <Checkbox
+          isChecked={isChecked}
+          onChange={() => setIsChecked(!isChecked)}
+        >
+          Checked
+        </Checkbox>
       </Box>
       <Box p="4">
         <Box fontSize="xl" mb="1">
