@@ -12,6 +12,7 @@ const Checkbox = ({ children }) => (
       <ControlBox
         borderWidth="1.5px"
         size="14px"
+        borderColor="checkbox.borderColor"
         rounded="sm"
         _checked={{ bg: 'brand.500', color: 'white', borderColor: 'brand.500' }}
       >

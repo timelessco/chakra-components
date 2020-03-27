@@ -16,6 +16,9 @@ export default {
       '800': '#247B9E',
       '900': '#206C8A',
     },
+    checkbox: {
+      borderColor: '#8C8D8E',
+    },
   },
   fonts: {
     ...theme.fonts,
