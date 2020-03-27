@@ -2,7 +2,7 @@ import React from 'react';
 import { VisuallyHidden, ControlBox, Icon, Box } from '@chakra-ui/core';
 import PropTypes from 'prop-types';
 
-const Checkbox = ({ children }) => (
+const Checkbox = ({ label, iconName, iconSize }) => (
   <Box lineHeight="14px">
     <label style={{ lineHeight: 'inherit' }}>
       {/* This is the sibling input, it's visually hidden */}
@@ -21,7 +21,7 @@ const Checkbox = ({ children }) => (
           shadow: '0 0 0 2px #31a7d840, inset 0 0 0 2px #31a7d840',
         }}
       >
-        <Icon name="check" size="10px" />
+        <Icon name={iconName} size={iconSize} />
       </ControlBox>
 
       {/* You can pass additional text */}
@@ -34,14 +34,22 @@ const Checkbox = ({ children }) => (
         color="#333536"
         letterSpacing="0.13px"
       >
-        {children}
+        {label}
       </Box>
     </label>
   </Box>
 );
 
 Checkbox.propTypes = {
-  children: PropTypes.string,
+  label: PropTypes.string,
+  iconName: PropTypes.string,
+  iconSize: PropTypes.string,
+};
+
+Checkbox.defaultProps = {
+  iconName: 'customCheck',
+  iconSize: '10px',
+  label: 'default label',
 };
 
 export default Checkbox;
