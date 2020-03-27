@@ -6,7 +6,7 @@ const Checkbox = ({ children }) => (
   <Box lineHeight="14px">
     <label style={{ lineHeight: 'inherit' }}>
       {/* This is the sibling input, it's visually hidden */}
-      <VisuallyHidden as="input" type="checkbox" defaultChecked />
+      <VisuallyHidden as="input" type="checkbox" />
 
       {/* This is the control box with a check icon as children */}
       <ControlBox
@@ -16,6 +16,10 @@ const Checkbox = ({ children }) => (
         rounded="md"
         _checked={{ bg: 'brand.500', color: 'white', borderColor: 'brand.500' }}
         _focus={{ borderColor: 'outline' }}
+        _hover={{
+          borderColor: 'brand.500',
+          shadow: '0 0 0 2px #31a7d840, inset 0 0 0 2px #31a7d836',
+        }}
       >
         <Icon name="check" size="10px" />
       </ControlBox>
