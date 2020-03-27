@@ -18,43 +18,43 @@ export default function HomePage() {
         <Box fontSize="xl" mb="1">
           Normal
         </Box>
-        <Checkbox>One</Checkbox>
+        <Checkbox>Normal</Checkbox>
       </Box>
       <Box p="4">
         <Box fontSize="xl" mb="1">
           Checked
         </Box>
-        <Checkbox isChecked>Two</Checkbox>
+        <Checkbox isChecked>Checked</Checkbox>
       </Box>
       <Box p="4">
         <Box fontSize="xl" mb="1">
           Disabled
         </Box>
-        <Checkbox isDisabled>Two</Checkbox>
+        <Checkbox isDisabled>Disabled</Checkbox>
       </Box>
       <Box p="4">
         <Box fontSize="xl" mb="1">
           onBlur
         </Box>
-        <Checkbox onBlur={() => console.log('Blur')}>Three</Checkbox>
+        <Checkbox onBlur={() => console.log('Blur')}>onBlur</Checkbox>
       </Box>
       <Box p="4">
         <Box fontSize="xl" mb="1">
           onFocus
         </Box>
-        <Checkbox onFocus={() => console.log('Focus')}>Three</Checkbox>
+        <Checkbox onFocus={() => console.log('Focus')}>onFocus</Checkbox>
       </Box>
       <Box p="4">
         <Box fontSize="xl" mb="1">
           onChange
         </Box>
-        <Checkbox onChange={() => console.log('Change')}>Three</Checkbox>
+        <Checkbox onChange={() => console.log('Change')}>onChange</Checkbox>
       </Box>
       <Box p="4">
         <Box fontSize="xl" mb="1">
           defaultIsChecked
         </Box>
-        <Checkbox defaultIsChecked>Three</Checkbox>
+        <Checkbox defaultIsChecked>defaultIsChecked</Checkbox>
       </Box>
     </>
   );
