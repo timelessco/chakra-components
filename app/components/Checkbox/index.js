@@ -15,7 +15,7 @@ const Checkbox = ({ children, isDisabled }) => (
         borderWidth="1.5px"
         size="14px"
         borderColor={
-          isDisabled ? 'disabled.borderColor' : 'checkbox.borderColor'
+          isDisabled ? 'checkbox.disabled.borderColor' : 'checkbox.borderColor'
         }
         rounded="md"
         _checked={
@@ -44,7 +44,7 @@ const Checkbox = ({ children, isDisabled }) => (
         fontFamily="body"
         fontSize="13px"
         fontWeight="medium"
-        color={isDisabled ? 'disabled.color' : 'checkbox.color'}
+        color={isDisabled ? 'checkbox.disabled.color' : 'checkbox.color'}
         letterSpacing="0.13px"
       >
         {children}
