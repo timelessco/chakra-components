@@ -3,32 +3,46 @@ import { theme } from '@chakra-ui/core';
 
 export default {
   ...theme,
+  lineHeights: {
+    ...theme.lineHeights,
+    '0.875': '0.875rem',
+  },
+  sizes: {
+    ...theme.sizes,
+    '0.875': '0.875rem',
+  },
   colors: {
     ...theme.colors,
-    brand: {
-      '50': '#8ED0E9',
-      '100': '#7BC8E6',
-      '200': '#69C0E2',
-      '300': '#56B8DF',
-      '400': '#43B0DB',
-      '500': '#31A9D8',
-      '600': '#2D9AC5',
-      '700': '#298BB1',
-      '800': '#247B9E',
-      '900': '#206C8A',
-    },
-    // This should be ideally based on theme
-    // need to separate out and group colors from theme
-    // checkbox shouldn't have separate colors
-    checkbox: {
-      borderColor: '#8C8D8E',
-      color: '#333536',
-      shadow: '#31a7d840',
-      disabled: {
-        borderColor: '#E7E8E9',
-        color: '#CACBCC',
+    font: {
+      checkbox: {
+        default: '#333536',
+        disabled: '#CACBCC',
       },
     },
+    bg: {
+      checkbox: {
+        checked: '#31A9D8',
+      },
+    },
+    borderColor: {
+      checkbox: {
+        default: '#8C8D8E',
+        checked: '#31A9D8',
+        hover: '#31A9D8',
+        disabled: '#E7E8E9',
+      },
+    },
+  },
+  shadows: {
+    ...theme.shadows,
+    checkbox: { hover: '0 0 0 2px #31a7d840, inset 0 0 0 2px #31a7d840' },
+  },
+  fontSizes: {
+    ...theme.fontSizes,
+    '0.8125': '0.8125rem',
+  },
+  letterSpacing: {
+    '0.008': '0.008125rem',
   },
   fonts: {
     ...theme.fonts,

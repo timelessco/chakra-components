@@ -24,7 +24,7 @@ const Checkbox = ({
 
   <Box
     as="label"
-    lineHeight="14px" // TODO: should come from theme
+    lineHeight={0.875}
     cursor={isDisabled ? 'not-allowed' : 'pointer'}
     {...getAllowedProps(override.wrapper, ['space', 'typography'])}
   >
@@ -46,26 +46,23 @@ const Checkbox = ({
 
     {/* This is the control box with a check icon as children */}
     <ControlBox
-      borderWidth="1.5px" // TODO: should come from theme
-      size="14px" // TODO: should come from theme
-      borderColor={
-        isDisabled ? 'checkbox.disabled.borderColor' : 'checkbox.borderColor' // TODO: Based on theme.borderColor
-      }
+      size={0.875}
+      borderWidth={1.5}
+      borderColor="borderColor.checkbox.default"
       rounded="md"
-      _checked={
-        isDisabled
-          ? {}
-          : { bg: 'brand.500', color: 'white', borderColor: 'brand.500' } // TODO: Theme.disabled should have the styles
-      }
+      _checked={{
+        bg: 'bg.checkbox.checked',
+        color: 'white',
+        borderColor: 'borderColor.checkbox.checked',
+      }}
+      _disabled={{ borderColor: 'borderColor.checkbox.disabled' }}
+      _checkedAndDisabled={{}}
       _focus={{ borderColor: 'outline' }}
-      _hover={
-        isDisabled
-          ? {}
-          : {
-              borderColor: 'brand.500', // Theme.border
-              shadow: '0 0 0 2px #31a7d840, inset 0 0 0 2px #31a7d840',
-            }
-      }
+      _hover={{
+        borderColor: 'borderColor.checkbox.hover',
+        shadow: 'checkbox.hover',
+      }}
+      _checkedAndHover={{}}
       {...getAllowedProps(override.controlBox)}
     >
       <Icon name="customCheck" size="10px" />
@@ -76,10 +73,10 @@ const Checkbox = ({
       as="span"
       ml={2}
       fontFamily="body"
-      fontSize="13px"
+      fontSize={0.8125}
       fontWeight="medium"
-      color={isDisabled ? 'checkbox.disabled.color' : 'checkbox.color'}
-      letterSpacing="0.13px"
+      color={isDisabled ? 'font.checkbox.disabled' : 'font.checkbox.default'}
+      letterSpacing={0.008}
       {...getAllowedProps(override.additionalText)}
     >
       {children}
