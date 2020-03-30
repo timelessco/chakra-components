@@ -110,7 +110,41 @@ There’s also a <a href="https://vimeo.com/168648012">fantastic video</a> on ho
 Now you're ready to rumble!
 
 > Please note that this boilerplate is **production-ready and not meant for beginners**! If you're just starting out with react or redux, please refer to https://github.com/petehunt/react-howto instead. If you want a solid, battle-tested base to build your next product upon and have some experience with react, this is the perfect start for you.
+## Installing Chakra UI
 
+To use Chakra UI components, all you need to do is install the `@chakra-ui/core`
+package and its peer dependencies:
+
+```sh
+$ yarn add @chakra-ui/core @emotion/core @emotion/styled emotion-theming
+
+# or
+
+$ npm install @chakra-ui/core @emotion/core @emotion/styled emotion-theming
+```
+
+## Usage
+
+To start using the components, please follow these steps:
+
+1. Wrap your application with the `ThemeProvider` provided by
+   **@chakra-ui/core**. We recommend that you also add the `CSSReset` component
+   to remove all browser styling.
+
+```jsx
+import { ThemeProvider, CSSReset } from "@chakra-ui/core".
+
+// Do this at the root of your application
+const App = ({ children }) => (
+  <ThemeProvider>
+    <CSSReset />
+    {children}
+  </ThemeProvider>
+);
+```
+
+Optionally, you can wrap your application with the `ColorModeProvider` so you
+can toggle between light and dark mode within your app.
 ## Documentation
 
 - [**The Hitchhiker's Guide to `react-boilerplate`**](docs/general/introduction.md): An introduction for newcomers to this boilerplate.
