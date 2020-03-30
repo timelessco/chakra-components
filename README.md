@@ -134,7 +134,6 @@ To start using the components, please follow these steps:
 ```jsx
 import { ThemeProvider, CSSReset } from "@chakra-ui/core".
 
-// Do this at the root of your application
 const App = ({ children }) => (
   <ThemeProvider>
     <CSSReset />
