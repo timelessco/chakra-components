@@ -17,6 +17,9 @@ export default {
       '800': '#247B9E',
       '900': '#206C8A',
     },
+    // This should be ideally based on theme
+    // need to separate out and group colors from theme
+    // checkbox shouldn't have separate colors
     checkbox: {
       borderColor: '#8C8D8E',
       color: '#333536',
