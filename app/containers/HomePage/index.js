@@ -62,6 +62,29 @@ export default function HomePage() {
         </Box>
         <Checkbox defaultIsChecked>defaultIsChecked</Checkbox>
       </Box>
+      <Box p="4">
+        <Box fontSize="xl" mb="1">
+          Overrides that are going to be different for each project
+        </Box>
+        <Checkbox
+          override={{
+            wrapper: {
+              m: '100px',
+            },
+            visuallyHidden: {
+              bg: 'blue',
+            },
+            controlBox: {
+              bg: 'red',
+            },
+            additionalText: {
+              bg: 'yellow',
+            },
+          }}
+        >
+          Override
+        </Checkbox>
+      </Box>
     </>
   );
 }
