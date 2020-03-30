@@ -24,7 +24,7 @@ const Checkbox = ({
 
   <Box
     as="label"
-    lineHeight={0.875}
+    lineHeight="checkbox"
     cursor={isDisabled ? 'not-allowed' : 'pointer'}
     {...getAllowedProps(override.wrapper, ['space', 'typography'])}
   >
@@ -46,8 +46,8 @@ const Checkbox = ({
 
     {/* This is the control box with a check icon as children */}
     <ControlBox
-      size={0.875}
-      borderWidth={1.5}
+      size="checkbox"
+      borderWidth="checkbox"
       borderColor="borderColor.checkbox.default"
       rounded="md"
       _checked={{
@@ -73,10 +73,10 @@ const Checkbox = ({
       as="span"
       ml={2}
       fontFamily="body"
-      fontSize={0.8125}
+      fontSize="checkbox"
       fontWeight="medium"
       color={isDisabled ? 'font.checkbox.disabled' : 'font.checkbox.default'}
-      letterSpacing={0.008}
+      letterSpacing="checkbox"
       {...getAllowedProps(override.additionalText)}
     >
       {children}

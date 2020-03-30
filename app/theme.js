@@ -5,11 +5,11 @@ export default {
   ...theme,
   lineHeights: {
     ...theme.lineHeights,
-    '0.875': '0.875rem',
+    checkbox: '14px',
   },
   sizes: {
     ...theme.sizes,
-    '0.875': '0.875rem',
+    checkbox: '14px',
   },
   colors: {
     ...theme.colors,
@@ -39,10 +39,13 @@ export default {
   },
   fontSizes: {
     ...theme.fontSizes,
-    '0.8125': '0.8125rem',
+    checkbox: '13px',
   },
   letterSpacing: {
-    '0.008': '0.008125rem',
+    checkbox: '0.13px',
+  },
+  borderWidths: {
+    checkbox: '1.5px',
   },
   fonts: {
     ...theme.fonts,
