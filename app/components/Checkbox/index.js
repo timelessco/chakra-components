@@ -14,11 +14,13 @@ const Checkbox = ({
   id,
   name,
   value,
+  override,
 }) => (
   <Box
     as="label"
     lineHeight="14px"
     cursor={isDisabled ? 'not-allowed' : 'pointer'}
+    {...override.wrapper}
   >
     {/* This is the sibling input, it's visually hidden */}
     <VisuallyHidden
@@ -33,6 +35,7 @@ const Checkbox = ({
       onFocus={onFocus}
       onChange={onChange}
       defaultChecked={defaultIsChecked}
+      {...override.visuallyHidden}
     />
 
     {/* This is the control box with a check icon as children */}
@@ -57,6 +60,7 @@ const Checkbox = ({
               shadow: '0 0 0 2px #31a7d840, inset 0 0 0 2px #31a7d840',
             }
       }
+      {...override.controlBox}
     >
       <Icon name="customCheck" size="10px" />
     </ControlBox>
@@ -70,6 +74,7 @@ const Checkbox = ({
       fontWeight="medium"
       color={isDisabled ? 'checkbox.disabled.color' : 'checkbox.color'}
       letterSpacing="0.13px"
+      {...override.additionalText}
     >
       {children}
     </Box>
@@ -87,6 +92,16 @@ Checkbox.propTypes = {
   onFocus: PropTypes.func,
   onChange: PropTypes.func,
   defaultIsChecked: PropTypes.bool,
+  override: PropTypes.any,
+};
+
+Checkbox.defaultProps = {
+  override: {
+    wrapper: {},
+    visuallyHidden: {},
+    controlBox: {},
+    additionalText: {},
+  },
 };
 
 export default Checkbox;
