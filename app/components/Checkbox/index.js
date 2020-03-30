@@ -2,6 +2,7 @@
 import React from 'react';
 import { VisuallyHidden, ControlBox, Icon, Box } from '@chakra-ui/core';
 import PropTypes from 'prop-types';
+import getAllowedProps from '../../helpers/getAllowedProps';
 
 const Checkbox = ({
   children,
@@ -16,11 +17,16 @@ const Checkbox = ({
   value,
   override,
 }) => (
+  // TODO: Every dom elements might need overrides
+  // TODO: Specifiy for what dom elements what can be the override
+  // For the Box as label, we might only need space and typography. We don't need border background or any of them
+  // we can add it in future if we require it later
+
   <Box
     as="label"
-    lineHeight="14px"
+    lineHeight="14px" // TODO: should come from theme
     cursor={isDisabled ? 'not-allowed' : 'pointer'}
-    {...override.wrapper}
+    {...getAllowedProps(override.wrapper, ['space', 'typography'])}
   >
     {/* This is the sibling input, it's visually hidden */}
     <VisuallyHidden
@@ -35,32 +41,32 @@ const Checkbox = ({
       onFocus={onFocus}
       onChange={onChange}
       defaultChecked={defaultIsChecked}
-      {...override.visuallyHidden}
+      {...getAllowedProps(override.visuallyHidden, [])}
     />
 
     {/* This is the control box with a check icon as children */}
     <ControlBox
-      borderWidth="1.5px"
-      size="14px"
+      borderWidth="1.5px" // TODO: should come from theme
+      size="14px" // TODO: should come from theme
       borderColor={
-        isDisabled ? 'checkbox.disabled.borderColor' : 'checkbox.borderColor'
+        isDisabled ? 'checkbox.disabled.borderColor' : 'checkbox.borderColor' // TODO: Based on theme.borderColor
       }
       rounded="md"
       _checked={
         isDisabled
           ? {}
-          : { bg: 'brand.500', color: 'white', borderColor: 'brand.500' }
+          : { bg: 'brand.500', color: 'white', borderColor: 'brand.500' } // TODO: Theme.disabled should have the styles
       }
       _focus={{ borderColor: 'outline' }}
       _hover={
         isDisabled
           ? {}
           : {
-              borderColor: 'brand.500',
+              borderColor: 'brand.500', // Theme.border
               shadow: '0 0 0 2px #31a7d840, inset 0 0 0 2px #31a7d840',
             }
       }
-      {...override.controlBox}
+      {...getAllowedProps(override.controlBox)}
     >
       <Icon name="customCheck" size="10px" />
     </ControlBox>
@@ -74,7 +80,7 @@ const Checkbox = ({
       fontWeight="medium"
       color={isDisabled ? 'checkbox.disabled.color' : 'checkbox.color'}
       letterSpacing="0.13px"
-      {...override.additionalText}
+      {...getAllowedProps(override.additionalText)}
     >
       {children}
     </Box>

@@ -1,4 +1,4 @@
-const spaceProps = [
+export const space = [
   'm',
   'mt',
   'mr',
@@ -15,9 +15,9 @@ const spaceProps = [
   'py',
 ];
 
-const colorProps = ['color', 'bg', 'opacity'];
+export const color = ['color', 'bg', 'opacity'];
 
-const typographyProps = [
+export const typography = [
   'fontFamily',
   'fontSize',
   'fontWeight',
@@ -29,7 +29,7 @@ const typographyProps = [
   'textDecoration',
 ];
 
-const layoutProps = [
+export const layout = [
   'w',
   'h',
   'minW',
@@ -44,7 +44,7 @@ const layoutProps = [
   'overflowY',
 ];
 
-const flexProps = [
+export const flex = [
   'alignItems',
   'alignContent',
   'justifyItems',
@@ -60,7 +60,7 @@ const flexProps = [
   'order',
 ];
 
-const gridProps = [
+export const grid = [
   'gridGap',
   'gridRowGap',
   'gridColumnGap',
@@ -75,7 +75,7 @@ const gridProps = [
   'gridTemplateAreas',
 ];
 
-const backgroundProps = [
+export const background = [
   'background',
   'bgImage',
   'bgSize',
@@ -84,7 +84,7 @@ const backgroundProps = [
   'bgAttachment,backgroundAttachment',
 ];
 
-const borderProps = [
+export const border = [
   'borderStyle',
   'borderColor',
   'borderTop',
@@ -107,7 +107,7 @@ const borderProps = [
   'borderY',
 ];
 
-const borderRadiusProps = [
+export const borderRadius = [
   'rounded',
   'roundedTopLeft',
   'roundedTopRight',
@@ -119,11 +119,18 @@ const borderRadiusProps = [
   'roundedLeft',
 ];
 
-const positionProps = ['position', 'zIndex', 'top', 'right', 'bottom', 'left'];
+export const position = [
+  'position',
+  'zIndex',
+  'top',
+  'right',
+  'bottom',
+  'left',
+];
 
-const shadowProps = ['textShadow', 'boxshadow'];
+export const shadow = ['textShadow', 'boxshadow'];
 
-const otherProps = [
+export const other = [
   'animation',
   'appearance',
   'transform',
@@ -149,16 +156,16 @@ const otherProps = [
 ];
 
 export default [
-  ...spaceProps,
-  ...colorProps,
-  ...typographyProps,
-  ...layoutProps,
-  ...gridProps,
-  ...flexProps,
-  ...backgroundProps,
-  ...borderProps,
-  ...borderRadiusProps,
-  ...positionProps,
-  ...shadowProps,
-  ...otherProps,
+  ...space,
+  ...color,
+  ...typography,
+  ...layout,
+  ...grid,
+  ...flex,
+  ...background,
+  ...border,
+  ...borderRadius,
+  ...position,
+  ...shadow,
+  ...other,
 ];
