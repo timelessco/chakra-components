@@ -72,6 +72,7 @@ const Checkbox = ({
         name={name}
         value={value}
         checked={isChecked}
+        isDisabled={isDisabled}
         onBlur={onBlur}
         onFocus={onFocus}
         onChange={onChange}
