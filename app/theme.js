@@ -56,6 +56,7 @@ export default {
     checkbox: '13px',
   },
   letterSpacings: {
+    ...theme.letterSpacings,
     h1: '0.2px',
     h2: '0.18px',
     body1: '-0.15px',
@@ -63,6 +64,7 @@ export default {
     checkbox: '0.13px',
   },
   borderWidths: {
+    ...theme.borderWidths,
     checkbox: '1.5px',
   },
   fonts: {
