@@ -1,128 +1,99 @@
-# Documentation
+<!-- AUTO-GENERATED-CONTENT:START (STARTER) -->
+<p align="center">
+  <a href="https://www.gatsbyjs.org">
+    <img alt="Gatsby" src="https://www.gatsbyjs.org/monogram.svg" width="60" />
+  </a>
+</p>
+<h1 align="center">
+  Gatsby's default starter
+</h1>
 
-## Table of Contents
+Kick off your project with this default boilerplate. This starter ships with the main Gatsby configuration files you might need to get up and running blazing fast with the blazing fast app generator for React.
 
-- [General](general)
-  - [**CLI Commands**](general/commands.md)
-  - [Introduction ](general/introduction.md)
-  - [Tool Configuration](general/files.md)
-  - [Server Configurations](general/server-configs.md)
-  - [Deployment](general/deployment.md) _(currently Heroku and AWS S3 specific)_
-  - [Debugging](general/debugging.md)
-  - [FAQ](general/faq.md)
-  - [Gotchas](general/gotchas.md)
-  - [Remove](general/remove.md)
-  - [Extracting components](general/components.md)
-- [Testing](testing)
-  - [Unit Testing](testing/unit-testing.md)
-  - [Component Testing](testing/component-testing.md)
-  - [Remote Testing](testing/remote-testing.md)
-- [Styling (CSS)](css/README.md)
-  - [Next Generation CSS](css/README.md#next-generation-css)
-  - [CSS Support](css/README.md#css-we-support)
-  - [styled-components](css/README.md#styled-components)
-  - [Stylesheet](css/README.md#stylesheet)
-  - [CSS Modules](css/README.md#css-modules)
-  - [Sass](css/README.md#sass)
-  - [LESS](css/README.md#less)
-- [JS](js)
-  - [Redux](js/redux.md)
-  - [Immer](js/immer.md)
-  - [reselect](js/reselect.md)
-  - [redux-saga](js/redux-saga.md)
-  - [i18n](js/i18n.md)
-  - [routing](js/routing.md)
-- [Maintenance](maintenance)
-  - [Dependency Update](maintenance/dependency.md)
-- [Forks](forks)
+_Have another more specific idea? You may want to check out our vibrant collection of [official and community-created starters](https://www.gatsbyjs.org/docs/gatsby-starters/)._
 
-## Overview
+## 🚀 Quick start
 
-### Quickstart
+1.  **Create a Gatsby site.**
 
-1.  First, let's kick the tyres by launching the sample _Repospective_ app
-    bundled with this project to demo some of its best features:
-
-    ```Shell
-    npm run setup && npm start
-    ```
-
-1.  Open [localhost:3000](http://localhost:3000) to see it in action.
-
-    - Add a Github username to see Redux and Redux Sagas in action: effortless
-      async state updates and side effects are now yours :)
-    - Edit the file at `./app/components/Header/index.js` so that the text of
-      the `<Button>` component reads "Features!!!"... [Hot Module Reloading](https://webpack.js.org/guides/hot-module-replacement/) gives
-      you a feedback loop with your UI so smooth it's almost conversational!
-    - Click your (newly emphatic) Features button to see React Router in action...
-      Now you can share a direct link to that content privately over your LAN or
-      globally addressable to any device, anywhere. Not bad for a locally-running
-      Single Page App.
-
-1.  Time to build your own app: run
+    Use the Gatsby CLI to create a new site, specifying the default starter.
 
     ```shell
-    npm run clean
+    # create a new Gatsby site using the default starter
+    gatsby new my-default-starter https://github.com/gatsbyjs/gatsby-starter-default
     ```
 
-    ...and use the built-in generators to start your first feature.
+1.  **Start developing.**
 
-### Development
+    Navigate into your new site’s directory and start it up.
 
-Run `npm start` to see your app at `localhost:3000`
+    ```shell
+    cd my-default-starter/
+    gatsby develop
+    ```
 
-### Building & Deploying
+1.  **Open the source code and start editing!**
 
-1.  Run `npm run build`, which will compile all the necessary files to the
-    `build` folder.
+    Your site is now running at `http://localhost:8000`!
 
-2.  Upload the contents of the `build` folder to your web server's root folder.
+    _Note: You'll also see a second link: _`http://localhost:8000/___graphql`_. This is a tool you can use to experiment with querying your data. Learn more about using this tool in the [Gatsby tutorial](https://www.gatsbyjs.org/tutorial/part-five/#introducing-graphiql)._
 
-### Structure
+    Open the `my-default-starter` directory in your code editor of choice and edit `src/pages/index.js`. Save your changes and the browser will update in real time!
 
-The [`app/`](../../../tree/master/app) directory contains your entire application code, including CSS,
-JavaScript, HTML and tests.
+## 🧐 What's inside?
 
-The rest of the folders and files only exist to make your life easier, and
-should not need to be touched.
+A quick look at the top-level files and directories you'll see in a Gatsby project.
 
-_(If they do have to be changed, please [submit an issue](https://github.com/react-boilerplate/react-boilerplate/issues)!)_
+    .
+    ├── node_modules
+    ├── src
+    ├── .gitignore
+    ├── .prettierrc
+    ├── gatsby-browser.js
+    ├── gatsby-config.js
+    ├── gatsby-node.js
+    ├── gatsby-ssr.js
+    ├── LICENSE
+    ├── package-lock.json
+    ├── package.json
+    └── README.md
 
-### CSS
+1.  **`/node_modules`**: This directory contains all of the modules of code that your project depends on (npm packages) are automatically installed.
 
-Using [tagged template literals](https://www.styled-components.com/docs/advanced#tagged-template-literals)
-(a recent addition to JavaScript) and the [power of CSS](https://github.com/styled-components/styled-components/blob/master/docs/css-we-support.md),
-`styled-components` allows you to write actual CSS code to style your components.
-It also removes the mapping between components and styles – using components as a
-low-level styling construct could not be easier!
+2.  **`/src`**: This directory will contain all of the code related to what you will see on the front-end of your site (what you see in the browser) such as your site header or a page template. `src` is a convention for “source code”.
 
-See the [CSS documentation](./css/README.md) for more information.
+3.  **`.gitignore`**: This file tells git which files it should not track / not maintain a version history for.
 
-### JS
+4.  **`.prettierrc`**: This is a configuration file for [Prettier](https://prettier.io/). Prettier is a tool to help keep the formatting of your code consistent.
 
-We bundle all your clientside scripts and chunk them into several files using
-code splitting where possible. We then automatically optimize your code when
-building for production so you don't have to worry about that.
+5.  **`gatsby-browser.js`**: This file is where Gatsby expects to find any usage of the [Gatsby browser APIs](https://www.gatsbyjs.org/docs/browser-apis/) (if any). These allow customization/extension of default Gatsby settings affecting the browser.
 
-See the [JS documentation](./js/README.md) for more information about the
-JavaScript side of things.
+6.  **`gatsby-config.js`**: This is the main configuration file for a Gatsby site. This is where you can specify information about your site (metadata) like the site title and description, which Gatsby plugins you’d like to include, etc. (Check out the [config docs](https://www.gatsbyjs.org/docs/gatsby-config/) for more detail).
 
-### SEO
+7.  **`gatsby-node.js`**: This file is where Gatsby expects to find any usage of the [Gatsby Node APIs](https://www.gatsbyjs.org/docs/node-apis/) (if any). These allow customization/extension of default Gatsby settings affecting pieces of the site build process.
 
-We use [react-helmet](https://github.com/nfl/react-helmet) for managing document head tags. Examples on how to
-write head tags can be found [here](https://github.com/nfl/react-helmet#examples).
+8.  **`gatsby-ssr.js`**: This file is where Gatsby expects to find any usage of the [Gatsby server-side rendering APIs](https://www.gatsbyjs.org/docs/ssr-apis/) (if any). These allow customization of default Gatsby settings affecting server-side rendering.
 
-### Testing
+9.  **`LICENSE`**: Gatsby is licensed under the MIT license.
 
-For a thorough explanation of the testing procedure, see the
-[testing documentation](./testing/README.md)!
+10. **`package-lock.json`** (See `package.json` below, first). This is an automatically generated file based on the exact versions of your npm dependencies that were installed for your project. **(You won’t change this file directly).**
 
-#### Browser testing
+11. **`package.json`**: A manifest file for Node.js projects, which includes things like metadata (the project’s name, author, etc). This manifest is how npm knows which packages to install for your project.
 
-`npm run start:tunnel` makes your locally-running app globally available on the web
-via a temporary URL: great for testing on different devices, client demos, etc!
+12. **`README.md`**: A text file containing useful reference information about your project.
 
-#### Unit testing
+## 🎓 Learning Gatsby
 
-Unit tests live in `test/` directories right next to the components being tested
-and are run with `npm run test`.
+Looking for more guidance? Full documentation for Gatsby lives [on the website](https://www.gatsbyjs.org/). Here are some places to start:
+
+- **For most developers, we recommend starting with our [in-depth tutorial for creating a site with Gatsby](https://www.gatsbyjs.org/tutorial/).** It starts with zero assumptions about your level of ability and walks through every step of the process.
+
+- **To dive straight into code samples, head [to our documentation](https://www.gatsbyjs.org/docs/).** In particular, check out the _Guides_, _API Reference_, and _Advanced Tutorials_ sections in the sidebar.
+
+## 💫 Deploy
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/gatsbyjs/gatsby-starter-default)
+
+[![Deploy with ZEIT Now](https://zeit.co/button)](https://zeit.co/import/project?template=https://github.com/gatsbyjs/gatsby-starter-default)
+
+<!-- AUTO-GENERATED-CONTENT:END -->
