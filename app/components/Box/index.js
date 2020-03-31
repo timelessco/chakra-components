@@ -7,7 +7,18 @@ import getAllowedProps from '../../helpers/getAllowedProps';
 const Box = ({ children, ...props }) => {
   const Override = {
     // default props can be declared here
-    ...getAllowedProps(props, ['layout', 'typography', 'space']),
+    ...getAllowedProps(props, [
+      'background',
+      'border',
+      'borderRadius',
+      'position',
+      'shadow',
+      'grid',
+      'layout',
+      'color',
+      'space',
+      'typography',
+    ]),
   };
 
   return (
