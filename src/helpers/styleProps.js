@@ -189,6 +189,6 @@ const styleProps = {
 export const getAllowedStyles = allowedSystems =>
   reduce(
     allowedSystems,
-    (accumulater, system) => accumulater.concat(styleProps[`${system}`]),
+    (accumulator, system) => accumulator.concat(styleProps[system]),
     [],
   );

@@ -46,36 +46,6 @@
       }
     },
     {
-      "key": "src/pages/checkbox.mdx",
-      "value": {
-        "name": "Checkbox",
-        "menu": "Components",
-        "id": "48429d3ded9010fbb59163e11def5dba",
-        "filepath": "src/pages/checkbox.mdx",
-        "fullpath": "/Users/timeless/Documents/projects/chakra-components/docs/src/pages/checkbox.mdx",
-        "link": "https://github.com/gatsbyjs/gatsby-starter-default/edit/master/docs/src/pages/checkbox.mdx",
-        "slug": "src-pages-checkbox",
-        "route": "/src-pages-checkbox",
-        "headings": [
-          {
-            "slug": "checkbox",
-            "depth": 1,
-            "value": "Checkbox"
-          },
-          {
-            "slug": "properties",
-            "depth": 2,
-            "value": "Properties"
-          },
-          {
-            "slug": "basic-usage",
-            "depth": 2,
-            "value": "Basic usage"
-          }
-        ]
-      }
-    },
-    {
       "key": "src/pages/index.mdx",
       "value": {
         "name": "Getting Started",
@@ -88,11 +58,56 @@
         "menu": "",
         "headings": []
       }
+    },
+    {
+      "key": "src/pages/checkbox/index.mdx",
+      "value": {
+        "name": "Checkbox",
+        "menu": "Components",
+        "id": "433492c31ce64a357d9606c9a13140b8",
+        "filepath": "src/pages/checkbox/index.mdx",
+        "fullpath": "/Users/timeless/Documents/projects/chakra-components/docs/src/pages/checkbox/index.mdx",
+        "link": "https://github.com/gatsbyjs/gatsby-starter-default/edit/master/docs/src/pages/checkbox/index.mdx",
+        "slug": "src-pages-checkbox-index",
+        "route": "/src-pages-checkbox-index",
+        "headings": [
+          {
+            "slug": "checkbox",
+            "depth": 1,
+            "value": "Checkbox"
+          },
+          {
+            "slug": "basic-usage",
+            "depth": 2,
+            "value": "Basic usage"
+          },
+          {
+            "slug": "control-value",
+            "depth": 2,
+            "value": "Control value"
+          },
+          {
+            "slug": "disabled",
+            "depth": 2,
+            "value": "Disabled"
+          },
+          {
+            "slug": "event-handlers",
+            "depth": 2,
+            "value": "Event handlers"
+          },
+          {
+            "slug": "customize-box-size-and-label",
+            "depth": 2,
+            "value": "Customize box size and label"
+          }
+        ]
+      }
     }
   ],
   "props": [
     {
-      "key": "src/pages/themedCheckbox.js",
+      "key": "src/pages/checkbox/index.js",
       "value": [
         {
           "description": "",

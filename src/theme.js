@@ -10,6 +10,7 @@ export default {
   sizes: {
     ...theme.sizes,
     checkbox: '14px',
+    checkboxTick: '20px',
   },
   colors: {
     ...theme.colors,

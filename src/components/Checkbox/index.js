@@ -1,10 +1,20 @@
 /* eslint-disable indent */
 import React from 'react';
-import { VisuallyHidden, ControlBox, Icon, Box } from '@chakra-ui/core';
+import {
+  VisuallyHidden,
+  ControlBox,
+  Icon,
+  Box,
+  ThemeProvider,
+  CSSReset,
+  ColorModeProvider,
+} from '@chakra-ui/core';
 import PropTypes from 'prop-types';
 import getAllowedProps from '../../helpers/getAllowedProps';
 
-const Checkbox = ({
+import theme from '../../theme';
+
+export const Checkbox = ({
   children,
   isDisabled,
   isChecked,
@@ -21,9 +31,8 @@ const Checkbox = ({
     wrapper: {
       lineHeight: 'checkbox',
       cursor: isDisabled ? 'not-allowed' : 'pointer',
-      ...getAllowedProps(override.wrapper, ['layout', 'typography']),
+      ...getAllowedProps(override.wrapper, ['typography']),
     },
-    visuallyHidden: {},
     controlBox: {
       size: 'checkbox',
       borderWidth: 'checkbox',
@@ -35,13 +44,11 @@ const Checkbox = ({
         borderColor: 'borderColor.checkbox.checked',
       },
       _disabled: { borderColor: 'borderColor.checkbox.disabled' },
-      _checkedAndDisabled: {},
       _focus: { borderColor: 'outline' },
       _hover: {
         borderColor: 'borderColor.checkbox.hover',
         shadow: 'checkbox.hover',
       },
-      _checkedAndHover: {},
       ...getAllowedProps(override.controlBox, [
         'layout',
         'border',
@@ -50,7 +57,7 @@ const Checkbox = ({
         'shadow',
       ]),
     },
-    additionalText: {
+    label: {
       ml: '2',
       fontFamily: 'body',
       fontSize: 'checkbox',
@@ -59,47 +66,64 @@ const Checkbox = ({
       color: `${
         isDisabled ? 'font.checkbox.disabled' : 'font.checkbox.default'
       }`,
-      ...getAllowedProps(override.additionalText, [
-        'color',
-        'space',
-        'typography',
-      ]),
+      ...getAllowedProps(override.label, ['color', 'space', 'typography']),
     },
   };
 
   return (
-    <Box as="label" {...Override.wrapper}>
-      {/* This is the sibling input, it's visually hidden */}
-      <VisuallyHidden
-        as="input"
-        type="checkbox"
-        id={id}
-        name={name}
-        value={value}
-        checked={isChecked}
-        disabled={isDisabled}
-        onBlur={onBlur}
-        onFocus={onFocus}
-        onChange={onChange}
-        defaultChecked={defaultIsChecked}
-        {...Override.visuallyHidden}
-      />
+    <ThemeProvider theme={theme}>
+      <CSSReset />
+      <ColorModeProvider>
+        <Box p={2}>
+          <Box as="label" {...Override.wrapper}>
+            {/* This is the sibling input, it's visually hidden */}
+            <VisuallyHidden
+              as="input"
+              type="checkbox"
+              id={id}
+              name={name}
+              value={value}
+              checked={isChecked}
+              disabled={isDisabled}
+              onBlur={onBlur}
+              onFocus={onFocus}
+              onChange={onChange}
+              defaultChecked={defaultIsChecked}
+              {...Override.visuallyHidden}
+            />
 
-      {/* This is the control box with a check icon as children */}
-      <ControlBox {...Override.controlBox}>
-        <Icon name="customCheck" size="10px" />
-      </ControlBox>
+            {/* This is the control box with a check icon as children */}
+            <ControlBox {...Override.controlBox}>
+              <Icon name="customCheck" size="10px" />
+            </ControlBox>
 
-      {/* You can pass additional text */}
-      <Box as="span" {...Override.additionalText}>
-        {children}
-      </Box>
-    </Box>
+            {/* You can pass additional text */}
+            <Box as="span" {...Override.label}>
+              {children}
+            </Box>
+          </Box>
+        </Box>
+      </ColorModeProvider>
+    </ThemeProvider>
   );
 };
 
+export const propTypes = JSON.stringify({
+  children: PropTypes.node,
+  id: PropTypes.string,
+  name: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  isDisabled: PropTypes.bool,
+  isChecked: PropTypes.bool,
+  onBlur: PropTypes.func,
+  onFocus: PropTypes.func,
+  onChange: PropTypes.func,
+  defaultIsChecked: PropTypes.bool,
+  override: PropTypes.any,
+});
+
 Checkbox.propTypes = {
-  children: PropTypes.string,
+  children: PropTypes.node,
   id: PropTypes.string,
   name: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -117,8 +141,9 @@ Checkbox.defaultProps = {
     wrapper: {},
     visuallyHidden: {},
     controlBox: {},
-    additionalText: {},
+    label: {},
   },
+  onBlur: () => {},
+  onFocus: () => {},
+  onChange: () => {},
 };
-
-export default Checkbox;

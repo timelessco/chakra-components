@@ -1,0 +1,67 @@
+---
+name: Checkbox
+menu: Components
+---
+
+import { Playground, Props } from "docz"
+
+import { Checkbox } from './index'
+
+# Checkbox
+
+Checkbox component that wraps Chakra
+
+The HTML DOM structure is 
+
+```
+<label>          // Wraps the entire checkbox (override - wrapper)
+  <input />      // Hidden input to carry the value / states like focused
+  <div />        // contains a div with <svg /> (override - controlBox)
+  <span />       // Holds the label (override - label)
+</label>
+```
+
+## Basic usage
+
+<Playground>
+  <Checkbox>This is a checkbox</Checkbox>
+</Playground>
+
+## Control value
+
+<Playground>
+  <Checkbox isChecked={true}>This is a checkbox</Checkbox>
+</Playground>
+
+
+## Disabled
+
+<Playground>
+  <Checkbox isDisabled>This is a disabled checkbox</Checkbox>
+</Playground>
+
+## Event handlers
+<Playground>
+  <Checkbox
+    onChange={() => window.alert('changed') }
+  >click me to alert</Checkbox>
+</Playground>
+
+## Customize box size and label
+<Playground>
+  <Checkbox>This is the normal box</Checkbox>
+  <Checkbox override={{ 
+    wrapper: { lineHeight: 5 },
+    controlBox: { w: 10, h: 10 } 
+  }}>
+    This is a bigger box with more line height
+  </Checkbox>
+
+  <Checkbox override={{ controlBox: { w: 20, h: 20 }}}>This is a much bigger box</Checkbox>
+
+  <Checkbox override={{ 
+    controlBox: { w: 20, h: 20 },
+    label: { fontSize: 40 }
+  }}>This is a much bigger box with bigger text</Checkbox>
+</Playground>
+
