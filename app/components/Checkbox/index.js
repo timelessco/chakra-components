@@ -17,53 +17,58 @@ const Checkbox = ({
   value,
   override,
 }) => {
-  // TODO: Every dom elements might need overrides
-  // TODO: Specifiy for what dom elements what can be the override
-  // For the Box as label, we might only need space and typography. We don't need border background or any of them
-  // we can add it in future if we require it later
-
   const Override = {
     wrapper: {
-      lineHeight: '14px', // TODO: should come from theme
+      lineHeight: 'checkbox',
       cursor: isDisabled ? 'not-allowed' : 'pointer',
       ...getAllowedProps(override.wrapper, ['layout', 'typography']),
     },
     visuallyHidden: {},
     controlBox: {
-      borderWidth: '1.5px', // TODO: should come from theme
-      size: '14px', // TODO: should come from theme
+      size: 'checkbox',
+      borderWidth: 'checkbox',
+      borderColor: 'borderColor.checkbox.default',
       rounded: 'md',
-      borderColor: isDisabled
-        ? 'checkbox.disabled.borderColor'
-        : 'checkbox.borderColor',
-      _checked: isDisabled
-        ? {}
-        : { bg: 'brand.500', color: 'white', borderColor: 'brand.500' }, // TODO: Theme.disabled should have the styles
-      _hover: isDisabled
-        ? {}
-        : {
-            borderColor: 'brand.500', // Theme.border
-            shadow: '0 0 0 2px #31a7d840, inset 0 0 0 2px #31a7d840',
-          },
-      ...getAllowedProps(override.controlBox, ['typography', 'color']),
+      _checked: {
+        bg: 'bg.checkbox.checked',
+        color: 'white',
+        borderColor: 'borderColor.checkbox.checked',
+      },
+      _disabled: { borderColor: 'borderColor.checkbox.disabled' },
+      _checkedAndDisabled: {},
+      _focus: { borderColor: 'outline' },
+      _hover: {
+        borderColor: 'borderColor.checkbox.hover',
+        shadow: 'checkbox.hover',
+      },
+      _checkedAndHover: {},
+      ...getAllowedProps(override.controlBox, [
+        'layout',
+        'border',
+        'borderRadius',
+        'color',
+        'shadow',
+      ]),
     },
     additionalText: {
       ml: '2',
       fontFamily: 'body',
-      fontSize: '13px',
+      fontSize: 'checkbox',
       fontWeight: 'medium',
-      letterSpacing: '0.13px',
-      color: isDisabled ? 'checkbox.disabled.color' : 'checkbox.color',
+      letterSpacing: 'checkbox',
+      color: `${
+        isDisabled ? 'font.checkbox.disabled' : 'font.checkbox.default'
+      }`,
       ...getAllowedProps(override.additionalText, [
         'color',
-        'layout',
+        'space',
         'typography',
       ]),
     },
   };
 
   return (
-    <Box id={id} as="label" {...Override.wrapper}>
+    <Box as="label" {...Override.wrapper}>
       {/* This is the sibling input, it's visually hidden */}
       <VisuallyHidden
         as="input"
@@ -72,52 +77,21 @@ const Checkbox = ({
         name={name}
         value={value}
         checked={isChecked}
-        isDisabled={isDisabled}
+        disabled={isDisabled}
         onBlur={onBlur}
         onFocus={onFocus}
         onChange={onChange}
         defaultChecked={defaultIsChecked}
-        {...getAllowedProps(Override.visuallyHidden, [])}
+        {...Override.visuallyHidden}
       />
 
       {/* This is the control box with a check icon as children */}
-      <ControlBox
-        borderWidth="1.5px" // TODO: should come from theme
-        size="14px" // TODO: should come from theme
-        borderColor={
-          isDisabled ? 'checkbox.disabled.borderColor' : 'checkbox.borderColor' // TODO: Based on theme.borderColor
-        }
-        rounded="md"
-        _checked={
-          isDisabled
-            ? {}
-            : { bg: 'brand.500', color: 'white', borderColor: 'brand.500' } // TODO: Theme.disabled should have the styles
-        }
-        _focus={{ borderColor: 'outline' }}
-        _hover={
-          isDisabled
-            ? {}
-            : {
-                borderColor: 'brand.500', // Theme.border
-                shadow: '0 0 0 2px #31a7d840, inset 0 0 0 2px #31a7d840',
-              }
-        }
-        {...getAllowedProps(override.controlBox)}
-      >
+      <ControlBox {...Override.controlBox}>
         <Icon name="customCheck" size="10px" />
       </ControlBox>
 
       {/* You can pass additional text */}
-      <Box
-        as="span"
-        ml={2}
-        fontFamily="body"
-        fontSize="13px"
-        fontWeight="medium"
-        color={isDisabled ? 'checkbox.disabled.color' : 'checkbox.color'}
-        letterSpacing="0.13px"
-        {...getAllowedProps(override.additionalText)}
-      >
+      <Box as="span" {...Override.additionalText}>
         {children}
       </Box>
     </Box>

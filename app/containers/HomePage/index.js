@@ -19,9 +19,7 @@ export default function HomePage() {
         <Box fontSize="xl" mb="1">
           Normal
         </Box>
-        <Checkbox override={{ wrapper: { lineHeight: '45px' } }}>
-          Normal
-        </Checkbox>
+        <Checkbox>Normal</Checkbox>
       </Box>
       <Box p="4">
         <Box fontSize="xl" mb="1">
@@ -70,18 +68,8 @@ export default function HomePage() {
         </Box>
         <Checkbox
           override={{
-            wrapper: {
-              m: '100px',
-            },
-            visuallyHidden: {
-              bg: 'blue',
-            },
-            controlBox: {
-              bg: 'red',
-            },
-            additionalText: {
-              bg: 'yellow',
-            },
+            controlBox: { w: '100px' },
+            additionalText: { color: 'tomato' },
           }}
         >
           Override
