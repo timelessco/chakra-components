@@ -5,6 +5,11 @@ export default {
   ...theme,
   lineHeights: {
     ...theme.lineHeights,
+    h1: '24px',
+    h2: '20px',
+    body1: '19px',
+    body2: '17px',
+    body3: '16px',
     checkbox: '14px',
   },
   sizes: {
@@ -14,6 +19,10 @@ export default {
   colors: {
     ...theme.colors,
     font: {
+      heading: '#282929',
+      body1: '#8C8D8E',
+      body2: '#5D5E5E',
+      body3: '#282929',
       checkbox: {
         default: '#333536',
         disabled: '#CACBCC',
@@ -39,9 +48,18 @@ export default {
   },
   fontSizes: {
     ...theme.fontSizes,
+    h1: '20px',
+    h2: '16px',
+    body1: '15px',
+    body2: '14px',
+    body3: '13px',
     checkbox: '13px',
   },
   letterSpacings: {
+    h1: '0.2px',
+    h2: '0.18px',
+    body1: '-0.15px',
+    body2: '-0.14px',
     checkbox: '0.13px',
   },
   borderWidths: {

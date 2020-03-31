@@ -8,8 +8,8 @@
 import React, { useState } from 'react';
 import { Box } from '@chakra-ui/core';
 import Checkbox from '../../components/Checkbox';
-// import { FormattedMessage } from 'react-intl';
-// import messages from './messages';
+import Text from '../../components/Text';
+import Heading from '../../components/Heading';
 
 export default function HomePage() {
   const [isChecked, setIsChecked] = useState(false);
@@ -74,6 +74,24 @@ export default function HomePage() {
         >
           Override
         </Checkbox>
+      </Box>
+
+      <Box p="4">
+        <Box fontSize="xl" mb="1">
+          Heading
+        </Box>
+        <Heading>No Styling</Heading>
+        <Heading.H1>Heading 1</Heading.H1>
+        <Heading.H2>Heading 2</Heading.H2>
+      </Box>
+      <Box p="4">
+        <Box fontSize="xl" mb="1">
+          Paragraph
+        </Box>
+        <Text>No Styling</Text>
+        <Text.Body1>Body 1</Text.Body1>
+        <Text.Body2>Body 2</Text.Body2>
+        <Text.Body3>Body 3</Text.Body3>
       </Box>
     </>
   );
