@@ -46,21 +46,21 @@
       }
     },
     {
-      "key": "src/pages/button.mdx",
+      "key": "src/pages/checkbox.mdx",
       "value": {
-        "name": "Button",
+        "name": "Checkbox",
         "menu": "Components",
-        "id": "94666c392c7a112974f74f3aa9ce0358",
-        "filepath": "src/pages/button.mdx",
-        "fullpath": "/Users/timeless/Documents/projects/chakra-components/docs/src/pages/button.mdx",
-        "link": "https://github.com/gatsbyjs/gatsby-starter-default/edit/master/docs/src/pages/button.mdx",
-        "slug": "src-pages-button",
-        "route": "/src-pages-button",
+        "id": "48429d3ded9010fbb59163e11def5dba",
+        "filepath": "src/pages/checkbox.mdx",
+        "fullpath": "/Users/timeless/Documents/projects/chakra-components/docs/src/pages/checkbox.mdx",
+        "link": "https://github.com/gatsbyjs/gatsby-starter-default/edit/master/docs/src/pages/checkbox.mdx",
+        "slug": "src-pages-checkbox",
+        "route": "/src-pages-checkbox",
         "headings": [
           {
-            "slug": "button",
+            "slug": "checkbox",
             "depth": 1,
-            "value": "Button"
+            "value": "Checkbox"
           },
           {
             "slug": "properties",
@@ -71,11 +71,6 @@
             "slug": "basic-usage",
             "depth": 2,
             "value": "Basic usage"
-          },
-          {
-            "slug": "with-different-sizes",
-            "depth": 2,
-            "value": "With different sizes"
           }
         ]
       }
@@ -91,30 +86,19 @@
         "link": "https://github.com/gatsbyjs/gatsby-starter-default/edit/master/docs/src/pages/index.mdx",
         "slug": "src-pages-index",
         "menu": "",
-        "headings": [
-          {
-            "slug": "getting-started",
-            "depth": 1,
-            "value": "Getting Started"
-          },
-          {
-            "slug": "hello-world",
-            "depth": 2,
-            "value": "Hello world"
-          }
-        ]
+        "headings": []
       }
     }
   ],
   "props": [
     {
-      "key": "src/pages/button.jsx",
+      "key": "src/pages/themedCheckbox.js",
       "value": [
         {
           "description": "",
-          "displayName": "Button",
+          "displayName": "Checkbox",
           "methods": [],
-          "actualName": "Button"
+          "actualName": "Checkbox"
         }
       ]
     }
