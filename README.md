@@ -10,6 +10,7 @@
 Now you're ready to rumble!
 
 > Please note that this boilerplate is **production-ready and not meant for beginners**! If you're just starting out with react or redux, please refer to https://github.com/petehunt/react-howto instead. If you want a solid, battle-tested base to build your next product upon and have some experience with react, this is the perfect start for you.
+
 ## Installing Chakra UI
 
 To use Chakra UI components, all you need to do is install the `@chakra-ui/core`
@@ -44,6 +45,7 @@ const App = ({ children }) => (
 
 Optionally, you can wrap your application with the `ColorModeProvider` so you
 can toggle between light and dark mode within your app.
+
 ## Documentation
 
 - [**The Hitchhiker's Guide to `react-boilerplate`**](docs/general/introduction.md): An introduction for newcomers to this boilerplate.

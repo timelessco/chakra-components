@@ -200,7 +200,7 @@ We may include SSR in a future version, but for now this is our focus... create-
 - NPM script and dependency updates, many fixes (@gihrig)
 - Remove state update in componentWillUpdate (@mawi12345)
 - Remove unused Sinon dependency (@avdeev)
-- Remove route names from `app/routes` (@beardedtim)
+- Remove route names from `src/routes` (@beardedtim)
 - Rename `store.js` to `configureStore.js` to prevent conflict (@howardya)
 - Separate `dev` and `prod` middleware (@tomazy)
 - Sort ESLint config in `package.json` (@bt)
