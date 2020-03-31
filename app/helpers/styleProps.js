@@ -1,3 +1,4 @@
+import reduce from 'lodash/reduce';
 export const space = [
   'm',
   'mt',
@@ -169,3 +170,25 @@ export default [
   ...shadow,
   ...other,
 ];
+
+const styleProps = {
+  space,
+  color,
+  typography,
+  layout,
+  grid,
+  flex,
+  background,
+  border,
+  borderRadius,
+  position,
+  shadow,
+  other,
+};
+
+export const getAllowedStyles = allowedSystems =>
+  reduce(
+    allowedSystems,
+    (accumulater, system) => accumulater.concat(styleProps[`${system}`]),
+    [],
+  );

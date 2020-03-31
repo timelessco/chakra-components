@@ -68,18 +68,8 @@ export default function HomePage() {
         </Box>
         <Checkbox
           override={{
-            wrapper: {
-              m: '100px',
-            },
-            visuallyHidden: {
-              bg: 'blue',
-            },
-            controlBox: {
-              bg: 'red',
-            },
-            additionalText: {
-              bg: 'yellow',
-            },
+            controlBox: { w: '100px' },
+            additionalText: { color: 'tomato' },
           }}
         >
           Override

@@ -16,73 +16,87 @@ const Checkbox = ({
   name,
   value,
   override,
-}) => (
-  // TODO: Every dom elements might need overrides
-  // TODO: Specifiy for what dom elements what can be the override
-  // For the Box as label, we might only need space and typography. We don't need border background or any of them
-  // we can add it in future if we require it later
-
-  <Box
-    as="label"
-    lineHeight="checkbox"
-    cursor={isDisabled ? 'not-allowed' : 'pointer'}
-    {...getAllowedProps(override.wrapper, ['space', 'typography'])}
-  >
-    {/* This is the sibling input, it's visually hidden */}
-    <VisuallyHidden
-      as="input"
-      type="checkbox"
-      id={id}
-      name={name}
-      value={value}
-      disabled={isDisabled}
-      checked={isChecked}
-      onBlur={onBlur}
-      onFocus={onFocus}
-      onChange={onChange}
-      defaultChecked={defaultIsChecked}
-      {...getAllowedProps(override.visuallyHidden, [])}
-    />
-
-    {/* This is the control box with a check icon as children */}
-    <ControlBox
-      size="checkbox"
-      borderWidth="checkbox"
-      borderColor="borderColor.checkbox.default"
-      rounded="md"
-      _checked={{
+}) => {
+  const Override = {
+    wrapper: {
+      lineHeight: 'checkbox',
+      cursor: isDisabled ? 'not-allowed' : 'pointer',
+      ...getAllowedProps(override.wrapper, ['layout', 'typography']),
+    },
+    visuallyHidden: {},
+    controlBox: {
+      size: 'checkbox',
+      borderWidth: 'checkbox',
+      borderColor: 'borderColor.checkbox.default',
+      rounded: 'md',
+      _checked: {
         bg: 'bg.checkbox.checked',
         color: 'white',
         borderColor: 'borderColor.checkbox.checked',
-      }}
-      _disabled={{ borderColor: 'borderColor.checkbox.disabled' }}
-      _checkedAndDisabled={{}}
-      _focus={{ borderColor: 'outline' }}
-      _hover={{
+      },
+      _disabled: { borderColor: 'borderColor.checkbox.disabled' },
+      _checkedAndDisabled: {},
+      _focus: { borderColor: 'outline' },
+      _hover: {
         borderColor: 'borderColor.checkbox.hover',
         shadow: 'checkbox.hover',
-      }}
-      _checkedAndHover={{}}
-      {...getAllowedProps(override.controlBox)}
-    >
-      <Icon name="customCheck" size="10px" />
-    </ControlBox>
+      },
+      _checkedAndHover: {},
+      ...getAllowedProps(override.controlBox, [
+        'layout',
+        'border',
+        'borderRadius',
+        'color',
+        'shadow',
+      ]),
+    },
+    additionalText: {
+      ml: '2',
+      fontFamily: 'body',
+      fontSize: 'checkbox',
+      fontWeight: 'medium',
+      letterSpacing: 'checkbox',
+      color: `${
+        isDisabled ? 'font.checkbox.disabled' : 'font.checkbox.default'
+      }`,
+      ...getAllowedProps(override.additionalText, [
+        'color',
+        'space',
+        'typography',
+      ]),
+    },
+  };
 
-    {/* You can pass additional text */}
-    <Box
-      as="span"
-      ml={2}
-      fontFamily="body"
-      fontSize="checkbox"
-      fontWeight="medium"
-      color={isDisabled ? 'font.checkbox.disabled' : 'font.checkbox.default'}
-      letterSpacing="checkbox"
-      {...getAllowedProps(override.additionalText)}
-    >
-      {children}
+  return (
+    <Box as="label" {...Override.wrapper}>
+      {/* This is the sibling input, it's visually hidden */}
+      <VisuallyHidden
+        as="input"
+        type="checkbox"
+        id={id}
+        name={name}
+        value={value}
+        checked={isChecked}
+        disabled={isDisabled}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        onChange={onChange}
+        defaultChecked={defaultIsChecked}
+        {...Override.visuallyHidden}
+      />
+
+      {/* This is the control box with a check icon as children */}
+      <ControlBox {...Override.controlBox}>
+        <Icon name="customCheck" size="10px" />
+      </ControlBox>
+
+      {/* You can pass additional text */}
+      <Box as="span" {...Override.additionalText}>
+        {children}
+      </Box>
     </Box>
-  </Box>
-);
+  );
+};
 
 Checkbox.propTypes = {
   children: PropTypes.string,

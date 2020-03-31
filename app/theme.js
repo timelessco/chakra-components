@@ -41,7 +41,7 @@ export default {
     ...theme.fontSizes,
     checkbox: '13px',
   },
-  letterSpacing: {
+  letterSpacings: {
     checkbox: '0.13px',
   },
   borderWidths: {
