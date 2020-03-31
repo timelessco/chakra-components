@@ -1,27 +1,22 @@
 import React from "react"
-import PropTypes from "prop-types"
+import {
+  Box,
+  ThemeProvider,
+  CSSReset,
+  ColorModeProvider,
+  theme,
+  Button as ChakraButton,
+} from "@chakra-ui/core"
 
-const scales = {
-  small: {
-    fontSize: "16px",
-  },
-  normal: {
-    fontSize: "18px",
-  },
-  big: {
-    fontSize: "22px",
-  },
-}
-
-export const Button = ({ children, scale }) => (
-  <button style={scales[scale]}>{children}</button>
-)
-
-Button.propTypes = {
-  children: PropTypes.node.isRequired,
-  scale: PropTypes.oneOf(["small", "normal", "big"]),
-}
-
-Button.defaultProps = {
-  scale: "normal",
+export const Button = ({ children }) => {
+  return (
+    <ThemeProvider theme={theme}>
+      <CSSReset />
+      <ColorModeProvider>
+        <Box p={8}>
+          <ChakraButton variantColor="green">{children}</ChakraButton>
+        </Box>
+      </ColorModeProvider>
+    </ThemeProvider>
+  )
 }

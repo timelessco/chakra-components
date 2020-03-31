@@ -108,58 +108,13 @@
   ],
   "props": [
     {
-      "key": "src/pages/index.js",
-      "value": [
-        {
-          "description": "",
-          "displayName": "IndexPage",
-          "methods": [],
-          "actualName": "IndexPage"
-        }
-      ]
-    },
-    {
       "key": "src/pages/button.jsx",
       "value": [
         {
           "description": "",
           "displayName": "Button",
           "methods": [],
-          "actualName": "Button",
-          "props": {
-            "children": {
-              "type": {
-                "name": "node"
-              },
-              "required": true,
-              "description": ""
-            },
-            "scale": {
-              "type": {
-                "name": "enum",
-                "value": [
-                  {
-                    "value": "\"small\"",
-                    "computed": false
-                  },
-                  {
-                    "value": "\"normal\"",
-                    "computed": false
-                  },
-                  {
-                    "value": "\"big\"",
-                    "computed": false
-                  }
-                ]
-              },
-              "required": false,
-              "description": "",
-              "defaultValue": {
-                "value": "\"normal\"",
-                "computed": false
-              }
-            }
-          }
+          "actualName": "Button"
         }
       ]
     }
