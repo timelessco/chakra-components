@@ -46,6 +46,41 @@
       }
     },
     {
+      "key": "src/pages/button.mdx",
+      "value": {
+        "name": "Button",
+        "menu": "Components",
+        "id": "94666c392c7a112974f74f3aa9ce0358",
+        "filepath": "src/pages/button.mdx",
+        "fullpath": "/Users/timeless/Documents/projects/chakra-components/docs/src/pages/button.mdx",
+        "link": "https://github.com/gatsbyjs/gatsby-starter-default/edit/master/docs/src/pages/button.mdx",
+        "slug": "src-pages-button",
+        "route": "/src-pages-button",
+        "headings": [
+          {
+            "slug": "button",
+            "depth": 1,
+            "value": "Button"
+          },
+          {
+            "slug": "properties",
+            "depth": 2,
+            "value": "Properties"
+          },
+          {
+            "slug": "basic-usage",
+            "depth": 2,
+            "value": "Basic usage"
+          },
+          {
+            "slug": "with-different-sizes",
+            "depth": 2,
+            "value": "With different sizes"
+          }
+        ]
+      }
+    },
+    {
       "key": "src/pages/index.mdx",
       "value": {
         "name": "Getting Started",
@@ -80,6 +115,51 @@
           "displayName": "IndexPage",
           "methods": [],
           "actualName": "IndexPage"
+        }
+      ]
+    },
+    {
+      "key": "src/pages/button.jsx",
+      "value": [
+        {
+          "description": "",
+          "displayName": "Button",
+          "methods": [],
+          "actualName": "Button",
+          "props": {
+            "children": {
+              "type": {
+                "name": "node"
+              },
+              "required": true,
+              "description": ""
+            },
+            "scale": {
+              "type": {
+                "name": "enum",
+                "value": [
+                  {
+                    "value": "\"small\"",
+                    "computed": false
+                  },
+                  {
+                    "value": "\"normal\"",
+                    "computed": false
+                  },
+                  {
+                    "value": "\"big\"",
+                    "computed": false
+                  }
+                ]
+              },
+              "required": false,
+              "description": "",
+              "defaultValue": {
+                "value": "\"normal\"",
+                "computed": false
+              }
+            }
+          }
         }
       ]
     }
