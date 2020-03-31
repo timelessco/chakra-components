@@ -1,3 +1,5 @@
+# Chakra UI Components
+
 ## Installing Chakra UI
 
 To use Chakra UI components, all you need to do is install the `@chakra-ui/core`
@@ -32,16 +34,6 @@ const App = ({ children }) => (
 
 Optionally, you can wrap your application with the `ColorModeProvider` so you
 can toggle between light and dark mode within your app.
-## Documentation
-
-- [**The Hitchhiker's Guide to `react-boilerplate`**](docs/general/introduction.md): An introduction for newcomers to this boilerplate.
-- [Overview](docs/general): A short overview of the included tools
-- [**Commands**](docs/general/commands.md): Getting the most out of this boilerplate
-- [Testing](docs/testing): How to work with the built-in test harness
-- [Styling](docs/css): How to work with the CSS tooling
-- [Your app](docs/js): Supercharging your app with Routing, Redux, simple
-  asynchronicity helpers, etc.
-- [**Troubleshooting**](docs/general/gotchas.md): Solutions to common problems faced by developers.
 
 ## Contributors
 
