@@ -19,7 +19,9 @@ export default function HomePage() {
         <Box fontSize="xl" mb="1">
           Normal
         </Box>
-        <Checkbox>Normal</Checkbox>
+        <Checkbox override={{ wrapper: { lineHeight: '45px' } }}>
+          Normal
+        </Checkbox>
       </Box>
       <Box p="4">
         <Box fontSize="xl" mb="1">
