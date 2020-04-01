@@ -14,7 +14,10 @@
   "license": "MIT",
   "scripts": {
     "prettify": "prettier --write",
-    "commit": "npx git-cz"
+    "commit": "npx git-cz",
+    "docz:dev": "docz dev",
+    "docz:build": "docz build",
+    "docz:serve": "docz build && docz serve"
   },
   "browserslist": [
     "last 2 versions",
