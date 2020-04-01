@@ -1,5 +1,5 @@
 {
-  "name": "Chakra UI components",
+  "name": "chakra-wrapper",
   "version": "4.0.0",
   "description": "A set of wrapper components around chakra ui",
   "repository": {
