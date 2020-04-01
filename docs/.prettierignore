@@ -1,4 +1,6 @@
-.cache
+public/
+node_modules/
+.cache/
 package.json
 package-lock.json
-public
+yarn.lock
