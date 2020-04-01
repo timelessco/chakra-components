@@ -46,6 +46,56 @@
       }
     },
     {
+      "key": "src/pages/checkbox.mdx",
+      "value": {
+        "name": "Checkbox",
+        "menu": "Components",
+        "id": "48429d3ded9010fbb59163e11def5dba",
+        "filepath": "src/pages/checkbox.mdx",
+        "fullpath": "/Users/timeless/Documents/projects/chakra-components/docs/src/pages/checkbox.mdx",
+        "link": "https://github.com/gatsbyjs/gatsby-starter-default/edit/master/docs/src/pages/checkbox.mdx",
+        "slug": "src-pages-checkbox",
+        "route": "/src-pages-checkbox",
+        "headings": [
+          {
+            "slug": "checkbox",
+            "depth": 1,
+            "value": "Checkbox"
+          },
+          {
+            "slug": "properties",
+            "depth": 2,
+            "value": "Properties"
+          },
+          {
+            "slug": "basic-usage",
+            "depth": 2,
+            "value": "Basic usage"
+          },
+          {
+            "slug": "default-checkbox",
+            "depth": 4,
+            "value": "Default Checkbox"
+          },
+          {
+            "slug": "disabled-checkbox",
+            "depth": 4,
+            "value": "Disabled Checkbox"
+          },
+          {
+            "slug": "reversed-checkbox",
+            "depth": 4,
+            "value": "Reversed Checkbox"
+          },
+          {
+            "slug": "checkbox-with-custom-color",
+            "depth": 4,
+            "value": "Checkbox with custom color"
+          }
+        ]
+      }
+    },
+    {
       "key": "src/pages/index.mdx",
       "value": {
         "name": "Getting Started",
@@ -89,31 +139,33 @@
           {
             "slug": "disabled",
             "depth": 2,
-            "value": "Basic usage"
+            "value": "Disabled"
           },
           {
-            "slug": "default-checkbox",
-            "depth": 4,
-            "value": "Default Checkbox"
+            "slug": "event-handlers",
+            "depth": 2,
+            "value": "Event handlers"
           },
           {
-            "slug": "disabled-checkbox",
-            "depth": 4,
-            "value": "Disabled Checkbox"
-          },
-          {
-            "slug": "reversed-checkbox",
-            "depth": 4,
-            "value": "Reversed Checkbox"
-          },
-          {
-            "slug": "checkbox-with-custom-color",
-            "depth": 4,
-            "value": "Checkbox with custom color"
+            "slug": "customize-box-size-and-label",
+            "depth": 2,
+            "value": "Customize box size and label"
           }
         ]
       }
     }
   ],
-  "props": []
+  "props": [
+    {
+      "key": "src/pages/checkbox/index.js",
+      "value": [
+        {
+          "description": "",
+          "displayName": "Checkbox",
+          "methods": [],
+          "actualName": "Checkbox"
+        }
+      ]
+    }
+  ]
 }
