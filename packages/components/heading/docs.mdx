@@ -1,0 +1,51 @@
+---
+name: Heading
+route: /components/heading
+menu: Components
+---
+
+import { Props, Playground } from "docz"
+import Heading from './index'
+
+# Heading
+
+Heading component that wraps Chakra Box Component as H1
+
+The HTML DOM structure is
+
+```js
+// Override the base styles using the `override` prop
+<Heading override={}/>
+```
+
+
+
+## Basic Unstyled Heading
+
+<Playground>
+  <Heading>This is a basic unstyled Heading</Heading>
+</Playground>
+
+## Heading H1
+
+<Playground>
+  <Heading.H1>This is a H1 Heading</Heading.H1>
+</Playground>
+
+## Heading H2
+
+<Playground>
+  <Heading.H2>This is a H2 Heading</Heading.H2>
+</Playground>
+
+## Styles Override
+
+<Playground>
+  <Heading override={{color: "whatsapp.500"}}>Color Override</Heading>
+  <Heading.H1 override={{fontSize: "6xl"}}>Font Size Override</Heading.H1>
+  <Heading.H2 override={{m: "8"}}>Margin Override</Heading.H2>
+</Playground>
+
+## Props
+
+<Props of={Heading}/>
