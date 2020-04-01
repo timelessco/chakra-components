@@ -14,12 +14,24 @@ Heading component that wraps Chakra Box Component as H1
 The HTML DOM structure is
 
 ```js
-// Override is done in this base component
-<Box as="h1" override={}>{children}</Box>
+// Override the base styles using the `override` prop
+<Heading override={}/>
 ```
 
-## Basic usage
+## Basic Unstyled Heading
 
 <Playground>
   <Heading>This is a basic unstyled Heading</Heading>
+</Playground>
+
+## Heading H1
+
+<Playground>
+  <Heading.H1>This is a H1 Heading</Heading.H1>
+</Playground>
+
+## Heading H2
+
+<Playground>
+  <Heading.H2>This is a H2 Heading</Heading.H2>
 </Playground>

@@ -122,9 +122,19 @@
             "value": "Heading"
           },
           {
-            "slug": "basic-usage",
+            "slug": "basic-unstyled-heading",
             "depth": 2,
-            "value": "Basic usage"
+            "value": "Basic Unstyled Heading"
+          },
+          {
+            "slug": "heading-h1",
+            "depth": 2,
+            "value": "Heading H1"
+          },
+          {
+            "slug": "heading-h2",
+            "depth": 2,
+            "value": "Heading H2"
           }
         ]
       }
