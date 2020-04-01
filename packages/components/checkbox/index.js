@@ -19,9 +19,10 @@ import {
   shadow,
   flex,
 } from '../../helpers/styleProps';
-import theme from '../../helpers/theme';
 
-const Checkbox = ({
+import applyTheme from '../../helpers/applyTheme';
+
+export const Checkbox = ({
   children,
   isDisabled,
   isChecked,
@@ -90,53 +91,35 @@ const Checkbox = ({
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Box p="2">
-        <Box as="label" {...Override.wrapper}>
-          {/* This is the sibling input, it's visually hidden */}
-          <VisuallyHidden
-            as="input"
-            type="checkbox"
-            id={id}
-            name={name}
-            value={value}
-            checked={isChecked}
-            disabled={isDisabled}
-            onBlur={onBlur}
-            onFocus={onFocus}
-            onChange={onChange}
-            defaultChecked={defaultIsChecked}
-            {...Override.visuallyHidden}
-          />
+    <Box as="label" {...Override.wrapper}>
+      {/* This is the sibling input, it's visually hidden */}
+      <VisuallyHidden
+        as="input"
+        type="checkbox"
+        id={id}
+        name={name}
+        value={value}
+        checked={isChecked}
+        disabled={isDisabled}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        onChange={onChange}
+        defaultChecked={defaultIsChecked}
+        {...Override.visuallyHidden}
+      />
 
-          {/* This is the control box with a check icon as children */}
-          <ControlBox {...Override.controlBox}>
-            <Icon name="customCheck" size="10px" />
-          </ControlBox>
+      {/* This is the control box with a check icon as children */}
+      <ControlBox {...Override.controlBox}>
+        <Icon name="customCheck" size="10px" />
+      </ControlBox>
 
-          {/* You can pass additional text */}
-          <Box as="span" {...Override.label}>
-            {children}
-          </Box>
-        </Box>
+      {/* You can pass additional text */}
+      <Box as="span" {...Override.label}>
+        {children}
       </Box>
-    </ThemeProvider>
+    </Box>
   );
 };
-
-export const propTypes = JSON.stringify({
-  children: PropTypes.node,
-  id: PropTypes.string,
-  name: PropTypes.string,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  isDisabled: PropTypes.bool,
-  isChecked: PropTypes.bool,
-  onBlur: PropTypes.func,
-  onFocus: PropTypes.func,
-  onChange: PropTypes.func,
-  defaultIsChecked: PropTypes.bool,
-  override: PropTypes.any,
-});
 
 Checkbox.propTypes = {
   children: PropTypes.node,
@@ -167,4 +150,4 @@ Checkbox.defaultProps = {
   onChange: () => {},
 };
 
-export default Checkbox;
+export default applyTheme(Checkbox);

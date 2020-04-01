@@ -59,16 +59,16 @@
       }
     },
     {
-      "key": "packages/components/checkboxes/index.mdx",
+      "key": "packages/components/checkbox/docs.mdx",
       "value": {
         "name": "Checkbox",
         "route": "/components/checkbox",
         "menu": "Components",
-        "id": "863c1a642191c8d8251af0ef2ea8e1d1",
-        "filepath": "packages/components/checkboxes/index.mdx",
-        "fullpath": "/Users/timeless/Documents/projects/chakra-components/packages/components/checkboxes/index.mdx",
-        "link": "https://github.com/timelessco/chakra-components/edit/master/packages/components/checkboxes/index.mdx",
-        "slug": "packages-components-checkboxes-index",
+        "id": "19ab3bbe8bb9bb42332776ccc10b2c11",
+        "filepath": "packages/components/checkbox/docs.mdx",
+        "fullpath": "/Users/timeless/Documents/projects/chakra-components/packages/components/checkbox/docs.mdx",
+        "link": "https://github.com/timelessco/chakra-components/edit/master/packages/components/checkbox/docs.mdx",
+        "slug": "packages-components-checkbox-docs",
         "headings": [
           {
             "slug": "checkbox",
@@ -104,16 +104,16 @@
       }
     },
     {
-      "key": "packages/components/headings/index.mdx",
+      "key": "packages/components/heading/docs.mdx",
       "value": {
         "name": "Heading",
         "route": "/components/heading",
         "menu": "Components",
-        "id": "29b4adb45028b89aceec5dc099a7aab8",
-        "filepath": "packages/components/headings/index.mdx",
-        "fullpath": "/Users/timeless/Documents/projects/chakra-components/packages/components/headings/index.mdx",
-        "link": "https://github.com/timelessco/chakra-components/edit/master/packages/components/headings/index.mdx",
-        "slug": "packages-components-headings-index",
+        "id": "5eb0253691fd52bfe60aa61aafdf800e",
+        "filepath": "packages/components/heading/docs.mdx",
+        "fullpath": "/Users/timeless/Documents/projects/chakra-components/packages/components/heading/docs.mdx",
+        "link": "https://github.com/timelessco/chakra-components/edit/master/packages/components/heading/docs.mdx",
+        "slug": "packages-components-heading-docs",
         "headings": [
           {
             "slug": "heading",
@@ -149,16 +149,16 @@
       }
     },
     {
-      "key": "packages/components/texts/index.mdx",
+      "key": "packages/components/text/docs.mdx",
       "value": {
         "name": "Text",
         "route": "/components/text",
         "menu": "Components",
-        "id": "c1728524671e8379bbac8447946a6d95",
-        "filepath": "packages/components/texts/index.mdx",
-        "fullpath": "/Users/timeless/Documents/projects/chakra-components/packages/components/texts/index.mdx",
-        "link": "https://github.com/timelessco/chakra-components/edit/master/packages/components/texts/index.mdx",
-        "slug": "packages-components-texts-index",
+        "id": "d80a0936843d89f6052670464fc3a49f",
+        "filepath": "packages/components/text/docs.mdx",
+        "fullpath": "/Users/timeless/Documents/projects/chakra-components/packages/components/text/docs.mdx",
+        "link": "https://github.com/timelessco/chakra-components/edit/master/packages/components/text/docs.mdx",
+        "slug": "packages-components-text-docs",
         "headings": [
           {
             "slug": "text",
@@ -201,7 +201,83 @@
   ],
   "props": [
     {
-      "key": "packages/components/checkboxes/index.js",
+      "key": "packages/components/heading/index.js",
+      "value": [
+        {
+          "description": "",
+          "displayName": "Heading",
+          "methods": [],
+          "actualName": "Heading",
+          "props": {
+            "children": {
+              "type": {
+                "name": "string"
+              },
+              "required": false,
+              "description": ""
+            },
+            "variant": {
+              "type": {
+                "name": "object"
+              },
+              "required": false,
+              "description": ""
+            },
+            "override": {
+              "type": {
+                "name": "object"
+              },
+              "required": false,
+              "description": "",
+              "defaultValue": {
+                "value": "{}",
+                "computed": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "packages/components/text/index.js",
+      "value": [
+        {
+          "description": "",
+          "displayName": "Text",
+          "methods": [],
+          "actualName": "Text",
+          "props": {
+            "children": {
+              "type": {
+                "name": "string"
+              },
+              "required": false,
+              "description": ""
+            },
+            "variant": {
+              "type": {
+                "name": "object"
+              },
+              "required": false,
+              "description": ""
+            },
+            "override": {
+              "type": {
+                "name": "object"
+              },
+              "required": false,
+              "description": "",
+              "defaultValue": {
+                "value": "{}",
+                "computed": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "packages/components/checkbox/index.js",
       "value": [
         {
           "description": "",
@@ -322,82 +398,6 @@
               "description": "",
               "defaultValue": {
                 "value": "false",
-                "computed": false
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "key": "packages/components/headings/index.js",
-      "value": [
-        {
-          "description": "",
-          "displayName": "Heading",
-          "methods": [],
-          "actualName": "Heading",
-          "props": {
-            "children": {
-              "type": {
-                "name": "string"
-              },
-              "required": false,
-              "description": ""
-            },
-            "variant": {
-              "type": {
-                "name": "object"
-              },
-              "required": false,
-              "description": ""
-            },
-            "override": {
-              "type": {
-                "name": "object"
-              },
-              "required": false,
-              "description": "",
-              "defaultValue": {
-                "value": "{}",
-                "computed": false
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "key": "packages/components/texts/index.js",
-      "value": [
-        {
-          "description": "",
-          "displayName": "Text",
-          "methods": [],
-          "actualName": "Text",
-          "props": {
-            "children": {
-              "type": {
-                "name": "string"
-              },
-              "required": false,
-              "description": ""
-            },
-            "variant": {
-              "type": {
-                "name": "object"
-              },
-              "required": false,
-              "description": ""
-            },
-            "override": {
-              "type": {
-                "name": "object"
-              },
-              "required": false,
-              "description": "",
-              "defaultValue": {
-                "value": "{}",
                 "computed": false
               }
             }
