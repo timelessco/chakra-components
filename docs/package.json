@@ -38,10 +38,7 @@
     "eslint-plugin-react-hooks": "1.6.0"
   },
   "keywords": [
-    "components",
-    "charka-ui",
-    "atom",
-    "molecules"
+    "components", "charka-ui", "atom", "molecules"
   ],
   "license": "MIT",
   "scripts": {
