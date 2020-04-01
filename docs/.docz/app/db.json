@@ -89,33 +89,31 @@
           {
             "slug": "disabled",
             "depth": 2,
-            "value": "Disabled"
+            "value": "Basic usage"
           },
           {
-            "slug": "event-handlers",
-            "depth": 2,
-            "value": "Event handlers"
+            "slug": "default-checkbox",
+            "depth": 4,
+            "value": "Default Checkbox"
           },
           {
-            "slug": "customize-box-size-and-label",
-            "depth": 2,
-            "value": "Customize box size and label"
+            "slug": "disabled-checkbox",
+            "depth": 4,
+            "value": "Disabled Checkbox"
+          },
+          {
+            "slug": "reversed-checkbox",
+            "depth": 4,
+            "value": "Reversed Checkbox"
+          },
+          {
+            "slug": "checkbox-with-custom-color",
+            "depth": 4,
+            "value": "Checkbox with custom color"
           }
         ]
       }
     }
   ],
-  "props": [
-    {
-      "key": "src/pages/checkbox/index.js",
-      "value": [
-        {
-          "description": "",
-          "displayName": "Checkbox",
-          "methods": [],
-          "actualName": "Checkbox"
-        }
-      ]
-    }
-  ]
+  "props": []
 }

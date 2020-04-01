@@ -23,8 +23,63 @@ Checkbox component that wraps Chakra
 <Props of={Checkbox} />
 
 ## Basic usage
+---
 
+#### Default Checkbox
 <Playground>
   <Checkbox 
   >Click me</Checkbox>
+</Playground>
+
+---
+---
+
+#### Disabled Checkbox
+<Playground>
+  <Checkbox 
+    isDisabled={true}
+  >Click me</Checkbox>
+</Playground>
+
+---
+---
+
+#### Reversed Checkbox
+<Playground>
+  <Checkbox 
+    isReversed={true}
+  >Click me</Checkbox>
+</Playground>
+
+---
+---
+
+#### Checkbox with custom color
+<Playground>
+  <Box display='flex'>
+    <Checkbox 
+      override={{
+        controlBox: {
+          _checked: {
+            bg: '#029107f2',
+            borderColor: '#029107f2',
+          }
+        }
+      }}
+    >Click me</Checkbox>
+    <Checkbox 
+      override={{
+        controlBox: {
+          _checked: {
+            bg: '#3502ffe0',
+            borderColor: '#3502ffe0',
+          },
+          _hover: {
+            borderColor: '#3502ffe0',
+            shadow: 'checkbox.hover',
+          }
+        }
+      }}
+    >Click me</Checkbox>
+  </Box>
 </Playground>

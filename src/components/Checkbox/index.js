@@ -43,7 +43,7 @@ export const Checkbox = ({
     wrapper: {
       textAlign: 'center',
       lineHeight: 'checkbox',
-      display: 'flex',
+      display: 'inline-flex',
       flexDirection: isReversed ? 'row-reverse' : 'row',
       justifyContent: isReversed ? 'flex-end' : 'start',
       cursor: isDisabled ? 'not-allowed' : 'pointer',
@@ -53,6 +53,7 @@ export const Checkbox = ({
       size: 'checkbox',
       borderWidth: 'checkbox',
       borderColor: 'borderColor.checkbox.default',
+      borderStyle: 'solid',
       rounded: 'md',
       _checked: {
         bg: 'bg.checkbox.checked',
@@ -78,8 +79,9 @@ export const Checkbox = ({
         '_hover',
       ]),
     },
-    label: {
-      ml: '2',
+    additionalText: {
+      ml: isReversed ? '0' : '2',
+      mr: isReversed ? '2' : '0',
       fontFamily: 'body',
       fontSize: 'checkbox',
       fontWeight: 'medium',
@@ -164,6 +166,7 @@ Checkbox.propTypes = {
 };
 
 Checkbox.defaultProps = {
+  isDisabled: false,
   checkboxIcon: 'customCheck',
   isReversed: false,
   override: {
