@@ -59,16 +59,16 @@
       }
     },
     {
-      "key": "packages/components/Checkbox/checkbox.mdx",
+      "key": "packages/components/checkboxes/index.mdx",
       "value": {
         "name": "Checkbox",
         "route": "/components/checkbox",
         "menu": "Components",
-        "id": "faa3305e7f90c91fa8f470c7381a1af0",
-        "filepath": "packages/components/Checkbox/checkbox.mdx",
-        "fullpath": "/Users/timeless/Documents/projects/chakra-components/packages/components/Checkbox/checkbox.mdx",
-        "link": "https://github.com/timelessco/chakra-components/edit/master/packages/components/Checkbox/checkbox.mdx",
-        "slug": "packages-components-checkbox-checkbox",
+        "id": "863c1a642191c8d8251af0ef2ea8e1d1",
+        "filepath": "packages/components/checkboxes/index.mdx",
+        "fullpath": "/Users/timeless/Documents/projects/chakra-components/packages/components/checkboxes/index.mdx",
+        "link": "https://github.com/timelessco/chakra-components/edit/master/packages/components/checkboxes/index.mdx",
+        "slug": "packages-components-checkboxes-index",
         "headings": [
           {
             "slug": "checkbox",
@@ -104,16 +104,16 @@
       }
     },
     {
-      "key": "packages/components/Heading/heading.mdx",
+      "key": "packages/components/headings/index.mdx",
       "value": {
         "name": "Heading",
         "route": "/components/heading",
         "menu": "Components",
-        "id": "9ac7bddfc9c8c5c1015e06fd83ca787b",
-        "filepath": "packages/components/Heading/heading.mdx",
-        "fullpath": "/Users/timeless/Documents/projects/chakra-components/packages/components/Heading/heading.mdx",
-        "link": "https://github.com/timelessco/chakra-components/edit/master/packages/components/Heading/heading.mdx",
-        "slug": "packages-components-heading-heading",
+        "id": "29b4adb45028b89aceec5dc099a7aab8",
+        "filepath": "packages/components/headings/index.mdx",
+        "fullpath": "/Users/timeless/Documents/projects/chakra-components/packages/components/headings/index.mdx",
+        "link": "https://github.com/timelessco/chakra-components/edit/master/packages/components/headings/index.mdx",
+        "slug": "packages-components-headings-index",
         "headings": [
           {
             "slug": "heading",
@@ -149,16 +149,16 @@
       }
     },
     {
-      "key": "packages/components/Text/text.mdx",
+      "key": "packages/components/texts/index.mdx",
       "value": {
         "name": "Text",
         "route": "/components/text",
         "menu": "Components",
-        "id": "ef6bd56244e88906b12fc7af5da8c245",
-        "filepath": "packages/components/Text/text.mdx",
-        "fullpath": "/Users/timeless/Documents/projects/chakra-components/packages/components/Text/text.mdx",
-        "link": "https://github.com/timelessco/chakra-components/edit/master/packages/components/Text/text.mdx",
-        "slug": "packages-components-text-text",
+        "id": "c1728524671e8379bbac8447946a6d95",
+        "filepath": "packages/components/texts/index.mdx",
+        "fullpath": "/Users/timeless/Documents/projects/chakra-components/packages/components/texts/index.mdx",
+        "link": "https://github.com/timelessco/chakra-components/edit/master/packages/components/texts/index.mdx",
+        "slug": "packages-components-texts-index",
         "headings": [
           {
             "slug": "text",
@@ -201,7 +201,7 @@
   ],
   "props": [
     {
-      "key": "packages/components/Checkbox/index.js",
+      "key": "packages/components/checkboxes/index.js",
       "value": [
         {
           "description": "",
@@ -330,7 +330,7 @@
       ]
     },
     {
-      "key": "packages/components/Heading/index.js",
+      "key": "packages/components/headings/index.js",
       "value": [
         {
           "description": "",
@@ -368,7 +368,7 @@
       ]
     },
     {
-      "key": "packages/components/Text/index.js",
+      "key": "packages/components/texts/index.js",
       "value": [
         {
           "description": "",
