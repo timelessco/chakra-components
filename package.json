@@ -6,10 +6,6 @@
     "type": "git",
     "url": "https://github.com/timelessco/chakra-components"
   },
-  "engines": {
-    "npm": ">=5",
-    "node": ">=8.15.1"
-  },
   "author": "Timelessco",
   "license": "MIT",
   "scripts": {
