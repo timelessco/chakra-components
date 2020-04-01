@@ -1,14 +1,6 @@
-import React from 'react';
-import { Box, ThemeProvider } from '@chakra-ui/core';
+import { Checkbox as BaseCheckbox } from '../../../../src/components/Checkbox';
+import { withTheme } from '../../components/withTheme';
 
-import { Checkbox as CheckboxWrapper } from '../../../../src/components/Checkbox';
+const Checkbox = withTheme(BaseCheckbox);
 
-import theme from '../../../../src/theme';
-
-export const Checkbox = props => (
-  <ThemeProvider theme={theme}>
-    <Box p={2}>
-      <CheckboxWrapper {...props} />
-    </Box>
-  </ThemeProvider>
-);
+export default Checkbox;
