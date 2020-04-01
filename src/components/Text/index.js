@@ -65,4 +65,4 @@ Text.Body1 = Body1;
 Text.Body2 = Body2;
 Text.Body3 = Body3;
 
-export default Text;
+export { Text };

@@ -55,4 +55,4 @@ Heading.defaultProps = {
 Heading.H1 = H1;
 Heading.H2 = H2;
 
-export default Heading;
+export { Heading };
