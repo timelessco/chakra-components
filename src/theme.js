@@ -23,6 +23,7 @@ export default {
     bg: {
       checkbox: {
         checked: '#31A9D8',
+        test: '#7bf33e',
       },
     },
     borderColor: {

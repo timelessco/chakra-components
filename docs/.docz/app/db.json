@@ -82,24 +82,24 @@
             "value": "Basic usage"
           },
           {
-            "slug": "control-value",
-            "depth": 2,
-            "value": "Control value"
+            "slug": "default-checkbox",
+            "depth": 4,
+            "value": "Default Checkbox"
           },
           {
-            "slug": "disabled",
-            "depth": 2,
-            "value": "Disabled"
+            "slug": "disabled-checkbox",
+            "depth": 4,
+            "value": "Disabled Checkbox"
           },
           {
-            "slug": "event-handlers",
-            "depth": 2,
-            "value": "Event handlers"
+            "slug": "reversed-checkbox",
+            "depth": 4,
+            "value": "Reversed Checkbox"
           },
           {
-            "slug": "customize-box-size-and-label",
-            "depth": 2,
-            "value": "Customize box size and label"
+            "slug": "checkbox-with-custom-color",
+            "depth": 4,
+            "value": "Checkbox with custom color"
           }
         ]
       }

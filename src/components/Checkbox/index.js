@@ -11,6 +11,16 @@ import {
 } from '@chakra-ui/core';
 import PropTypes from 'prop-types';
 import getAllowedProps from '../../helpers/getAllowedProps';
+import {
+  space,
+  typography,
+  color,
+  layout,
+  border,
+  borderRadius,
+  shadow,
+  flex,
+} from '../../helpers/styleProps';
 
 import theme from '../../theme';
 
@@ -26,17 +36,24 @@ export const Checkbox = ({
   name,
   value,
   override,
+  checkboxIcon,
+  isReversed,
 }) => {
   const Override = {
     wrapper: {
+      textAlign: 'center',
       lineHeight: 'checkbox',
+      display: 'inline-flex',
+      flexDirection: isReversed ? 'row-reverse' : 'row',
+      justifyContent: isReversed ? 'flex-end' : 'start',
       cursor: isDisabled ? 'not-allowed' : 'pointer',
-      ...getAllowedProps(override.wrapper, ['typography']),
+      ...getAllowedProps(override.wrapper, [...layout, ...typography, ...flex]),
     },
     controlBox: {
       size: 'checkbox',
       borderWidth: 'checkbox',
       borderColor: 'borderColor.checkbox.default',
+      borderStyle: 'solid',
       rounded: 'md',
       _checked: {
         bg: 'bg.checkbox.checked',
@@ -50,15 +67,21 @@ export const Checkbox = ({
         shadow: 'checkbox.hover',
       },
       ...getAllowedProps(override.controlBox, [
-        'layout',
-        'border',
-        'borderRadius',
-        'color',
-        'shadow',
+        ...layout,
+        ...border,
+        ...borderRadius,
+        ...color,
+        ...shadow,
+        '_checked',
+        '_disabled',
+        '_checkedAndDisabled',
+        '_focus',
+        '_hover',
       ]),
     },
-    label: {
-      ml: '2',
+    additionalText: {
+      ml: isReversed ? '0' : '2',
+      mr: isReversed ? '2' : '0',
       fontFamily: 'body',
       fontSize: 'checkbox',
       fontWeight: 'medium',
@@ -66,7 +89,11 @@ export const Checkbox = ({
       color: `${
         isDisabled ? 'font.checkbox.disabled' : 'font.checkbox.default'
       }`,
-      ...getAllowedProps(override.label, ['color', 'space', 'typography']),
+      ...getAllowedProps(override.additionalText, [
+        ...color,
+        ...space,
+        ...typography,
+      ]),
     },
   };
 
@@ -94,11 +121,11 @@ export const Checkbox = ({
 
             {/* This is the control box with a check icon as children */}
             <ControlBox {...Override.controlBox}>
-              <Icon name="customCheck" size="10px" />
+              <Icon name={checkboxIcon} size="10px" />
             </ControlBox>
 
             {/* You can pass additional text */}
-            <Box as="span" {...Override.label}>
+            <Box as="span" userSelect="none" {...Override.additionalText}>
               {children}
             </Box>
           </Box>
@@ -134,9 +161,14 @@ Checkbox.propTypes = {
   onChange: PropTypes.func,
   defaultIsChecked: PropTypes.bool,
   override: PropTypes.any,
+  checkboxIcon: PropTypes.string,
+  isReversed: PropTypes.bool,
 };
 
 Checkbox.defaultProps = {
+  isDisabled: false,
+  checkboxIcon: 'customCheck',
+  isReversed: false,
   override: {
     wrapper: {},
     visuallyHidden: {},

@@ -4,7 +4,7 @@ menu: Components
 ---
 
 import { Playground, Props } from "docz"
-
+import { Box } from "@chakra-ui/core"
 import { Checkbox } from './index'
 
 # Checkbox
@@ -22,46 +22,63 @@ The HTML DOM structure is
 ```
 
 ## Basic usage
+---
 
+#### Default Checkbox
 <Playground>
-  <Checkbox>This is a checkbox</Checkbox>
+  <Checkbox 
+  >Click me</Checkbox>
 </Playground>
 
-## Control value
+---
+---
 
+#### Disabled Checkbox
 <Playground>
-  <Checkbox isChecked={true}>This is a checkbox</Checkbox>
+  <Checkbox 
+    isDisabled={true}
+  >Click me</Checkbox>
 </Playground>
 
+---
+---
 
-## Disabled
-
+#### Reversed Checkbox
 <Playground>
-  <Checkbox isDisabled>This is a disabled checkbox</Checkbox>
+  <Checkbox 
+    isReversed={true}
+  >Click me</Checkbox>
 </Playground>
 
-## Event handlers
+---
+---
+
+#### Checkbox with custom color
 <Playground>
-  <Checkbox
-    onChange={() => window.alert('changed') }
-  >click me to alert</Checkbox>
+  <Box display='flex'>
+    <Checkbox 
+      override={{
+        controlBox: {
+          _checked: {
+            bg: '#029107f2',
+            borderColor: '#029107f2',
+          }
+        }
+      }}
+    >Click me</Checkbox>
+    <Checkbox 
+      override={{
+        controlBox: {
+          _checked: {
+            bg: '#3502ffe0',
+            borderColor: '#3502ffe0',
+          },
+          _hover: {
+            borderColor: '#3502ffe0',
+            shadow: 'checkbox.hover',
+          }
+        }
+      }}
+    >Click me</Checkbox>
+  </Box>
 </Playground>
-
-## Customize box size and label
-<Playground>
-  <Checkbox>This is the normal box</Checkbox>
-  <Checkbox override={{ 
-    wrapper: { lineHeight: 5 },
-    controlBox: { w: 10, h: 10 } 
-  }}>
-    This is a bigger box with more line height
-  </Checkbox>
-
-  <Checkbox override={{ controlBox: { w: 20, h: 20 }}}>This is a much bigger box</Checkbox>
-
-  <Checkbox override={{ 
-    controlBox: { w: 20, h: 20 },
-    label: { fontSize: 40 }
-  }}>This is a much bigger box with bigger text</Checkbox>
-</Playground>
-
