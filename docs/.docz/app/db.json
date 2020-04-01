@@ -147,17 +147,6 @@
   ],
   "props": [
     {
-      "key": "src/pages/heading/index.js",
-      "value": [
-        {
-          "description": "",
-          "displayName": "Heading",
-          "methods": [],
-          "actualName": "Heading"
-        }
-      ]
-    },
-    {
       "key": "src/pages/checkbox/index.js",
       "value": [
         {
