@@ -135,23 +135,17 @@
             "slug": "heading-h2",
             "depth": 2,
             "value": "Heading H2"
+          },
+          {
+            "slug": "styles-override",
+            "depth": 2,
+            "value": "Styles Override"
           }
         ]
       }
     }
   ],
   "props": [
-    {
-      "key": "src/pages/checkbox/index.js",
-      "value": [
-        {
-          "description": "",
-          "displayName": "Checkbox",
-          "methods": [],
-          "actualName": "Checkbox"
-        }
-      ]
-    },
     {
       "key": "src/pages/heading/index.js",
       "value": [
@@ -160,6 +154,17 @@
           "displayName": "Heading",
           "methods": [],
           "actualName": "Heading"
+        }
+      ]
+    },
+    {
+      "key": "src/pages/checkbox/index.js",
+      "value": [
+        {
+          "description": "",
+          "displayName": "Checkbox",
+          "methods": [],
+          "actualName": "Checkbox"
         }
       ]
     }

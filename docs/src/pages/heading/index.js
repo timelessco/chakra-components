@@ -1,9 +1,9 @@
 import React from 'react';
-
 import { Box, ThemeProvider } from '@chakra-ui/core';
 
-import theme from '../../../../src/theme';
 import { Heading as HeadingWrapper } from '../../../../src/components/Heading';
+
+import theme from '../../../../src/theme';
 
 const Heading = props => (
   <ThemeProvider theme={theme}>
