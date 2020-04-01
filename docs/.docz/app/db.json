@@ -143,6 +143,51 @@
           }
         ]
       }
+    },
+    {
+      "key": "src/pages/text/index.mdx",
+      "value": {
+        "name": "Text",
+        "menu": "Components",
+        "id": "187ff9f31a40b02a8867070f090db7ce",
+        "filepath": "src/pages/text/index.mdx",
+        "fullpath": "/Users/timeless/Documents/GitHub/chakra-components/docs/src/pages/text/index.mdx",
+        "link": "https://github.com/gatsbyjs/gatsby-starter-default/edit/master/docs/src/pages/text/index.mdx",
+        "slug": "src-pages-text-index",
+        "route": "/src-pages-text-index",
+        "headings": [
+          {
+            "slug": "text",
+            "depth": 1,
+            "value": "Text"
+          },
+          {
+            "slug": "basic-unstyled-text",
+            "depth": 2,
+            "value": "Basic Unstyled Text"
+          },
+          {
+            "slug": "text-body1",
+            "depth": 2,
+            "value": "Text Body1"
+          },
+          {
+            "slug": "text-body2",
+            "depth": 2,
+            "value": "Text Body2"
+          },
+          {
+            "slug": "text-body3",
+            "depth": 2,
+            "value": "Text Body3"
+          },
+          {
+            "slug": "styles-override",
+            "depth": 2,
+            "value": "Styles Override"
+          }
+        ]
+      }
     }
   ],
   "props": [
