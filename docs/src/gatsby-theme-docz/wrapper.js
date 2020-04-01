@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ThemeProvider, CSSReset } from '@chakra-ui/core';
 
-import theme from '../../../src/theme';
+import theme from '../../../../src/theme';
 
 const Wrapper = ({ children }) => (
   <React.Fragment>

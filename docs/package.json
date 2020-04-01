@@ -1,9 +1,9 @@
 {
-  "name": "gatsby-starter-default",
+  "name": "chakra-ui-components",
   "private": true,
-  "description": "A simple starter to get up and developing quickly with Gatsby",
+  "description": "A set of reusable wrapper components for chakra UI.",
   "version": "0.1.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
+  "author": "Timeless <hello@timeless.co>",
   "dependencies": {
     "@chakra-ui/core": "^0.7.0",
     "@emotion/core": "^10.0.28",
@@ -38,23 +38,26 @@
     "eslint-plugin-react-hooks": "1.6.0"
   },
   "keywords": [
-    "gatsby"
+    "components", "charka-ui", "atom", "molecules"
   ],
   "license": "MIT",
   "scripts": {
-    "build": "gatsby build",
+    "start": "npm run docz:dev",
+    "docz:dev": "npm run docz:clean && docz dev",
+    "docz:clean": "rm -rf .docz && gatsby clean",
+    "docz:build": "npm run docz:clean && docz build",
+    "docz:serve": "npm run docz:build && docz serve",
     "develop": "gatsby develop",
-    "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
-    "start": "npm run develop",
+    "build": "gatsby build",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
+    "format": "prettier --write \"**/*.{js,jsx,json,md}\""
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
+    "url": "https://github.com/timelessco/chakra-components"
   },
   "bugs": {
-    "url": "https://github.com/gatsbyjs/gatsby/issues"
+    "url": "https://github.com/timelessco/chakra-components/issues"
   }
 }
