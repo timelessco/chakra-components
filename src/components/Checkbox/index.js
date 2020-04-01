@@ -19,6 +19,7 @@ import {
   border,
   borderRadius,
   shadow,
+  flex,
 } from '../../helpers/styleProps';
 
 import theme from '../../theme';
@@ -35,12 +36,18 @@ export const Checkbox = ({
   name,
   value,
   override,
+  checkboxIcon,
+  isReversed,
 }) => {
   const Override = {
     wrapper: {
+      textAlign: 'center',
       lineHeight: 'checkbox',
+      display: 'flex',
+      flexDirection: isReversed ? 'row-reverse' : 'row',
+      justifyContent: isReversed ? 'flex-end' : 'start',
       cursor: isDisabled ? 'not-allowed' : 'pointer',
-      ...getAllowedProps(override.wrapper, [...layout, ...typography]),
+      ...getAllowedProps(override.wrapper, [...layout, ...typography, ...flex]),
     },
     controlBox: {
       size: 'checkbox',
@@ -112,11 +119,11 @@ export const Checkbox = ({
 
             {/* This is the control box with a check icon as children */}
             <ControlBox {...Override.controlBox}>
-              <Icon name="customCheck" size="10px" />
+              <Icon name={checkboxIcon} size="10px" />
             </ControlBox>
 
             {/* You can pass additional text */}
-            <Box as="span" {...Override.label}>
+            <Box as="span" userSelect="none" {...Override.additionalText}>
               {children}
             </Box>
           </Box>
@@ -152,9 +159,13 @@ Checkbox.propTypes = {
   onChange: PropTypes.func,
   defaultIsChecked: PropTypes.bool,
   override: PropTypes.any,
+  checkboxIcon: PropTypes.string,
+  isReversed: PropTypes.bool,
 };
 
 Checkbox.defaultProps = {
+  checkboxIcon: 'customCheck',
+  isReversed: false,
   override: {
     wrapper: {},
     visuallyHidden: {},
