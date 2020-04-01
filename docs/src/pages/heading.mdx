@@ -4,9 +4,8 @@ route: /components/heading
 menu: Components
 ---
 
-import { Playground } from "docz"
-
-import Heading from './'
+import { Props, Playground } from "docz"
+import Heading from '../../packages/components/Heading'
 
 # Heading
 
@@ -18,6 +17,10 @@ The HTML DOM structure is
 // Override the base styles using the `override` prop
 <Heading override={}/>
 ```
+
+## Props
+
+<Props of={Heading}/>
 
 ## Basic Unstyled Heading
 

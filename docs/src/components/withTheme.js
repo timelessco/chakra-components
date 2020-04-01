@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, ThemeProvider } from '@chakra-ui/core';
 
-import theme from '../../../src/theme';
+import theme from '../../packages/helpers/theme';
 
 export const withTheme = Component => props => (
   <ThemeProvider theme={theme}>

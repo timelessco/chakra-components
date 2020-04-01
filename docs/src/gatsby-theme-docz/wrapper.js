@@ -1,7 +1,9 @@
-import * as React from 'react';
+/* eslint-disable react/prop-types */
+/* eslint-disable import/no-unresolved */
+import React from 'react';
 import { ThemeProvider, CSSReset } from '@chakra-ui/core';
 
-import theme from '../../../../src/theme';
+import theme from '../../../packages/helpers/theme';
 
 const Wrapper = ({ children }) => (
   <React.Fragment>
