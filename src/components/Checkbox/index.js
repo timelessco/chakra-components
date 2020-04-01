@@ -1,6 +1,6 @@
-/* eslint-disable indent */
 import React from 'react';
 import { VisuallyHidden, ControlBox, Icon, Box } from '@chakra-ui/core';
+
 import PropTypes from 'prop-types';
 import getAllowedProps from '../../helpers/getAllowedProps';
 import {
@@ -26,7 +26,6 @@ export const Checkbox = ({
   name,
   value,
   override,
-  checkboxIcon,
   isReversed,
 }) => {
   const Override = {
@@ -69,7 +68,7 @@ export const Checkbox = ({
         '_hover',
       ]),
     },
-    additionalText: {
+    label: {
       ml: isReversed ? '0' : '2',
       mr: isReversed ? '2' : '0',
       fontFamily: 'body',
@@ -79,11 +78,7 @@ export const Checkbox = ({
       color: `${
         isDisabled ? 'font.checkbox.disabled' : 'font.checkbox.default'
       }`,
-      ...getAllowedProps(override.additionalText, [
-        ...color,
-        ...space,
-        ...typography,
-      ]),
+      ...getAllowedProps(override.label, [...color, ...space, ...typography]),
     },
   };
 
@@ -144,13 +139,11 @@ Checkbox.propTypes = {
   onChange: PropTypes.func,
   defaultIsChecked: PropTypes.bool,
   override: PropTypes.any,
-  checkboxIcon: PropTypes.string,
   isReversed: PropTypes.bool,
 };
 
 Checkbox.defaultProps = {
   isDisabled: false,
-  checkboxIcon: 'customCheck',
   isReversed: false,
   override: {
     wrapper: {},

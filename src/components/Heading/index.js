@@ -2,13 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Box as ChakraBox } from '@chakra-ui/core';
 
+import { space, typography, color } from '../../helpers/styleProps';
 import getAllowedProps from '../../helpers/getAllowedProps';
 
 const Heading = ({ children, variant, override }) => (
   <ChakraBox
     as="h1"
     {...variant}
-    {...getAllowedProps(override, ['typography', 'space', 'color'])}
+    {...getAllowedProps(override, [...typography, ...space, ...color])}
   >
     {children}
   </ChakraBox>

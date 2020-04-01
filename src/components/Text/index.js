@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Text as ChakraText } from '@chakra-ui/core';
 
+import { space, typography, color } from '../../helpers/styleProps';
 import getAllowedProps from '../../helpers/getAllowedProps';
 
 const Text = ({ children, variant, override }) => (
   <ChakraText
     {...variant}
-    {...getAllowedProps(override, ['typography', 'space', 'color'])}
+    {...getAllowedProps(override, [...typography, ...space, ...color])}
   >
     {children}
   </ChakraText>

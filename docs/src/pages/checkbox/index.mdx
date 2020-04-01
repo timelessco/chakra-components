@@ -22,41 +22,25 @@ The HTML DOM structure is
 </label>
 ```
 
-## Basic usage
----
-
-#### Default Checkbox
+## Default Checkbox
 <Playground>
-  <Checkbox
-  >Click me</Checkbox>
+  <Checkbox>Click me</Checkbox>
 </Playground>
 
----
----
-
-#### Disabled Checkbox
+## Disabled Checkbox
 <Playground>
-  <Checkbox
-    isDisabled={true}
-  >Click me</Checkbox>
+  <Checkbox isDisabled={true}>Click me</Checkbox>
 </Playground>
 
----
----
-
-#### Reversed Checkbox
+## Reversed Checkbox
 <Playground>
-  <Checkbox
-    isReversed={true}
-  >Click me</Checkbox>
+  <Checkbox isReversed={true}>Click me</Checkbox>
 </Playground>
 
----
----
-
-#### Checkbox with custom color
+## Checkbox with custom color
 <Playground>
   <Checkbox>This is the normal box</Checkbox>
+
   <Checkbox override={{
     wrapper: { lineHeight: 5 },
     controlBox: { w: 10, h: 10 }
