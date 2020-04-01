@@ -5,13 +5,13 @@ menu: Components
 
 import { Playground, Props } from "docz"
 
-import { Checkbox } from './index'
+import { Checkbox } from './'
 
 # Checkbox
 
 Checkbox component that wraps Chakra
 
-The HTML DOM structure is 
+The HTML DOM structure is
 
 ```
 <label>          // Wraps the entire checkbox (override - wrapper)
@@ -50,18 +50,17 @@ The HTML DOM structure is
 ## Customize box size and label
 <Playground>
   <Checkbox>This is the normal box</Checkbox>
-  <Checkbox override={{ 
+  <Checkbox override={{
     wrapper: { lineHeight: 5 },
-    controlBox: { w: 10, h: 10 } 
+    controlBox: { w: 10, h: 10 }
   }}>
     This is a bigger box with more line height
   </Checkbox>
 
   <Checkbox override={{ controlBox: { w: 20, h: 20 }}}>This is a much bigger box</Checkbox>
 
-  <Checkbox override={{ 
+  <Checkbox override={{
     controlBox: { w: 20, h: 20 },
     label: { fontSize: 40 }
   }}>This is a much bigger box with bigger text</Checkbox>
 </Playground>
-
