@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import React from 'react';
 import {
   VisuallyHidden,
@@ -6,9 +5,8 @@ import {
   Icon,
   Box,
   ThemeProvider,
-  CSSReset,
-  ColorModeProvider,
 } from '@chakra-ui/core';
+
 import PropTypes from 'prop-types';
 import getAllowedProps from '../../helpers/getAllowedProps';
 import {
@@ -21,10 +19,9 @@ import {
   shadow,
   flex,
 } from '../../helpers/styleProps';
+import theme from '../../helpers/theme';
 
-import theme from '../../theme';
-
-export const Checkbox = ({
+const Checkbox = ({
   children,
   isDisabled,
   isChecked,
@@ -36,7 +33,6 @@ export const Checkbox = ({
   name,
   value,
   override,
-  checkboxIcon,
   isReversed,
 }) => {
   const Override = {
@@ -79,7 +75,7 @@ export const Checkbox = ({
         '_hover',
       ]),
     },
-    additionalText: {
+    label: {
       ml: isReversed ? '0' : '2',
       mr: isReversed ? '2' : '0',
       fontFamily: 'body',
@@ -89,48 +85,41 @@ export const Checkbox = ({
       color: `${
         isDisabled ? 'font.checkbox.disabled' : 'font.checkbox.default'
       }`,
-      ...getAllowedProps(override.additionalText, [
-        ...color,
-        ...space,
-        ...typography,
-      ]),
+      ...getAllowedProps(override.label, [...color, ...space, ...typography]),
     },
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <CSSReset />
-      <ColorModeProvider>
-        <Box p={2}>
-          <Box as="label" {...Override.wrapper}>
-            {/* This is the sibling input, it's visually hidden */}
-            <VisuallyHidden
-              as="input"
-              type="checkbox"
-              id={id}
-              name={name}
-              value={value}
-              checked={isChecked}
-              disabled={isDisabled}
-              onBlur={onBlur}
-              onFocus={onFocus}
-              onChange={onChange}
-              defaultChecked={defaultIsChecked}
-              {...Override.visuallyHidden}
-            />
+      <Box p="2">
+        <Box as="label" {...Override.wrapper}>
+          {/* This is the sibling input, it's visually hidden */}
+          <VisuallyHidden
+            as="input"
+            type="checkbox"
+            id={id}
+            name={name}
+            value={value}
+            checked={isChecked}
+            disabled={isDisabled}
+            onBlur={onBlur}
+            onFocus={onFocus}
+            onChange={onChange}
+            defaultChecked={defaultIsChecked}
+            {...Override.visuallyHidden}
+          />
 
-            {/* This is the control box with a check icon as children */}
-            <ControlBox {...Override.controlBox}>
-              <Icon name={checkboxIcon} size="10px" />
-            </ControlBox>
+          {/* This is the control box with a check icon as children */}
+          <ControlBox {...Override.controlBox}>
+            <Icon name="customCheck" size="10px" />
+          </ControlBox>
 
-            {/* You can pass additional text */}
-            <Box as="span" userSelect="none" {...Override.additionalText}>
-              {children}
-            </Box>
+          {/* You can pass additional text */}
+          <Box as="span" {...Override.label}>
+            {children}
           </Box>
         </Box>
-      </ColorModeProvider>
+      </Box>
     </ThemeProvider>
   );
 };
@@ -161,13 +150,11 @@ Checkbox.propTypes = {
   onChange: PropTypes.func,
   defaultIsChecked: PropTypes.bool,
   override: PropTypes.any,
-  checkboxIcon: PropTypes.string,
   isReversed: PropTypes.bool,
 };
 
 Checkbox.defaultProps = {
   isDisabled: false,
-  checkboxIcon: 'customCheck',
   isReversed: false,
   override: {
     wrapper: {},
@@ -179,3 +166,5 @@ Checkbox.defaultProps = {
   onFocus: () => {},
   onChange: () => {},
 };
+
+export default Checkbox;
