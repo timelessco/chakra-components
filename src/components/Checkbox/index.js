@@ -11,6 +11,15 @@ import {
 } from '@chakra-ui/core';
 import PropTypes from 'prop-types';
 import getAllowedProps from '../../helpers/getAllowedProps';
+import {
+  space,
+  typography,
+  color,
+  layout,
+  border,
+  borderRadius,
+  shadow,
+} from '../../helpers/styleProps';
 
 import theme from '../../theme';
 
@@ -31,7 +40,7 @@ export const Checkbox = ({
     wrapper: {
       lineHeight: 'checkbox',
       cursor: isDisabled ? 'not-allowed' : 'pointer',
-      ...getAllowedProps(override.wrapper, ['typography']),
+      ...getAllowedProps(override.wrapper, [...layout, ...typography]),
     },
     controlBox: {
       size: 'checkbox',
@@ -50,11 +59,16 @@ export const Checkbox = ({
         shadow: 'checkbox.hover',
       },
       ...getAllowedProps(override.controlBox, [
-        'layout',
-        'border',
-        'borderRadius',
-        'color',
-        'shadow',
+        ...layout,
+        ...border,
+        ...borderRadius,
+        ...color,
+        ...shadow,
+        '_checked',
+        '_disabled',
+        '_checkedAndDisabled',
+        '_focus',
+        '_hover',
       ]),
     },
     label: {
@@ -66,7 +80,11 @@ export const Checkbox = ({
       color: `${
         isDisabled ? 'font.checkbox.disabled' : 'font.checkbox.default'
       }`,
-      ...getAllowedProps(override.label, ['color', 'space', 'typography']),
+      ...getAllowedProps(override.additionalText, [
+        ...color,
+        ...space,
+        ...typography,
+      ]),
     },
   };
 
