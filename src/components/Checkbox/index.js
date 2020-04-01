@@ -1,18 +1,8 @@
 /* eslint-disable indent */
 import React from 'react';
-import {
-  VisuallyHidden,
-  ControlBox,
-  Icon,
-  Box,
-  ThemeProvider,
-  CSSReset,
-  ColorModeProvider,
-} from '@chakra-ui/core';
+import { VisuallyHidden, ControlBox, Icon, Box } from '@chakra-ui/core';
 import PropTypes from 'prop-types';
 import getAllowedProps from '../../helpers/getAllowedProps';
-
-import theme from '../../theme';
 
 export const Checkbox = ({
   children,
