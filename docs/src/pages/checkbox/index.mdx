@@ -4,14 +4,14 @@ menu: Components
 ---
 
 import { Playground, Props } from "docz"
-import { Box } from "@chakra-ui/core"
-import { Checkbox } from './index'
+
+import { Checkbox } from './'
 
 # Checkbox
 
 Checkbox component that wraps Chakra
 
-The HTML DOM structure is 
+The HTML DOM structure is
 
 ```
 <label>          // Wraps the entire checkbox (override - wrapper)
@@ -26,7 +26,7 @@ The HTML DOM structure is
 
 #### Default Checkbox
 <Playground>
-  <Checkbox 
+  <Checkbox
   >Click me</Checkbox>
 </Playground>
 
@@ -35,7 +35,7 @@ The HTML DOM structure is
 
 #### Disabled Checkbox
 <Playground>
-  <Checkbox 
+  <Checkbox
     isDisabled={true}
   >Click me</Checkbox>
 </Playground>
@@ -45,7 +45,7 @@ The HTML DOM structure is
 
 #### Reversed Checkbox
 <Playground>
-  <Checkbox 
+  <Checkbox
     isReversed={true}
   >Click me</Checkbox>
 </Playground>
@@ -55,30 +55,18 @@ The HTML DOM structure is
 
 #### Checkbox with custom color
 <Playground>
-  <Box display='flex'>
-    <Checkbox 
-      override={{
-        controlBox: {
-          _checked: {
-            bg: '#029107f2',
-            borderColor: '#029107f2',
-          }
-        }
-      }}
-    >Click me</Checkbox>
-    <Checkbox 
-      override={{
-        controlBox: {
-          _checked: {
-            bg: '#3502ffe0',
-            borderColor: '#3502ffe0',
-          },
-          _hover: {
-            borderColor: '#3502ffe0',
-            shadow: 'checkbox.hover',
-          }
-        }
-      }}
-    >Click me</Checkbox>
-  </Box>
+  <Checkbox>This is the normal box</Checkbox>
+  <Checkbox override={{
+    wrapper: { lineHeight: 5 },
+    controlBox: { w: 10, h: 10 }
+  }}>
+    This is a bigger box with more line height
+  </Checkbox>
+
+  <Checkbox override={{ controlBox: { w: 20, h: 20 }}}>This is a much bigger box</Checkbox>
+
+  <Checkbox override={{
+    controlBox: { w: 20, h: 20 },
+    label: { fontSize: 40 }
+  }}>This is a much bigger box with bigger text</Checkbox>
 </Playground>
