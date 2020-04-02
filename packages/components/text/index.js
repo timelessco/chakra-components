@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Text as ChakraText, ThemeProvider, Box } from '@chakra-ui/core';
 
-import { space, typography, color } from '../../helpers/styleProps';
-import getAllowedProps from '../../helpers/getAllowedProps';
-import theme from '../../helpers/theme';
+import { space, typography, color } from 'helpers/styleProps';
+import getAllowedProps from 'helpers/getAllowedProps';
+import theme from 'helpers/theme';
 
 const Text = ({ children, variant, override }) => (
   <ThemeProvider theme={theme}>
