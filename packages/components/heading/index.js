@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Box as ChakraBox, ThemeProvider, Box } from '@chakra-ui/core';
 
-import { space, typography, color } from '../../helpers/styleProps';
-import getAllowedProps from '../../helpers/getAllowedProps';
-import theme from '../../helpers/theme';
+import { space, typography, color } from 'helpers/styleProps';
+import getAllowedProps from 'helpers/getAllowedProps';
+import theme from 'helpers/theme';
 
 const Heading = ({ children, variant, override }) => (
   <ThemeProvider theme={theme}>
