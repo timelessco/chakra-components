@@ -4,8 +4,8 @@ route: /components/heading
 menu: Components
 ---
 
-import { Props, Playground } from "docz"
-import Heading from './'
+import { Props, Playground } from 'docz';
+import Heading from './';
 
 # Heading
 
@@ -17,8 +17,6 @@ The HTML DOM structure is
 // Override the base styles using the `override` prop
 <Heading override={}/>
 ```
-
-
 
 ## Basic Unstyled Heading
 
@@ -41,11 +39,11 @@ The HTML DOM structure is
 ## Styles Override
 
 <Playground>
-  <Heading override={{color: "whatsapp.500"}}>Color Override</Heading>
-  <Heading.H1 override={{fontSize: "6xl"}}>Font Size Override</Heading.H1>
-  <Heading.H2 override={{m: "8"}}>Margin Override</Heading.H2>
+  <Heading override={{ color: 'whatsapp.500' }}>Color Override</Heading>
+  <Heading.H1 override={{ fontSize: '6xl' }}>Font Size Override</Heading.H1>
+  <Heading.H2 override={{ m: '8' }}>Margin Override</Heading.H2>
 </Playground>
 
 ## Props
 
-<Props of={Heading}/>
+<Props of={Heading} />

@@ -4,9 +4,9 @@ route: /components/checkbox
 menu: Components
 ---
 
-import { Playground, Props } from "docz"
-import { Box } from "@chakra-ui/core"
-import Checkbox from './'
+import { Playground, Props } from 'docz';
+import { Box } from '@chakra-ui/core';
+import Checkbox from './';
 
 # Checkbox
 
@@ -22,36 +22,40 @@ The HTML DOM structure is
 </label>
 ```
 
-
-
 ## Default Checkbox
+
 <Playground>
   <Checkbox>Click me</Checkbox>
 </Playground>
 
 ## Disabled Checkbox
+
 <Playground>
   <Checkbox isDisabled={true}>Click me</Checkbox>
 </Playground>
 
 ## Reversed Checkbox
+
 <Playground>
   <Checkbox isReversed={true}>Click me</Checkbox>
 </Playground>
 
 ## Checkbox with custom color
+
 <Playground>
-  <Box display='flex'>
+  <Box display="flex">
     <Checkbox
       override={{
         controlBox: {
           _checked: {
             bg: '#029107f2',
             borderColor: '#029107f2',
-          }
-        }
+          },
+        },
       }}
-    >Click me</Checkbox>
+    >
+      Click me
+    </Checkbox>
     <Checkbox
       override={{
         controlBox: {
@@ -62,13 +66,15 @@ The HTML DOM structure is
           _hover: {
             borderColor: '#3502ffe0',
             shadow: 'checkbox.hover',
-          }
-        }
+          },
+        },
       }}
-    >Click me</Checkbox>
+    >
+      Click me
+    </Checkbox>
   </Box>
 </Playground>
 
 ## Props
 
-<Props of={Checkbox}/>
+<Props of={Checkbox} />

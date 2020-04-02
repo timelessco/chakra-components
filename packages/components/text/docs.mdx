@@ -4,8 +4,8 @@ route: /components/text
 menu: Components
 ---
 
-import { Props, Playground } from "docz"
-import Text from './'
+import { Props, Playground } from 'docz';
+import Text from './';
 
 # Text
 
@@ -45,12 +45,14 @@ The HTML DOM structure is
 ## Styles Override
 
 <Playground>
-  <Text override={{color: "whatsapp.500"}}>Color Override</Text>
-  <Text.Body1 override={{fontSize: "6xl"}}>Font Size Override</Text.Body1>
-  <Text.Body2 override={{m: "8"}}>Margin Override</Text.Body2>
-  <Text.Body3 override={{fontWeight: "black"}}>Font Weight Override</Text.Body3>
+  <Text override={{ color: 'whatsapp.500' }}>Color Override</Text>
+  <Text.Body1 override={{ fontSize: '6xl' }}>Font Size Override</Text.Body1>
+  <Text.Body2 override={{ m: '8' }}>Margin Override</Text.Body2>
+  <Text.Body3 override={{ fontWeight: 'black' }}>
+    Font Weight Override
+  </Text.Body3>
 </Playground>
 
 ## Props
 
-<Props of={Text}/>
+<Props of={Text} />

@@ -5,6 +5,10 @@ import { Box as ChakraBox, ThemeProvider, Box } from '@chakra-ui/core';
 import { space, typography, color } from 'helpers/styleProps';
 import getAllowedProps from 'helpers/getAllowedProps';
 import theme from 'helpers/theme';
+import themes from 'helpers/themes';
+
+console.log('%ctheme', 'color: #00e600', theme);
+console.log('%cthemes', 'color: #f2ceb6', themes);
 
 const Heading = ({ children, variant, override }) => (
   <ThemeProvider theme={theme}>
