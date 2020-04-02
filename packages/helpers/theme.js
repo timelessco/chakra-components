@@ -1,6 +1,13 @@
 import React from 'react';
 import { theme } from '@chakra-ui/core';
 
+export const newTheme = {
+  ...theme,
+  transparent: 'transparent',
+  black: 'black',
+  white: 'white',
+};
+
 export default {
   ...theme,
   lineHeights: {
