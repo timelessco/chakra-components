@@ -38,7 +38,7 @@ export const Checkbox = ({
 }) => {
   const Override = {
     wrapper: {
-      textAlign: 'center',
+      alignItems:'center',
       lineHeight: 'checkbox',
       display: 'inline-flex',
       flexDirection: isReversed ? 'row-reverse' : 'row',
