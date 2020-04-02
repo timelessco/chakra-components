@@ -1,38 +1,34 @@
-import React from 'react';
 import { theme } from '@chakra-ui/core';
 
-import customizedColors from './colors';
-import updatedFonts from './fonts';
-import customizedFontSizes from './fontSizes';
-import customizedLineHeights from './lineHeights';
-import customizedBreakpoints from './breakpoints';
-import updatedSpace from './space';
-import updatedSizes from './sizes';
-import shadows from './shadows.js';
+import space from './space';
+import sizes from './sizes';
+import colors from './colors';
+import fonts from './fonts';
+import fontSizes from './fontSizes';
+import fontWeights from './fontWeights';
+import lineHeights from './lineHeights';
 import letterSpacings from './letterSpacings';
+import shadows from './shadows';
+import borders from './borders';
+import borderWidths from './borderWidths';
+import radii from './radii';
 import icons from './icons';
+import breakpoints from './breakpoints';
 
-// TODO: spread inside the separate file for colors, fonts and sizes
 export default {
   ...theme,
-  colors: {
-    ...theme.colors,
-    ...customizedColors,
-  },
-  fonts: {
-    ...theme.fonts,
-    ...updatedFonts,
-  },
-  fontSizes: customizedFontSizes,
-  lineHeights: customizedLineHeights,
-  breakPoints: customizedBreakpoints,
-  space: updatedSpace,
-  sizes: {
-    ...theme.sizes,
-    ...updatedSizes,
-  },
-  shadows,
+  space,
+  sizes,
+  colors,
+  fonts,
+  fontSizes,
+  fontWeights,
+  lineHeights,
   letterSpacings,
+  shadows,
+  borders,
   borderWidths,
+  radii,
   icons,
+  breakpoints,
 };

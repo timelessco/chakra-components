@@ -1,1 +1,6 @@
-export default ['30em', '48em', '62em', '80em'];
+import { theme } from '@chakra-ui/core';
+
+export default {
+  custom: {},
+  ...theme.breakpoints,
+};

@@ -1,5 +1,9 @@
-import customCheck from './customCheck';
+import { theme } from '@chakra-ui/core';
+import check from './check';
 
 export default {
-  customCheck,
+  custom: {
+    check,
+  },
+  ...theme.icons,
 };
