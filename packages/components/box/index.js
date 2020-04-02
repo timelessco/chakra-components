@@ -1,15 +1,11 @@
 /* eslint-disable indent */
 import React from 'react';
-import {
-  PseudoBox as ChakraPseudoBox,
-  ThemeProvider,
-  CSSReset,
-} from '@chakra-ui/core';
+import { PseudoBox as ChakraPseudoBox, ThemeProvider } from '@chakra-ui/core';
 import PropTypes from 'prop-types';
+import theme from '../../helpers/theme';
 
 const Box = ({ children, ...props }) => (
-  <ThemeProvider>
-    <CSSReset />
+  <ThemeProvider theme={theme}>
     <ChakraPseudoBox {...props}>
       {typeof children === 'function' ? children() : children}
     </ChakraPseudoBox>

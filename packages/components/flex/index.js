@@ -10,9 +10,9 @@ const Flex = ({ children, ...props }) => (
   </ThemeProvider>
 );
 
-const row = props => <Flex flexDirection="row" {...props} />;
+const Row = props => <Flex flexDirection="row" {...props} />;
 
-const column = props => <Flex flexDirection="column" {...props} />;
+const Column = props => <Flex flexDirection="column" {...props} />;
 
 Flex.propTypes = {
   children: PropTypes.oneOfType([
@@ -24,7 +24,7 @@ Flex.propTypes = {
 
 Flex.defaultProps = {};
 
-Flex.row = row;
-Flex.column = column;
+Flex.Row = Row;
+Flex.Column = Column;
 
 export default Flex;

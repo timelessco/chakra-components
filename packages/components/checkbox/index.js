@@ -2,7 +2,7 @@ import React from 'react';
 import { VisuallyHidden, ControlBox, Icon, Box } from '@chakra-ui/core';
 
 import PropTypes from 'prop-types';
-import getAllowedProps from 'helpers/getAllowedProps';
+import getAllowedProps from '../../helpers/getAllowedProps';
 import {
   space,
   typography,
@@ -12,9 +12,9 @@ import {
   borderRadius,
   shadow,
   flex,
-} from 'helpers/styleProps';
+} from '../../helpers/styleProps';
 
-import applyTheme from 'helpers/applyTheme';
+import applyTheme from '../../helpers/applyTheme';
 
 export const Checkbox = ({
   children,
