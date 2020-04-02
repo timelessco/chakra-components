@@ -5,6 +5,7 @@ import { Text as ChakraText, ThemeProvider, Box } from '@chakra-ui/core';
 import { space, typography, color } from 'helpers/styleProps';
 import getAllowedProps from 'helpers/getAllowedProps';
 import theme from 'helpers/theme';
+import { body1, body2, body3 } from './theme';
 
 const Text = ({ children, variant, override }) => (
   <ThemeProvider theme={theme}>
@@ -22,11 +23,11 @@ const Text = ({ children, variant, override }) => (
 const Body1 = props => (
   <Text
     variant={{
-      color: 'font.body1',
-      fontSize: 'body1',
-      fontWeight: 'medium',
-      letterSpacing: 'body1',
-      lineHeight: 'body1',
+      color: body1.color,
+      fontSize: body1.fontSize,
+      fontWeight: body1.fontWeight,
+      letterSpacing: body1.letterSpacing,
+      lineHeight: body1.lineHeight,
     }}
     {...props}
   />
@@ -35,11 +36,11 @@ const Body1 = props => (
 const Body2 = props => (
   <Text
     variant={{
-      color: 'font.body2',
-      fontSize: 'body2',
-      fontWeight: 'medium',
-      letterSpacing: 'body2',
-      lineHeight: 'body2',
+      color: body2.color,
+      fontSize: body2.fontSize,
+      fontWeight: body2.fontWeight,
+      letterSpacing: body2.letterSpacing,
+      lineHeight: body2.lineHeight,
     }}
     {...props}
   />
@@ -48,10 +49,10 @@ const Body2 = props => (
 const Body3 = props => (
   <Text
     variant={{
-      color: 'font.body3',
-      fontSize: 'body3',
-      fontWeight: 'medium',
-      lineHeight: 'body3',
+      color: body3.color,
+      fontSize: body3.fontSize,
+      fontWeight: body3.fontWeight,
+      lineHeight: body3.lineHeight,
     }}
     {...props}
   />

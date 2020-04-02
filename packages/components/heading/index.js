@@ -5,10 +5,7 @@ import { Box as ChakraBox, ThemeProvider, Box } from '@chakra-ui/core';
 import { space, typography, color } from 'helpers/styleProps';
 import getAllowedProps from 'helpers/getAllowedProps';
 import theme from 'helpers/theme';
-import themes from 'helpers/themes';
-
-console.log('%ctheme', 'color: #00e600', theme);
-console.log('%cthemes', 'color: #f2ceb6', themes);
+import { h1, h2 } from './theme';
 
 const Heading = ({ children, variant, override }) => (
   <ThemeProvider theme={theme}>
@@ -28,11 +25,11 @@ const H1 = props => (
   <Heading
     variant={{
       as: 'h1',
-      color: 'font.heading',
-      fontSize: 'h1',
-      fontWeight: 'semibold',
-      letterSpacing: 'h1',
-      lineHeight: 'h1',
+      color: h1.color,
+      fontSize: h1.fontSize,
+      fontWeight: h1.fontWeight,
+      letterSpacing: h1.letterSpacing,
+      lineHeight: h1.lineHeight,
     }}
     {...props}
   />
@@ -42,11 +39,11 @@ const H2 = props => (
   <Heading
     variant={{
       as: 'h2',
-      color: 'font.heading',
-      fontSize: 'h2',
-      fontWeight: 'semibold',
-      letterSpacing: 'h2',
-      lineHeight: 'h2',
+      color: h2.color,
+      fontSize: h2.fontSize,
+      fontWeight: h2.fontWeight,
+      letterSpacing: h2.letterSpacing,
+      lineHeight: h2.lineHeight,
     }}
     {...props}
   />

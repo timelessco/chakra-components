@@ -1,7 +1,13 @@
 import React from 'react';
-import { VisuallyHidden, ControlBox, Icon, Box } from '@chakra-ui/core';
-
+import {
+  VisuallyHidden,
+  ControlBox,
+  Icon,
+  Box,
+  ThemeProvider,
+} from '@chakra-ui/core';
 import PropTypes from 'prop-types';
+
 import getAllowedProps from 'helpers/getAllowedProps';
 import {
   space,
@@ -13,8 +19,8 @@ import {
   shadow,
   flex,
 } from 'helpers/styleProps';
-
-import applyTheme from 'helpers/applyTheme';
+import theme from 'helpers/theme';
+import { wrapper, controlBox, label } from './theme';
 
 export const Checkbox = ({
   children,
@@ -33,7 +39,7 @@ export const Checkbox = ({
   const Override = {
     wrapper: {
       alignItems: 'center',
-      lineHeight: 'checkbox',
+      lineHeight: wrapper.lineHeight,
       display: 'inline-flex',
       flexDirection: isReversed ? 'row-reverse' : 'row',
       justifyContent: isReversed ? 'flex-end' : 'start',
@@ -41,22 +47,22 @@ export const Checkbox = ({
       ...getAllowedProps(override.wrapper, [...layout, ...typography, ...flex]),
     },
     controlBox: {
-      size: 'checkbox',
-      borderWidth: 'checkbox',
-      borderColor: 'borderColor.checkbox.default',
-      borderStyle: 'solid',
-      rounded: 'md',
-      _checked: {
-        bg: 'bg.checkbox.checked',
-        color: 'white',
-        borderColor: 'borderColor.checkbox.checked',
-      },
-      _disabled: { borderColor: 'borderColor.checkbox.disabled' },
-      _focus: { borderColor: 'outline' },
+      size: controlBox.normal.size,
+      borderWidth: controlBox.normal.borderWidth,
+      borderColor: controlBox.normal.borderColor,
+      borderStyle: controlBox.normal.borderStyle,
+      rounded: controlBox.normal.rounded,
+      _focus: { borderColor: controlBox.focus.borderColor },
       _hover: {
-        borderColor: 'borderColor.checkbox.hover',
-        shadow: 'checkbox.hover',
+        borderColor: controlBox.hover.borderColor,
+        shadow: controlBox.hover.shadow,
       },
+      _checked: {
+        bg: controlBox.checked.bg,
+        color: controlBox.checked.color,
+        borderColor: controlBox.checked.borderColor,
+      },
+      _disabled: { borderColor: controlBox.disabled.borderColor },
       ...getAllowedProps(override.controlBox, [
         ...layout,
         ...border,
@@ -71,47 +77,49 @@ export const Checkbox = ({
       ]),
     },
     label: {
-      ml: isReversed ? '0' : '2',
-      mr: isReversed ? '2' : '0',
-      fontFamily: 'body',
-      fontSize: 'checkbox',
-      fontWeight: 'medium',
-      letterSpacing: 'checkbox',
-      color: `${
-        isDisabled ? 'font.checkbox.disabled' : 'font.checkbox.default'
-      }`,
+      ml: isReversed ? '0' : label.normal.margin,
+      mr: isReversed ? label.normal.margin : '0',
+      fontFamily: label.normal.fontFamily,
+      fontSize: label.normal.fontSize,
+      fontWeight: label.normal.fontWeight,
+      letterSpacing: label.normal.letterSpacing,
+      color: `${isDisabled ? label.disabled.color : label.normal.color}`,
       ...getAllowedProps(override.label, [...color, ...space, ...typography]),
     },
   };
 
   return (
-    <Box as="label" {...Override.wrapper}>
-      {/* This is the sibling input, it's visually hidden */}
-      <VisuallyHidden
-        as="input"
-        type="checkbox"
-        id={id}
-        name={name}
-        value={value}
-        checked={isChecked}
-        disabled={isDisabled}
-        onBlur={onBlur}
-        onFocus={onFocus}
-        onChange={onChange}
-        defaultChecked={defaultIsChecked}
-        {...Override.visuallyHidden}
-      />
+    <ThemeProvider theme={theme}>
+      <Box p="2">
+        <Box as="label" {...Override.wrapper}>
+          {/* This is the sibling input, it's visually hidden */}
+          <VisuallyHidden
+            as="input"
+            type="checkbox"
+            id={id}
+            name={name}
+            value={value}
+            checked={isChecked}
+            disabled={isDisabled}
+            onBlur={onBlur}
+            onFocus={onFocus}
+            onChange={onChange}
+            defaultChecked={defaultIsChecked}
+            {...Override.visuallyHidden}
+          />
 
-      {/* This is the control box with a check icon as children */}
-      <ControlBox {...Override.controlBox}>
-        <Icon name="customCheck" size="10px" />
-      </ControlBox>
+          {/* This is the control box with a check icon as children */}
+          <ControlBox {...Override.controlBox}>
+            <Icon name="customCheck" size="10px" />
+          </ControlBox>
 
-      {/* You can pass additional text */}
-      <Box as="span" {...Override.label}>
-        {children}
+          {/* You can pass additional text */}
+          <Box as="span" {...Override.label}>
+            {children}
+          </Box>
+        </Box>
       </Box>
-    </Box>
+    </ThemeProvider>
   );
 };
 
@@ -144,4 +152,4 @@ Checkbox.defaultProps = {
   onChange: () => {},
 };
 
-export default applyTheme(Checkbox);
+export default Checkbox;

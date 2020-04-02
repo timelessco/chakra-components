@@ -1,6 +1,6 @@
 import { theme } from '@chakra-ui/core';
 
 export default {
-  custom: {},
-  ...theme.radii,
+  ...theme.space,
+  14: '14px',
 };
