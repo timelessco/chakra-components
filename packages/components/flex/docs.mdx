@@ -54,8 +54,9 @@ The HTML DOM structure is
 ___
 
 ## Flex.Column
+
 <Playground>
-  <Flex.Column as="form" p="1">
+  <Flex.Column p="1">
     <Box
       as="button"
       width="min-content"
@@ -85,6 +86,44 @@ ___
       Button
     </Box>
   </Flex.Column>
+</Playground>
+
+___
+
+## Flex.Row
+
+<Playground>
+  <Flex.Row p="1">
+    <Box
+      as="button"
+      width="min-content"
+      bg="teal.500"
+      py={2}
+      px={4}
+      rounded="md"
+      fontWeight="semibold"
+      color="white"
+      _hover={{ bg: "teal.600" }}
+      _focus={{ boxShadow: "outline" }}
+    >
+      Button
+    </Box>
+    <Box
+      as="button"
+      width="min-content"
+      bg="blue.500"
+      py={2}
+      px={4}
+      ml={2}
+      rounded="md"
+      fontWeight="semibold"
+      color="white"
+      _hover={{ bg: "teal.600" }}
+      _focus={{ boxShadow: "outline" }}
+    >
+      Button
+    </Box>
+  </Flex.Row>
 </Playground>
 
 ___
