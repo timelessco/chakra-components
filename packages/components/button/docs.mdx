@@ -1,0 +1,116 @@
+---
+name: Button
+route: /components/button
+menu: Components
+---
+
+import { Playground, Props } from "docz"
+import Button from './index'
+import Flex from "../flex";
+
+# Button
+
+Button component wraps the Chakra Button component and by default rendered as button, but can be used as link by Button.Link
+
+The HTML DOM structure is
+
+```
+  <Button></Button> 
+```
+
+## Usage
+
+<Playground>
+  <Button variantColor="green">Button</Button>
+</Playground>
+
+___
+## Button Sizes
+Use the size prop to change the size of the button. You can set the value to xs, sm, md, or lg
+
+<Playground>
+  <Flex.Row alignItems='center' justifyContent='space-evenly'>
+    <Button variantColor="teal" size="xs">
+      Button
+    </Button>
+    <Button variantColor="teal" size="sm">
+      Button
+    </Button>
+    <Button variantColor="teal" size="md">
+      Button
+    </Button>
+    <Button variantColor="teal" size="lg">
+      Button
+    </Button>
+  </Flex.Row>
+</Playground>
+
+___
+## Button Variant
+Use the variant prop to change the visual style of the Button. You can set the value to solid, ghost, outline, or link.
+
+<Playground>
+  <Flex.Row alignItems='center' justifyContent='space-evenly'>
+    <Button variantColor="teal" variant="solid">
+      Button
+    </Button>
+    <Button variantColor="teal" variant="outline">
+      Button
+    </Button>
+    <Button variantColor="teal" variant="ghost">
+      Button
+    </Button>
+  </Flex.Row>
+</Playground>
+
+___
+## Button.Link
+Use Button.Link to create a link styled as button
+
+<Playground>
+  <Button.Link variantColor="teal" variant="solid" href="https://chakra-ui.com/" target="_blank">
+    Button
+  </Button.Link>
+</Playground>
+
+___
+## Button with Icon
+You can add left and right icons to the Button components.
+
+<Playground>
+  <Flex.Row alignItems='center'>
+    <Button leftIcon="email" variantColor="teal" variant="solid">
+      Email
+    </Button>
+    <Button ml={2} rightIcon="arrow-forward" variantColor="teal" variant="outline">
+      Call us
+    </Button>
+  </Flex.Row>
+</Playground>
+
+___
+## Button loading state
+Pass isLoading prop to the Button component to show it's loading state. You can optionally pass loadingText prop, if you do, the button will show a spinner and the loading text. Otherwise, the button will take the width of the text label and show only the spinner
+
+<Playground>
+  <Flex.Row alignItems='center'>
+    <Button isLoading variantColor="teal" variant="solid">
+      Email
+    </Button>
+    <Button
+      ml={2}
+      isLoading
+      loadingText="Submitting"
+      variantColor="teal"
+      variant="outline"
+    >
+      Submit
+    </Button>
+  </Flex.Row>
+</Playground>
+
+___
+
+## Props
+
+<Props of={Button}/>
