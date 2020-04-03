@@ -10,15 +10,25 @@ import { Flex } from "@chakra-ui/core"
 
 # Box
 
-Box component
+Box component wraps the Chakra PseudoBox component and by default rendered as div, but can be change by passing 'as' prop 
+(as: 'input')
 
 The HTML DOM structure is
 
 ```
-  <div></div>
+  <div></div> 
 ```
 
 ## Usage
+
+<Playground>
+  <Box bg="tomato" w="100%" p={4} color="white">
+    This is the Box
+  </Box>
+</Playground>
+
+___
+### As input and button
 <Playground>
   <Flex as="form" p="1">
     <Box
@@ -52,6 +62,25 @@ The HTML DOM structure is
       _focus={{ boxShadow: "outline" }}
     >
       Sign Up
+    </Box>
+  </Flex>
+</Playground>
+
+___
+
+## As link 
+
+<Playground>
+  <Flex>
+    <Box
+      as="a"
+      target='_blank'
+      href="https://www.google.com/"
+      color="blue.600"
+      textDecoration="underline"
+      fontWeight="semibold"
+    >
+      Google
     </Box>
   </Flex>
 </Playground>
