@@ -5,7 +5,7 @@ import { Text as ChakraText, ThemeProvider, Box } from '@chakra-ui/core';
 import { space, typography, color } from 'helpers/styleProps';
 import getAllowedProps from 'helpers/getAllowedProps';
 import theme from 'helpers/theme';
-import { body1, body2, body3 } from './theme';
+import { body1, body2, body3 } from './styles';
 
 const Text = ({ children, variant, override }) => (
   <ThemeProvider theme={theme}>
@@ -20,43 +20,11 @@ const Text = ({ children, variant, override }) => (
   </ThemeProvider>
 );
 
-const Body1 = props => (
-  <Text
-    variant={{
-      color: body1.color,
-      fontSize: body1.fontSize,
-      fontWeight: body1.fontWeight,
-      letterSpacing: body1.letterSpacing,
-      lineHeight: body1.lineHeight,
-    }}
-    {...props}
-  />
-);
+const Body1 = props => <Text variant={{ ...body1 }} {...props} />;
 
-const Body2 = props => (
-  <Text
-    variant={{
-      color: body2.color,
-      fontSize: body2.fontSize,
-      fontWeight: body2.fontWeight,
-      letterSpacing: body2.letterSpacing,
-      lineHeight: body2.lineHeight,
-    }}
-    {...props}
-  />
-);
+const Body2 = props => <Text variant={{ ...body2 }} {...props} />;
 
-const Body3 = props => (
-  <Text
-    variant={{
-      color: body3.color,
-      fontSize: body3.fontSize,
-      fontWeight: body3.fontWeight,
-      lineHeight: body3.lineHeight,
-    }}
-    {...props}
-  />
-);
+const Body3 = props => <Text variant={{ ...body3 }} {...props} />;
 
 Text.propTypes = {
   children: PropTypes.string,
