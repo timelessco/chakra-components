@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Box as ChakraBox, ThemeProvider, Box } from '@chakra-ui/core';
 
-import { space, typography, color } from '../../helpers/styleProps';
-import getAllowedProps from '../../helpers/getAllowedProps';
-import theme from '../../helpers/theme';
+import { space, typography, color } from 'helpers/styleProps';
+import getAllowedProps from 'helpers/getAllowedProps';
+import theme from 'helpers/theme';
+import { h1, h2 } from './styles';
 
 const Heading = ({ children, variant, override }) => (
   <ThemeProvider theme={theme}>
@@ -20,33 +21,9 @@ const Heading = ({ children, variant, override }) => (
   </ThemeProvider>
 );
 
-const H1 = props => (
-  <Heading
-    variant={{
-      as: 'h1',
-      color: 'font.heading',
-      fontSize: 'h1',
-      fontWeight: 'semibold',
-      letterSpacing: 'h1',
-      lineHeight: 'h1',
-    }}
-    {...props}
-  />
-);
+const H1 = props => <Heading variant={{ ...h1 }} {...props} />;
 
-const H2 = props => (
-  <Heading
-    variant={{
-      as: 'h2',
-      color: 'font.heading',
-      fontSize: 'h2',
-      fontWeight: 'semibold',
-      letterSpacing: 'h2',
-      lineHeight: 'h2',
-    }}
-    {...props}
-  />
-);
+const H2 = props => <Heading variant={{ ...h2 }} {...props} />;
 
 Heading.propTypes = {
   children: PropTypes.string,

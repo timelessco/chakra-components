@@ -4,48 +4,57 @@ route: /components/heading
 menu: Components
 ---
 
-import { Props, Playground } from "docz"
-import Heading from './'
+import { Playground } from 'docz';
+import Heading from './';
 
 # Heading
 
-Heading component that wraps Chakra Box Component as H1
+The `Heading` component allows you to include headings h1 & h2. Default `Heading` is rendered as HTML `h1` tag.
 
-The HTML DOM structure is
+HTML DOM structure
 
-```js
-// Override the base styles using the `override` prop
-<Heading override={}/>
+```
+<h1>String</h1>
 ```
 
+## Import
 
+```
+import Heading from 'chakra-wrapper';
+```
 
-## Basic Unstyled Heading
+## `<Heading>`
 
 <Playground>
-  <Heading>This is a basic unstyled Heading</Heading>
+  <Heading>Default Heading without any styles</Heading>
 </Playground>
 
-## Heading H1
+## `<Heading.H1>`
 
 <Playground>
-  <Heading.H1>This is a H1 Heading</Heading.H1>
+  <Heading.H1>Styled H1 Heading</Heading.H1>
 </Playground>
 
-## Heading H2
+## `<Heading.H2>`
 
 <Playground>
-  <Heading.H2>This is a H2 Heading</Heading.H2>
-</Playground>
-
-## Styles Override
-
-<Playground>
-  <Heading override={{color: "whatsapp.500"}}>Color Override</Heading>
-  <Heading.H1 override={{fontSize: "6xl"}}>Font Size Override</Heading.H1>
-  <Heading.H2 override={{m: "8"}}>Margin Override</Heading.H2>
+  <Heading.H2>Styled H2 Heading</Heading.H2>
 </Playground>
 
 ## Props
 
-<Props of={Heading}/>
+- `override` - Object to be passed in-order to override the base styles of the checkbox.
+
+### Allowed style props in `override`
+
+- Color
+- Space
+- Typography
+
+## Props in action
+
+### `override`
+
+<Playground>
+  <Heading.H1 override={{ fontSize: '6xl' }}>Font Size Override</Heading.H1>
+</Playground>
