@@ -105,7 +105,6 @@ export const Checkbox = ({
             onFocus={onFocus}
             onChange={onChange}
             defaultChecked={defaultIsChecked}
-            {...Override.visuallyHidden}
           />
 
           {/* This is the control box with a check icon as children */}
@@ -143,7 +142,6 @@ Checkbox.defaultProps = {
   isReversed: false,
   override: {
     wrapper: {},
-    visuallyHidden: {},
     controlBox: {},
     label: {},
   },
