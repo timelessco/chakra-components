@@ -9,7 +9,13 @@ import Text from './';
 
 # Text
 
-The `Text` component allows you to include texts everywhere expect the headings. This is wrapper around HTML `p` tag. **Typography**, **space** & **color** can be overridden using `override`.
+The `Text` component allows you to include texts everywhere expect the headings. This is wrapper around HTML `p` tag.
+
+HTML DOM structure
+
+```
+<p>String</p>
+```
 
 ## Import
 
@@ -42,6 +48,16 @@ import Text from 'chakra-wrapper';
 </Playground>
 
 ## Props
+
+- `override` - Object to be passed in-order to override the base styles of the checkbox.
+
+### Allowed style props in `override`
+
+- Color
+- Space
+- Typography
+
+## Props in action
 
 ### `override`
 
