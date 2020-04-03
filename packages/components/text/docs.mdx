@@ -9,50 +9,42 @@ import Text from './';
 
 # Text
 
-Text component that wraps Chakra Text Component
+The `Text` component allows you to include texts everywhere expect the headings. This is wrapper around HTML `p` tag. **Typography**, **space** & **color** can be overridden using `override`.
 
-The HTML DOM structure is
+## Import
 
-```js
-// Override the base styles using the `override` prop
-<Text override={}/>
+```
+import Text from 'chakra-wrapper';
 ```
 
-## Basic Unstyled Text
+## `<Text>`
 
 <Playground>
-  <Text>This is a basic unstyled Text</Text>
+  <Text>Default Text without any styles</Text>
 </Playground>
 
-## Text Body1
+## `<Text.Body1>`
 
 <Playground>
-  <Text.Body1>This is a Body1 Text</Text.Body1>
+  <Text.Body1>Styled Body1 Text</Text.Body1>
 </Playground>
 
-## Text Body2
+## `<Text.Body2>`
 
 <Playground>
-  <Text.Body2>This is a Body2 Text</Text.Body2>
+  <Text.Body2>Styled Body2 Text</Text.Body2>
 </Playground>
 
-## Text Body3
+## `<Text.Body3>`
 
 <Playground>
-  <Text.Body3>This is a Body3 Text</Text.Body3>
-</Playground>
-
-## Styles Override
-
-<Playground>
-  <Text override={{ color: 'whatsapp.500' }}>Color Override</Text>
-  <Text.Body1 override={{ fontSize: '6xl' }}>Font Size Override</Text.Body1>
-  <Text.Body2 override={{ m: '8' }}>Margin Override</Text.Body2>
-  <Text.Body3 override={{ fontWeight: 'black' }}>
-    Font Weight Override
-  </Text.Body3>
+  <Text.Body3>Styled Body3 Text</Text.Body3>
 </Playground>
 
 ## Props
 
-<Props of={Text} />
+### `override`
+
+<Playground>
+  <Text override={{ color: 'whatsapp.500' }}>Color Override</Text>
+</Playground>
