@@ -93,10 +93,10 @@ const Checkbox = ({
         {/* You can pass additional text */}
         <Box
           as="span"
+          {...label.normal}
           ml={isReversed ? '0' : label.normal.margin}
           mr={isReversed ? label.normal.margin : '0'}
-          color={`${isDisabled ? label.disabled.color : label.normal.color}`}
-          {...label.normal}
+          color={isDisabled ? label.disabled.color : label.normal.color}
           {...getAllowedProps(override.label, [
             ...color,
             ...space,
