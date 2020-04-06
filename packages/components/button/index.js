@@ -9,16 +9,7 @@ import {
 import PropTypes from 'prop-types';
 
 import theme from '../../helpers/theme';
-import {
-  primary,
-  solid,
-  ghost,
-  link,
-  outline,
-  secondary,
-  rightIcon,
-  leftIcon,
-} from './styles';
+import { primary, solid, ghost, link, outline, secondary } from './styles';
 
 const Button = ({
   children,
