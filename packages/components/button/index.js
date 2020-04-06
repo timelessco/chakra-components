@@ -62,10 +62,6 @@ const Link = ({ href, isExternal, children, ...props }) => (
   </Button>
 );
 
-const LeftIcon = ({ ...props }) => <Button {...leftIcon} {...props} />;
-
-const RightIcon = ({ ...props }) => <Button {...rightIcon} {...props} />;
-
 const Primary = ({ ...props }) => <Button {...primary} {...props} />;
 
 const Secondary = ({ ...props }) => <Button {...secondary} {...props} />;
@@ -95,7 +91,5 @@ Button.Secondary = Secondary;
 Button.Solid = Solid;
 Button.Outline = Outline;
 Button.Ghost = Ghost;
-Button.LeftIcon = LeftIcon;
-Button.RightIcon = RightIcon;
 
 export default Button;

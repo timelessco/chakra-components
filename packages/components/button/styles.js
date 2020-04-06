@@ -18,18 +18,6 @@ export const link = {
   size: 'lg',
 };
 
-export const rightIcon = {
-  leftIcon: 'email',
-  varaint: 'solid',
-  variantColor: 'orange',
-};
-
-export const leftIcon = {
-  rightIcon: 'arrow-forward',
-  variant: 'outline',
-  variantColor: 'yellow',
-};
-
 export const primary = {
   bg: 'pink.500',
   color: 'white',
