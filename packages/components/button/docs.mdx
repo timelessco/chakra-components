@@ -86,7 +86,7 @@ Use dot notation to create your own set of Primary and Secondary buttons apart f
 
 <Playground>
   <Flex.Row alignItems="center" justifyContent="space-evenly">
-    <Button.Primary>Primary Button</Button.Primary>
+    <Button.Primary isLoading>Primary Button</Button.Primary>
     <Button.Secondary>Secondary Button</Button.Secondary>
   </Flex.Row>
 </Playground>
@@ -99,7 +99,13 @@ Pass isLoading prop to the Button component to show it's loading state. You can 
 
 <Playground>
   <Flex.Row alignItems="center">
-    <Button isLoading variantColor="teal" variant="solid">
+    <Button
+      isLoading
+      variantColor="teal"
+      variant="solid"
+      leftLoadingIcon
+      loadingIconSpace={2}
+    >
       Email
     </Button>
     <Button
@@ -108,6 +114,8 @@ Pass isLoading prop to the Button component to show it's loading state. You can 
       loadingText="Submitting"
       variantColor="teal"
       variant="outline"
+      rightLoadingIcon
+      loadingIconSpace={2}
     >
       Submit
     </Button>

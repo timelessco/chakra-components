@@ -4,7 +4,7 @@ import {
   Button as ChakraButton,
   ThemeProvider,
   Link as ChakraLink,
-  PseudoBox,
+  Spinner,
 } from '@chakra-ui/core';
 import PropTypes from 'prop-types';
 
@@ -21,9 +21,25 @@ import {
 } from './styles';
 console.log('%ctheme', 'color: #f2ceb6', theme);
 
-const Button = ({ children, ...props }) => (
+const Button = ({
+  children,
+  isLoading,
+  loadingText,
+  leftLoadingIcon,
+  rightLoadingIcon,
+  loadingIconSpace,
+  ...props
+}) => (
   <ThemeProvider theme={theme}>
-    <ChakraButton {...props}>{children}</ChakraButton>
+    <ChakraButton {...props}>
+      {isLoading && leftLoadingIcon && (
+        <Spinner mr={loadingIconSpace} size={props.size ? props.size : 'sm'} />
+      )}
+      {isLoading && loadingText ? loadingText : children}
+      {isLoading && rightLoadingIcon && (
+        <Spinner ml={loadingIconSpace} size={props.size ? props.size : 'sm'} />
+      )}
+    </ChakraButton>
   </ThemeProvider>
 );
 
@@ -51,13 +67,9 @@ const LeftIcon = ({ ...props }) => <Button {...leftIcon} {...props} />;
 
 const RightIcon = ({ ...props }) => <Button {...rightIcon} {...props} />;
 
-const Primary = ({ ...props }) => (
-  <PseudoBox as="button" {...primary} {...props} />
-);
+const Primary = ({ ...props }) => <Button {...primary} {...props} />;
 
-const Secondary = ({ ...props }) => (
-  <PseudoBox as="button" {...secondary} {...props} />
-);
+const Secondary = ({ ...props }) => <Button {...secondary} {...props} />;
 
 Button.propTypes = {
   children: PropTypes.any,
@@ -67,6 +79,9 @@ Button.propTypes = {
   variantColor: PropTypes.string,
   isLoading: PropTypes.bool,
   loadingText: PropTypes.string,
+  leftLoadingIcon: PropTypes.bool,
+  rightLoadingIcon: PropTypes.bool,
+  loadingIconSpace: PropTypes.string,
 };
 
 Link.propTypes = {

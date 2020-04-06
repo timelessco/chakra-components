@@ -43,9 +43,10 @@ export const primary = {
   rounded: 'md',
   _hover: { bg: 'pink.600' },
   _active: {
-    boxShadow: 'outline',
+    bg: 'pink.600',
   },
   _focus: {
+    boxShadow: 'outline',
     outline: 'none',
   },
 };
@@ -63,9 +64,10 @@ export const secondary = {
   rounded: 'md',
   _hover: { bg: 'pink.50' },
   _active: {
-    boxShadow: 'outline',
+    bg: 'pink.50',
   },
   _focus: {
+    boxShadow: 'outline',
     outline: 'none',
   },
 };
