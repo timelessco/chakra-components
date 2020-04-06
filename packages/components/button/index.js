@@ -4,6 +4,7 @@ import {
   Button as ChakraButton,
   ThemeProvider,
   Link as ChakraLink,
+  PseudoBox,
 } from '@chakra-ui/core';
 import PropTypes from 'prop-types';
 
@@ -18,6 +19,7 @@ import {
   rightIcon,
   leftIcon,
 } from './styles';
+console.log('%ctheme', 'color: #f2ceb6', theme);
 
 const Button = ({ children, ...props }) => (
   <ThemeProvider theme={theme}>
@@ -50,11 +52,11 @@ const LeftIcon = ({ ...props }) => <Button {...leftIcon} {...props} />;
 const RightIcon = ({ ...props }) => <Button {...rightIcon} {...props} />;
 
 const Primary = ({ ...props }) => (
-  <Button variant="solid" {...primary} {...props} />
+  <PseudoBox as="button" {...primary} {...props} />
 );
 
 const Secondary = ({ ...props }) => (
-  <Button variant="outline" {...secondary} {...props} />
+  <PseudoBox as="button" {...secondary} {...props} />
 );
 
 Button.propTypes = {

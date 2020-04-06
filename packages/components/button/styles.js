@@ -31,11 +31,41 @@ export const leftIcon = {
 };
 
 export const primary = {
-  variantColor: 'teal',
-  size: 'md',
+  bg: 'pink.500',
+  color: 'white',
+  fontSize: '16px',
+  fontWeight: 'semibold',
+  height: '42px',
+  lineHeight: '1.2',
+  border: '1px',
+  borderColor: 'pink.400',
+  px: '10px',
+  rounded: 'md',
+  _hover: { bg: 'pink.600' },
+  _active: {
+    boxShadow: 'outline',
+  },
+  _focus: {
+    outline: 'none',
+  },
 };
 
 export const secondary = {
-  variantColor: 'green',
-  size: 'md',
+  bg: 'white',
+  fontSize: '16px',
+  fontWeight: 'semibold',
+  height: '42px',
+  lineHeight: '1.2',
+  border: '1px',
+  borderColor: 'pink.400',
+  color: 'pink.500',
+  px: '10px',
+  rounded: 'md',
+  _hover: { bg: 'pink.50' },
+  _active: {
+    boxShadow: 'outline',
+  },
+  _focus: {
+    outline: 'none',
+  },
 };
