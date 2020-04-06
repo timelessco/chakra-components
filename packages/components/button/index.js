@@ -19,7 +19,6 @@ import {
   rightIcon,
   leftIcon,
 } from './styles';
-console.log('%ctheme', 'color: #f2ceb6', theme);
 
 const Button = ({
   children,
@@ -31,7 +30,7 @@ const Button = ({
   ...props
 }) => (
   <ThemeProvider theme={theme}>
-    <ChakraButton {...props}>
+    <ChakraButton isDisabled={props.isDisabled || isLoading} {...props}>
       {isLoading && leftLoadingIcon && (
         <Spinner mr={loadingIconSpace} size={props.size ? props.size : 'sm'} />
       )}
