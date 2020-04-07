@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "baseUrl": "packages",
+    "paths": {
+      "helpers/*": ["./helpers/*"],
+      "components/*": ["./components/*"]
+    },
+    "module": "commonjs",
+    "target": "esnext",
+    "jsx": "react"
+  },
+  "exclude": ["node_modules", "**/node_modules/*"]
+}
