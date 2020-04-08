@@ -1,0 +1,18 @@
+---
+name: NavBar
+path: /navbar
+date: 2019-01-29
+---
+import { ThemeProvider, CSSReset } from '@chakra-ui/core';
+import customTheme from '../../theme';
+import { Playground, Props } from 'docz';
+import { NavbarComponent } from './navbar';
+
+### NavBar
+
+<Playground>
+    <ThemeProvider theme={customTheme}>
+        <CSSReset/>
+        <NavbarComponent/>
+    </ThemeProvider>
+</Playground>
