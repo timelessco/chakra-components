@@ -1,35 +1,52 @@
+/* eslint-disable indent */
 import React from 'react';
-import { ThemeProvider, Box, Flex } from '@chakra-ui/core';
+import { ThemeProvider, Box, Flex, PseudoBox } from '@chakra-ui/core';
 import theme from '../../theme';
 console.log('%ctheme', 'color: #f2ceb6', theme);
 
-export const Menu = () => (
+const MenuItem = ({ children, isActive, isDisabled, ...props }) => (
+  <PseudoBox
+    p="5"
+    color="gray.400"
+    cursor="pointer"
+    {...isActive && {
+      color: 'blue.500',
+      shadow: 'menu',
+    }}
+    {...(isDisabled
+      ? {
+          cursor: 'not-allowed',
+          opacity: '40%',
+        }
+      : {
+          _hover: {
+            color: 'blue.500',
+            shadow: 'menu',
+          },
+        })}
+    {...props}
+  >
+    {children}
+  </PseudoBox>
+);
+
+MenuItem.displayName = MenuItem;
+
+const Menu = ({ children, ...props }) => (
   <ThemeProvider theme={theme}>
-    <Flex
-      align="center"
+    <Box
       fontFamily="body"
       fontWeight="medium"
       fontSize="md"
-      lineHeight="19px"
+      lineHeight="shorter"
     >
-      <Box
-        px="20px"
-        py="22px"
-        borderBottom="2px"
-        borderColor="blue.500"
-        color="blue.500"
-      >
-        Dashboard
-      </Box>
-      <Box px="20px" py="22px" color="gray.400">
-        Project
-      </Box>
-      <Box px="20px" py="22px" color="gray.400">
-        Team
-      </Box>
-      <Box px="20px" py="22px" color="gray.400">
-        Reports
-      </Box>
-    </Flex>
+      <Flex align="center" {...props}>
+        {children}
+      </Flex>
+    </Box>
   </ThemeProvider>
 );
+
+Menu.displayName = Menu;
+
+export { Menu, MenuItem };

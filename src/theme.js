@@ -9,4 +9,8 @@ export default {
     body:
       'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
   },
+  shadows: {
+    ...theme.shadows,
+    menu: 'inset 0px -2px 0px #3182CE',
+  },
 };

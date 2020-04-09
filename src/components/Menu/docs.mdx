@@ -5,10 +5,15 @@ menu: Components
 ---
 
 import { Playground } from 'docz';
-import { Menu } from './';
+import { Menu, MenuItem } from './';
 
 # Menu
 
 <Playground>
-  <Menu />
+  <Menu>
+    <MenuItem isActive>Dashboard</MenuItem>
+    <MenuItem isDisabled>Project</MenuItem>
+    <MenuItem>Team</MenuItem>
+    <MenuItem>Reports</MenuItem>
+  </Menu>
 </Playground>
