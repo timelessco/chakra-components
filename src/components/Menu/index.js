@@ -1,6 +1,14 @@
 /* eslint-disable indent */
 import React, { createContext, useContext, useRef, forwardRef } from 'react';
-import { useColorMode, PseudoBox } from '@chakra-ui/core';
+import {
+  useColorMode,
+  PseudoBox,
+  ColorModeProvider,
+  theme,
+  Box,
+  LightMode,
+  ThemeProvider,
+} from '@chakra-ui/core';
 import { useMenuItemStyle, useMenuListStyle } from './styles';
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -24,7 +32,17 @@ const Menu = ({ children }) => {
   };
 
   return (
-    <MenuContext.Provider value={context}>{children}</MenuContext.Provider>
+    <ThemeProvider theme={theme}>
+      <ColorModeProvider>
+        <Box fontFamily="body">
+          <LightMode>
+            <MenuContext.Provider value={context}>
+              {children}
+            </MenuContext.Provider>
+          </LightMode>
+        </Box>
+      </ColorModeProvider>
+    </ThemeProvider>
   );
 };
 
@@ -53,7 +71,10 @@ PseudoButton.displayName = 'PseudoButton';
 //////////////////////////////////////////////////////////////////////////////////////////
 
 const MenuButton = forwardRef(({ as: Comp = PseudoButton, ...rest }, ref) => {
-  return <Comp ref={ref} {...rest} />;
+  const { buttonRef } = useMenuContext();
+  console.log('%cuseMenuContext', 'color: #1d5673', useMenuContext());
+  console.log('%cbuttonRef', 'color: #f200e2', buttonRef);
+  return <Comp aria-haspopup="menu" ref={ref} {...rest} />;
 });
 
 MenuButton.displayName = 'MenuButton';

@@ -11,25 +11,16 @@ import {
   theme,
   Box,
   Button,
+  LightMode,
 } from '@chakra-ui/core';
 import { Menu, MenuButton } from './';
 
 # Menu
 
 <Playground>
-  <ThemeProvider theme={theme}>
-    <ColorModeProvider>
-      <Box fontFamily="body">
-        <Menu>
-          <MenuButton
-            as={Button}
-            variantColor="whatsapp"
-            rightIcon="chevron-down"
-          >
-            Actions
-          </MenuButton>
-        </Menu>
-      </Box>
-    </ColorModeProvider>
-  </ThemeProvider>
+  <Menu>
+    <MenuButton as={Button} rightIcon="chevron-down">
+      Actions
+    </MenuButton>
+  </Menu>
 </Playground>
