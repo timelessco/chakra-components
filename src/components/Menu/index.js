@@ -182,13 +182,16 @@ const Menu = ({
     colorMode,
   };
 
+  console.log('%cchildren', 'color: #ffa640', children);
   return (
     <ThemeProvider theme={theme}>
       <ColorModeProvider>
         <Box fontFamily="body">
           <LightMode>
             <MenuContext.Provider value={context}>
-              {children}
+              {typeof children === 'function'
+                ? children({ isOpen: _isOpen, onClose: closeMenu })
+                : children}
             </MenuContext.Provider>
           </LightMode>
         </Box>
@@ -234,7 +237,6 @@ const MenuButton = forwardRef(
       openMenu,
       buttonRef,
     } = useMenuContext();
-    console.log('%cuseMenuContext', 'color: #1d5673', useMenuContext());
 
     const menuButtonRef = useForkRef(buttonRef, ref);
 
