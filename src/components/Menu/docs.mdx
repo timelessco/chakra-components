@@ -5,15 +5,31 @@ menu: Components
 ---
 
 import { Playground } from 'docz';
-import { ThemeProvider, theme, Box } from '@chakra-ui/core';
-import { Menu } from './';
+import {
+  ThemeProvider,
+  ColorModeProvider,
+  theme,
+  Box,
+  Button,
+} from '@chakra-ui/core';
+import { Menu, MenuButton } from './';
 
 # Menu
 
 <Playground>
   <ThemeProvider theme={theme}>
-    <Box fontFamily="body">
-      <Menu />
-    </Box>
+    <ColorModeProvider>
+      <Box fontFamily="body">
+        <Menu>
+          <MenuButton
+            as={Button}
+            variantColor="whatsapp"
+            rightIcon="chevron-down"
+          >
+            Actions
+          </MenuButton>
+        </Menu>
+      </Box>
+    </ColorModeProvider>
   </ThemeProvider>
 </Playground>
