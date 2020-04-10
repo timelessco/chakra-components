@@ -13,7 +13,7 @@ import {
   Button,
   LightMode,
 } from '@chakra-ui/core';
-import { Menu, MenuButton } from './';
+import { Menu, MenuButton, MenuList, MenuItem } from './';
 
 # Menu
 
@@ -22,5 +22,9 @@ import { Menu, MenuButton } from './';
     <MenuButton as={Button} rightIcon="chevron-down">
       Actions
     </MenuButton>
+    <MenuList>
+      <MenuItem>Download</MenuItem>
+      <MenuItem>Create a Copy</MenuItem>
+    </MenuList>
   </Menu>
 </Playground>
