@@ -5,15 +5,15 @@ menu: Components
 ---
 
 import { Playground } from 'docz';
-import { Menu, MenuItem } from './';
+import { ThemeProvider, theme, Box } from '@chakra-ui/core';
+import { Menu } from './';
 
 # Menu
 
 <Playground>
-  <Menu>
-    <MenuItem isActive>Dashboard</MenuItem>
-    <MenuItem isDisabled>Project</MenuItem>
-    <MenuItem>Team</MenuItem>
-    <MenuItem>Reports</MenuItem>
-  </Menu>
+  <ThemeProvider theme={theme}>
+    <Box fontFamily="body">
+      <Menu />
+    </Box>
+  </ThemeProvider>
 </Playground>
