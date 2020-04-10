@@ -1,10 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": "packages",
-    "paths": {
-      "helpers/*": ["./helpers/*"],
-      "components/*": ["./components/*"]
-    },
     "module": "commonjs",
     "target": "esnext",
     "jsx": "react"
