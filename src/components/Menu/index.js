@@ -182,7 +182,6 @@ const Menu = ({
     colorMode,
   };
 
-  console.log('%cchildren', 'color: #ffa640', children);
   return (
     <ThemeProvider theme={theme}>
       <ColorModeProvider>
@@ -259,6 +258,9 @@ const MenuButton = forwardRef(
             }
           }
         })}
+        onMouseDown={(event) => {
+          event.preventDefault();
+        }}
         onKeyDown={wrapEvent(onKeyDown, (event) => {
           if (event.key === 'ArrowDown') {
             event.preventDefault();
