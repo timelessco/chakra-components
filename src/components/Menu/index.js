@@ -391,6 +391,7 @@ const MenuList = ({ onKeyDown, onBlur, ...props }) => {
 MenuList.displayName = 'MenuList';
 
 //////////////////////////////////////////////////////////////////////////////////////////
+
 const MenuItem = forwardRef(
   (
     {
@@ -501,4 +502,4 @@ MenuGroup.displayName = 'MenuGroup';
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-export { Menu, MenuButton, MenuList, MenuItem };
+export { Menu, MenuButton, MenuList, MenuItem, MenuDivider, MenuGroup };

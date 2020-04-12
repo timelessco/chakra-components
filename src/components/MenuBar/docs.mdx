@@ -5,42 +5,47 @@ menu: Components
 ---
 
 import { Playground } from 'docz';
-import { Button } from '@chakra-ui/core';
-import { MenuBar, MenuBarItem } from './';
-import { Menu, MenuButton, MenuList, MenuItem } from '../Menu';
+import {
+  MenuBar,
+  MenuBarItem,
+  SubMenu,
+  SubMenuTitle,
+  SubMenuList,
+  SubMenuItem,
+  SubMenuDivider,
+  SubMenuGroup,
+} from './';
 
 # MenuBar
 
 <Playground>
   <MenuBar>
-    <MenuBarItem isActive>
-      <Menu>
-        <MenuButton>About</MenuButton>
-        <MenuList>
-          <MenuItem>Download</MenuItem>
-          <MenuItem>Create a Copy</MenuItem>
-          <MenuItem>Mark as Draft</MenuItem>
-          <MenuItem>Delete</MenuItem>
-          <MenuItem as="a" href="#">
-            Attend a Workshop
-          </MenuItem>
-        </MenuList>
-      </Menu>
-    </MenuBarItem>
+    <MenuBarItem>About</MenuBarItem>
+    <SubMenu>
+      <SubMenuTitle>Sub Menu</SubMenuTitle>
+      <SubMenuList>
+        <SubMenuItem>Downloaded</SubMenuItem>
+        <SubMenuItem>Create a Copyed</SubMenuItem>
+        <SubMenuItem>Mark as Drafted</SubMenuItem>
+        <SubMenuItem>Deleted</SubMenuItem>
+        <SubMenuItem as="a" href="#">
+          Attend a Workshoped
+        </SubMenuItem>
+      </SubMenuList>
+    </SubMenu>
     <MenuBarItem isDisabled>Admissions</MenuBarItem>
-    <MenuBarItem>
-      <Menu>
-        <MenuButton>Academics</MenuButton>
-        <MenuList>
-          <MenuItem>Download</MenuItem>
-          <MenuItem>Create a Copy</MenuItem>
-          <MenuItem>Mark as Draft</MenuItem>
-          <MenuItem>Delete</MenuItem>
-          <MenuItem as="a" href="#">
-            Attend a Workshop
-          </MenuItem>
-        </MenuList>
-      </Menu>
-    </MenuBarItem>
+    <MenuBarItem isActive>Academics</MenuBarItem>
+    <SubMenu>
+      <SubMenuTitle>Sub Menu</SubMenuTitle>
+      <SubMenuList>
+        <SubMenuItem>Download</SubMenuItem>
+        <SubMenuItem>Create a Copy</SubMenuItem>
+        <SubMenuItem>Mark as Draft</SubMenuItem>
+        <SubMenuItem>Delete</SubMenuItem>
+        <SubMenuItem as="a" href="#">
+          Attend a Workshop
+        </SubMenuItem>
+      </SubMenuList>
+    </SubMenu>
   </MenuBar>
 </Playground>
