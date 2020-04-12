@@ -39,6 +39,7 @@ export const useMenuBarItemStyle = ({ isActive, isDisabled }) => {
       }),
       ...(isDisabled && {
         cursor: 'not-allowed',
+        opacity: '40%',
         _hover: {},
         _active: {},
         _focus: {},
@@ -100,6 +101,7 @@ export const useSubMenuTitleStyle = ({ isActive, isDisabled }) => {
       }),
       ...(isDisabled && {
         cursor: 'not-allowed',
+        opacity: '40%',
         _hover: {},
         _active: {},
         _focus: {},
