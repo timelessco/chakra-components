@@ -206,7 +206,7 @@ export function useMenuContext() {
 
   if (context === undefined) {
     throw new Error(
-      'useMenyContext must be used within the MenuContext Provider',
+      'useMenuContext must be used within a MenuContext Provider',
     );
   }
 

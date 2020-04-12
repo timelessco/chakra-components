@@ -5,14 +5,42 @@ menu: Components
 ---
 
 import { Playground } from 'docz';
+import { Button } from '@chakra-ui/core';
 import { MenuBar, MenuBarItem } from './';
+import { Menu, MenuButton, MenuList, MenuItem } from '../Menu';
 
 # MenuBar
 
 <Playground>
   <MenuBar>
-    <MenuBarItem>About</MenuBarItem>
-    <MenuBarItem>Admissions</MenuBarItem>
-    <MenuBarItem>Academics</MenuBarItem>
+    <MenuBarItem isActive>
+      <Menu>
+        <MenuButton>About</MenuButton>
+        <MenuList>
+          <MenuItem>Download</MenuItem>
+          <MenuItem>Create a Copy</MenuItem>
+          <MenuItem>Mark as Draft</MenuItem>
+          <MenuItem>Delete</MenuItem>
+          <MenuItem as="a" href="#">
+            Attend a Workshop
+          </MenuItem>
+        </MenuList>
+      </Menu>
+    </MenuBarItem>
+    <MenuBarItem isDisabled>Admissions</MenuBarItem>
+    <MenuBarItem>
+      <Menu>
+        <MenuButton>Academics</MenuButton>
+        <MenuList>
+          <MenuItem>Download</MenuItem>
+          <MenuItem>Create a Copy</MenuItem>
+          <MenuItem>Mark as Draft</MenuItem>
+          <MenuItem>Delete</MenuItem>
+          <MenuItem as="a" href="#">
+            Attend a Workshop
+          </MenuItem>
+        </MenuList>
+      </Menu>
+    </MenuBarItem>
   </MenuBar>
 </Playground>
