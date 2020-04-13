@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Image, Link, Icon } from '@chakra-ui/core';
-import { Nav, NavBar, NavItem } from './index';
+import { Button, Icon } from '@chakra-ui/core';
+import { Nav, NavBar, NavItem, Menu } from './index';
 import logo from './logo';
 import night from './night';
 import bell from './bell';
@@ -9,7 +9,7 @@ import avatar from './avatar';
 const NavbarComponent = () => {
   const [navBarState, setNavBarState] = useState(false);
   return (
-    <div style={{ background: '#fbf7f7', height: '100vh' }}>
+    <div width="100%" style={{ background: '#fbf7f7', height: '100vh' }}>
       {/* navbar */}
       <NavBar
         isOpen={navBarState}
@@ -22,6 +22,7 @@ const NavbarComponent = () => {
         roundedTop="8px"
         justifyContent="space-between"
         width="100%"
+        position="relative"
       >
         {/* logo */}
         <NavItem alignText="center" ml="2.5rem">
@@ -36,7 +37,7 @@ const NavbarComponent = () => {
           mt={{ base: '4.9rem', md: '0px' }}
           display={{ base: navBarState ? 'flex' : 'none', md: 'flex' }}
           justifyContent={{ base: 'unset', md: 'space-between' }}
-          width="100%"
+          width={{ base: '100%', md: 'inherit' }}
           boxShadow={{
             base:
               '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
@@ -49,7 +50,7 @@ const NavbarComponent = () => {
             fontWeight="500"
             fontSize="1rem"
           >
-            Dashboard
+            <Menu title="Menu" />
           </NavItem>
           <NavItem color="gray.500" fontWeight="500" fontSize="1rem">
             Project

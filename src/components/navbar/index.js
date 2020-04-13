@@ -104,8 +104,17 @@ const NavItem = ({ children, ...props }) => (
   </PseudoBox>
 );
 
+const Menu = ({children, title, ...props}) => {
+
+  return (
+    <PseudoBox {...props}>
+      {typeof children === 'function' ? title() : title}
+    </PseudoBox>
+  )
+}
+
 NavItem.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 };
 
-export { Nav, NavBar, NavItem };
+export { Nav, NavBar, NavItem, Menu };
