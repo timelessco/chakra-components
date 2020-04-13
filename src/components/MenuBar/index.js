@@ -42,9 +42,9 @@ const MenuBarContext = createContext();
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-const PseudoUnorderedList = ({ ...props }) => {
-  return <Flex as="ul" {...props} />;
-};
+const PseudoUnorderedList = forwardRef(({ ...props }, ref) => {
+  return <Flex as="ul" ref={ref} {...props} />;
+});
 
 PseudoUnorderedList.displayName = 'PseudoUnorderedList';
 
@@ -59,7 +59,27 @@ const MenuBar = ({
 }) => {
   const menuBarId = `menubar-${useId()}`;
 
+  const focusableMenuBarItems = useRef(null);
+  const menuBarRef = useRef(null);
+
   const styleProps = useMenuBarStyle();
+
+  useEffect(() => {
+    if (menuBarRef && menuBarRef.current) {
+      let focusables = getFocusables(menuBarRef.current).filter((node) =>
+        ['menuitem', 'menuitemradio', 'menuitemcheckbox'].includes(
+          node.getAttribute('role'),
+        ),
+      );
+
+      focusableMenuBarItems.current = menuBarRef.current ? focusables : [];
+      console.log(
+        '%c focusableMenuBarItems.current',
+        'color: #f2ceb6',
+        focusableMenuBarItems.current,
+      );
+    }
+  }, []);
 
   const context = { props };
 
@@ -71,6 +91,7 @@ const MenuBar = ({
             <MenuBarContext.Provider value={context}>
               <Box as="nav" ariaLabel={ariaLabel}>
                 <Comp
+                  ref={menuBarRef}
                   id={menuBarId}
                   role={role}
                   ariaLabel={ariaLabel}
@@ -345,7 +366,16 @@ SubMenuTitleLink.displayName = 'SubMenuTitleLink';
 //////////////////////////////////////////////////////////////////////////////////////////
 
 const SubMenuTitle = forwardRef(
-  ({ onClick, onKeyDown, as: Comp = SubMenuTitleLink, ...rest }, ref) => {
+  (
+    {
+      onClick,
+      onKeyDown,
+      as: Comp = SubMenuTitleLink,
+      role = 'menuitem',
+      ...rest
+    },
+    ref,
+  ) => {
     const {
       isOpen,
       focusOnLastItem,
@@ -368,6 +398,8 @@ const SubMenuTitle = forwardRef(
         aria-expanded={isOpen}
         id={buttonId}
         ref={menutitleRef}
+        role={role}
+        tabIndex={0}
         onMouseEnter={() => {
           mouseOnSubMenuTitle.current = true;
 
