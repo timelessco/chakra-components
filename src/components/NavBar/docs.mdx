@@ -5,7 +5,7 @@ menu: Components
 ---
 
 import { Playground } from 'docz';
-import { Box, Divider } from "@chakra-ui/core"
+import { Box, Divider, List, ListItem, Image, Text } from "@chakra-ui/core";
 import {
   MenuBar,
   MenuBarItem,
@@ -28,11 +28,56 @@ import {
   <MenuBar>
     <SubMenu>
       <SubMenuTitle>Recipes</SubMenuTitle>
-      <SubMenuList>
-        <SubMenuItem>Downloaded</SubMenuItem>
-        <SubMenuItem>Create a Copyed</SubMenuItem>
-        <SubMenuItem>Mark as Drafted</SubMenuItem>
-        <SubMenuItem>Deleted</SubMenuItem>
+      <SubMenuList display="flex" flexDirection="row" p="1rem" justifyContent="space-between">
+        <SubMenuItem>
+          <List spacing={2} styleType="none">
+            <ListItem>
+              Most Popular
+            </ListItem>
+            <ListItem>
+              Staff Picks
+            </ListItem>
+            <ListItem>
+              Quick and Eazy Dinner
+            </ListItem>
+            <ListItem>
+              Freezer Foods
+            </ListItem>
+            <ListItem>
+              Seafood Selection
+            </ListItem>
+          </List>
+        </SubMenuItem>
+        <SubMenuItem>
+          <Box width="100px" p="1">
+            <Image src="https://picsum.photos/100/150" rounded="md"></Image>
+            <Text>Gluten Free Recipes</Text>
+          </Box>
+        </SubMenuItem>
+        <SubMenuItem>          
+          <Box width="100px" p="1">
+            <Image src="https://picsum.photos/100/150" rounded="md"></Image>
+            <Text>Under 30 minutes</Text>
+          </Box>
+        </SubMenuItem>
+        <SubMenuItem>
+          <Box width="100px" p="1">
+            <Image src="https://picsum.photos/100/150" rounded="md"></Image>
+            <Text>Low Carb Recipes</Text>
+          </Box>
+        </SubMenuItem>
+        <SubMenuItem>
+          <Box width="100px" p="1">
+            <Image src="https://picsum.photos/100/150" rounded="md"></Image>
+            <Text>Crockpot and Instapot</Text>
+          </Box>
+        </SubMenuItem>
+        <SubMenuItem>
+          <Box width="100px" p="1">
+            <Image src="https://picsum.photos/100/150" rounded="md"></Image>
+            <Text>Protein Packed</Text>
+          </Box>
+        </SubMenuItem>
       </SubMenuList>
     </SubMenu>
     <SubMenu>
