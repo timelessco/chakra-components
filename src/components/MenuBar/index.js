@@ -54,9 +54,12 @@ const MenuBar = ({
   children,
   role = 'menubar',
   ariaLabel,
+  defaultActiveIndex,
   as: Comp = PseudoUnorderedList,
   ...props
 }) => {
+  const [activeIndex, setActiveIndex] = useState(defaultActiveIndex || -1);
+
   const menuBarId = `menubar-${useId()}`;
 
   const focusableMenuBarItems = useRef(null);
@@ -73,15 +76,55 @@ const MenuBar = ({
       );
 
       focusableMenuBarItems.current = menuBarRef.current ? focusables : [];
-      console.log(
-        '%c focusableMenuBarItems.current',
-        'color: #f2ceb6',
-        focusableMenuBarItems.current,
-      );
+      initTabIndex();
     }
   }, []);
 
-  const context = { props };
+  useEffect(() => {
+    if (activeIndex !== -1) {
+      focusableMenuBarItems.current[activeIndex] &&
+        focusableMenuBarItems.current[activeIndex].focus();
+
+      updateTabIndex(activeIndex);
+    }
+  }, [activeIndex]);
+
+  const initTabIndex = () => {
+    focusableMenuBarItems.current.forEach(
+      ({ node, index }) => index === 0 && node.setAttribute('tabindex', 0),
+    );
+  };
+
+  const updateTabIndex = (index) => {
+    if (focusableMenuBarItems.current.length > 0) {
+      let nodeAtIndex = focusableMenuBarItems.current[index];
+
+      focusableMenuBarItems.current.forEach((node) => {
+        if (node !== nodeAtIndex) {
+          node.setAttribute('tabindex', -1);
+        }
+      });
+
+      nodeAtIndex.setAttribute('tabindex', 0);
+    }
+  };
+
+  const resetTabIndex = () => {
+    if (focusableMenuBarItems.current) {
+      focusableMenuBarItems.current.forEach((node) =>
+        node.setAttribute('tabindex', -1),
+      );
+    }
+  };
+
+  const context = {
+    focusableMenuBarItems,
+    activeIndex,
+    setActiveIndex,
+    initTabIndex,
+    updateTabIndex,
+    resetTabIndex,
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -97,6 +140,11 @@ const MenuBar = ({
                   ariaLabel={ariaLabel}
                   {...styleProps}
                   {...props}
+                  onFocus={() => {
+                    if (activeIndex === -1) {
+                      setActiveIndex(0);
+                    }
+                  }}
                 >
                   {children}
                 </Comp>
@@ -142,6 +190,8 @@ MenuBarItemLink.displayName = 'MenuBarItemLink';
 const MenuBarItem = forwardRef(
   (
     {
+      onKeyDown,
+      onClick,
       isActive,
       isDisabled,
       role = 'menuitem',
@@ -150,6 +200,45 @@ const MenuBarItem = forwardRef(
     },
     ref,
   ) => {
+    const {
+      focusableMenuBarItems,
+      activeIndex: index,
+      setActiveIndex,
+    } = useMenuBarContext();
+
+    const handleKeyDown = (event) => {
+      const count = focusableMenuBarItems.current.length;
+      let nextIndex;
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        nextIndex = (index + 1) % count;
+        setActiveIndex(nextIndex);
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        nextIndex = (index - 1 + count) % count;
+        setActiveIndex(nextIndex);
+      } else if (event.key === 'Home') {
+        setActiveIndex(0);
+      } else if (event.key === 'End') {
+        setActiveIndex(focusableMenuBarItems.current.length - 1);
+      }
+
+      // Set focus based on first character
+      if (/^[a-z0-9_-]$/i.test(event.key)) {
+        event.stopPropagation();
+        event.preventDefault();
+        let foundNode = focusableMenuBarItems.current.find((item) =>
+          item.textContent.toLowerCase().startsWith(event.key),
+        );
+        if (foundNode) {
+          nextIndex = focusableMenuBarItems.current.indexOf(foundNode);
+          setActiveIndex(nextIndex);
+        }
+      }
+
+      onKeyDown && onKeyDown(event);
+    };
+
     return (
       <PseudoBox as="li" role="none" display="flex" alignItems="center">
         <Comp
@@ -157,6 +246,23 @@ const MenuBarItem = forwardRef(
           role={role}
           tabIndex={0}
           aria-disabled={isDisabled}
+          onKeyDown={handleKeyDown}
+          onClick={wrapEvent(onClick, (event) => {
+            if (isDisabled) {
+              event.stopPropagation();
+              event.preventDefault();
+              return;
+            }
+            if (
+              focusableMenuBarItems &&
+              focusableMenuBarItems.current.length > 0
+            ) {
+              let nextIndex = focusableMenuBarItems.current.indexOf(
+                event.currentTarget,
+              );
+              setActiveIndex(nextIndex);
+            }
+          })}
           {...props}
         />
       </PseudoBox>
@@ -368,8 +474,12 @@ SubMenuTitleLink.displayName = 'SubMenuTitleLink';
 const SubMenuTitle = forwardRef(
   (
     {
+      isDisabled,
       onClick,
       onKeyDown,
+      onMouseLeave,
+      onMouseEnter,
+      onMouseDown,
       as: Comp = SubMenuTitleLink,
       role = 'menuitem',
       ...rest
@@ -388,7 +498,79 @@ const SubMenuTitle = forwardRef(
       mouseOnSubMenuTitle,
       mouseOnSubMenuList,
     } = useSubMenuContext();
-    console.log('%cuseSubMenuContext()', 'color: #bfffc8', useSubMenuContext());
+
+    const {
+      focusableMenuBarItems,
+      activeIndex: index,
+      setActiveIndex,
+      resetTabIndex,
+    } = useMenuBarContext();
+
+    const handleKeyDown = (event) => {
+      const count = focusableMenuBarItems.current.length;
+      let nextIndex;
+
+      if (isDisabled) return;
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        focusOnFirstItem();
+        resetTabIndex();
+      }
+
+      if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        focusOnLastItem();
+      }
+
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        nextIndex = (index + 1) % count;
+        setActiveIndex(nextIndex);
+      }
+
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        nextIndex = (index - 1 + count) % count;
+        setActiveIndex(nextIndex);
+      }
+
+      if (event.key === 'Home') {
+        setActiveIndex(0);
+      }
+
+      if (event.key === 'End') {
+        setActiveIndex(focusableMenuBarItems.current.length - 1);
+      }
+
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+
+        if (isOpen) {
+          closeMenu();
+        } else {
+          if (autoSelect) {
+            focusOnFirstItem();
+          } else {
+            openMenu();
+          }
+        }
+      }
+
+      // Set focus based on first character
+      if (/^[a-z0-9_-]$/i.test(event.key)) {
+        event.stopPropagation();
+        event.preventDefault();
+        let foundNode = focusableMenuBarItems.current.find((item) =>
+          item.textContent.toLowerCase().startsWith(event.key),
+        );
+        if (foundNode) {
+          nextIndex = focusableMenuBarItems.current.indexOf(foundNode);
+          setActiveIndex(nextIndex);
+        }
+      }
+
+      onKeyDown && onKeyDown(event);
+    };
 
     const menutitleRef = useForkRef(titleRef, ref);
 
@@ -400,6 +582,22 @@ const SubMenuTitle = forwardRef(
         ref={menutitleRef}
         role={role}
         tabIndex={0}
+        onClick={wrapEvent(onClick, (event) => {
+          if (isDisabled) {
+            event.stopPropagation();
+            event.preventDefault();
+            return;
+          }
+          if (
+            focusableMenuBarItems &&
+            focusableMenuBarItems.current.length > 0
+          ) {
+            let nextIndex = focusableMenuBarItems.current.indexOf(
+              event.currentTarget,
+            );
+            setActiveIndex(nextIndex);
+          }
+        })}
         onMouseEnter={() => {
           mouseOnSubMenuTitle.current = true;
 
@@ -409,7 +607,7 @@ const SubMenuTitle = forwardRef(
             openMenu();
           }
         }}
-        onMouseLeave={() => {
+        onMouseLeave={wrapEvent(onMouseLeave, () => {
           mouseOnSubMenuTitle.current = false;
 
           setTimeout(() => {
@@ -417,21 +615,11 @@ const SubMenuTitle = forwardRef(
               closeMenu();
             }
           }, 150);
-        }}
-        onMouseDown={(event) => {
-          event.preventDefault();
-        }}
-        onKeyDown={wrapEvent(onKeyDown, (event) => {
-          if (event.key === 'ArrowDown') {
-            event.preventDefault();
-            focusOnFirstItem();
-          }
-
-          if (event.key === 'ArrowUp') {
-            event.preventDefault();
-            focusOnLastItem();
-          }
         })}
+        onMouseDown={wrapEvent(onMouseDown, (event) => {
+          event.preventDefault();
+        })}
+        onKeyDown={handleKeyDown}
         {...rest}
       />
     );
@@ -468,6 +656,7 @@ const SubMenuList = ({
   const handleKeyDown = (event) => {
     const count = focusableItems.current.length;
     let nextIndex;
+
     if (event.key === 'ArrowDown') {
       event.preventDefault();
       nextIndex = (index + 1) % count;
@@ -613,6 +802,12 @@ const SubMenuItem = forwardRef(
       closeMenu,
     } = useSubMenuContext();
 
+    const {
+      focusableMenuBarItems,
+      activeIndex: index,
+      setActiveIndex,
+    } = useMenuBarContext();
+
     return (
       <PseudoBox as="li" role="none" display="flex" alignItems="center">
         <Comp
@@ -670,6 +865,23 @@ const SubMenuItem = forwardRef(
               if (closeOnSelect) {
                 closeMenu();
               }
+            }
+
+            const menuBarItemscount = focusableMenuBarItems.current.length;
+            let nextIndex;
+
+            if (event.key === 'ArrowRight') {
+              event.preventDefault();
+              nextIndex = (index + 1) % menuBarItemscount;
+              setActiveIndex(nextIndex);
+              closeMenu();
+            }
+
+            if (event.key === 'ArrowLeft') {
+              event.preventDefault();
+              nextIndex = (index - 1 + menuBarItemscount) % menuBarItemscount;
+              setActiveIndex(nextIndex);
+              closeMenu();
             }
           })}
           {...props}
