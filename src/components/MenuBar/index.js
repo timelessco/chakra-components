@@ -69,7 +69,7 @@ const MenuBar = ({
         <Box fontFamily="body">
           <LightMode>
             <MenuBarContext.Provider value={context}>
-              <Box as="nav" position="relative" ariaLabel={ariaLabel}>
+              <Box as="nav" ariaLabel={ariaLabel}>
                 <Comp
                   id={menuBarId}
                   role={role}

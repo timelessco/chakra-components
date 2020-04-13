@@ -14,6 +14,7 @@ export const useMenuBarStyle = () => {
 export const useMenuBarItemStyle = ({ isActive, isDisabled }) => {
   const baseProps = () => {
     return {
+      fontSize: '14px',
       cursor: 'pointer',
       display: 'flex',
       alignItems: 'center',
@@ -21,13 +22,13 @@ export const useMenuBarItemStyle = ({ isActive, isDisabled }) => {
       color: 'inherit',
       textAlign: 'left',
       outline: 'none',
-      px: 4,
+      px: 2,
     };
   };
 
   const themeProps = ({ isActive, isDisabled }) => {
     return {
-      p: 5,
+      mx: '.2rem',
       color: 'gray.700',
       _hover: {
         shadow: 'inset 0px -2px 0px #ff5d51;',
@@ -81,13 +82,13 @@ export const useSubMenuTitleStyle = ({ isActive, isDisabled }) => {
       color: 'inherit',
       textAlign: 'left',
       outline: 'none',
-      px: 4,
+      // px: 4,
     };
   };
 
   const themeProps = ({ isActive, isDisabled }) => {
     return {
-      p: 5,
+      // p: 5,
       color: 'gray.700',
       _hover: {
         shadow: 'inset 0px -2px 0px #ff5d51;',
