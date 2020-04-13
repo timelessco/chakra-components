@@ -18,6 +18,8 @@ import {
   useColorMode,
   Text,
   Divider,
+  Link,
+  Icon,
 } from '@chakra-ui/core';
 import { useId } from '@reach/auto-id';
 
@@ -26,11 +28,12 @@ import {
   getFocusables,
   wrapEvent,
 } from '@chakra-ui/core/dist/utils';
-import { useMenuBarStyle, useMenuBarItemStyle } from './styles';
 import {
-  useMenuListStyle,
+  useMenuBarStyle,
+  useMenuBarItemStyle,
   useMenuItemStyle,
-} from '@chakra-ui/core/dist/Menu/styles';
+} from './styles';
+import { useMenuListStyle } from '@chakra-ui/core/dist/Menu/styles';
 import Popper from '@chakra-ui/core/dist/Popper';
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -39,7 +42,21 @@ const MenuBarContext = createContext();
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-const MenuBar = ({ children, role = 'menubar', ariaLabel, ...props }) => {
+const PseudoUnorderedList = ({ ...props }) => {
+  return <Flex as="ul" {...props} />;
+};
+
+PseudoUnorderedList.displayName = 'PseudoUnorderedList';
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+const MenuBar = ({
+  children,
+  role = 'menubar',
+  ariaLabel,
+  as: Comp = PseudoUnorderedList,
+  ...props
+}) => {
   const menuBarId = `menubar-${useId()}`;
 
   const styleProps = useMenuBarStyle();
@@ -53,7 +70,7 @@ const MenuBar = ({ children, role = 'menubar', ariaLabel, ...props }) => {
           <LightMode>
             <MenuBarContext.Provider value={context}>
               <Box as="nav" position="relative" ariaLabel={ariaLabel}>
-                <Flex
+                <Comp
                   id={menuBarId}
                   role={role}
                   ariaLabel={ariaLabel}
@@ -61,7 +78,7 @@ const MenuBar = ({ children, role = 'menubar', ariaLabel, ...props }) => {
                   {...props}
                 >
                   {children}
-                </Flex>
+                </Comp>
               </Box>
             </MenuBarContext.Provider>
           </LightMode>
@@ -89,27 +106,44 @@ const useMenuBarContext = () => {
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-const MenuBarItem = forwardRef(
-  ({ isActive, isDisabled, role = 'menuitem', ...props }, ref) => {
-    const context = useMenuBarContext();
-    console.log('%ccontext', 'color: #f2ceb6', context);
-
+const MenuBarItemLink = forwardRef(
+  ({ isActive, isDisabled, ...props }, ref) => {
     const stylePropsArgs = { isActive, isDisabled };
 
     const styleProps = useMenuBarItemStyle(stylePropsArgs);
+    return <Link ref={ref} {...styleProps} {...props} />;
+  },
+);
 
+MenuBarItemLink.displayName = 'MenuBarItemLink';
+
+//////////////////////////////////////////////////////////////////////////////////////////
+const MenuBarItem = forwardRef(
+  (
+    {
+      isActive,
+      isDisabled,
+      role = 'menuitem',
+      as: Comp = MenuBarItemLink,
+      ...props
+    },
+    ref,
+  ) => {
     return (
-      <PseudoBox
-        ref={ref}
-        role={role}
-        tabIndex={0}
-        aria-disabled={isDisabled}
-        {...styleProps}
-        {...props}
-      />
+      <PseudoBox as="li" role="none" display="flex" alignItems="center">
+        <Comp
+          ref={ref}
+          role={role}
+          tabIndex={0}
+          aria-disabled={isDisabled}
+          {...props}
+        />
+      </PseudoBox>
     );
   },
 );
+
+MenuBarItem.displayName = 'MenuBarItem';
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -141,7 +175,7 @@ const SubMenu = ({
 
   const focusableItems = useRef(null);
   const menuRef = useRef(null);
-  const buttonRef = useRef(null);
+  const titleRef = useRef(null);
   const mouseOnSubMenuTitle = useRef(false);
   const mouseOnSubMenuList = useRef(false);
 
@@ -168,13 +202,13 @@ const SubMenu = ({
     }
 
     if (activeIndex === -1 && !_isOpen && wasPreviouslyOpen) {
-      buttonRef.current && buttonRef.current.focus();
+      titleRef.current && titleRef.current.focus();
     }
 
     if (activeIndex === -1 && _isOpen) {
       menuRef.current && menuRef.current.focus();
     }
-  }, [activeIndex, _isOpen, buttonRef, menuRef, wasPreviouslyOpen]);
+  }, [activeIndex, _isOpen, titleRef, menuRef, wasPreviouslyOpen]);
 
   const initTabIndex = () => {
     focusableItems.current.forEach(
@@ -248,7 +282,7 @@ const SubMenu = ({
     focusOnLastItem,
     focusOnFirstItem,
     closeMenu,
-    buttonRef,
+    titleRef,
     menuRef,
     focusableItems,
     placement,
@@ -265,9 +299,11 @@ const SubMenu = ({
 
   return (
     <SubMenuContext.Provider value={context}>
-      {typeof children === 'function'
-        ? children({ isOpen: _isOpen, onClose: closeMenu })
-        : children}
+      <PseudoBox as="li" role="none" display="flex">
+        {typeof children === 'function'
+          ? children({ isOpen: _isOpen, onClose: closeMenu })
+          : children}
+      </PseudoBox>
     </SubMenuContext.Provider>
   );
 };
@@ -288,46 +324,50 @@ export function useSubMenuContext() {
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-const PseudoButton = forwardRef(({ isActive, isDisabled, ...props }, ref) => {
-  const stylePropsArgs = { isActive, isDisabled };
+const SubMenuTitleLink = forwardRef(
+  ({ isActive, isDisabled, children, ...props }, ref) => {
+    const stylePropsArgs = { isActive, isDisabled };
 
-  const styleProps = useMenuBarItemStyle(stylePropsArgs);
-  return <PseudoBox ref={ref} {...styleProps} {...props} />;
-});
+    const styleProps = useMenuBarItemStyle(stylePropsArgs);
+    return (
+      <React.Fragment>
+        <Link ref={ref} {...styleProps} {...props}>
+          {children}
+          <Icon ml="1" name="chevron-down" color="#ff5d51" />
+        </Link>
+      </React.Fragment>
+    );
+  },
+);
 
-PseudoButton.displayName = 'PseudoButton';
+SubMenuTitleLink.displayName = 'SubMenuTitleLink';
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
 const SubMenuTitle = forwardRef(
-  ({ onClick, onKeyDown, as: Comp = PseudoButton, ...rest }, ref) => {
+  ({ onClick, onKeyDown, as: Comp = SubMenuTitleLink, ...rest }, ref) => {
     const {
       isOpen,
       focusOnLastItem,
       focusOnFirstItem,
       closeMenu,
-      menuId,
       buttonId,
       autoSelect,
       openMenu,
-      buttonRef,
+      titleRef,
       mouseOnSubMenuTitle,
       mouseOnSubMenuList,
     } = useSubMenuContext();
+    console.log('%cuseSubMenuContext()', 'color: #bfffc8', useSubMenuContext());
 
-    console.log(useSubMenuContext());
-    const menuButtonRef = useForkRef(buttonRef, ref);
+    const menutitleRef = useForkRef(titleRef, ref);
 
     return (
       <Comp
-        aria-haspopup="menu"
+        aria-haspopup="true"
         aria-expanded={isOpen}
-        aria-controls={menuId}
         id={buttonId}
-        role="button"
-        ref={menuButtonRef}
-        tabIndex={0}
-        top="100px"
+        ref={menutitleRef}
         onMouseEnter={() => {
           mouseOnSubMenuTitle.current = true;
 
@@ -370,7 +410,13 @@ SubMenuTitle.displayName = 'SubMenuTitle';
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-const SubMenuList = ({ onKeyDown, onBlur, ...props }) => {
+const SubMenuList = ({
+  onKeyDown,
+  onBlur,
+  as: Comp = 'ul',
+  ariaLabel,
+  ...props
+}) => {
   const {
     activeIndex: index,
     isOpen,
@@ -379,9 +425,7 @@ const SubMenuList = ({ onKeyDown, onBlur, ...props }) => {
     focusOnLastItem,
     closeMenu,
     focusableItems,
-    buttonRef,
-    menuId,
-    buttonId,
+    titleRef,
     menuRef,
     closeOnBlur,
     placement,
@@ -432,9 +476,9 @@ const SubMenuList = ({ onKeyDown, onBlur, ...props }) => {
       closeOnBlur &&
       isOpen &&
       menuRef.current &&
-      buttonRef.current &&
+      titleRef.current &&
       !menuRef.current.contains(event.relatedTarget) &&
-      !buttonRef.current.contains(event.relatedTarget)
+      !titleRef.current.contains(event.relatedTarget)
     ) {
       closeMenu();
     }
@@ -452,9 +496,10 @@ const SubMenuList = ({ onKeyDown, onBlur, ...props }) => {
 
   return (
     <Popper
+      as={Comp}
       usePortal={false}
       isOpen={isOpen}
-      anchorEl={buttonRef.current}
+      anchorEl={titleRef.current}
       placement={placement}
       modifiers={{
         preventOverflow: {
@@ -473,9 +518,8 @@ const SubMenuList = ({ onKeyDown, onBlur, ...props }) => {
       role="menu"
       marginTop="0 !important"
       ref={menuRef}
-      id={menuId}
       py={2}
-      aria-labelledby={buttonId}
+      aria-label={ariaLabel}
       onMouseEnter={() => {
         mouseOnSubMenuList.current = true;
       }}
@@ -507,6 +551,15 @@ SubMenuList.displayName = 'SubMenuList';
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
+const SubMenuItemLink = forwardRef((props, ref) => {
+  const styleProps = useMenuItemStyle();
+  return <Link ref={ref} {...props} {...styleProps} />;
+});
+
+SubMenuItemLink.displayName = 'SubMenuItemLink';
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
 const SubMenuItem = forwardRef(
   (
     {
@@ -516,6 +569,7 @@ const SubMenuItem = forwardRef(
       onMouseEnter,
       onKeyDown,
       role = 'menuitem',
+      as: Comp = SubMenuItemLink,
       ...props
     },
     ref,
@@ -527,69 +581,68 @@ const SubMenuItem = forwardRef(
       closeMenu,
     } = useSubMenuContext();
 
-    const styleProps = useMenuItemStyle();
-
     return (
-      <PseudoBox
-        as="button"
-        ref={ref}
-        display="flex"
-        textDecoration="none"
-        color="inherit"
-        minHeight="32px"
-        alignItems="center"
-        textAlign="left"
-        outline="none"
-        px={4}
-        role={role}
-        tabIndex={-1}
-        disabled={isDisabled}
-        aria-disabled={isDisabled}
-        onClick={wrapEvent(onClick, (event) => {
-          if (isDisabled) {
-            event.stopPropagation();
-            event.preventDefault();
-            return;
-          }
-          if (closeOnSelect) {
-            closeMenu();
-          }
-        })}
-        onMouseEnter={wrapEvent(onMouseEnter, (event) => {
-          if (isDisabled) {
-            event.stopPropagation();
-            event.preventDefault();
-            return;
-          }
-          if (
-            focusableItems &&
-            focusableItems.current &&
-            focusableItems.current.length > 0
-          ) {
-            let nextIndex = focusableItems.current.indexOf(event.currentTarget);
-            focusAtIndex(nextIndex);
-          }
-        })}
-        onMouseLeave={wrapEvent(onMouseLeave, () => {
-          focusAtIndex(-1);
-        })}
-        onKeyDown={wrapEvent(onKeyDown, (event) => {
-          if (isDisabled) return;
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-
-            if (onClick) {
-              onClick();
+      <PseudoBox as="li" role="none" display="flex" alignItems="center">
+        <Comp
+          ref={ref}
+          display="flex"
+          textDecoration="none"
+          color="inherit"
+          minHeight="32px"
+          alignItems="center"
+          textAlign="left"
+          outline="none"
+          px={4}
+          role={role}
+          tabIndex={-1}
+          aria-disabled={isDisabled}
+          onClick={wrapEvent(onClick, (event) => {
+            if (isDisabled) {
+              event.stopPropagation();
+              event.preventDefault();
+              return;
             }
-
             if (closeOnSelect) {
               closeMenu();
             }
-          }
-        })}
-        {...styleProps}
-        {...props}
-      />
+          })}
+          onMouseEnter={wrapEvent(onMouseEnter, (event) => {
+            if (isDisabled) {
+              event.stopPropagation();
+              event.preventDefault();
+              return;
+            }
+            if (
+              focusableItems &&
+              focusableItems.current &&
+              focusableItems.current.length > 0
+            ) {
+              let nextIndex = focusableItems.current.indexOf(
+                event.currentTarget,
+              );
+              focusAtIndex(nextIndex);
+            }
+          })}
+          onMouseLeave={wrapEvent(onMouseLeave, () => {
+            focusAtIndex(-1);
+          })}
+          onKeyDown={wrapEvent(onKeyDown, (event) => {
+            if (isDisabled) return;
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+
+              if (onClick) {
+                onClick();
+              }
+
+              if (closeOnSelect) {
+                closeMenu();
+              }
+            }
+          })}
+          {...props}
+        />
+      </PseudoBox>
     );
   },
 );
