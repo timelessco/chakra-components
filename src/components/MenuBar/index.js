@@ -52,7 +52,7 @@ const MenuBar = ({ children, role = 'menubar', ariaLabel, ...props }) => {
         <Box fontFamily="body">
           <LightMode>
             <MenuBarContext.Provider value={context}>
-              <Box as="nav" ariaLabel={ariaLabel}>
+              <Box as="nav" position="relative" ariaLabel={ariaLabel}>
                 <Flex
                   id={menuBarId}
                   role={role}
@@ -319,6 +319,7 @@ const SubMenuTitle = forwardRef(
         id={buttonId}
         role="button"
         ref={menuButtonRef}
+        tabIndex={0}
         top="100px"
         onMouseEnter={() => {
           if (autoSelect) {
@@ -429,6 +430,12 @@ const SubMenuList = ({ onKeyDown, onBlur, ...props }) => {
 
   const styleProps = useMenuListStyle();
 
+  function fixedWidth(data) {
+    const newData = data;
+    newData.offsets.popper.left = 0;
+    return newData;
+  }
+
   return (
     <Popper
       usePortal={false}
@@ -440,10 +447,17 @@ const SubMenuList = ({ onKeyDown, onBlur, ...props }) => {
           enabled: true,
           boundariesElement: 'viewport',
         },
+        fixedWidth: {
+          enabled: true,
+          fn: fixedWidth,
+          order: 840,
+        },
       }}
       minW="3xs"
+      width="full"
       rounded="md"
       role="menu"
+      marginTop="0 !important"
       ref={menuRef}
       id={menuId}
       py={2}
