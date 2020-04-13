@@ -142,6 +142,8 @@ const SubMenu = ({
   const focusableItems = useRef(null);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
+  const mouseOnSubMenuTitle = useRef(false);
+  const mouseOnSubMenuList = useRef(false);
 
   const { colorMode } = useColorMode();
 
@@ -257,6 +259,8 @@ const SubMenu = ({
     closeOnSelect,
     closeOnBlur,
     colorMode,
+    mouseOnSubMenuTitle,
+    mouseOnSubMenuList,
   };
 
   return (
@@ -307,8 +311,11 @@ const SubMenuTitle = forwardRef(
       autoSelect,
       openMenu,
       buttonRef,
+      mouseOnSubMenuTitle,
+      mouseOnSubMenuList,
     } = useSubMenuContext();
 
+    console.log(useSubMenuContext());
     const menuButtonRef = useForkRef(buttonRef, ref);
 
     return (
@@ -322,17 +329,23 @@ const SubMenuTitle = forwardRef(
         tabIndex={0}
         top="100px"
         onMouseEnter={() => {
+          mouseOnSubMenuTitle.current = true;
+
           if (autoSelect) {
             focusOnFirstItem();
           } else {
             openMenu();
           }
         }}
-        // onMouseLeave={() => {
-        //   if (isOpen) {
-        //     closeMenu();
-        //   }
-        // }}
+        onMouseLeave={() => {
+          mouseOnSubMenuTitle.current = false;
+
+          setTimeout(() => {
+            if (!mouseOnSubMenuTitle.current && !mouseOnSubMenuList.current) {
+              closeMenu();
+            }
+          }, 150);
+        }}
         onMouseDown={(event) => {
           event.preventDefault();
         }}
@@ -372,8 +385,9 @@ const SubMenuList = ({ onKeyDown, onBlur, ...props }) => {
     menuRef,
     closeOnBlur,
     placement,
+    mouseOnSubMenuTitle,
+    mouseOnSubMenuList,
   } = useSubMenuContext();
-  console.log('%cbuttonRef', 'color: #00b300', buttonRef);
 
   const handleKeyDown = (event) => {
     const count = focusableItems.current.length;
@@ -462,6 +476,18 @@ const SubMenuList = ({ onKeyDown, onBlur, ...props }) => {
       id={menuId}
       py={2}
       aria-labelledby={buttonId}
+      onMouseEnter={() => {
+        mouseOnSubMenuList.current = true;
+      }}
+      onMouseLeave={() => {
+        mouseOnSubMenuList.current = false;
+
+        setTimeout(() => {
+          if (!mouseOnSubMenuTitle.current && !mouseOnSubMenuList.current) {
+            closeMenu();
+          }
+        }, 150);
+      }}
       onKeyDown={handleKeyDown}
       onBlur={handleBlur}
       tabIndex={-1}
