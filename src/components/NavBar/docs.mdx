@@ -1,0 +1,83 @@
+---
+name: NavBar
+route: /components/navbar
+menu: Components
+---
+
+import { Playground } from 'docz';
+import { Box, Divider } from "@chakra-ui/core"
+import {
+  MenuBar,
+  MenuBarItem,
+  SubMenu,
+  SubMenuTitle,
+  SubMenuList,
+  SubMenuItem,
+  SubMenuDivider,
+  SubMenuGroup,
+} from '../MenuBar';
+
+# NavBar
+
+<Playground>
+  <MenuBar>
+    {/* logo */}
+    <MenuBarItem>
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" className="mob-brand-logo"><path className="brandLogo" d="M17.9998 0C8.05877 0 0 8.05846 0 18C0 27.9407 8.05877 36 17.9998 36C27.9408 36 35.9996 27.9407 35.9996 18C36 8.05846 27.9412 0 17.9998 0ZM26.8768 28.2238H22.3923C21.6297 28.2238 21.0116 27.6012 21.0116 26.8329V26.1309C20.1025 27.3623 18.6053 28.718 16.2313 28.718C12.6738 28.718 9.12283 25.8437 9.12283 20.6019C9.12283 14.8487 13.161 11.6266 16.9541 11.6266C18.9428 11.6266 20.2621 12.5246 21.0116 13.6631V8.98466C21.0116 8.22046 20.6156 7.80522 19.8137 7.80522V6.04077L24.1935 5.57154C24.9872 5.48644 25.6789 6.11318 25.6789 6.91748V12.3205H25.6793L25.6789 25.2795C25.6789 26.0441 26.0749 26.459 26.8768 26.459V28.2238Z" fill="#FF5D51"></path><path className="brandLogo" d="M21.0111 18.223L21.0001 18.0405C21.0001 15.7013 19.7446 14.1156 18.2984 14.1156C16.4722 14.1156 14.689 16.245 14.689 20.6661C14.689 23.6137 15.8786 25.5324 17.6774 25.5324C19.3482 25.5324 20.3885 24.4335 21.0119 23.3682V20.833H21.0115L21.0111 18.223Z" fill="#FF5D51"></path></svg>
+    </MenuBarItem>
+    <SubMenu>
+      <SubMenuTitle>Recipes</SubMenuTitle>
+      <SubMenuList>
+        <SubMenuItem>Downloaded</SubMenuItem>
+        <SubMenuItem>Create a Copyed</SubMenuItem>
+        <SubMenuItem>Mark as Drafted</SubMenuItem>
+        <SubMenuItem>Deleted</SubMenuItem>
+      </SubMenuList>
+    </SubMenu>
+    <SubMenu>
+      <SubMenuTitle>Meal Plans</SubMenuTitle>
+      <SubMenuList>
+        <SubMenuItem>Downloaded</SubMenuItem>
+        <SubMenuItem>Create a Copyed</SubMenuItem>
+        <SubMenuItem>Mark as Drafted</SubMenuItem>
+        <SubMenuItem>Deleted</SubMenuItem>
+      </SubMenuList>
+    </SubMenu>
+    <MenuBarItem>My Calendar</MenuBarItem>
+    <MenuBarItem>Grocery List</MenuBarItem>
+    <SubMenu>
+      <SubMenuTitle>Workouts</SubMenuTitle>
+      <SubMenuList>
+        <SubMenuItem>Downloaded</SubMenuItem>
+        <SubMenuItem>Create a Copyed</SubMenuItem>
+        <SubMenuItem>Mark as Drafted</SubMenuItem>
+        <SubMenuItem>Deleted</SubMenuItem>
+      </SubMenuList>
+    </SubMenu>
+    <SubMenu>
+      <SubMenuTitle>Videos</SubMenuTitle>
+      <SubMenuList>
+        <SubMenuItem>Downloaded</SubMenuItem>
+        <SubMenuItem>Create a Copyed</SubMenuItem>
+        <SubMenuItem>Mark as Drafted</SubMenuItem>
+        <SubMenuItem>Deleted</SubMenuItem>
+      </SubMenuList>
+    </SubMenu>
+    <SubMenu>
+      <SubMenuTitle>Blog</SubMenuTitle>
+      <SubMenuList>
+        <SubMenuItem>Downloaded</SubMenuItem>
+        <SubMenuItem>Create a Copyed</SubMenuItem>
+        <SubMenuItem>Mark as Drafted</SubMenuItem>
+        <SubMenuItem>Deleted</SubMenuItem>
+      </SubMenuList>
+    </SubMenu>
+    <Divider orientation="vertical" />
+    <MenuBarItem>
+      <Box mx=".6rem">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="19" stroke="#EEEEEE" strokeWidth="2"></circle><g opacity="0.4"><path d="M20 8C13.3726 8 8 13.3723 8 20C8 26.6272 13.3726 32 20 32C26.6274 32 32 26.6272 32 20C32.0003 13.3723 26.6277 8 20 8ZM25.918 26.8159H22.9283C22.42 26.8159 22.0079 26.4008 22.0079 25.8886V25.4206C21.4019 26.2415 20.4036 27.1453 18.821 27.1453C16.4493 27.1453 14.082 25.2291 14.082 21.7346C14.082 17.8991 16.7741 15.7511 19.3029 15.7511C20.6287 15.7511 21.5082 16.3497 22.0079 17.1088V13.9898C22.0079 13.4803 21.7439 13.2035 21.2093 13.2035V12.0272L24.1292 11.7144C24.6583 11.6576 25.1195 12.0755 25.1195 12.6117V24.853C25.1195 25.3628 25.3835 25.6393 25.918 25.6393V26.8159Z" fill="#888888"></path><path d="M22.0076 20.1486L22.0002 20.027C22.0002 18.4675 21.1632 17.4104 20.1991 17.4104C18.9816 17.4104 17.7928 18.83 17.7928 21.7774C17.7928 23.7424 18.5859 25.0216 19.7851 25.0216C20.8989 25.0216 21.5925 24.289 22.0081 23.5788L22.0076 20.1486Z" fill="#888888"></path></g></svg>
+      </Box>
+      <Box>Sandeep Prabhakaran</Box>
+    </MenuBarItem>
+  </MenuBar>
+</Playground>
