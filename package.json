@@ -6,13 +6,14 @@
     "docs"
   ],
   "scripts": {
-    "commit": "git-cz",
-    "postinstall": "yarn build",
-    "clean": "git clean -fdx .",
-    "bootstrap": "yarn clean && lerna bootstrap --use-workspaces",
+    "boot": "yarn install && yarn bootstrap && yarn build",
     "docs": "yarn workspace @chakra-components/docs dev",
+    "bootstrap": "yarn clean && lerna bootstrap --use-workspaces",
     "build": "yarn workspace @chakra-components/core build",
+    "commit": "git-cz",
+    "version": "lerna version --no-push",
     "release": "lerna publish",
+    "clean": "lerna clean --yes",
     "lint": "yarn workspace @chakra-components/core eslint src",
     "prettier": "prettier \"**/**/**/*.+(js|json|jsx|ts|tsx|md|mdx)\"",
     "format": "yarn prettier --write",

@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Heading } from "@chakra-ui/core";
 import { ComponentLink, stringToUrl } from "./NavLink";
 
-const components = ["Box"];
+const components = ["MenuBar"];
 
 const NavGroupHeading = props => (
   <Heading

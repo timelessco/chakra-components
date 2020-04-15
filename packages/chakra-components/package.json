@@ -19,8 +19,11 @@
     "version": "yarn build"
   },
   "dependencies": {
-    "@styled-system/should-forward-prop": "^5.1.5",
-    "styled-system": "^5.1.5"
+    "@chakra-ui/core": "^0.7.0",
+    "@emotion/core": "^10.0.28",
+    "@emotion/styled": "^10.0.27",
+    "@reach/auto-id": "^0.10.0",
+    "emotion-theming": "^10.0.27"
   },
   "peerDependencies": {
     "@emotion/core": "10.x",

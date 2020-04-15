@@ -1,0 +1,38 @@
+# MenuBar
+
+## Import
+
+```js
+import { MenuBar } from "@chakra-components/core";
+```
+
+## Usage
+
+```jsx
+<MenuBar position="relative">
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <SubMenu>
+    <SubMenuTitle>Meal Plans</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Downloaded</SubMenuItem>
+      <SubMenuItem>Create a Copyed</SubMenuItem>
+      <SubMenuItem>Mark as Drafted</SubMenuItem>
+      <SubMenuItem>Deleted</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Grocery List</MenuBarItem>
+  <SubMenu>
+    <SubMenuTitle isActive>Workouts</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```

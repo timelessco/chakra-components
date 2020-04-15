@@ -1,1 +1,2 @@
-export { default as Box } from "./Box";
+export { default as MenuBar } from "./MenuBar";
+export * from "./MenuBar";
