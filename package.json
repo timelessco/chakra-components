@@ -20,20 +20,6 @@
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix"
-    ],
-    "**/**/**/*.+(js|json|jsx|ts|tsx|mdx|md)": [
-      "prettier --write"
-    ]
-  },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
