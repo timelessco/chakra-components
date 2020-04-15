@@ -20,25 +20,22 @@ jobs:
     runs-on: [ubuntu-latest]
 
     steps:
-      - uses: actions/checkout@v2
-
       - name: Use Node JS
         uses: actions/setup-node@v1
         with:
           node-version: "10.x"
-
+      
       - name: Bootstrap Project
         run: |
           yarn global add lerna
           yarn boot
-
+          
       - name: Build Docz
         working-directory: ./docs
         run: yarn export
-
+        
       - name: Deploy to Now
         working-directory: ./docs/out
         env:
           NOW_TOKEN: ${{ secrets.NOW_TOKEN }}
-        run: |
-          now --token ${NOW_TOKEN} --confirm --name chakra-components --no-clipboard --prod
+        run: now --token ${NOW_TOKEN} --confirm --name chakra-components --no-clipboard --prod
