@@ -2,13 +2,14 @@
   "name": "root",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "docs"
   ],
   "scripts": {
     "commit": "git-cz",
     "postinstall": "yarn build",
     "clean": "git clean -fdx .",
-    "bootstrap": "lerna bootstrap --use-workspaces",
+    "bootstrap": "yarn clean && lerna bootstrap --use-workspaces",
     "docs": "yarn workspace @chakra-components/docs dev",
     "build": "yarn workspace @chakra-components/core build",
     "release": "lerna publish",
