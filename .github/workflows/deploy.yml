@@ -1,0 +1,44 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: 
+    - master
+    - new-docs-site
+
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  deploy:
+    name: Deployment
+    runs-on: [ubuntu-latest]
+    
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Use Node JS
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+      
+      - name: Bootstrap Project
+        run: |
+          yarn global add lerna
+          yarn boot
+          
+      - name: Build Docz
+        working-directory: ./docs
+        run: yarn export
+        
+      - name: Deploy to Now
+        working-directory: ./docs/out
+        env:
+          NOW_TOKEN: ${{ secrets.NOW_TOKEN }}
+        run: |
+          now --token ${NOW_TOKEN} --confirm --name chakra-components --no-clipboard --prod
