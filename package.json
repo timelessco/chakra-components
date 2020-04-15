@@ -12,7 +12,6 @@
     "bootstrap": "lerna bootstrap --use-workspaces",
     "build": "yarn workspace @chakra-components/core build",
     "commit": "git-cz",
-    "update:version": "yarn workspace @chakra-components/core version ",
     "release": "lerna publish",
     "clean": "git clean -fdx .",
     "lint": "yarn workspace @chakra-components/core eslint src",
