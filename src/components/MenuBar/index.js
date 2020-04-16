@@ -460,7 +460,6 @@ const SubMenuTitleLink = forwardRef(
       <React.Fragment>
         <Link ref={ref} {...styleProps} {...props}>
           {children}
-          <Icon ml="1" name="chevron-down" color="#ff5d51" />
         </Link>
       </React.Fragment>
     );

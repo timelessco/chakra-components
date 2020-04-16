@@ -5,7 +5,7 @@ menu: Components
 ---
 
 import { Playground } from 'docz';
-import { Box, Divider, List, ListItem, Image, Text } from "@chakra-ui/core";
+import { Box, Divider, List, ListItem, Image, Text, Icon, Button, Link, PseudoBox } from "@chakra-ui/core";
 import {
   MenuBar,
   MenuBarItem,
@@ -27,7 +27,10 @@ import {
     </Box>
   <MenuBar>
     <SubMenu>
-      <SubMenuTitle>Recipes</SubMenuTitle>
+      <SubMenuTitle>
+        Recipes
+        <Icon ml="1" name="chevron-down" color="#ff5d51" />
+      </SubMenuTitle>
       <SubMenuList display="flex" flexDirection="row" p="1rem" justifyContent="space-between">
         <SubMenuItem>
           <List spacing={2} styleType="none">
@@ -81,7 +84,10 @@ import {
       </SubMenuList>
     </SubMenu>
     <SubMenu>
-      <SubMenuTitle>Meal Plans</SubMenuTitle>
+      <SubMenuTitle>
+        Meal Plans
+        <Icon ml="1" name="chevron-down" color="#ff5d51" />
+      </SubMenuTitle>
       <SubMenuList>
         <SubMenuItem>Downloaded</SubMenuItem>
         <SubMenuItem>Create a Copyed</SubMenuItem>
@@ -92,7 +98,10 @@ import {
     <MenuBarItem>My Calendar</MenuBarItem>
     <MenuBarItem>Grocery List</MenuBarItem>
     <SubMenu>
-      <SubMenuTitle>Workouts</SubMenuTitle>
+      <SubMenuTitle>
+        Workouts
+        <Icon ml="1" name="chevron-down" color="#ff5d51" />
+      </SubMenuTitle>
       <SubMenuList>
         <SubMenuItem>Downloaded</SubMenuItem>
         <SubMenuItem>Create a Copyed</SubMenuItem>
@@ -101,7 +110,10 @@ import {
       </SubMenuList>
     </SubMenu>
     <SubMenu>
-      <SubMenuTitle>Videos</SubMenuTitle>
+      <SubMenuTitle>
+        Videos
+        <Icon ml="1" name="chevron-down" color="#ff5d51" />
+      </SubMenuTitle>
       <SubMenuList>
         <SubMenuItem>Downloaded</SubMenuItem>
         <SubMenuItem>Create a Copyed</SubMenuItem>
@@ -110,7 +122,10 @@ import {
       </SubMenuList>
     </SubMenu>
     <SubMenu>
-      <SubMenuTitle>Blog</SubMenuTitle>
+      <SubMenuTitle>
+        Blog
+        <Icon ml="1" name="chevron-down" color="#ff5d51" />
+      </SubMenuTitle>
       <SubMenuList>
         <SubMenuItem>Downloaded</SubMenuItem>
         <SubMenuItem>Create a Copyed</SubMenuItem>
@@ -124,5 +139,97 @@ import {
     </Box>
     <Box fontSize="14px">Sandeep Prabhakaran</Box>
   </MenuBar>
+  </Box>
+</Playground>
+
+___
+
+## Casper NavBar
+
+<Playground>
+  <Box display="flex" justifyContent="space-between" px="1rem" position="relative" alignItems="center">
+    <Box as="h1" fontSize="30px" fontWeight="800" color="rgb(30,48,110)">
+      {/* logo */}
+      Casper
+    </Box>
+    <MenuBar>
+      <SubMenu>
+        <SubMenuTitle _hover={{shadow: "inset 0px -2px 0px rgb(30,48,110);"}}>
+          Mattresses
+        </SubMenuTitle>
+        <SubMenuList display="flex" px="32px">
+          <SubMenuGroup title="Mattresses" fontWeight="500" color="rgb(30, 48, 110)" fontSize="1.25rem" width="calc(33%)">
+            <SubMenuItem fontSize="1rem" color="rgb(30, 48, 110)" py="7px">Wave Hybrid</SubMenuItem>
+            <SubMenuItem fontSize="1rem" color="rgb(30, 48, 110)" py="7px">Original</SubMenuItem>
+            <SubMenuItem fontSize="1rem" color="rgb(30, 48, 110)" py="7px">Element</SubMenuItem>
+            <SubMenuItem pt="2rem" pb=".5rem">
+              <Button bg="rgb(30, 48, 110)" color="white" fontWeight="400">See all mattresses</Button>
+            </SubMenuItem>
+            <SubMenuItem pt="2rem" pb=".5rem">
+              <PseudoBox borderBottom="1px solid rgba(33, 43, 100, 0.25)" _hover={{borderBottom:"1px solid rgb(33, 48, 110)"}}>Compare mattresses</PseudoBox>
+            </SubMenuItem>
+          </SubMenuGroup>
+          <SubMenuGroup title="The Casper signature feel" fontWeight="500" color="rgb(30, 48, 110)" fontSize="1.25rem" ml="0px" width="calc(67%)">
+            <Image src="https://casper.imgix.net/nav/mattress-2020/original-hybrid.jpg?auto=compress%2Cformat&q=65&w=624"></Image>
+            <Text fontWeight="400" fontSize="1rem" pt="0.75rem" pb="0.25rem">Original Mattress</Text>
+            <Text fontWeight="200" fontSize="1rem">The perfect balance of support and cooling.</Text>
+            <Text fontWeight="400" fontSize="1rem" color="gray.600">Starting at $595</Text>
+          </SubMenuGroup>
+        </SubMenuList>
+      </SubMenu>
+      <SubMenu>
+        <SubMenuTitle _hover={{shadow: "inset 0px -2px 0px rgb(30,48,110);"}}>
+          Pillows
+        </SubMenuTitle>
+        <SubMenuList>
+          <SubMenuItem>Downloaded</SubMenuItem>
+          <SubMenuItem>Create a Copyed</SubMenuItem>
+          <SubMenuItem>Mark as Drafted</SubMenuItem>
+          <SubMenuItem>Deleted</SubMenuItem>
+        </SubMenuList>
+      </SubMenu>
+      <SubMenu>
+        <SubMenuTitle _hover={{shadow: "inset 0px -2px 0px rgb(30,48,110);"}}>
+          Bed Frames
+        </SubMenuTitle>
+        <SubMenuList>
+          <SubMenuItem>Downloaded</SubMenuItem>
+          <SubMenuItem>Create a Copyed</SubMenuItem>
+          <SubMenuItem>Mark as Drafted</SubMenuItem>
+          <SubMenuItem>Deleted</SubMenuItem>
+        </SubMenuList>
+      </SubMenu>
+      <SubMenu>
+        <SubMenuTitle _hover={{shadow: "inset 0px -2px 0px rgb(30,48,110);"}}>
+          Bedding
+        </SubMenuTitle>
+        <SubMenuList>
+          <SubMenuItem>Downloaded</SubMenuItem>
+          <SubMenuItem>Create a Copyed</SubMenuItem>
+          <SubMenuItem>Mark as Drafted</SubMenuItem>
+          <SubMenuItem>Deleted</SubMenuItem>
+        </SubMenuList>
+      </SubMenu>
+      <SubMenu>
+        <SubMenuTitle _hover={{shadow: "inset 0px -2px 0px rgb(30,48,110);"}}>
+          Gifts
+        </SubMenuTitle>
+        <SubMenuList>
+          <SubMenuItem>Downloaded</SubMenuItem>
+          <SubMenuItem>Create a Copyed</SubMenuItem>
+          <SubMenuItem>Mark as Drafted</SubMenuItem>
+          <SubMenuItem>Deleted</SubMenuItem>
+        </SubMenuList>
+      </SubMenu>
+    </MenuBar>
+    <MenuBar>
+      <MenuBarItem _hover={{shadow: "inset 0px -2px 0px rgb(30,48,110);"}}>
+        <Icon ml="1" name="phone" mr=".5rem"/>
+        <Text>+1 888.498.0003</Text>
+      </MenuBarItem>
+      <MenuBarItem _hover={{shadow: "inset 0px -2px 0px rgb(30,48,110);"}}>
+        <Icon ml="1" name="attachment" />
+      </MenuBarItem>
+    </MenuBar>
   </Box>
 </Playground>

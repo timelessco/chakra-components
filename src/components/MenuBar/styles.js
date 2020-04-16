@@ -30,10 +30,10 @@ export const useMenuBarItemStyle = ({ isActive, isDisabled }) => {
       p: '3',
       color: 'gray.700',
       _hover: {
-        shadow: 'inset 0px -2px 0px #ff5d51;',
+        shadow: 'inset 0px -2px 0px #ff5d51',
       },
       ...(isActive && {
-        shadow: 'inset 0px -2px 0px #ff5d51;',
+        shadow: 'inset 0px -2px 0px #ff5d51',
       }),
       ...(isDisabled && {
         cursor: 'not-allowed',
@@ -90,10 +90,10 @@ export const useSubMenuTitleStyle = ({ isActive, isDisabled }) => {
       p: 5,
       color: 'gray.700',
       _hover: {
-        shadow: 'inset 0px -2px 0px #ff5d51;',
+        shadow: 'inset 0px -2px 0px #ff5d51',
       },
       ...(isActive && {
-        shadow: 'inset 0px -2px 0px #ff5d51;',
+        shadow: 'inset 0px -2px 0px #ff5d51',
       }),
       ...(isDisabled && {
         cursor: 'not-allowed',
