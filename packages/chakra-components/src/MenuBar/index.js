@@ -34,7 +34,7 @@ import {
   useMenuItemStyle,
 } from "./styles";
 import { useMenuListStyle } from "@chakra-ui/core/dist/Menu/styles";
-import Popper from "@chakra-ui/core/dist/Popper";
+import Popper, { PopperArrow } from "@chakra-ui/core/dist/Popper";
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -723,6 +723,7 @@ const SubMenuList = ({
   return (
     <Popper
       as={Comp}
+      bg="inherit"
       usePortal={false}
       isOpen={isOpen}
       anchorEl={titleRef.current}
@@ -742,7 +743,6 @@ const SubMenuList = ({
       minW="3xs"
       rounded="md"
       role="menu"
-      marginTop="0 !important"
       ref={menuRef}
       py={2}
       aria-label={ariaLabel}
@@ -901,6 +901,8 @@ SubMenuItem.displayName = "SubMenuItem";
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
+const SubMenuListArrow = props => <PopperArrow {...props} />;
+
 const SubMenuDivider = forwardRef((props, ref) => (
   <Divider ref={ref} orientation="horizontal" {...props} />
 ));
@@ -930,6 +932,7 @@ export {
   SubMenu,
   SubMenuTitle,
   SubMenuList,
+  SubMenuListArrow,
   SubMenuItem,
   SubMenuDivider,
   SubMenuGroup,
