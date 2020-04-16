@@ -10,10 +10,6 @@ import {
   Box,
   PseudoBox,
   Flex,
-  ThemeProvider,
-  ColorModeProvider,
-  LightMode,
-  theme,
   usePrevious,
   useColorMode,
   Text,
@@ -125,28 +121,20 @@ const MenuBar = ({
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <ColorModeProvider>
-        <Box fontFamily="body">
-          <LightMode>
-            <MenuBarContext.Provider value={context}>
-              <Box as="nav" ariaLabel={ariaLabel}>
-                <Comp
-                  ref={menuBarRef}
-                  id={menuBarId}
-                  role={role}
-                  ariaLabel={ariaLabel}
-                  {...styleProps}
-                  {...props}
-                >
-                  {children}
-                </Comp>
-              </Box>
-            </MenuBarContext.Provider>
-          </LightMode>
-        </Box>
-      </ColorModeProvider>
-    </ThemeProvider>
+    <MenuBarContext.Provider value={context}>
+      <Box as="nav" ariaLabel={ariaLabel}>
+        <Comp
+          ref={menuBarRef}
+          id={menuBarId}
+          role={role}
+          ariaLabel={ariaLabel}
+          {...styleProps}
+          {...props}
+        >
+          {children}
+        </Comp>
+      </Box>
+    </MenuBarContext.Provider>
   );
 };
 
