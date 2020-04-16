@@ -11,5 +11,11 @@ const withMDX = require("@next/mdx")({
 });
 
 module.exports = withMDX({
+  exportPathMap: function () {
+    return {
+      "/": { page: "/" },
+      "/menubar": { page: "/menubar" },
+    };
+  },
   pageExtensions: ["js", "jsx", "md", "mdx"],
 });
