@@ -8,7 +8,6 @@ on:
   push:
     branches:
       - master
-      - new-docs-site
 
   pull_request:
     branches: [master]
