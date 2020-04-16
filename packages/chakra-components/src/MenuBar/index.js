@@ -19,7 +19,6 @@ import {
   Text,
   Divider,
   Link,
-  Icon,
 } from "@chakra-ui/core";
 import { useId } from "@reach/auto-id";
 
@@ -28,12 +27,11 @@ import {
   getFocusables,
   wrapEvent,
 } from "@chakra-ui/core/dist/utils";
+import { useMenuBarStyle, useMenuBarItemStyle } from "./styles";
 import {
-  useMenuBarStyle,
-  useMenuBarItemStyle,
+  useMenuListStyle,
   useMenuItemStyle,
-} from "./styles";
-import { useMenuListStyle } from "@chakra-ui/core/dist/Menu/styles";
+} from "@chakra-ui/core/dist/Menu/styles";
 import Popper, { PopperArrow } from "@chakra-ui/core/dist/Popper";
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -140,11 +138,6 @@ const MenuBar = ({
                   ariaLabel={ariaLabel}
                   {...styleProps}
                   {...props}
-                  onFocus={() => {
-                    if (activeIndex === -1) {
-                      setActiveIndex(0);
-                    }
-                  }}
                 >
                   {children}
                 </Comp>
@@ -175,14 +168,10 @@ const useMenuBarContext = () => {
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-const MenuBarItemLink = forwardRef(
-  ({ isActive, isDisabled, ...props }, ref) => {
-    const stylePropsArgs = { isActive, isDisabled };
-
-    const styleProps = useMenuBarItemStyle(stylePropsArgs);
-    return <Link ref={ref} {...styleProps} {...props} />;
-  },
-);
+const MenuBarItemLink = forwardRef((props, ref) => {
+  const styleProps = useMenuBarItemStyle();
+  return <Link ref={ref} {...styleProps} {...props} />;
+});
 
 MenuBarItemLink.displayName = "MenuBarItemLink";
 
@@ -192,8 +181,6 @@ const MenuBarItem = forwardRef(
     {
       onKeyDown,
       onClick,
-      isActive,
-      isDisabled,
       role = "menuitem",
       as: Comp = MenuBarItemLink,
       ...props
@@ -209,6 +196,7 @@ const MenuBarItem = forwardRef(
     const handleKeyDown = event => {
       const count = focusableMenuBarItems.current.length;
       let nextIndex;
+
       if (event.key === "ArrowRight") {
         event.preventDefault();
         nextIndex = (index + 1) % count;
@@ -245,14 +233,8 @@ const MenuBarItem = forwardRef(
           ref={ref}
           role={role}
           tabIndex={0}
-          aria-disabled={isDisabled}
           onKeyDown={handleKeyDown}
           onClick={wrapEvent(onClick, event => {
-            if (isDisabled) {
-              event.stopPropagation();
-              event.preventDefault();
-              return;
-            }
             if (
               focusableMenuBarItems &&
               focusableMenuBarItems.current.length > 0
@@ -304,7 +286,6 @@ const SubMenu = ({
   const menuRef = useRef(null);
   const titleRef = useRef(null);
   const mouseOnSubMenuTitle = useRef(false);
-  const mouseOnSubMenuList = useRef(false);
 
   const { colorMode } = useColorMode();
 
@@ -419,7 +400,6 @@ const SubMenu = ({
     closeOnBlur,
     colorMode,
     mouseOnSubMenuTitle,
-    mouseOnSubMenuList,
   };
 
   return (
@@ -449,21 +429,10 @@ export function useSubMenuContext() {
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-const SubMenuTitleLink = forwardRef(
-  ({ isActive, isDisabled, children, ...props }, ref) => {
-    const stylePropsArgs = { isActive, isDisabled };
-
-    const styleProps = useMenuBarItemStyle(stylePropsArgs);
-    return (
-      <React.Fragment>
-        <Link ref={ref} {...styleProps} {...props}>
-          {children}
-          <Icon ml="1" name="chevron-down" color="#ff5d51" />
-        </Link>
-      </React.Fragment>
-    );
-  },
-);
+const SubMenuTitleLink = forwardRef((props, ref) => {
+  const styleProps = useMenuBarItemStyle();
+  return <Link ref={ref} {...styleProps} {...props} />;
+});
 
 SubMenuTitleLink.displayName = "SubMenuTitleLink";
 
@@ -472,7 +441,6 @@ SubMenuTitleLink.displayName = "SubMenuTitleLink";
 const SubMenuTitle = forwardRef(
   (
     {
-      isDisabled,
       onClick,
       onKeyDown,
       onMouseLeave,
@@ -494,7 +462,6 @@ const SubMenuTitle = forwardRef(
       openMenu,
       titleRef,
       mouseOnSubMenuTitle,
-      mouseOnSubMenuList,
     } = useSubMenuContext();
 
     const {
@@ -504,11 +471,12 @@ const SubMenuTitle = forwardRef(
       resetTabIndex,
     } = useMenuBarContext();
 
+    const openTimeout = useRef(null);
+
     const handleKeyDown = event => {
       const count = focusableMenuBarItems.current.length;
       let nextIndex;
 
-      if (isDisabled) return;
       if (event.key === "ArrowDown") {
         event.preventDefault();
         focusOnFirstItem();
@@ -581,11 +549,6 @@ const SubMenuTitle = forwardRef(
         role={role}
         tabIndex={0}
         onClick={wrapEvent(onClick, event => {
-          if (isDisabled) {
-            event.stopPropagation();
-            event.preventDefault();
-            return;
-          }
           if (
             focusableMenuBarItems &&
             focusableMenuBarItems.current.length > 0
@@ -595,24 +558,41 @@ const SubMenuTitle = forwardRef(
             );
             setActiveIndex(nextIndex);
           }
+
+          if (isOpen) {
+            closeMenu();
+          } else {
+            if (autoSelect) {
+              focusOnFirstItem();
+            } else {
+              openMenu();
+            }
+          }
         })}
         onMouseEnter={() => {
           mouseOnSubMenuTitle.current = true;
 
-          if (autoSelect) {
-            focusOnFirstItem();
-          } else {
-            openMenu();
-          }
+          openTimeout.current = setTimeout(() => {
+            if (autoSelect) {
+              focusOnFirstItem();
+            } else {
+              openMenu();
+            }
+          }, 300);
         }}
         onMouseLeave={wrapEvent(onMouseLeave, () => {
           mouseOnSubMenuTitle.current = false;
 
+          if (openTimeout.current) {
+            clearTimeout(openTimeout.current);
+            openTimeout.current = null;
+          }
+
           setTimeout(() => {
-            if (!mouseOnSubMenuTitle.current && !mouseOnSubMenuList.current) {
+            if (mouseOnSubMenuTitle.current === false) {
               closeMenu();
             }
-          }, 150);
+          }, 300);
         })}
         onMouseDown={wrapEvent(onMouseDown, event => {
           event.preventDefault();
@@ -651,7 +631,6 @@ const SubMenuList = ({
     closeOnBlur,
     placement,
     mouseOnSubMenuTitle,
-    mouseOnSubMenuList,
   } = useSubMenuContext();
 
   const handleKeyDown = event => {
@@ -747,16 +726,16 @@ const SubMenuList = ({
       py={2}
       aria-label={ariaLabel}
       onMouseEnter={() => {
-        mouseOnSubMenuList.current = true;
+        mouseOnSubMenuTitle.current = true;
       }}
       onMouseLeave={() => {
-        mouseOnSubMenuList.current = false;
+        mouseOnSubMenuTitle.current = false;
 
         setTimeout(() => {
-          if (!mouseOnSubMenuTitle.current && !mouseOnSubMenuList.current) {
+          if (mouseOnSubMenuTitle.current === false) {
             closeMenu();
           }
-        }, 150);
+        }, 300);
       }}
       onKeyDown={handleKeyDown}
       onBlur={handleBlur}
@@ -790,7 +769,6 @@ SubMenuItemLink.displayName = "SubMenuItemLink";
 const SubMenuItem = forwardRef(
   (
     {
-      isDisabled,
       onClick,
       onMouseLeave,
       onMouseEnter,
@@ -828,23 +806,12 @@ const SubMenuItem = forwardRef(
           px={4}
           role={role}
           tabIndex={-1}
-          aria-disabled={isDisabled}
           onClick={wrapEvent(onClick, event => {
-            if (isDisabled) {
-              event.stopPropagation();
-              event.preventDefault();
-              return;
-            }
             if (closeOnSelect) {
               closeMenu();
             }
           })}
           onMouseEnter={wrapEvent(onMouseEnter, event => {
-            if (isDisabled) {
-              event.stopPropagation();
-              event.preventDefault();
-              return;
-            }
             if (
               focusableItems &&
               focusableItems.current &&
@@ -860,7 +827,6 @@ const SubMenuItem = forwardRef(
             focusAtIndex(-1);
           })}
           onKeyDown={wrapEvent(onKeyDown, event => {
-            if (isDisabled) return;
             if (event.key === "Enter" || event.key === " ") {
               event.preventDefault();
 
