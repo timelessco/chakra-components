@@ -633,6 +633,9 @@ const SubMenuList = ({
   onBlur,
   as: Comp = "ul",
   ariaLabel,
+  gutter,
+  skid,
+  width,
   ...props
 }) => {
   const {
@@ -709,7 +712,11 @@ const SubMenuList = ({
 
   function fixedWidth(data) {
     const newData = data;
-    newData.offsets.popper.left = 0;
+
+    if (width === "full" || width === "100%") {
+      newData.offsets.popper.left = 0;
+    }
+
     return newData;
   }
 
@@ -730,9 +737,9 @@ const SubMenuList = ({
           fn: fixedWidth,
           order: 840,
         },
+        offset: { enabled: true, offset: `${skid}, ${gutter}` },
       }}
       minW="3xs"
-      width="full"
       rounded="md"
       role="menu"
       marginTop="0 !important"
@@ -760,6 +767,7 @@ const SubMenuList = ({
       }}
       fontFamily="Inter"
       fontSize="md"
+      width={width}
       {...styleProps}
       {...props}
     />
