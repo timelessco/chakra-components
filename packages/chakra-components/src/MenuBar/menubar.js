@@ -38,6 +38,8 @@ const MenuBar = forwardRef(
       as: Comp = PseudoUnorderedList,
       ariaLabel,
       defaultActiveIndex,
+      spanParent,
+      spanMenuBar,
       ...props
     },
     ref,
@@ -57,6 +59,14 @@ const MenuBar = forwardRef(
 
         focusableMenuBarItems.current = focusables;
         updateTabIndex(0);
+
+        if (spanParent) {
+          menuBarRef.current.parentElement.style.position = "relative";
+        }
+
+        if (spanMenuBar) {
+          menuBarRef.current.style.position = "relative";
+        }
       }
     }, []);
 
@@ -88,6 +98,8 @@ const MenuBar = forwardRef(
       activeIndex,
       setActiveIndex,
       updateTabIndex,
+      spanParent,
+      spanMenuBar,
     };
     const menuBarForkRef = useForkRef(menuBarRef, ref);
     const styleProps = useMenuBarStyle();

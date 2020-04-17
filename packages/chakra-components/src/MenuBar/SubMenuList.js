@@ -2,6 +2,7 @@ import React from "react";
 
 import Popper, { PopperArrow } from "@chakra-ui/core/dist/Popper";
 
+import { useMenuBarContext } from "./useMenuBarContext";
 import { useSubMenuContext } from "./useSubMenuContext";
 import { useMenuListStyle } from "@chakra-ui/core/dist/Menu/styles";
 
@@ -35,6 +36,12 @@ const SubMenuList = ({
     placement,
     mouseOnSubMenuTitle,
   } = useSubMenuContext();
+
+  const { spanParent, spanMenuBar } = useMenuBarContext();
+
+  if (spanParent || spanMenuBar) {
+    width = "full";
+  }
 
   const handleKeyDown = event => {
     const count = focusableItems.current.length;
@@ -108,8 +115,6 @@ const SubMenuList = ({
     onBlur && onBlur(event);
   };
 
-  const styleProps = useMenuListStyle();
-
   function fixedWidth(data) {
     const newData = data;
 
@@ -132,6 +137,8 @@ const SubMenuList = ({
     },
     offset: { enabled: true, offset: `${skid}, ${gutter}` },
   };
+
+  const styleProps = useMenuListStyle();
 
   return (
     <Popper
