@@ -2,7 +2,6 @@ import React, { forwardRef } from "react";
 import { Link, PseudoBox } from "@chakra-ui/core";
 
 import { useMenuBarContext } from "./useMenuBarContext";
-import { wrapEvent } from "@chakra-ui/core/dist/utils";
 import { useMenuBarItemStyle } from "./styles";
 
 /* =========================================================================
@@ -23,10 +22,10 @@ MenuBarItemLink.displayName = "MenuBarItemLink";
 const MenuBarItem = forwardRef(
   (
     {
-      onKeyDown,
-      onClick,
       role = "menuitem",
       as: Comp = MenuBarItemLink,
+      onClick,
+      onKeyDown,
       ...props
     },
     ref,
@@ -36,6 +35,17 @@ const MenuBarItem = forwardRef(
       activeIndex: index,
       setActiveIndex,
     } = useMenuBarContext();
+
+    const handleOnClick = event => {
+      if (focusableMenuBarItems && focusableMenuBarItems.current.length > 0) {
+        let nextIndex = focusableMenuBarItems.current.indexOf(
+          event.currentTarget,
+        );
+        setActiveIndex(nextIndex);
+      }
+
+      onClick && onClick(event);
+    };
 
     const handleKeyDown = event => {
       const count = focusableMenuBarItems.current.length;
@@ -84,17 +94,7 @@ const MenuBarItem = forwardRef(
           role={role}
           tabIndex={0}
           onKeyDown={handleKeyDown}
-          onClick={wrapEvent(onClick, event => {
-            if (
-              focusableMenuBarItems &&
-              focusableMenuBarItems.current.length > 0
-            ) {
-              let nextIndex = focusableMenuBarItems.current.indexOf(
-                event.currentTarget,
-              );
-              setActiveIndex(nextIndex);
-            }
-          })}
+          onClick={handleOnClick}
           {...props}
         />
       </PseudoBox>

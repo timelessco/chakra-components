@@ -1,7 +1,6 @@
 import React, { forwardRef } from "react";
 import { Box, PseudoBox, Text, Divider, Link } from "@chakra-ui/core";
 
-import { wrapEvent } from "@chakra-ui/core/dist/utils";
 import { useMenuItemStyle } from "@chakra-ui/core/dist/Menu/styles";
 
 import { useMenuBarContext } from "./useMenuBarContext";
@@ -12,8 +11,7 @@ import { useSubMenuContext } from "./useSubMenuContext";
   ========================================================================== */
 
 const SubMenuItemLink = forwardRef((props, ref) => {
-  const styleProps = useMenuItemStyle();
-  return <Link ref={ref} {...props} {...styleProps} />;
+  return <Link ref={ref} {...props} />;
 });
 
 SubMenuItemLink.displayName = "SubMenuItemLink";
@@ -25,12 +23,12 @@ SubMenuItemLink.displayName = "SubMenuItemLink";
 const SubMenuItem = forwardRef(
   (
     {
+      role = "menuitem",
+      as: Comp = SubMenuItemLink,
       onClick,
       onMouseLeave,
       onMouseEnter,
       onKeyDown,
-      role = "menuitem",
-      as: Comp = SubMenuItemLink,
       ...props
     },
     ref,
@@ -48,6 +46,66 @@ const SubMenuItem = forwardRef(
       setActiveIndex,
     } = useMenuBarContext();
 
+    const handleOnClick = event => {
+      if (closeOnSelect) {
+        closeMenu();
+      }
+
+      onClick && onClick(event);
+    };
+
+    const handleOnMouseEnter = event => {
+      if (
+        focusableItems &&
+        focusableItems.current &&
+        focusableItems.current.length > 0
+      ) {
+        let nextIndex = focusableItems.current.indexOf(event.currentTarget);
+        focusAtIndex(nextIndex);
+      }
+
+      onMouseEnter && onMouseEnter(event);
+    };
+    const handleOnMouseLeave = event => {
+      focusAtIndex(-1);
+
+      onMouseLeave && onMouseLeave(event);
+    };
+    const handleOnKeyDown = event => {
+      const menuBarItemscount = focusableMenuBarItems.current.length;
+      let nextIndex;
+
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        nextIndex = (index + 1) % menuBarItemscount;
+        setActiveIndex(nextIndex);
+        closeMenu();
+      }
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        nextIndex = (index - 1 + menuBarItemscount) % menuBarItemscount;
+        setActiveIndex(nextIndex);
+        closeMenu();
+      }
+
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+
+        if (onClick) {
+          onClick();
+        }
+
+        if (closeOnSelect) {
+          closeMenu();
+        }
+      }
+
+      onKeyDown && onKeyDown(event);
+    };
+
+    const styleProps = useMenuItemStyle();
+
     return (
       <PseudoBox as="li" role="none" display="flex" alignItems="center">
         <Comp
@@ -62,56 +120,11 @@ const SubMenuItem = forwardRef(
           px={4}
           role={role}
           tabIndex={-1}
-          onClick={wrapEvent(onClick, event => {
-            if (closeOnSelect) {
-              closeMenu();
-            }
-          })}
-          onMouseEnter={wrapEvent(onMouseEnter, event => {
-            if (
-              focusableItems &&
-              focusableItems.current &&
-              focusableItems.current.length > 0
-            ) {
-              let nextIndex = focusableItems.current.indexOf(
-                event.currentTarget,
-              );
-              focusAtIndex(nextIndex);
-            }
-          })}
-          onMouseLeave={wrapEvent(onMouseLeave, () => {
-            focusAtIndex(-1);
-          })}
-          onKeyDown={wrapEvent(onKeyDown, event => {
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-
-              if (onClick) {
-                onClick();
-              }
-
-              if (closeOnSelect) {
-                closeMenu();
-              }
-            }
-
-            const menuBarItemscount = focusableMenuBarItems.current.length;
-            let nextIndex;
-
-            if (event.key === "ArrowRight") {
-              event.preventDefault();
-              nextIndex = (index + 1) % menuBarItemscount;
-              setActiveIndex(nextIndex);
-              closeMenu();
-            }
-
-            if (event.key === "ArrowLeft") {
-              event.preventDefault();
-              nextIndex = (index - 1 + menuBarItemscount) % menuBarItemscount;
-              setActiveIndex(nextIndex);
-              closeMenu();
-            }
-          })}
+          onClick={handleOnClick}
+          onMouseEnter={handleOnMouseEnter}
+          onMouseLeave={handleOnMouseLeave}
+          onKeyDown={handleOnKeyDown}
+          {...styleProps}
           {...props}
         />
       </PseudoBox>

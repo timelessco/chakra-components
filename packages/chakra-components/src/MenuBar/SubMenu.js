@@ -15,16 +15,17 @@ const SubMenuContext = createContext();
   ========================================================================== */
 
 const SubMenu = ({
-  children,
+  autoSelect = true,
+  closeOnBlur = true,
+  closeOnSelect = true,
   isOpen: isOpenProp,
   defaultIsOpen,
   onOpen,
   onClose,
-  autoSelect = true,
-  closeOnBlur = true,
-  closeOnSelect = true,
   defaultActiveIndex,
   placement,
+  children,
+  ...props
 }) => {
   const [activeIndex, setActiveIndex] = useState(defaultActiveIndex || -1);
   const [isOpen, setIsOpen] = useState(defaultIsOpen || false);
@@ -34,7 +35,6 @@ const SubMenu = ({
   const wasPreviouslyOpen = usePrevious(_isOpen);
 
   const menuId = `menu-${useId()}`;
-  const buttonId = `menubutton-${useId()}`;
 
   const focusableItems = useRef(null);
   const menuRef = useRef(null);
@@ -147,7 +147,6 @@ const SubMenu = ({
     focusableItems,
     placement,
     menuId,
-    buttonId,
     openMenu,
     autoSelect,
     closeOnSelect,
@@ -158,7 +157,7 @@ const SubMenu = ({
 
   return (
     <SubMenuContext.Provider value={context}>
-      <PseudoBox as="li" role="none" display="flex">
+      <PseudoBox as="li" role="none" display="flex" {...props}>
         {typeof children === "function"
           ? children({ isOpen: _isOpen, onClose: closeMenu })
           : children}

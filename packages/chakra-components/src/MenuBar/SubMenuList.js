@@ -10,13 +10,15 @@ import { useMenuListStyle } from "@chakra-ui/core/dist/Menu/styles";
   ========================================================================== */
 
 const SubMenuList = ({
+  as: Comp = "ul",
+  width,
+  skid,
+  gutter,
+  ariaLabel,
+  onMouseEnter,
+  onMouseLeave,
   onKeyDown,
   onBlur,
-  as: Comp = "ul",
-  ariaLabel,
-  gutter,
-  skid,
-  width,
   ...props
 }) => {
   const {
@@ -72,6 +74,24 @@ const SubMenuList = ({
     onKeyDown && onKeyDown(event);
   };
 
+  const handleOnMouseEnter = event => {
+    mouseOnSubMenuTitle.current = true;
+
+    onMouseEnter && onMouseEnter(event);
+  };
+
+  const handleOnMouseLeave = event => {
+    mouseOnSubMenuTitle.current = false;
+
+    setTimeout(() => {
+      if (mouseOnSubMenuTitle.current === false) {
+        closeMenu();
+      }
+    }, 300);
+
+    onMouseLeave && onMouseLeave(event);
+  };
+
   // Close the menu on blur
   const handleBlur = event => {
     if (
@@ -100,54 +120,42 @@ const SubMenuList = ({
     return newData;
   }
 
+  const popperModifiers = {
+    preventOverflow: {
+      enabled: true,
+      boundariesElement: "viewport",
+    },
+    fixedWidth: {
+      enabled: true,
+      fn: fixedWidth,
+      order: 840,
+    },
+    offset: { enabled: true, offset: `${skid}, ${gutter}` },
+  };
+
   return (
     <Popper
-      as={Comp}
-      bg="inherit"
       usePortal={false}
-      isOpen={isOpen}
+      as={Comp}
       anchorEl={titleRef.current}
-      placement={placement}
-      modifiers={{
-        preventOverflow: {
-          enabled: true,
-          boundariesElement: "viewport",
-        },
-        fixedWidth: {
-          enabled: true,
-          fn: fixedWidth,
-          order: 840,
-        },
-        offset: { enabled: true, offset: `${skid}, ${gutter}` },
-      }}
-      minW="3xs"
-      rounded="md"
-      role="menu"
       ref={menuRef}
+      isOpen={isOpen}
+      placement={placement}
+      modifiers={popperModifiers}
+      width={width}
+      rounded="md"
       py={2}
-      aria-label={ariaLabel}
-      onMouseEnter={() => {
-        mouseOnSubMenuTitle.current = true;
-      }}
-      onMouseLeave={() => {
-        mouseOnSubMenuTitle.current = false;
-
-        setTimeout(() => {
-          if (mouseOnSubMenuTitle.current === false) {
-            closeMenu();
-          }
-        }, 300);
-      }}
-      onKeyDown={handleKeyDown}
-      onBlur={handleBlur}
-      tabIndex={-1}
       zIndex="2"
       _focus={{
         outline: 0,
       }}
-      fontFamily="Inter"
-      fontSize="md"
-      width={width}
+      role="menu"
+      aria-label={ariaLabel}
+      tabIndex={-1}
+      onKeyDown={handleKeyDown}
+      onBlur={handleBlur}
+      onMouseEnter={handleOnMouseEnter}
+      onMouseLeave={handleOnMouseLeave}
       {...styleProps}
       {...props}
     />

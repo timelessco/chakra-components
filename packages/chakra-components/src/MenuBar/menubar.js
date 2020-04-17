@@ -35,9 +35,9 @@ const MenuBar = forwardRef(
   (
     {
       role = "menubar",
+      as: Comp = PseudoUnorderedList,
       ariaLabel,
       defaultActiveIndex,
-      as: Comp = PseudoUnorderedList,
       ...props
     },
     ref,
@@ -52,9 +52,7 @@ const MenuBar = forwardRef(
     useEffect(() => {
       if (menuBarRef && menuBarRef.current) {
         let focusables = getFocusables(menuBarRef.current).filter(node =>
-          ["menuitem", "menuitemradio", "menuitemcheckbox"].includes(
-            node.getAttribute("role"),
-          ),
+          ["menuitem"].includes(node.getAttribute("role")),
         );
 
         focusableMenuBarItems.current = focusables;

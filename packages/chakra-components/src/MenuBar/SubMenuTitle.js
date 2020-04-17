@@ -12,8 +12,7 @@ import { useMenuBarItemStyle } from "./styles";
   ========================================================================== */
 
 const SubMenuTitleLink = forwardRef((props, ref) => {
-  const styleProps = useMenuBarItemStyle();
-  return <Link ref={ref} {...styleProps} {...props} />;
+  return <Link ref={ref} {...props} />;
 });
 
 SubMenuTitleLink.displayName = "SubMenuTitleLink";
@@ -41,7 +40,6 @@ const SubMenuTitle = forwardRef(
       focusOnLastItem,
       focusOnFirstItem,
       closeMenu,
-      buttonId,
       autoSelect,
       openMenu,
       titleRef,
@@ -53,8 +51,6 @@ const SubMenuTitle = forwardRef(
       activeIndex: index,
       setActiveIndex,
     } = useMenuBarContext();
-
-    const openTimeout = useRef(null);
 
     const handleKeyDown = event => {
       const count = focusableMenuBarItems.current.length;
@@ -126,70 +122,83 @@ const SubMenuTitle = forwardRef(
       onKeyDown && onKeyDown(event);
     };
 
+    const openTimeout = useRef(null);
+
+    const handleOnMouseEnter = event => {
+      mouseOnSubMenuTitle.current = true;
+
+      openTimeout.current = setTimeout(() => {
+        if (!isOpen) {
+          if (autoSelect) {
+            focusOnFirstItem();
+          } else {
+            openMenu();
+          }
+        }
+      }, 300);
+
+      onMouseEnter && onMouseEnter(event);
+    };
+
+    const handleOnMouseLeave = event => {
+      mouseOnSubMenuTitle.current = false;
+
+      if (openTimeout.current) {
+        clearTimeout(openTimeout.current);
+        openTimeout.current = null;
+      }
+
+      setTimeout(() => {
+        if (mouseOnSubMenuTitle.current === false) {
+          if (isOpen) {
+            closeMenu();
+          }
+        }
+      }, 300);
+
+      onMouseLeave && onMouseLeave(event);
+    };
+
+    const handleOnClick = event => {
+      if (focusableMenuBarItems && focusableMenuBarItems.current.length > 0) {
+        let nextIndex = focusableMenuBarItems.current.indexOf(
+          event.currentTarget,
+        );
+        setActiveIndex(nextIndex);
+      }
+
+      if (isOpen) {
+        closeMenu();
+      } else {
+        if (autoSelect) {
+          focusOnFirstItem();
+        } else {
+          openMenu();
+        }
+      }
+
+      onClick && onClick(event);
+    };
+
+    const styleProps = useMenuBarItemStyle();
+
     const menutitleRef = useForkRef(titleRef, ref);
 
     return (
       <Comp
+        ref={menutitleRef}
         aria-haspopup="true"
         aria-expanded={isOpen}
-        id={buttonId}
-        ref={menutitleRef}
         role={role}
         tabIndex={0}
-        onClick={wrapEvent(onClick, event => {
-          if (
-            focusableMenuBarItems &&
-            focusableMenuBarItems.current.length > 0
-          ) {
-            let nextIndex = focusableMenuBarItems.current.indexOf(
-              event.currentTarget,
-            );
-            setActiveIndex(nextIndex);
-          }
-
-          if (isOpen) {
-            closeMenu();
-          } else {
-            if (autoSelect) {
-              focusOnFirstItem();
-            } else {
-              openMenu();
-            }
-          }
-        })}
-        onMouseEnter={() => {
-          mouseOnSubMenuTitle.current = true;
-
-          openTimeout.current = setTimeout(() => {
-            if (!isOpen) {
-              if (autoSelect) {
-                focusOnFirstItem();
-              } else {
-                openMenu();
-              }
-            }
-          }, 300);
-        }}
-        onMouseLeave={wrapEvent(onMouseLeave, () => {
-          mouseOnSubMenuTitle.current = false;
-
-          if (openTimeout.current) {
-            clearTimeout(openTimeout.current);
-            openTimeout.current = null;
-          }
-
-          setTimeout(() => {
-            if (mouseOnSubMenuTitle.current === false) {
-              if (isOpen) {
-                closeMenu();
-              }
-            }
-          }, 300);
-        })}
+        onClick={handleOnClick}
+        onKeyDown={handleKeyDown}
+        onMouseEnter={handleOnMouseEnter}
+        onMouseLeave={handleOnMouseLeave}
         onMouseDown={wrapEvent(onMouseDown, event => {
           event.preventDefault();
         })}
-        onKeyDown={handleKeyDown}
+        {...styleProps}
         {...rest}
       />
     );
