@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { MenuBarContext } from "./menubar";
+import { MenuBarContext } from "./MenuBar";
 
 export const useMenuBarContext = () => {
   const context = useContext(MenuBarContext);

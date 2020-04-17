@@ -1,5 +1,9 @@
 import { useColorMode } from "@chakra-ui/core";
 
+/* =========================================================================
+  useMenuBarStyle
+  ========================================================================== */
+
 export const useMenuBarStyle = () => {
   const baseProps = {
     alignItems: "center",
@@ -10,6 +14,10 @@ export const useMenuBarStyle = () => {
 
   return { ...baseProps };
 };
+
+/* =========================================================================
+  useMenuBarItemStyle
+  ========================================================================== */
 
 export const useMenuBarItemStyle = () => {
   const baseProps = () => {
@@ -48,6 +56,10 @@ export const useMenuBarItemStyle = () => {
     ...interactionProps(interactionPropsArga),
   };
 };
+
+/* =========================================================================
+  useSubMenuTitleStyle
+  ========================================================================== */
 
 export const useSubMenuTitleStyle = () => {
   const baseProps = () => {
