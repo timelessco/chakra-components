@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { SubMenuContext } from "./subMenu";
+import { SubMenuContext } from "./SubMenu";
 
 export function useSubMenuContext() {
   const context = useContext(SubMenuContext);
