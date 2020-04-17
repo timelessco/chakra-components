@@ -43,7 +43,13 @@ const MenuBarItem = forwardRef(
 
       if (event.key === "ArrowRight") {
         event.preventDefault();
-        nextIndex = (index + 1) % count;
+
+        if (index === -1) {
+          nextIndex = (index + 2) % count;
+        } else {
+          nextIndex = (index + 1) % count;
+        }
+
         setActiveIndex(nextIndex);
       } else if (event.key === "ArrowLeft") {
         event.preventDefault();

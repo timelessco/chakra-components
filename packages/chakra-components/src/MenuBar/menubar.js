@@ -49,8 +49,6 @@ const MenuBar = forwardRef(
     const focusableMenuBarItems = useRef(null);
     const menuBarRef = useRef(null);
 
-    const styleProps = useMenuBarStyle();
-
     useEffect(() => {
       if (menuBarRef && menuBarRef.current) {
         let focusables = getFocusables(menuBarRef.current).filter(node =>
@@ -59,8 +57,8 @@ const MenuBar = forwardRef(
           ),
         );
 
-        focusableMenuBarItems.current = menuBarRef.current ? focusables : [];
-        initTabIndex();
+        focusableMenuBarItems.current = focusables;
+        updateTabIndex(0);
       }
     }, []);
 
@@ -72,12 +70,6 @@ const MenuBar = forwardRef(
         updateTabIndex(activeIndex);
       }
     }, [activeIndex]);
-
-    const initTabIndex = () => {
-      focusableMenuBarItems.current.forEach(
-        ({ node, index }) => index === 0 && node.setAttribute("tabindex", 0),
-      );
-    };
 
     const updateTabIndex = index => {
       if (focusableMenuBarItems.current.length > 0) {
@@ -93,24 +85,14 @@ const MenuBar = forwardRef(
       }
     };
 
-    const resetTabIndex = () => {
-      if (focusableMenuBarItems.current) {
-        focusableMenuBarItems.current.forEach(node =>
-          node.setAttribute("tabindex", -1),
-        );
-      }
-    };
-
     const context = {
       focusableMenuBarItems,
       activeIndex,
       setActiveIndex,
-      initTabIndex,
       updateTabIndex,
-      resetTabIndex,
     };
-
     const menuBarForkRef = useForkRef(menuBarRef, ref);
+    const styleProps = useMenuBarStyle();
 
     return (
       <MenuBarContext.Provider value={context}>

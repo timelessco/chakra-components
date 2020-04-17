@@ -52,7 +52,6 @@ const SubMenuTitle = forwardRef(
       focusableMenuBarItems,
       activeIndex: index,
       setActiveIndex,
-      resetTabIndex,
     } = useMenuBarContext();
 
     const openTimeout = useRef(null);
@@ -64,7 +63,6 @@ const SubMenuTitle = forwardRef(
       if (event.key === "ArrowDown") {
         event.preventDefault();
         focusOnFirstItem();
-        resetTabIndex();
       }
 
       if (event.key === "ArrowUp") {
@@ -74,7 +72,13 @@ const SubMenuTitle = forwardRef(
 
       if (event.key === "ArrowRight") {
         event.preventDefault();
-        nextIndex = (index + 1) % count;
+
+        if (index === -1) {
+          nextIndex = (index + 2) % count;
+        } else {
+          nextIndex = (index + 1) % count;
+        }
+
         setActiveIndex(nextIndex);
       }
 
