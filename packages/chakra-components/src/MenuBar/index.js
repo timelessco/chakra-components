@@ -1,4 +1,4 @@
-export * from "./MenuBar";
+export * from "./menubar";
 export * from "./MenuBarItem";
 export * from "./SubMenu";
 export * from "./SubMenuTitle";
