@@ -65,3 +65,6 @@ Add the below setting to your vscode settings
     ]
   },
 ```
+
+Make changes to your components, save & the docs site udpates to the latest
+change.

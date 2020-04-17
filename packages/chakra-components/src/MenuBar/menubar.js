@@ -129,4 +129,4 @@ const MenuBar = forwardRef(
 
 MenuBar.displayName = "MenuBar";
 
-export default MenuBar;
+export { MenuBar };
