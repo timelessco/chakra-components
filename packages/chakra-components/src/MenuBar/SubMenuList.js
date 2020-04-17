@@ -29,6 +29,7 @@ const SubMenuList = ({
     focusOnFirstItem,
     focusOnLastItem,
     closeMenu,
+    closeMenuWithoutIndex,
     focusableItems,
     titleRef,
     menuRef,
@@ -37,10 +38,33 @@ const SubMenuList = ({
     mouseOnSubMenuTitle,
   } = useSubMenuContext();
 
-  const { spanParent, spanMenuBar } = useMenuBarContext();
+  const { spanParent, spanMenuBar, trigger, menuBarRef } = useMenuBarContext();
 
   if (spanParent || spanMenuBar) {
     width = "full";
+  }
+
+  let eventHandlers = {};
+
+  if (trigger === "hover") {
+    eventHandlers = {
+      onMouseEnter: event => {
+        mouseOnSubMenuTitle.current = true;
+
+        onMouseEnter && onMouseEnter(event);
+      },
+      onMouseLeave: event => {
+        mouseOnSubMenuTitle.current = false;
+
+        setTimeout(() => {
+          if (mouseOnSubMenuTitle.current === false) {
+            closeMenu();
+          }
+        }, 300);
+
+        onMouseLeave && onMouseLeave(event);
+      },
+    };
   }
 
   const handleKeyDown = event => {
@@ -81,24 +105,6 @@ const SubMenuList = ({
     onKeyDown && onKeyDown(event);
   };
 
-  const handleOnMouseEnter = event => {
-    mouseOnSubMenuTitle.current = true;
-
-    onMouseEnter && onMouseEnter(event);
-  };
-
-  const handleOnMouseLeave = event => {
-    mouseOnSubMenuTitle.current = false;
-
-    setTimeout(() => {
-      if (mouseOnSubMenuTitle.current === false) {
-        closeMenu();
-      }
-    }, 300);
-
-    onMouseLeave && onMouseLeave(event);
-  };
-
   // Close the menu on blur
   const handleBlur = event => {
     if (
@@ -109,7 +115,15 @@ const SubMenuList = ({
       !menuRef.current.contains(event.relatedTarget) &&
       !titleRef.current.contains(event.relatedTarget)
     ) {
-      closeMenu();
+      if (
+        menuBarRef &&
+        menuBarRef.current &&
+        menuBarRef.current.contains(event.relatedTarget)
+      ) {
+        closeMenuWithoutIndex();
+      } else {
+        closeMenu();
+      }
     }
 
     onBlur && onBlur(event);
@@ -161,8 +175,7 @@ const SubMenuList = ({
       tabIndex={-1}
       onKeyDown={handleKeyDown}
       onBlur={handleBlur}
-      onMouseEnter={handleOnMouseEnter}
-      onMouseLeave={handleOnMouseLeave}
+      {...eventHandlers}
       {...styleProps}
       {...props}
     />

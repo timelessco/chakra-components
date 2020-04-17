@@ -40,6 +40,7 @@ const MenuBar = forwardRef(
       defaultActiveIndex,
       spanParent,
       spanMenuBar,
+      trigger = "hover",
       ...props
     },
     ref,
@@ -100,6 +101,8 @@ const MenuBar = forwardRef(
       updateTabIndex,
       spanParent,
       spanMenuBar,
+      trigger,
+      menuBarRef,
     };
     const menuBarForkRef = useForkRef(menuBarRef, ref);
     const styleProps = useMenuBarStyle();
