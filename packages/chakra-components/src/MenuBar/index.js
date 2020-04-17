@@ -9,7 +9,6 @@ import React, {
 import {
   Box,
   PseudoBox,
-  Flex,
   usePrevious,
   useColorMode,
   Text,
@@ -23,136 +22,15 @@ import {
   getFocusables,
   wrapEvent,
 } from "@chakra-ui/core/dist/utils";
-import { useMenuBarStyle, useMenuBarItemStyle } from "./styles";
+import { useMenuBarItemStyle } from "./styles";
 import {
   useMenuListStyle,
   useMenuItemStyle,
 } from "@chakra-ui/core/dist/Menu/styles";
 import Popper, { PopperArrow } from "@chakra-ui/core/dist/Popper";
 
-//////////////////////////////////////////////////////////////////////////////////////////
-
-const MenuBarContext = createContext();
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-const PseudoUnorderedList = forwardRef(({ ...props }, ref) => {
-  return <Flex as="ul" ref={ref} {...props} />;
-});
-
-PseudoUnorderedList.displayName = "PseudoUnorderedList";
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-const MenuBar = ({
-  children,
-  role = "menubar",
-  ariaLabel,
-  defaultActiveIndex,
-  as: Comp = PseudoUnorderedList,
-  ...props
-}) => {
-  const [activeIndex, setActiveIndex] = useState(defaultActiveIndex || -1);
-
-  const menuBarId = `menubar-${useId()}`;
-
-  const focusableMenuBarItems = useRef(null);
-  const menuBarRef = useRef(null);
-
-  const styleProps = useMenuBarStyle();
-
-  useEffect(() => {
-    if (menuBarRef && menuBarRef.current) {
-      let focusables = getFocusables(menuBarRef.current).filter(node =>
-        ["menuitem", "menuitemradio", "menuitemcheckbox"].includes(
-          node.getAttribute("role"),
-        ),
-      );
-
-      focusableMenuBarItems.current = menuBarRef.current ? focusables : [];
-      initTabIndex();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (activeIndex !== -1) {
-      focusableMenuBarItems.current[activeIndex] &&
-        focusableMenuBarItems.current[activeIndex].focus();
-
-      updateTabIndex(activeIndex);
-    }
-  }, [activeIndex]);
-
-  const initTabIndex = () => {
-    focusableMenuBarItems.current.forEach(
-      ({ node, index }) => index === 0 && node.setAttribute("tabindex", 0),
-    );
-  };
-
-  const updateTabIndex = index => {
-    if (focusableMenuBarItems.current.length > 0) {
-      let nodeAtIndex = focusableMenuBarItems.current[index];
-
-      focusableMenuBarItems.current.forEach(node => {
-        if (node !== nodeAtIndex) {
-          node.setAttribute("tabindex", -1);
-        }
-      });
-
-      nodeAtIndex.setAttribute("tabindex", 0);
-    }
-  };
-
-  const resetTabIndex = () => {
-    if (focusableMenuBarItems.current) {
-      focusableMenuBarItems.current.forEach(node =>
-        node.setAttribute("tabindex", -1),
-      );
-    }
-  };
-
-  const context = {
-    focusableMenuBarItems,
-    activeIndex,
-    setActiveIndex,
-    initTabIndex,
-    updateTabIndex,
-    resetTabIndex,
-  };
-
-  return (
-    <MenuBarContext.Provider value={context}>
-      <Box as="nav" ariaLabel={ariaLabel}>
-        <Comp
-          ref={menuBarRef}
-          id={menuBarId}
-          role={role}
-          ariaLabel={ariaLabel}
-          {...styleProps}
-          {...props}
-        >
-          {children}
-        </Comp>
-      </Box>
-    </MenuBarContext.Provider>
-  );
-};
-
-MenuBar.displayName = "MenuBar";
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-const useMenuBarContext = () => {
-  const context = useContext(MenuBarContext);
-
-  if (context === undefined) {
-    throw new Error(
-      "useMenuBarContext must be used within a MenuBarContext Provider",
-    );
-  }
-
-  return context;
-};
+import { useMenuBarContext } from "./useMenuBarContext";
+import MenuBar from "./menubar";
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -561,10 +439,12 @@ const SubMenuTitle = forwardRef(
           mouseOnSubMenuTitle.current = true;
 
           openTimeout.current = setTimeout(() => {
-            if (autoSelect) {
-              focusOnFirstItem();
-            } else {
-              openMenu();
+            if (!isOpen) {
+              if (autoSelect) {
+                focusOnFirstItem();
+              } else {
+                openMenu();
+              }
             }
           }, 300);
         }}
@@ -578,7 +458,9 @@ const SubMenuTitle = forwardRef(
 
           setTimeout(() => {
             if (mouseOnSubMenuTitle.current === false) {
-              closeMenu();
+              if (isOpen) {
+                closeMenu();
+              }
             }
           }, 300);
         })}
