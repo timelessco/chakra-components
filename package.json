@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "boot": "yarn clean && yarn install && yarn bootstrap && yarn build && lerna link",
-    "start": "yarn workspace @chakra-components/docs dev",
+    "docs": "yarn workspace @chakra-components/docs dev",
     "bootstrap": "lerna bootstrap --use-workspaces",
     "build": "yarn workspace @chakra-components/core build",
     "commit": "git-cz",
