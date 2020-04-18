@@ -187,10 +187,9 @@ const SubMenuList = ({
         ref={menuRef}
         width={width}
         display={isOpen ? "block" : "none"}
-        onMouseEnter={handleOnMouseEnter}
-        onMouseLeave={handleOnMouseLeave}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
+        {...eventHandlers}
         {...props}
       />
     );
