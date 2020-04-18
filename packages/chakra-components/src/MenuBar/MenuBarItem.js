@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import { Link, PseudoBox } from "@chakra-ui/core";
+import { Link, Flex } from "@chakra-ui/core";
 
 import { useMenuBarContext } from "./useMenuBarContext";
 import { useMenuBarItemStyle } from "./styles";
@@ -88,7 +88,7 @@ const MenuBarItem = forwardRef(
     };
 
     return (
-      <PseudoBox as="li" role="none" display="flex" alignItems="center">
+      <Flex as="li" role="none" align="center">
         <Comp
           ref={ref}
           role={role}
@@ -97,7 +97,7 @@ const MenuBarItem = forwardRef(
           onClick={handleOnClick}
           {...props}
         />
-      </PseudoBox>
+      </Flex>
     );
   },
 );

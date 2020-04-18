@@ -1,5 +1,5 @@
 import React, { createContext, useState, useRef, useEffect } from "react";
-import { PseudoBox, usePrevious, useColorMode } from "@chakra-ui/core";
+import { usePrevious, useColorMode, Flex } from "@chakra-ui/core";
 import { useId } from "@reach/auto-id";
 
 import { useMenuBarContext } from "./useMenuBarContext";
@@ -194,11 +194,11 @@ const SubMenu = ({
 
   return (
     <SubMenuContext.Provider value={context}>
-      <PseudoBox as="li" role="none" display="flex" {...props}>
+      <Flex as="li" role="none" {...props}>
         {typeof children === "function"
           ? children({ isOpen: _isOpen, onClose: closeMenu })
           : children}
-      </PseudoBox>
+      </Flex>
     </SubMenuContext.Provider>
   );
 };

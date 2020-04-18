@@ -44,35 +44,8 @@ import {
 <MenuBar>
   <MenuBarItem>Recipes</MenuBarItem>
   <MenuBarItem>My Calendar</MenuBarItem>
-  <SubMenu>
-    <SubMenuTitle>Meal Plans</SubMenuTitle>
-    <SubMenuList>
-      <SubMenuItem>Downloaded</SubMenuItem>
-      <SubMenuItem>Create a Copyed</SubMenuItem>
-      <SubMenuItem>Mark as Drafted</SubMenuItem>
-      <SubMenuItem>Deleted</SubMenuItem>
-    </SubMenuList>
-  </SubMenu>
-  <SubMenu>
-    <SubMenuTitle>Groceries</SubMenuTitle>
-    <SubMenuList>
-      <SubMenuItem>Download</SubMenuItem>
-      <SubMenuItem>Create a Copy</SubMenuItem>
-      <SubMenuItem>Mark as Draft</SubMenuItem>
-      <SubMenuItem>Delete</SubMenuItem>
-      <SubMenuItem>Attend a Workshop</SubMenuItem>
-    </SubMenuList>
-  </SubMenu>
-  <SubMenu>
-    <SubMenuTitle>Workouts</SubMenuTitle>
-    <SubMenuList>
-      <SubMenuItem>Download</SubMenuItem>
-      <SubMenuItem>Create a Copy</SubMenuItem>
-      <SubMenuItem>Mark as Draft</SubMenuItem>
-      <SubMenuItem>Delete</SubMenuItem>
-      <SubMenuItem>Attend a Workshop</SubMenuItem>
-    </SubMenuList>
-  </SubMenu>
+  <MenuBarItem>Meal Plans</MenuBarItem>
+  <MenuBarItem>Groceries</MenuBarItem>
   <MenuBarItem>Video</MenuBarItem>
   <MenuBarItem>Blog</MenuBarItem>
 </MenuBar>
@@ -81,6 +54,12 @@ import {
 ## Props
 
 ### MenuBar Props
+
+- By default, Menubar renders the `ul` HTML tag
+- `araiLabel` - Defines an accessible name for the menubar.
+- `spanMenuBar` - If `true`, `SubMenu` popover will span to the width of its
+  immediate parent
+- Default `trigger` - `hover`
 
 ```jsx
 <MenuBar ariaLabel="Dishes" spanMenuBar>
@@ -122,8 +101,13 @@ import {
 
 ### More MenuBar Props
 
+- `araiLabel` - Defines an accessible name for the menubar.
+- `spanParent` - If `true`, `SubMenu` popover will span to the width of the
+  menubar container.
+- Default `trigger` - `click`
+
 ```jsx
-<MenuBar ariaLabel="Dishes" spanParent trigger="click">
+<MenuBar ariaLabel="Dishes" spanParent trigger="click" as={Flex}>
   <MenuBarItem>Recipes</MenuBarItem>
   <MenuBarItem>My Calendar</MenuBarItem>
   <SubMenu>
@@ -160,43 +144,17 @@ import {
 </MenuBar>
 ```
 
-### trigger
+### MenuBarItem
 
-Default trigger - `hover`
+- MenuBarItem composed on top of `li` with `role: none`.
+- All the items will be an `a` tag by default.
 
 ```jsx
-<MenuBar trigger="click">
+<MenuBar>
   <MenuBarItem>Recipes</MenuBarItem>
-  <MenuBarItem>My Calendar</MenuBarItem>
-  <SubMenu>
-    <SubMenuTitle>Meal Plans</SubMenuTitle>
-    <SubMenuList>
-      <SubMenuItem>Downloaded</SubMenuItem>
-      <SubMenuItem>Create a Copyed</SubMenuItem>
-      <SubMenuItem>Mark as Drafted</SubMenuItem>
-      <SubMenuItem>Deleted</SubMenuItem>
-    </SubMenuList>
-  </SubMenu>
-  <SubMenu>
-    <SubMenuTitle>Groceries</SubMenuTitle>
-    <SubMenuList>
-      <SubMenuItem>Download</SubMenuItem>
-      <SubMenuItem>Create a Copy</SubMenuItem>
-      <SubMenuItem>Mark as Draft</SubMenuItem>
-      <SubMenuItem>Delete</SubMenuItem>
-      <SubMenuItem>Attend a Workshop</SubMenuItem>
-    </SubMenuList>
-  </SubMenu>
-  <SubMenu>
-    <SubMenuTitle>Workouts</SubMenuTitle>
-    <SubMenuList>
-      <SubMenuItem>Download</SubMenuItem>
-      <SubMenuItem>Create a Copy</SubMenuItem>
-      <SubMenuItem>Mark as Draft</SubMenuItem>
-      <SubMenuItem>Delete</SubMenuItem>
-      <SubMenuItem>Attend a Workshop</SubMenuItem>
-    </SubMenuList>
-  </SubMenu>
+  <MenuBarItem as={Button}>My Calendar</MenuBarItem>
+  <MenuBarItem>Meal Plans</MenuBarItem>
+  <MenuBarItem>Groceries</MenuBarItem>
   <MenuBarItem>Video</MenuBarItem>
   <MenuBarItem>Blog</MenuBarItem>
 </MenuBar>
@@ -214,6 +172,13 @@ Default trigger - `hover`
 | trigger     | `hover`, `click`               | `hover` | The interaction that triggers the popover.                                   |
 | spanParent  | `boolean`                      | `false` | If `true`, `SubMenu` popover will span to the width of its immediate parent  |
 | spanMenuBar | `boolean`                      | `false` | If `true`, `SubMenu` popover will span to the width of the menubar container |
+
+### MenuBarItem
+
+| Name     | Type                           | Default | Description                                               |
+| -------- | ------------------------------ | ------- | --------------------------------------------------------- |
+| children | `React.ReactNode`              |         | The children will be MenuBarItem                          |
+| as       | `React.ReactNode`, `HTML tags` | `ul`    | HTML Tag or Component to be rendered opposing default tag |
 
 ## Accessibility
 
@@ -256,3 +221,9 @@ Default trigger - `hover`
 - It has `role` set to `menubar`
 - It has an auto `id` as accessible id.
 - It has an `aria-label` prop which needs to be provided.
+
+**For `MenuBarItem`:**
+
+- It has `role` set to `menuitem`.
+- First item will have `tabIndex: 0` rest will have an index of `-1` to hide
+  them from tab navigations.
