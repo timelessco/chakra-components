@@ -1,9 +1,43 @@
 # MenuBar
 
+An
+[accessible menubar](https://www.w3.org/TR/wai-aria-practices/examples/menubar/menubar-1/menubar-1.html)
+for both horizontal and vertical navigations. `MenuBar` uses roving tabIndex for
+focus management.
+
+By default, `MenuBar` used ul, li, a components as default but they can be
+modified using `as` prop.
+
 ## Import
 
+Chakra Components exports 8 components for rendering menubar:
+
+- `MenuBar`: The wrapper component that provides context, state, and focus
+  management.
+- `MenuBarItem`: Items of the MenuBar which are the direct childrens of
+  `MenuBar`
+- `SubMenu`: The wrapper component that provides context, state, and focus
+  management for `SubMenu` components.
+- `SubMenuTitle`: The trigger for the `SubMenuList`. Must be a direct child of
+  `SubMenu`.
+- `SubMenuList`: The wrapper for the `SubMenu` items. Must be a direct child of
+  `SubMenu`.
+- `SubMenuItem`: The trigger that handles submenu selection. Must be a direct
+  child of a `SubMenuList`.
+- `SubMenuGroup`: A wrapper to group related submenu items.
+- `SubMenuDivider`: A visual separator for submenu items and groups.
+
 ```js
-import { MenuBar } from "@chakra-components/core";
+import {
+  MenuBar,
+  MenuBarItem,
+  SubMenu,
+  SubMenuTitle,
+  SubMenuList,
+  SubMenuItem,
+  SubMenuGroup,
+  SubMenuDivider,
+} from "@chakra-components/core";
 ```
 
 ## Usage
@@ -13,7 +47,7 @@ import { MenuBar } from "@chakra-components/core";
   <MenuBarItem>Recipes</MenuBarItem>
   <MenuBarItem>My Calendar</MenuBarItem>
   <SubMenu>
-    <SubMenuTitle as={Title}>Meal Plans</SubMenuTitle>
+    <SubMenuTitle>Meal Plans</SubMenuTitle>
     <SubMenuList>
       <SubMenuItem>Downloaded</SubMenuItem>
       <SubMenuItem>Create a Copyed</SubMenuItem>
