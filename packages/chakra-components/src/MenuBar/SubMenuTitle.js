@@ -18,28 +18,6 @@ const SubMenuTitleLink = forwardRef((props, ref) => {
 SubMenuTitleLink.displayName = "SubMenuTitleLink";
 
 /* =========================================================================
-  Styled Link component when no `as` is not provided for SubMenuTitle
-  ========================================================================== */
-
-const StyledSubMenuTitleLink = forwardRef(({ children, ...props }, ref) => {
-  return (
-    <Link
-      rounded="md"
-      px={1}
-      py={1}
-      _hover={{ bg: "gray.100" }}
-      ref={ref}
-      {...props}
-    >
-      {children}
-      <Icon ml={0} name="chevron-down" color="gray.500" />
-    </Link>
-  );
-});
-
-StyledSubMenuTitleLink.displayName = "StyledSubMenuTitleLink";
-
-/* =========================================================================
   SubMenuTitle Component
   ========================================================================== */
 
@@ -53,7 +31,6 @@ const SubMenuTitle = forwardRef(
       onMouseDown,
       as: Comp = SubMenuTitleLink,
       role = "menuitem",
-      variant,
       ...rest
     },
     ref,
@@ -75,10 +52,6 @@ const SubMenuTitle = forwardRef(
       setActiveIndex,
       trigger,
     } = useMenuBarContext();
-
-    if (variant === "styledTitle") {
-      Comp = StyledSubMenuTitleLink;
-    }
 
     let eventHandlers = {};
 
