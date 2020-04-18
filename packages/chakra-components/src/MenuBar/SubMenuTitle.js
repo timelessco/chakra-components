@@ -85,8 +85,6 @@ const SubMenuTitle = forwardRef(
     if (trigger === "click") {
       eventHandlers = {
         onClick: event => {
-          console.log("open");
-          console.log("%cisOpen", "color: #0088cc", isOpen);
           if (isOpen) {
             closeMenu();
           } else {
