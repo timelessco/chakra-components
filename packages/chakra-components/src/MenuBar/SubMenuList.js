@@ -184,10 +184,10 @@ const SubMenuList = ({
   } else {
     return (
       <Box
+        as="ul"
         ref={menuRef}
         width={width}
         display={isOpen ? "block" : "none"}
-        onBlur={handleBlur}
         onKeyDown={handleKeyDown}
         {...eventHandlers}
         {...props}

@@ -116,8 +116,8 @@ const MenuBar = forwardRef(
           ariaLabel={ariaLabel}
           display="flex"
           flexDirection={mode && mode === "horizontal" ? "row" : "column"}
-          {...styleProps}
           alignItems={mode && mode === "horizontal" ? "center" : "left"}
+          {...styleProps}
           {...props}
         />
       </MenuBarContext.Provider>

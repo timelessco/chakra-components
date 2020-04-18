@@ -144,6 +144,50 @@ import {
 </MenuBar>
 ```
 
+### mode and isCollapsable
+
+Default mode - `horizontal`
+
+Default isCollapsable - `false`
+
+```jsx
+<MenuBar mode="vertical" trigger="click" maxWidth="300px">
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <SubMenu isCollapsable>
+    <SubMenuTitle>Meal Plans</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Downloaded</SubMenuItem>
+      <SubMenuItem>Create a Copyed</SubMenuItem>
+      <SubMenuItem>Mark as Drafted</SubMenuItem>
+      <SubMenuItem>Deleted</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu isCollapsable>
+    <SubMenuTitle>Groceries</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu isCollapsable>
+    <SubMenuTitle>Workouts</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
 ### MenuBarItem
 
 - MenuBarItem composed on top of `li` with `role: none`.
