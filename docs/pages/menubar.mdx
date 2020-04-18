@@ -8,7 +8,7 @@ modified using `as` prop.
 
 ## Import
 
-Chakra Components exports 8 components for rendering menubar:
+Chakra Components exports 9 components for rendering menubar:
 
 - `MenuBar`: The wrapper component that provides context, state, and focus
   management.
@@ -20,6 +20,7 @@ Chakra Components exports 8 components for rendering menubar:
   `SubMenu`.
 - `SubMenuList`: The wrapper for the `SubMenu` items. Must be a direct child of
   `SubMenu`.
+- `SubMenuListArrow`: A visual arrow that points to the reference (or trigger).
 - `SubMenuItem`: The trigger that handles submenu selection. Must be a direct
   child of a `SubMenuList`.
 - `SubMenuGroup`: A wrapper to group related submenu items.
@@ -32,6 +33,7 @@ import {
   SubMenu,
   SubMenuTitle,
   SubMenuList,
+  SubMenuListArrow,
   SubMenuItem,
   SubMenuGroup,
   SubMenuDivider,
@@ -171,10 +173,18 @@ typed.
 
 ### SubMenu
 
+- MenuBarItem composed on top of `li` with `role: none`.
+- All the items will be an `a` tag by default.
 - Access the internal state of the `SubMenu`, use a function as a `children`
   (commonly known as a `render prop`). You'll get access to the internal state
   `isOpen` and method `onClose`. Must have the prop `trigger="click"` on
   MenuBar.
+
+### SubMenuTitle
+
+- SubMenuTitle will be an `a` tag by default.
+- Default tag can be changed using `as` prop.
+- Acts as a trigger for the menu to be dropped down.
 
 ```jsx
 <MenuBar trigger="click">
@@ -211,6 +221,121 @@ typed.
 </MenuBar>
 ```
 
+### SubMenuList
+
+- By default, Menubar renders the `ul` HTML tag
+- `araiLabel` - Defines an accessible name for the menubar.
+- Position of the `SubMenuList` using `skid` for moving in x direction &
+  `gutter` for moving in y direction.
+- **Note:** They accept both position & negative values.
+- Use the `placement` prop, to position the list.
+
+```jsx
+<MenuBar>
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <SubMenu>
+    <SubMenuTitle>Meal Plans</SubMenuTitle>
+    <SubMenuList ariaLabel="Meal Plan Menu" skid={-50} gutter={50}>
+      <SubMenuItem>Downloaded</SubMenuItem>
+      <SubMenuItem>Create a Copyed</SubMenuItem>
+      <SubMenuItem>Mark as Drafted</SubMenuItem>
+      <SubMenuItem>Deleted</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle ariaLabel="Groceries Menu">Groceries</SubMenuTitle>
+    <SubMenuList placement="right">
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Workouts</MenuBarItem>
+  <MenuBarItem>Groceries</MenuBarItem>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
+### SubMenuListArrow
+
+Add this Arrow component as a `SubMenuList` component, to see the arrow pointing
+to the trigger in Popper.
+
+```jsx
+<MenuBar>
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <SubMenu>
+    <SubMenuTitle ariaLabel="Meal Plan Menu">Meal Plans</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuListArrow />
+      <SubMenuItem>Downloaded</SubMenuItem>
+      <SubMenuItem>Create a Copyed</SubMenuItem>
+      <SubMenuItem>Mark as Drafted</SubMenuItem>
+      <SubMenuItem>Deleted</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle ariaLabel="Groceries Menu">Groceries</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuListArrow />
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Workouts</MenuBarItem>
+  <MenuBarItem>Groceries</MenuBarItem>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
+### SubMenuItem
+
+Add this Arrow component as a `SubMenuList` component, to see the arrow pointing
+to the trigger in Popper.
+
+### SubMenuDivider
+
+Adds a divider inbetween the `SubMenuItem`s
+
+### SubMenuGroup
+
+To group related `SubMenuItem`s, use the `SubMenuGroup` component and pass it a
+`title` - label for the group name.
+
+```jsx
+<MenuBar>
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <SubMenu>
+    <SubMenuTitle ariaLabel="Meal Plan Menu">Meal Plans</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuGroup title="Group 1">
+        <SubMenuItem>Downloaded</SubMenuItem>
+        <SubMenuItem>Create a Copyed</SubMenuItem>
+      </SubMenuGroup>
+      <SubMenuDivider />
+      <SubMenuGroup title="Group 1">
+        <SubMenuItem>Mark as Drafted</SubMenuItem>
+        <SubMenuItem>Deleted</SubMenuItem>
+      </SubMenuGroup>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Workouts</MenuBarItem>
+  <MenuBarItem>Groceries</MenuBarItem>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
 ## Props Table
 
 ### MenuBar Props
@@ -240,6 +365,31 @@ typed.
 | autoSelect    | `boolean`         | `true`  | The menu will select the first enabled item when it opens         |
 | closeOnBlur   | `boolean`         | `true`  | If `true`, the menu will close on outside click or blur           |
 | closeOnSelect | `boolean`         | `true`  | If `true`, the menu will close on menu item select                |
+
+### SubMenuTitle
+
+| Name      | Type                           | Default | Description                                               |
+| --------- | ------------------------------ | ------- | --------------------------------------------------------- |
+| children  | `React.ReactNode`, `string`    |         | The children will be MenuBarItem                          |
+| ariaLabel | `string`                       |         | Title for the `SubMenuList` as aria label                 |
+| as        | `React.ReactNode`, `HTML tags` | `a`     | HTML Tag or Component to be rendered opposing default tag |
+
+### SubMenuList
+
+| Name      | Type                           | Description                                                             |
+| --------- | ------------------------------ | ----------------------------------------------------------------------- |
+| children  | `React.ReactNode`              | The content of the `SubMenuList`, should be the `SubMenuItem` component |
+| placement | `PopperJS.placement`           | The placement of the `SubMenuList`                                      |
+| skid      | `number`                       | Move the `SubMenuList` in x direction                                   |
+| gutter    | `number`                       | Move the `SubMenuList` in y direction                                   |
+| as        | `React.ReactNode`, `HTML tags` | HTML Tag or Component to be rendered opposing default `ul` tag          |
+
+### SubMenuItem
+
+| Name | Type                                            | Description                   |
+| ---- | ----------------------------------------------- | ----------------------------- |
+| role | `menuitem`, `menuitemradio`, `menuitemcheckbox` | The ARIA role of the menuitem |
+| as   | `React.ReactNode`, `HTML tags`                  | `a`                           | HTML Tag or Component to be rendered opposing default tag |
 
 ## Accessibility
 
@@ -288,3 +438,27 @@ typed.
 - It has `role` set to `menuitem`.
 - First item will have `tabIndex: 0` rest will have an index of `-1` to hide
   them from tab navigations.
+
+**For `SubMenu`:**
+
+- It has `role` set to `none` because it is an `li` tag.
+
+**For `SubMenuTitle`:**
+
+- It has `role` set to `menuitem`.
+- It has `aria-haspopup` set to `true`.
+- When the `SubMenuList` is displayed, `SubMenuTitle` has `aria-expanded` set to
+  `true`.
+
+**For `SubMenuList`:**
+
+- It has `role` set to `menu`.
+- `tabIndex` set to `-1` because these elements are not focusable for `tab`
+  navigations
+- It has an `aria-label` prop which needs to be provided.
+
+**For `SubMenuItem`:**
+
+- It has `role` set to `menuitem`.
+- `tabIndex` set to `-1` because these elements are not focusable for `tab`
+  navigations.
