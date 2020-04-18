@@ -40,6 +40,7 @@ const MenuBar = forwardRef(
       spanParent,
       spanMenuBar,
       trigger = "hover",
+      mode = "horizontal",
       ...props
     },
     ref,
@@ -113,7 +114,10 @@ const MenuBar = forwardRef(
           id={menuBarId}
           role={role}
           ariaLabel={ariaLabel}
+          display="flex"
+          flexDirection={mode && mode === "horizontal" ? "row" : "column"}
           {...styleProps}
+          alignItems={mode && mode === "horizontal" ? "center" : "left"}
           {...props}
         />
       </MenuBarContext.Provider>

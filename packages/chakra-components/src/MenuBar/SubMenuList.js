@@ -36,7 +36,7 @@ const SubMenuList = ({
     closeOnBlur,
     placement,
     mouseOnSubMenuTitle,
-    mode,
+    isCollapsable,
   } = useSubMenuContext();
 
   const { spanParent, spanMenuBar, trigger, menuBarRef } = useMenuBarContext();
@@ -154,7 +154,7 @@ const SubMenuList = ({
   };
   const styleProps = useMenuListStyle();
 
-  if (mode === "horizontal") {
+  if (!isCollapsable) {
     return (
       <Popper
         usePortal={false}
