@@ -51,7 +51,7 @@ import {
 </MenuBar>
 ```
 
-## Props
+## Props in Action
 
 ### MenuBar Props
 
@@ -60,6 +60,15 @@ import {
 - `spanMenuBar` - If `true`, `SubMenu` popover will span to the width of its
   immediate parent
 - Default `trigger` - `hover`
+
+**Letter navigation**
+
+When focus is on the MenuBar or within the SubMenu and you type a letter key, a
+search begins. Focus will move to the first item that starts with the letter you
+typed.
+
+> Move focus to the `MenuBar`, try and type any letter, say "M" to see the focus
+> movement.
 
 ```jsx
 <MenuBar ariaLabel="Dishes" spanMenuBar>
@@ -160,7 +169,49 @@ import {
 </MenuBar>
 ```
 
-## Props
+### SubMenu
+
+- Access the internal state of the `SubMenu`, use a function as a `children`
+  (commonly known as a `render prop`). You'll get access to the internal state
+  `isOpen` and method `onClose`. Must have the prop `trigger="click"` on
+  MenuBar.
+
+```jsx
+<MenuBar trigger="click">
+  <MenuBarItem>Recipes</MenuBarItem>
+  <SubMenu autoSelect={false} closeOnBlur={false} closeOnSelect={false}>
+    <SubMenuTitle>Workouts</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    {({ isOpen, onClose }) => (
+      <React.Fragment>
+        <SubMenuTitle as={Button} rightIcon="chevron-down">
+          {isOpen ? "Close" : "Open"}
+        </SubMenuTitle>
+        <SubMenuList>
+          <SubMenuItem>Download</SubMenuItem>
+          <SubMenuItem onClick={() => alert("Clicked")}>
+            Create a Copy
+          </SubMenuItem>
+        </SubMenuList>
+      </React.Fragment>
+    )}
+  </SubMenu>
+  <MenuBarItem>Meal Plans</MenuBarItem>
+  <MenuBarItem>Groceries</MenuBarItem>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
+## Props Table
 
 ### MenuBar Props
 
@@ -179,6 +230,16 @@ import {
 | -------- | ------------------------------ | ------- | --------------------------------------------------------- |
 | children | `React.ReactNode`              |         | The children will be MenuBarItem                          |
 | as       | `React.ReactNode`, `HTML tags` | `ul`    | HTML Tag or Component to be rendered opposing default tag |
+
+### SubMenu
+
+| Name          | Type              | Default | Description                                                       |
+| ------------- | ----------------- | ------- | ----------------------------------------------------------------- |
+| children      | `React.ReactNode` |         | The children of the menu must be `SubMenuTitle` and `SubMenuList` |
+| isOpen        | `boolean`         |         | If `true`, the menu will be opened                                |
+| autoSelect    | `boolean`         | `true`  | The menu will select the first enabled item when it opens         |
+| closeOnBlur   | `boolean`         | `true`  | If `true`, the menu will close on outside click or blur           |
+| closeOnSelect | `boolean`         | `true`  | If `true`, the menu will close on menu item select                |
 
 ## Accessibility
 

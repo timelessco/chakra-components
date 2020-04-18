@@ -1,5 +1,5 @@
 import React, { forwardRef, useRef } from "react";
-import { Link, Icon } from "@chakra-ui/core";
+import { Link } from "@chakra-ui/core";
 
 import { useMenuBarContext } from "./useMenuBarContext";
 import { useSubMenuContext } from "./useSubMenuContext";
