@@ -1,8 +1,8 @@
 import React from "react";
 
 import Popper, { PopperArrow } from "@chakra-ui/core/dist/Popper";
-
 import { useMenuBarContext } from "./useMenuBarContext";
+import { Box } from "@chakra-ui/core";
 import { useSubMenuContext } from "./useSubMenuContext";
 import { useMenuListStyle } from "@chakra-ui/core/dist/Menu/styles";
 
@@ -36,6 +36,7 @@ const SubMenuList = ({
     closeOnBlur,
     placement,
     mouseOnSubMenuTitle,
+    mode,
   } = useSubMenuContext();
 
   const { spanParent, spanMenuBar, trigger, menuBarRef } = useMenuBarContext();
@@ -151,35 +152,49 @@ const SubMenuList = ({
     },
     offset: { enabled: true, offset: `${skid}, ${gutter}` },
   };
-
   const styleProps = useMenuListStyle();
 
-  return (
-    <Popper
-      usePortal={false}
-      as={Comp}
-      anchorEl={titleRef.current}
-      ref={menuRef}
-      isOpen={isOpen}
-      placement={placement}
-      modifiers={popperModifiers}
-      width={width}
-      rounded="md"
-      py={2}
-      zIndex="2"
-      _focus={{
-        outline: 0,
-      }}
-      role="menu"
-      aria-label={ariaLabel}
-      tabIndex={-1}
-      onKeyDown={handleKeyDown}
-      onBlur={handleBlur}
-      {...eventHandlers}
-      {...styleProps}
-      {...props}
-    />
-  );
+  if (mode === "horizontal") {
+    return (
+      <Popper
+        usePortal={false}
+        as={Comp}
+        anchorEl={titleRef.current}
+        ref={menuRef}
+        isOpen={isOpen}
+        placement={placement}
+        modifiers={popperModifiers}
+        width={width}
+        rounded="md"
+        py={2}
+        zIndex="2"
+        _focus={{
+          outline: 0,
+        }}
+        role="menu"
+        aria-label={ariaLabel}
+        tabIndex={-1}
+        onKeyDown={handleKeyDown}
+        onBlur={handleBlur}
+        {...eventHandlers}
+        {...styleProps}
+        {...props}
+      />
+    );
+  } else {
+    return (
+      <Box
+        ref={menuRef}
+        width={width}
+        display={isOpen ? "block" : "none"}
+        onMouseEnter={handleOnMouseEnter}
+        onMouseLeave={handleOnMouseLeave}
+        onBlur={handleBlur}
+        onKeyDown={handleKeyDown}
+        {...props}
+      />
+    );
+  }
 };
 
 SubMenuList.displayName = "SubMenuList";

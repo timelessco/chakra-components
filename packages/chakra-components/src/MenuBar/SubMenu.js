@@ -26,6 +26,7 @@ const SubMenu = ({
   defaultActiveIndex,
   placement,
   children,
+  mode = "horizontal",
   ...props
 }) => {
   const [activeIndex, setActiveIndex] = useState(defaultActiveIndex || -1);
@@ -190,13 +191,20 @@ const SubMenu = ({
     closeOnBlur,
     colorMode,
     mouseOnSubMenuTitle,
+    mode,
   };
-
+  let modeStyleProps = {}
+  if(mode==="vertical") {
+    modeStyleProps = {
+      flexDirection: "column",
+      alignItems: "left"
+    } 
+  }
   return (
     <SubMenuContext.Provider value={context}>
-      <Flex as="li" role="none" {...props}>
+      <Flex as="li" role="none" {...modeStyleProps} {...props}>
         {typeof children === "function"
-          ? children({ isOpen: _isOpen, onClose: closeMenu })
+          ? children({ isOpen: _isOpen, onClose: closeMenu, mode: mode })
           : children}
       </Flex>
     </SubMenuContext.Provider>
