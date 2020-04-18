@@ -1,7 +1,6 @@
 import React, { createContext, useState, useRef, useEffect } from "react";
 import { usePrevious, useColorMode, Flex } from "@chakra-ui/core";
 import { useId } from "@reach/auto-id";
-
 import { getFocusables } from "@chakra-ui/core/dist/utils";
 
 /* =========================================================================
@@ -156,13 +155,14 @@ const SubMenu = ({
     mouseOnSubMenuTitle,
     isCollapsable,
   };
-  let modeStyleProps = {}
-  if(mode==="vertical") {
+
+  let modeStyleProps = {};
+  if (isCollapsable) {
     modeStyleProps = {
       flexDirection: "column",
-      alignItems: "left"
-    } 
+    };
   }
+
   return (
     <SubMenuContext.Provider value={context}>
       <Flex as="li" role="none" {...modeStyleProps} {...props}>
