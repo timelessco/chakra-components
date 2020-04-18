@@ -154,7 +154,19 @@ const SubMenuList = ({
   };
   const styleProps = useMenuListStyle();
 
-  if (!isCollapsable) {
+  if (isCollapsable) {
+    return (
+      <Box
+        as="ul"
+        ref={menuRef}
+        width={width}
+        display={isOpen ? "block" : "none"}
+        onKeyDown={handleKeyDown}
+        {...eventHandlers}
+        {...props}
+      />
+    );
+  } else {
     return (
       <Popper
         usePortal={false}
@@ -178,18 +190,6 @@ const SubMenuList = ({
         onBlur={handleBlur}
         {...eventHandlers}
         {...styleProps}
-        {...props}
-      />
-    );
-  } else {
-    return (
-      <Box
-        as="ul"
-        ref={menuRef}
-        width={width}
-        display={isOpen ? "block" : "none"}
-        onKeyDown={handleKeyDown}
-        {...eventHandlers}
         {...props}
       />
     );

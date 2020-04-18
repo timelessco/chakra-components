@@ -170,7 +170,6 @@ const SubMenu = ({
           ? children({
               isOpen: _isOpen,
               onClose: closeMenu,
-              isCollapsable: isCollapsable,
             })
           : children}
       </Flex>

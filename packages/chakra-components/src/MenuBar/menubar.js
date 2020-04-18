@@ -104,8 +104,17 @@ const MenuBar = forwardRef(
       trigger,
       menuBarRef,
     };
+
     const menuBarForkRef = useForkRef(menuBarRef, ref);
     const styleProps = useMenuBarStyle();
+
+    let modeStyleProps = {};
+    if (mode === "vertical") {
+      modeStyleProps = {
+        flexDirection: "column",
+        alignItems: "left",
+      };
+    }
 
     return (
       <MenuBarContext.Provider value={context}>
@@ -118,6 +127,7 @@ const MenuBar = forwardRef(
           flexDirection={mode && mode === "horizontal" ? "row" : "column"}
           alignItems={mode && mode === "horizontal" ? "center" : "left"}
           {...styleProps}
+          {...modeStyleProps}
           {...props}
         />
       </MenuBarContext.Provider>
