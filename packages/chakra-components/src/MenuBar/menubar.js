@@ -37,7 +37,6 @@ const MenuBar = forwardRef(
       role = "menubar",
       as: Comp = PseudoUnorderedList,
       ariaLabel,
-      defaultActiveIndex,
       spanParent,
       spanMenuBar,
       trigger = "hover",
@@ -45,7 +44,7 @@ const MenuBar = forwardRef(
     },
     ref,
   ) => {
-    const [activeIndex, setActiveIndex] = useState(defaultActiveIndex || -1);
+    const [activeIndex, setActiveIndex] = useState(-1);
 
     const menuBarId = `menubar-${useId()}`;
 

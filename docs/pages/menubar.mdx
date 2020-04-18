@@ -1,9 +1,7 @@
 # MenuBar
 
-An
-[accessible menubar](https://www.w3.org/TR/wai-aria-practices/examples/menubar/menubar-1/menubar-1.html)
-for both horizontal and vertical navigations. `MenuBar` uses roving tabIndex for
-focus management.
+An accessible menubar for both horizontal and vertical navigations. `MenuBar`
+uses roving tabIndex for focus management.
 
 By default, `MenuBar` used ul, li, a components as default but they can be
 modified using `as` prop.
@@ -40,7 +38,7 @@ import {
 } from "@chakra-components/core";
 ```
 
-## Usage
+## Basic Usage
 
 ```jsx
 <MenuBar>
@@ -82,10 +80,10 @@ import {
 
 ## Props
 
-### spanParent
+### MenuBar Props
 
 ```jsx
-<MenuBar spanParent>
+<MenuBar ariaLabel="Dishes" spanMenuBar>
   <MenuBarItem>Recipes</MenuBarItem>
   <MenuBarItem>My Calendar</MenuBarItem>
   <SubMenu>
@@ -122,10 +120,10 @@ import {
 </MenuBar>
 ```
 
-### spanMenuBar
+### More MenuBar Props
 
 ```jsx
-<MenuBar spanMenuBar>
+<MenuBar ariaLabel="Dishes" spanParent trigger="click">
   <MenuBarItem>Recipes</MenuBarItem>
   <MenuBarItem>My Calendar</MenuBarItem>
   <SubMenu>
@@ -203,3 +201,58 @@ Default trigger - `hover`
   <MenuBarItem>Blog</MenuBarItem>
 </MenuBar>
 ```
+
+## Props
+
+### MenuBar Props
+
+| Name        | Type                           | Default | Description                                                                  |
+| ----------- | ------------------------------ | ------- | ---------------------------------------------------------------------------- |
+| children    | `React.ReactNode`              |         | The childrens of the `MenuBar` must be `MenuBarItem`                         |
+| ariaLabel   | `string`                       |         | Title for the `MenuBar` as aria label                                        |
+| as          | `React.ReactNode`, `HTML tags` | `ul`    | HTML Tag or Component to be rendered opposing default tag                    |
+| trigger     | `hover`, `click`               | `hover` | The interaction that triggers the popover.                                   |
+| spanParent  | `boolean`                      | `false` | If `true`, `SubMenu` popover will span to the width of its immediate parent  |
+| spanMenuBar | `boolean`                      | `false` | If `true`, `SubMenu` popover will span to the width of the menubar container |
+
+## Accessibility
+
+### Keyboard Interaction
+
+**For `MenuBar`:**
+
+| Key                | Action                                                                                                                                                                               |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ArrowRight`       | Moves focus to the next item in the menubar. If focus is on the last item, moves focus to the first item.                                                                            |
+| `ArrowLeft`        | Moves focus to the previous item in the menubar. If focus is on the first item, moves focus to the last item.                                                                        |
+| `Enter` or `Space` | Opens submenu and moves focus to first item in the submenu.                                                                                                                          |
+| `ArrowDown`        | Opens submenu and moves focus to first item in the submenu.                                                                                                                          |
+| `ArrowUp`          | Opens submenu and moves focus to last item in the submenu.                                                                                                                           |
+| `Escape`           | When the submenu is open, closes the submenu and sets focus to that `SubMenuTitle`                                                                                                   |
+| `Home`             | Moves focus to first item in the menubar.                                                                                                                                            |
+| `End`              | Moves focus to last item in the menubar.                                                                                                                                             |
+| `A-Z` or `a-z`     | Moves focus to next item in the menubar having a name that starts with the typed character. If none of the items have a name starting with the typed character, focus does not move. |
+| `Tab`              | no effect - moves the focus away from `MenuBar`                                                                                                                                      |
+
+**For `SubMenu`:**
+
+| Key                | Action                                                                                                                                                                                                                                                                                             |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Enter` or `Space` | Activates menu item, causing the link to be activated.                                                                                                                                                                                                                                             |
+| `Escape`           | Closes submenu. Moves focus to parent menubar item.                                                                                                                                                                                                                                                |
+| `ArrowRight`       | If focus is on an item with a submenu, opens the submenu and places focus on the first item. If focus is on an item that does not have a submenu: Closes submenu, Moves focus to next item in the menubar, Opens submenu of newly focused menubar item, keeping focus on that parent menubar item. |
+| `ArrowLeft`        | Closes submenu and moves focus to parent menu item. If parent menu item is in the menubar, also: moves focus to previous item in the menubar, Opens submenu of newly focused menubar item, keeping focus on that parent menubar item.                                                              |
+| `ArrowDown`        | Moves focus to the next item in the submenu. If focus is on the last item, moves focus to the first item.                                                                                                                                                                                          |
+| `ArrowUp`          | Moves focus to previous item in the submenu. If focus is on the first item, moves focus to the last item.                                                                                                                                                                                          |
+| `Home`             | Moves focus to the first item in the submenu.                                                                                                                                                                                                                                                      |
+| `End`              | Moves focus to the last item in the submenu.                                                                                                                                                                                                                                                       |
+| `A-Z` or `a-z`     | Moves focus to the next item having a name that starts with the typed character. If none of the items have a name starting with the typed character, focus does not move.                                                                                                                          |
+| `Tab`              | no effect - moves the focus away from `MenuBar`                                                                                                                                                                                                                                                    |
+
+### ARIA roles
+
+**For `MenuBar`:**
+
+- It has `role` set to `menubar`
+- It has an auto `id` as accessible id.
+- It has an `aria-label` prop which needs to be provided.
