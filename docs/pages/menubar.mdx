@@ -25,6 +25,8 @@ Chakra Components exports 9 components for rendering menubar:
   child of a `SubMenuList`.
 - `SubMenuGroup`: A wrapper to group related submenu items.
 - `SubMenuDivider`: A visual separator for submenu items and groups.
+- `SubMenuOptionGroup`: A wrapper for checkable menu items (radio and checkbox)
+- `SubMenuItemOption`: The checkable menu item, to be used with MenuOptionGroup
 
 ```js
 import {
@@ -37,6 +39,8 @@ import {
   SubMenuItem,
   SubMenuGroup,
   SubMenuDivider,
+  SubMenuOptionGroup,
+  SubMenuItemOption,
 } from "@chakra-components/core";
 ```
 
@@ -327,6 +331,44 @@ To group related `SubMenuItem`s, use the `SubMenuGroup` component and pass it a
         <SubMenuItem>Mark as Drafted</SubMenuItem>
         <SubMenuItem>Deleted</SubMenuItem>
       </SubMenuGroup>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Workouts</MenuBarItem>
+  <MenuBarItem>Groceries</MenuBarItem>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
+### SubMenuItem
+
+- SubMenuItem will be an `a` tag by default.
+- Default tag can be changed using `as` prop.
+
+### SubMenuOption
+
+- You can compose a menu for table headers to help with sorting and filtering
+  options. Use the MenuOptionGroup and MenuItemOption components.
+- Supports both `radio` and `checkbox`.
+- Works best when `trigger="click"` and `closeOnSelect={false}`.
+
+```jsx
+<MenuBar trigger="click">
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <SubMenu closeOnSelect={false}>
+    <SubMenuTitle ariaLabel="Meal Plan Menu">Meal Plans</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuOptionGroup defaultValue="asc" title="Order" type="radio">
+        <SubMenuItemOption value="asc">Ascending</SubMenuItemOption>
+        <SubMenuItemOption value="desc">Descending</SubMenuItemOption>
+      </SubMenuOptionGroup>
+      <SubMenuDivider />
+      <SubMenuOptionGroup title="Country" type="checkbox">
+        <SubMenuItemOption value="email">Email</SubMenuItemOption>
+        <SubMenuItemOption value="phone">Phone</SubMenuItemOption>
+        <SubMenuItemOption value="country">Country</SubMenuItemOption>
+      </SubMenuOptionGroup>
     </SubMenuList>
   </SubMenu>
   <MenuBarItem>Workouts</MenuBarItem>
