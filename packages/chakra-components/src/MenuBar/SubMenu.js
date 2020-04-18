@@ -2,6 +2,7 @@ import React, { createContext, useState, useRef, useEffect } from "react";
 import { usePrevious, useColorMode, Flex } from "@chakra-ui/core";
 import { useId } from "@reach/auto-id";
 import { getFocusables } from "@chakra-ui/core/dist/utils";
+import { useMenuBarContext } from "./useMenuBarContext";
 
 /* =========================================================================
   SubMenuContext
@@ -33,6 +34,7 @@ const SubMenu = ({
 
   const _isOpen = isControlled ? isOpenProp : isOpen;
   const wasPreviouslyOpen = usePrevious(_isOpen);
+  const wasPreviouslyOpenBeforeTimeout = usePrevious(wasPreviouslyOpen);
 
   const menuId = `menu-${useId()}`;
 
@@ -42,6 +44,8 @@ const SubMenu = ({
   const mouseOnSubMenuTitle = useRef(false);
 
   const { colorMode } = useColorMode();
+
+  const { trigger } = useMenuBarContext();
 
   useEffect(() => {
     if (_isOpen && menuRef && menuRef.current) {
@@ -63,14 +67,34 @@ const SubMenu = ({
       updateTabIndex(activeIndex);
     }
 
-    if (activeIndex === -1 && !_isOpen && wasPreviouslyOpen) {
-      titleRef.current && titleRef.current.focus();
+    if (trigger === "click") {
+      if (activeIndex === -1 && !_isOpen && wasPreviouslyOpen) {
+        titleRef.current && titleRef.current.focus();
+      }
+    }
+
+    if (trigger === "hover") {
+      if (
+        activeIndex === -1 &&
+        !_isOpen &&
+        (wasPreviouslyOpenBeforeTimeout || wasPreviouslyOpen)
+      ) {
+        titleRef.current && titleRef.current.focus();
+      }
     }
 
     if (activeIndex === -1 && _isOpen) {
       menuRef.current && menuRef.current.focus();
     }
-  }, [activeIndex, _isOpen, titleRef, menuRef, wasPreviouslyOpen]);
+  }, [
+    activeIndex,
+    _isOpen,
+    titleRef,
+    menuRef,
+    trigger,
+    wasPreviouslyOpen,
+    wasPreviouslyOpenBeforeTimeout,
+  ]);
 
   const initTabIndex = () => {
     focusableItems.current.forEach(
