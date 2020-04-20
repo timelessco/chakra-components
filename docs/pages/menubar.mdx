@@ -159,17 +159,17 @@ typed.
 </MenuBar>
 ```
 
-### mode and isCollapsable
+### Vetical MenuBar
 
-Default mode - `horizontal`
-
-Default isCollapsable - `false`
+- You can the the mode of MenuBar from default `horizontal` to `vertical`.
+- If `isCollapsable`, all the SubMenu will be shown in collapsable effect.
+- By default, SubMenuItems are shown in Right Popper placement.
 
 ```jsx
-<MenuBar mode="vertical" trigger="click" maxWidth="300px">
+<MenuBar mode="vertical" maxWidth="100px">
   <MenuBarItem>Recipes</MenuBarItem>
   <MenuBarItem>My Calendar</MenuBarItem>
-  <SubMenu isCollapsable>
+  <SubMenu>
     <SubMenuTitle>Meal Plans</SubMenuTitle>
     <SubMenuList>
       <SubMenuItem>Downloaded</SubMenuItem>
@@ -178,7 +178,7 @@ Default isCollapsable - `false`
       <SubMenuItem>Deleted</SubMenuItem>
     </SubMenuList>
   </SubMenu>
-  <SubMenu isCollapsable>
+  <SubMenu>
     <SubMenuTitle>Groceries</SubMenuTitle>
     <SubMenuList>
       <SubMenuItem>Download</SubMenuItem>
@@ -188,7 +188,7 @@ Default isCollapsable - `false`
       <SubMenuItem>Attend a Workshop</SubMenuItem>
     </SubMenuList>
   </SubMenu>
-  <SubMenu isCollapsable>
+  <SubMenu>
     <SubMenuTitle>Workouts</SubMenuTitle>
     <SubMenuList>
       <SubMenuItem>Download</SubMenuItem>

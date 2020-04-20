@@ -10,7 +10,7 @@ import { useMenuBarItemStyle } from "./styles";
 
 const MenuBarItemLink = forwardRef((props, ref) => {
   const styleProps = useMenuBarItemStyle();
-  return <Link ref={ref} {...styleProps} {...props} />;
+  return <Link ref={ref} width="full" {...styleProps} {...props} />;
 });
 
 MenuBarItemLink.displayName = "MenuBarItemLink";

@@ -103,14 +103,17 @@ const MenuBar = forwardRef(
       spanMenuBar,
       trigger,
       menuBarRef,
+      mode,
     };
 
     const menuBarForkRef = useForkRef(menuBarRef, ref);
     const styleProps = useMenuBarStyle();
 
     let modeStyleProps = {};
+
     if (mode === "vertical") {
       modeStyleProps = {
+        display: "flex",
         flexDirection: "column",
         alignItems: "left",
       };
@@ -123,9 +126,6 @@ const MenuBar = forwardRef(
           id={menuBarId}
           role={role}
           ariaLabel={ariaLabel}
-          display="flex"
-          flexDirection={mode && mode === "horizontal" ? "row" : "column"}
-          alignItems={mode && mode === "horizontal" ? "center" : "left"}
           {...styleProps}
           {...modeStyleProps}
           {...props}

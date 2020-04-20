@@ -15,6 +15,7 @@ const SubMenuList = ({
   width,
   skid,
   gutter,
+  placement,
   ariaLabel,
   onMouseEnter,
   onMouseLeave,
@@ -34,15 +35,24 @@ const SubMenuList = ({
     titleRef,
     menuRef,
     closeOnBlur,
-    placement,
     mouseOnSubMenuTitle,
     isCollapsable,
   } = useSubMenuContext();
 
-  const { spanParent, spanMenuBar, trigger, menuBarRef } = useMenuBarContext();
+  const {
+    spanParent,
+    spanMenuBar,
+    trigger,
+    menuBarRef,
+    mode,
+  } = useMenuBarContext();
 
   if (spanParent || spanMenuBar) {
     width = "full";
+  }
+
+  if (mode === "vertical") {
+    placement = "right";
   }
 
   let eventHandlers = {};

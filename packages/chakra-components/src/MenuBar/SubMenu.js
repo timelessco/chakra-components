@@ -23,7 +23,6 @@ const SubMenu = ({
   onOpen,
   onClose,
   defaultActiveIndex,
-  placement,
   children,
   isCollapsable,
   ...props
@@ -181,7 +180,6 @@ const SubMenu = ({
     titleRef,
     menuRef,
     focusableItems,
-    placement,
     menuId,
     openMenu,
     autoSelect,
