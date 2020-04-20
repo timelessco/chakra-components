@@ -7,7 +7,6 @@ import { useColorMode } from "@chakra-ui/core";
 export const useMenuBarStyle = () => {
   const baseProps = {
     alignItems: "center",
-    fontWeight: "medium",
     fontSize: "md",
     lineHeight: "shorter",
   };
