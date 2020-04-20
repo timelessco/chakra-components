@@ -39,11 +39,10 @@ const SubMenu = ({
   const focusableItems = useRef(null);
   const menuRef = useRef(null);
   const titleRef = useRef(null);
-  const mouseOnSubMenuTitle = useRef(false);
 
   const { colorMode } = useColorMode();
 
-  const { trigger, isCollapsable } = useMenuBarContext();
+  const { trigger, isCollapsable, mouseOnSubMenuTitle } = useMenuBarContext();
 
   useEffect(() => {
     if (_isOpen && menuRef && menuRef.current) {
@@ -75,7 +74,9 @@ const SubMenu = ({
       if (
         activeIndex === -1 &&
         !_isOpen &&
-        (wasPreviouslyOpenBeforeTimeout || wasPreviouslyOpen)
+        (wasPreviouslyOpenBeforeTimeout ||
+          wasPreviouslyOpen ||
+          mouseOnSubMenuTitle.current === false)
       ) {
         titleRef.current && titleRef.current.focus();
       }
@@ -92,6 +93,7 @@ const SubMenu = ({
     trigger,
     wasPreviouslyOpen,
     wasPreviouslyOpenBeforeTimeout,
+    mouseOnSubMenuTitle,
   ]);
 
   const initTabIndex = () => {
@@ -185,7 +187,6 @@ const SubMenu = ({
     closeOnSelect,
     closeOnBlur,
     colorMode,
-    mouseOnSubMenuTitle,
     closeMenuWithoutIndex,
   };
 

@@ -35,7 +35,6 @@ const SubMenuList = ({
     titleRef,
     menuRef,
     closeOnBlur,
-    mouseOnSubMenuTitle,
   } = useSubMenuContext();
 
   const {
@@ -44,6 +43,7 @@ const SubMenuList = ({
     trigger,
     menuBarRef,
     mode,
+    mouseOnSubMenuTitle,
     isCollapsable,
   } = useMenuBarContext();
 

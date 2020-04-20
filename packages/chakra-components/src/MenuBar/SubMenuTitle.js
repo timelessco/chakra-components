@@ -43,7 +43,6 @@ const SubMenuTitle = forwardRef(
       autoSelect,
       openMenu,
       titleRef,
-      mouseOnSubMenuTitle,
     } = useSubMenuContext();
 
     const {
@@ -52,6 +51,7 @@ const SubMenuTitle = forwardRef(
       setActiveIndex,
       trigger,
       mode,
+      mouseOnSubMenuTitle,
     } = useMenuBarContext();
 
     let menuBarArrows = ["ArrowRight", "ArrowLeft"];
@@ -86,22 +86,18 @@ const SubMenuTitle = forwardRef(
       };
     }
 
-    const openTimeout = useRef(null);
-
     if (trigger === "hover") {
       eventHandlers = {
         onMouseEnter: event => {
           mouseOnSubMenuTitle.current = true;
 
-          openTimeout.current = setTimeout(() => {
-            if (!isOpen) {
-              if (autoSelect) {
-                focusOnFirstItem();
-              } else {
-                openMenu();
-              }
+          if (!isOpen) {
+            if (autoSelect) {
+              focusOnFirstItem();
+            } else {
+              openMenu();
             }
-          }, 300);
+          }
 
           onMouseEnter && onMouseEnter(event);
         },
@@ -109,18 +105,13 @@ const SubMenuTitle = forwardRef(
         onMouseLeave: event => {
           mouseOnSubMenuTitle.current = false;
 
-          if (openTimeout.current) {
-            clearTimeout(openTimeout.current);
-            openTimeout.current = null;
-          }
-
           setTimeout(() => {
             if (mouseOnSubMenuTitle.current === false) {
               if (isOpen) {
                 closeMenu();
               }
             }
-          }, 150);
+          }, 300);
 
           onMouseLeave && onMouseLeave(event);
         },
@@ -146,7 +137,6 @@ const SubMenuTitle = forwardRef(
       let nextIndex;
 
       if (event.key === subMenuArrows[0]) {
-        console.log("right");
         event.preventDefault();
         focusOnFirstItem();
       }

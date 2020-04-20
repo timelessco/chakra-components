@@ -101,13 +101,6 @@ export const SubMenuItemOption = forwardRef(
       }
     };
 
-    const handleMouseLeave = event => {
-      focusAtIndex(-1);
-      if (onMouseLeave) {
-        onMouseLeave(event);
-      }
-    };
-
     const styleProps = useMenuItemStyle();
 
     return (
@@ -125,7 +118,6 @@ export const SubMenuItemOption = forwardRef(
           disabled={isDisabled}
           aria-disabled={isDisabled ? "" : undefined}
           onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
           onKeyDown={handleKeyDown}
           {...styleProps}
           {...rest}

@@ -68,12 +68,6 @@ const SubMenuItem = forwardRef(
       onMouseEnter && onMouseEnter(event);
     };
 
-    const handleOnMouseLeave = event => {
-      focusAtIndex(-1);
-
-      onMouseLeave && onMouseLeave(event);
-    };
-
     const handleOnKeyDown = event => {
       const menuBarItemscount = focusableMenuBarItems.current.length;
       let nextIndex;
@@ -125,7 +119,6 @@ const SubMenuItem = forwardRef(
             tabIndex={-1}
             onClick={handleOnClick}
             onMouseEnter={handleOnMouseEnter}
-            onMouseLeave={handleOnMouseLeave}
             onKeyDown={handleOnKeyDown}
             {...styleProps}
             {...props}
@@ -150,7 +143,6 @@ const SubMenuItem = forwardRef(
           tabIndex={-1}
           onClick={handleOnClick}
           onMouseEnter={handleOnMouseEnter}
-          onMouseLeave={handleOnMouseLeave}
           onKeyDown={handleOnKeyDown}
           {...styleProps}
           {...props}
