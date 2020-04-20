@@ -123,6 +123,10 @@ const SubMenuItem = forwardRef(
             px={4}
             role={role}
             tabIndex={-1}
+            onClick={handleOnClick}
+            onMouseEnter={handleOnMouseEnter}
+            onMouseLeave={handleOnMouseLeave}
+            onKeyDown={handleOnKeyDown}
             {...styleProps}
             {...props}
           />

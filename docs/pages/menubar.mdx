@@ -471,16 +471,17 @@ To group related `SubMenuItem`s, use the `SubMenuGroup` component and pass it a
 
 ### MenuBar Props
 
-| Name          | Type                           | Default      | Description                                                                  |
-| ------------- | ------------------------------ | ------------ | ---------------------------------------------------------------------------- |
-| children      | `React.ReactNode`              |              | The childrens of the `MenuBar` must be `MenuBarItem`                         |
-| ariaLabel     | `string`                       |              | Title for the `MenuBar` as aria label                                        |
-| as            | `React.ReactNode`, `HTML tags` | `ul`         | HTML Tag or Component to be rendered opposing default tag                    |
-| trigger       | `hover`, `click`               | `hover`      | The interaction that triggers the popover.                                   |
-| spanParent    | `boolean`                      | `false`      | If `true`, `SubMenu` popover will span to the width of its immediate parent  |
-| spanMenuBar   | `boolean`                      | `false`      | If `true`, `SubMenu` popover will span to the width of the menubar container |
-| mode          | `vertical`, `horizontal`       | `horizontal` | If `mode: 'vertical'`, `MenuBarItems` are rendered in flex direction column  |
-| isCollapsable | `boolean`                      | `false`      | If `true`, `SubMenuList` is rendered in `Collapse` instead of `Popper`       |
+| Name            | Type                           | Default      | Description                                                                  |
+| --------------- | ------------------------------ | ------------ | ---------------------------------------------------------------------------- |
+| children        | `React.ReactNode`              |              | The childrens of the `MenuBar` must be `MenuBarItem`                         |
+| ariaLabel       | `string`                       |              | Title for the `MenuBar` as aria label                                        |
+| as              | `React.ReactNode`, `HTML tags` | `ul`         | HTML Tag or Component to be rendered opposing default tag                    |
+| trigger         | `hover`, `click`               | `hover`      | The interaction that triggers the popover.                                   |
+| spanParent      | `boolean`                      | `false`      | If `true`, `SubMenu` popover will span to the width of its immediate parent  |
+| spanMenuBar     | `boolean`                      | `false`      | If `true`, `SubMenu` popover will span to the width of the menubar container |
+| mode            | `vertical`, `horizontal`       | `horizontal` | If `mode: 'vertical'`, `MenuBarItems` are rendered in flex direction column  |
+| ariaOrientation | `vertical`, `horizontal`       | `horizontal` | If `mode: 'vertical'`, `ariaOrientation` is set to vertical                  |
+| isCollapsable   | `boolean`                      | `false`      | If `true`, `SubMenuList` is rendered in `Collapse` instead of `Popper`       |
 
 ### MenuBarItem
 

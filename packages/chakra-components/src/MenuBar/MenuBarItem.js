@@ -35,7 +35,14 @@ const MenuBarItem = forwardRef(
       focusableMenuBarItems,
       activeIndex: index,
       setActiveIndex,
+      mode,
     } = useMenuBarContext();
+
+    let arrows = ["ArrowRight", "ArrowLeft"];
+
+    if (mode === "vertical") {
+      arrows = ["ArrowDown", "ArrowUp"];
+    }
 
     const handleOnClick = event => {
       if (focusableMenuBarItems && focusableMenuBarItems.current.length > 0) {
@@ -52,7 +59,7 @@ const MenuBarItem = forwardRef(
       const count = focusableMenuBarItems.current.length;
       let nextIndex;
 
-      if (event.key === "ArrowRight") {
+      if (event.key === arrows[0]) {
         event.preventDefault();
 
         if (index === -1) {
@@ -62,13 +69,19 @@ const MenuBarItem = forwardRef(
         }
 
         setActiveIndex(nextIndex);
-      } else if (event.key === "ArrowLeft") {
+      }
+
+      if (event.key === arrows[1]) {
         event.preventDefault();
         nextIndex = (index - 1 + count) % count;
         setActiveIndex(nextIndex);
-      } else if (event.key === "Home") {
+      }
+
+      if (event.key === "Home") {
         setActiveIndex(0);
-      } else if (event.key === "End") {
+      }
+
+      if (event.key === "End") {
         setActiveIndex(focusableMenuBarItems.current.length - 1);
       }
 

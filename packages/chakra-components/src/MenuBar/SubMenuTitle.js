@@ -51,7 +51,16 @@ const SubMenuTitle = forwardRef(
       activeIndex: index,
       setActiveIndex,
       trigger,
+      mode,
     } = useMenuBarContext();
+
+    let menuBarArrows = ["ArrowRight", "ArrowLeft"];
+    let subMenuArrows = ["ArrowDown", "ArrowUp"];
+
+    if (mode === "vertical") {
+      menuBarArrows = ["ArrowDown", "ArrowUp"];
+      subMenuArrows = ["ArrowRight", "ArrowLeft"];
+    }
 
     let eventHandlers = {};
 
@@ -136,17 +145,18 @@ const SubMenuTitle = forwardRef(
       const count = focusableMenuBarItems.current.length;
       let nextIndex;
 
-      if (event.key === "ArrowDown") {
+      if (event.key === subMenuArrows[0]) {
+        console.log("right");
         event.preventDefault();
         focusOnFirstItem();
       }
 
-      if (event.key === "ArrowUp") {
+      if (event.key === subMenuArrows[1]) {
         event.preventDefault();
         focusOnLastItem();
       }
 
-      if (event.key === "ArrowRight") {
+      if (event.key === menuBarArrows[0]) {
         event.preventDefault();
 
         if (index === -1) {
@@ -158,7 +168,7 @@ const SubMenuTitle = forwardRef(
         setActiveIndex(nextIndex);
       }
 
-      if (event.key === "ArrowLeft") {
+      if (event.key === menuBarArrows[1]) {
         event.preventDefault();
         nextIndex = (index - 1 + count) % count;
         setActiveIndex(nextIndex);

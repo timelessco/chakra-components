@@ -173,6 +173,7 @@ const SubMenuList = ({
           role="menu"
           aria-label={ariaLabel}
           tabIndex={-1}
+          _focus={{ outline: 0 }}
           width={width}
           onKeyDown={handleKeyDown}
           {...props}
@@ -194,9 +195,7 @@ const SubMenuList = ({
       rounded="md"
       py={2}
       zIndex="2"
-      _focus={{
-        outline: 0,
-      }}
+      _focus={{ outline: 0 }}
       role="menu"
       aria-label={ariaLabel}
       tabIndex={-1}

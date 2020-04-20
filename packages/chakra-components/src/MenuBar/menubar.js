@@ -132,6 +132,7 @@ const MenuBar = forwardRef(
           id={menuBarId}
           role={role}
           ariaLabel={ariaLabel}
+          ariaOrientation={mode}
           {...styleProps}
           {...modeStyleProps}
           {...props}
