@@ -40,6 +40,8 @@ const MenuBar = forwardRef(
       spanParent,
       spanMenuBar,
       trigger = "hover",
+      mode = "horizontal",
+      isCollapsable,
       ...props
     },
     ref,
@@ -51,10 +53,14 @@ const MenuBar = forwardRef(
     const focusableMenuBarItems = useRef(null);
     const menuBarRef = useRef(null);
 
+    if (isCollapsable) {
+      trigger = "click";
+    }
+
     useEffect(() => {
       if (menuBarRef && menuBarRef.current) {
         let focusables = getFocusables(menuBarRef.current).filter(node =>
-          ["menuitem"].includes(node.getAttribute("role")),
+          node.getAttribute("data-menubar-item"),
         );
 
         focusableMenuBarItems.current = focusables;
@@ -102,9 +108,22 @@ const MenuBar = forwardRef(
       spanMenuBar,
       trigger,
       menuBarRef,
+      mode,
+      isCollapsable,
     };
+
     const menuBarForkRef = useForkRef(menuBarRef, ref);
     const styleProps = useMenuBarStyle();
+
+    let modeStyleProps = {};
+
+    if (mode === "vertical") {
+      modeStyleProps = {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "left",
+      };
+    }
 
     return (
       <MenuBarContext.Provider value={context}>
@@ -114,6 +133,7 @@ const MenuBar = forwardRef(
           role={role}
           ariaLabel={ariaLabel}
           {...styleProps}
+          {...modeStyleProps}
           {...props}
         />
       </MenuBarContext.Provider>

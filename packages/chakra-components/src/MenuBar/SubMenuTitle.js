@@ -12,7 +12,7 @@ import { useMenuBarItemStyle } from "./styles";
   ========================================================================== */
 
 const SubMenuTitleLink = forwardRef((props, ref) => {
-  return <Link ref={ref} {...props} />;
+  return <Link ref={ref} width="full" {...props} />;
 });
 
 SubMenuTitleLink.displayName = "SubMenuTitleLink";
@@ -212,6 +212,7 @@ const SubMenuTitle = forwardRef(
         aria-haspopup="true"
         aria-expanded={isOpen}
         role={role}
+        data-menubar-item={true}
         tabIndex={0}
         onKeyDown={handleKeyDown}
         {...eventHandlers}

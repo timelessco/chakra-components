@@ -10,7 +10,8 @@ import { useMenuBarItemStyle } from "./styles";
 
 const MenuBarItemLink = forwardRef((props, ref) => {
   const styleProps = useMenuBarItemStyle();
-  return <Link ref={ref} {...styleProps} {...props} />;
+
+  return <Link ref={ref} width="full" {...styleProps} {...props} />;
 });
 
 MenuBarItemLink.displayName = "MenuBarItemLink";
@@ -95,6 +96,7 @@ const MenuBarItem = forwardRef(
           tabIndex={0}
           onKeyDown={handleKeyDown}
           onClick={handleOnClick}
+          data-menubar-item={true}
           {...props}
         />
       </Flex>

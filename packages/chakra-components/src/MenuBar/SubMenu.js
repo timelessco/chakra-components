@@ -1,9 +1,8 @@
 import React, { createContext, useState, useRef, useEffect } from "react";
 import { usePrevious, useColorMode, Flex } from "@chakra-ui/core";
 import { useId } from "@reach/auto-id";
-
-import { useMenuBarContext } from "./useMenuBarContext";
 import { getFocusables } from "@chakra-ui/core/dist/utils";
+import { useMenuBarContext } from "./useMenuBarContext";
 
 /* =========================================================================
   SubMenuContext
@@ -24,7 +23,6 @@ const SubMenu = ({
   onOpen,
   onClose,
   defaultActiveIndex,
-  placement,
   children,
   ...props
 }) => {
@@ -45,7 +43,7 @@ const SubMenu = ({
 
   const { colorMode } = useColorMode();
 
-  const { trigger } = useMenuBarContext();
+  const { trigger, isCollapsable } = useMenuBarContext();
 
   useEffect(() => {
     if (_isOpen && menuRef && menuRef.current) {
@@ -178,11 +176,9 @@ const SubMenu = ({
     focusOnLastItem,
     focusOnFirstItem,
     closeMenu,
-    closeMenuWithoutIndex,
     titleRef,
     menuRef,
     focusableItems,
-    placement,
     menuId,
     openMenu,
     autoSelect,
@@ -190,13 +186,25 @@ const SubMenu = ({
     closeOnBlur,
     colorMode,
     mouseOnSubMenuTitle,
+    closeMenuWithoutIndex,
   };
+
+  let modeStyleProps = {};
+
+  if (isCollapsable) {
+    modeStyleProps = {
+      flexDirection: "column",
+    };
+  }
 
   return (
     <SubMenuContext.Provider value={context}>
-      <Flex as="li" role="none" {...props}>
+      <Flex as="li" role="none" {...modeStyleProps} {...props}>
         {typeof children === "function"
-          ? children({ isOpen: _isOpen, onClose: closeMenu })
+          ? children({
+              isOpen: _isOpen,
+              onClose: closeMenu,
+            })
           : children}
       </Flex>
     </SubMenuContext.Provider>

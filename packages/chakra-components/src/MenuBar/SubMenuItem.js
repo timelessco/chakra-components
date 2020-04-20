@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import { Box, PseudoBox, Text, Divider, Link } from "@chakra-ui/core";
+import { Box, Text, Divider, Link, Flex } from "@chakra-ui/core";
 
 import { useMenuItemStyle } from "@chakra-ui/core/dist/Menu/styles";
 
@@ -44,6 +44,7 @@ const SubMenuItem = forwardRef(
       focusableMenuBarItems,
       activeIndex: index,
       setActiveIndex,
+      isCollapsable,
     } = useMenuBarContext();
 
     const handleOnClick = event => {
@@ -108,8 +109,29 @@ const SubMenuItem = forwardRef(
 
     const styleProps = useMenuItemStyle();
 
+    if (isCollapsable) {
+      return (
+        <Flex as="li" role="none" align="center">
+          <Comp
+            ref={ref}
+            display="flex"
+            alignItems="center"
+            textDecoration="none"
+            color="inherit"
+            textAlign="left"
+            outline="none"
+            px={4}
+            role={role}
+            tabIndex={-1}
+            {...styleProps}
+            {...props}
+          />
+        </Flex>
+      );
+    }
+
     return (
-      <PseudoBox as="li" role="none" display="flex" alignItems="center">
+      <Flex as="li" role="none" align="center">
         <Comp
           ref={ref}
           display="flex"
@@ -129,7 +151,7 @@ const SubMenuItem = forwardRef(
           {...styleProps}
           {...props}
         />
-      </PseudoBox>
+      </Flex>
     );
   },
 );

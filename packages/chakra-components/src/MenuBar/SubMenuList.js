@@ -1,8 +1,8 @@
 import React from "react";
 
 import Popper, { PopperArrow } from "@chakra-ui/core/dist/Popper";
-
 import { useMenuBarContext } from "./useMenuBarContext";
+import { Box, Collapse } from "@chakra-ui/core";
 import { useSubMenuContext } from "./useSubMenuContext";
 import { useMenuListStyle } from "@chakra-ui/core/dist/Menu/styles";
 
@@ -15,6 +15,7 @@ const SubMenuList = ({
   width,
   skid,
   gutter,
+  placement,
   ariaLabel,
   onMouseEnter,
   onMouseLeave,
@@ -34,14 +35,24 @@ const SubMenuList = ({
     titleRef,
     menuRef,
     closeOnBlur,
-    placement,
     mouseOnSubMenuTitle,
   } = useSubMenuContext();
 
-  const { spanParent, spanMenuBar, trigger, menuBarRef } = useMenuBarContext();
+  const {
+    spanParent,
+    spanMenuBar,
+    trigger,
+    menuBarRef,
+    mode,
+    isCollapsable,
+  } = useMenuBarContext();
 
   if (spanParent || spanMenuBar) {
     width = "full";
+  }
+
+  if (mode === "vertical") {
+    placement = "right";
   }
 
   let eventHandlers = {};
@@ -151,8 +162,24 @@ const SubMenuList = ({
     },
     offset: { enabled: true, offset: `${skid}, ${gutter}` },
   };
-
   const styleProps = useMenuListStyle();
+
+  if (isCollapsable) {
+    return (
+      <Collapse isOpen={isOpen}>
+        <Box
+          as="ul"
+          ref={menuRef}
+          role="menu"
+          aria-label={ariaLabel}
+          tabIndex={-1}
+          width={width}
+          onKeyDown={handleKeyDown}
+          {...props}
+        />
+      </Collapse>
+    );
+  }
 
   return (
     <Popper
