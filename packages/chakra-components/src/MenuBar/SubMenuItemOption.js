@@ -3,10 +3,11 @@ import { jsx } from "@emotion/core";
 import { useId } from "@reach/auto-id";
 import { cloneElement, forwardRef, useRef, useState } from "react";
 import { SubMenuGroup } from "./SubMenuItem";
-import { Box, Icon, PseudoBox } from "@chakra-ui/core";
+import { Box, Icon, PseudoBox, Flex } from "@chakra-ui/core";
 import { cleanChildren } from "@chakra-ui/core/dist/utils";
 import { useMenuItemStyle } from "@chakra-ui/core/dist/Menu/styles";
 import { useSubMenuContext } from "./useSubMenuContext";
+import { useMenuBarContext } from "./useMenuBarContext";
 
 /* =========================================================================
   SubMenuItemOption
@@ -15,14 +16,14 @@ import { useSubMenuContext } from "./useSubMenuContext";
 export const SubMenuItemOption = forwardRef(
   (
     {
-      isDisabled,
-      children,
-      onClick,
       type,
+      isChecked,
+      isDisabled,
+      onClick,
       onMouseLeave,
       onMouseEnter,
       onKeyDown,
-      isChecked,
+      children,
       ...rest
     },
     ref,
@@ -33,6 +34,12 @@ export const SubMenuItemOption = forwardRef(
       closeMenu,
       closeOnSelect,
     } = useSubMenuContext();
+
+    const {
+      focusableMenuBarItems,
+      activeIndex: index,
+      setActiveIndex,
+    } = useMenuBarContext();
 
     const role = `menuitem${type}`;
 
@@ -52,6 +59,24 @@ export const SubMenuItemOption = forwardRef(
 
     const handleKeyDown = event => {
       if (isDisabled) return;
+
+      const menuBarItemscount = focusableMenuBarItems.current.length;
+      let nextIndex;
+
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        nextIndex = (index + 1) % menuBarItemscount;
+        setActiveIndex(nextIndex);
+        closeMenu();
+      }
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        nextIndex = (index - 1 + menuBarItemscount) % menuBarItemscount;
+        setActiveIndex(nextIndex);
+        closeMenu();
+      }
+
       if (["Enter", " "].includes(event.key)) {
         event.preventDefault();
         handleSelect();
@@ -86,38 +111,40 @@ export const SubMenuItemOption = forwardRef(
     const styleProps = useMenuItemStyle();
 
     return (
-      <PseudoBox
-        ref={ref}
-        as="button"
-        display="flex"
-        minHeight="32px"
-        alignItems="center"
-        onClick={handleClick}
-        role={role}
-        tabIndex={-1}
-        aria-checked={isChecked}
-        disabled={isDisabled}
-        aria-disabled={isDisabled ? "" : undefined}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onKeyDown={handleKeyDown}
-        {...styleProps}
-        {...rest}
-      >
-        <Icon
-          name="check"
-          opacity={isChecked ? 1 : 0}
-          color="currentColor"
-          size="1em"
-          ml="1rem"
-          mr="-4px"
-          aria-hidden
-          data-menuitem-icon=""
-        />
-        <Box textAlign="left" as="span" mx="1rem" flex="1">
-          {children}
-        </Box>
-      </PseudoBox>
+      <Flex as="li" role="none" align="center">
+        <PseudoBox
+          ref={ref}
+          as="button"
+          display="flex"
+          minHeight="32px"
+          alignItems="center"
+          onClick={handleClick}
+          role={role}
+          tabIndex={-1}
+          aria-checked={isChecked}
+          disabled={isDisabled}
+          aria-disabled={isDisabled ? "" : undefined}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onKeyDown={handleKeyDown}
+          {...styleProps}
+          {...rest}
+        >
+          <Icon
+            name="check"
+            opacity={isChecked ? 1 : 0}
+            color="currentColor"
+            size="1em"
+            ml="1rem"
+            mr="-4px"
+            aria-hidden
+            data-menuitem-icon=""
+          />
+          <Box textAlign="left" as="span" mx="1rem" flex="1">
+            {children}
+          </Box>
+        </PseudoBox>
+      </Flex>
     );
   },
 );
