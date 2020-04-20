@@ -2,7 +2,7 @@ import React from "react";
 
 import Popper, { PopperArrow } from "@chakra-ui/core/dist/Popper";
 import { useMenuBarContext } from "./useMenuBarContext";
-import { Box } from "@chakra-ui/core";
+import { Box, Collapse } from "@chakra-ui/core";
 import { useSubMenuContext } from "./useSubMenuContext";
 import { useMenuListStyle } from "@chakra-ui/core/dist/Menu/styles";
 
@@ -36,7 +36,6 @@ const SubMenuList = ({
     menuRef,
     closeOnBlur,
     mouseOnSubMenuTitle,
-    isCollapsable,
   } = useSubMenuContext();
 
   const {
@@ -45,6 +44,7 @@ const SubMenuList = ({
     trigger,
     menuBarRef,
     mode,
+    isCollapsable,
   } = useMenuBarContext();
 
   if (spanParent || spanMenuBar) {
@@ -166,44 +166,47 @@ const SubMenuList = ({
 
   if (isCollapsable) {
     return (
-      <Box
-        as="ul"
-        ref={menuRef}
-        width={width}
-        display={isOpen ? "block" : "none"}
-        onKeyDown={handleKeyDown}
-        {...eventHandlers}
-        {...props}
-      />
-    );
-  } else {
-    return (
-      <Popper
-        usePortal={false}
-        as={Comp}
-        anchorEl={titleRef.current}
-        ref={menuRef}
-        isOpen={isOpen}
-        placement={placement}
-        modifiers={popperModifiers}
-        width={width}
-        rounded="md"
-        py={2}
-        zIndex="2"
-        _focus={{
-          outline: 0,
-        }}
-        role="menu"
-        aria-label={ariaLabel}
-        tabIndex={-1}
-        onKeyDown={handleKeyDown}
-        onBlur={handleBlur}
-        {...eventHandlers}
-        {...styleProps}
-        {...props}
-      />
+      <Collapse isOpen={isOpen}>
+        <Box
+          as="ul"
+          ref={menuRef}
+          role="menu"
+          aria-label={ariaLabel}
+          tabIndex={-1}
+          width={width}
+          onKeyDown={handleKeyDown}
+          {...props}
+        />
+      </Collapse>
     );
   }
+
+  return (
+    <Popper
+      usePortal={false}
+      as={Comp}
+      anchorEl={titleRef.current}
+      ref={menuRef}
+      isOpen={isOpen}
+      placement={placement}
+      modifiers={popperModifiers}
+      width={width}
+      rounded="md"
+      py={2}
+      zIndex="2"
+      _focus={{
+        outline: 0,
+      }}
+      role="menu"
+      aria-label={ariaLabel}
+      tabIndex={-1}
+      onKeyDown={handleKeyDown}
+      onBlur={handleBlur}
+      {...eventHandlers}
+      {...styleProps}
+      {...props}
+    />
+  );
 };
 
 SubMenuList.displayName = "SubMenuList";

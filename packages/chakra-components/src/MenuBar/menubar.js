@@ -41,6 +41,7 @@ const MenuBar = forwardRef(
       spanMenuBar,
       trigger = "hover",
       mode = "horizontal",
+      isCollapsable,
       ...props
     },
     ref,
@@ -52,10 +53,14 @@ const MenuBar = forwardRef(
     const focusableMenuBarItems = useRef(null);
     const menuBarRef = useRef(null);
 
+    if (isCollapsable) {
+      trigger = "click";
+    }
+
     useEffect(() => {
       if (menuBarRef && menuBarRef.current) {
         let focusables = getFocusables(menuBarRef.current).filter(node =>
-          ["menuitem"].includes(node.getAttribute("role")),
+          node.getAttribute("data-menubar-item"),
         );
 
         focusableMenuBarItems.current = focusables;
@@ -104,6 +109,7 @@ const MenuBar = forwardRef(
       trigger,
       menuBarRef,
       mode,
+      isCollapsable,
     };
 
     const menuBarForkRef = useForkRef(menuBarRef, ref);

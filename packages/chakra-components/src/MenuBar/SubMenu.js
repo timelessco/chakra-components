@@ -24,7 +24,6 @@ const SubMenu = ({
   onClose,
   defaultActiveIndex,
   children,
-  isCollapsable,
   ...props
 }) => {
   const [activeIndex, setActiveIndex] = useState(defaultActiveIndex || -1);
@@ -44,7 +43,7 @@ const SubMenu = ({
 
   const { colorMode } = useColorMode();
 
-  const { trigger } = useMenuBarContext();
+  const { trigger, isCollapsable } = useMenuBarContext();
 
   useEffect(() => {
     if (_isOpen && menuRef && menuRef.current) {
@@ -187,11 +186,11 @@ const SubMenu = ({
     closeOnBlur,
     colorMode,
     mouseOnSubMenuTitle,
-    isCollapsable,
     closeMenuWithoutIndex,
   };
 
   let modeStyleProps = {};
+
   if (isCollapsable) {
     modeStyleProps = {
       flexDirection: "column",

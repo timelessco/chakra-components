@@ -162,11 +162,56 @@ typed.
 ### Vetical MenuBar
 
 - You can the the mode of MenuBar from default `horizontal` to `vertical`.
-- If `isCollapsable`, all the SubMenu will be shown in collapsable effect.
 - By default, SubMenuItems are shown in Right Popper placement.
 
 ```jsx
-<MenuBar mode="vertical" maxWidth="100px">
+<MenuBar mode="vertical" maxWidth="120px">
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <SubMenu>
+    <SubMenuTitle>Meal Plans</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuListArrow />
+      <SubMenuItem>Downloaded</SubMenuItem>
+      <SubMenuItem>Create a Copyed</SubMenuItem>
+      <SubMenuItem>Mark as Drafted</SubMenuItem>
+      <SubMenuItem>Deleted</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle>Groceries</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuListArrow />
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle>Workouts</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuListArrow />
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
+### Vetical `isCollapsable` MenuBar
+
+- If `isCollapsable`, all the SubMenuItems will be shown in collapsable effect.
+- All the SubMenu are activated only using `trigger: 'click'`.
+
+```jsx
+<MenuBar mode="vertical" isCollapsable maxWidth="150px">
   <MenuBarItem>Recipes</MenuBarItem>
   <MenuBarItem>My Calendar</MenuBarItem>
   <SubMenu>

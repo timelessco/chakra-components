@@ -212,6 +212,7 @@ const SubMenuTitle = forwardRef(
         aria-haspopup="true"
         aria-expanded={isOpen}
         role={role}
+        data-menubar-item={true}
         tabIndex={0}
         onKeyDown={handleKeyDown}
         {...eventHandlers}
