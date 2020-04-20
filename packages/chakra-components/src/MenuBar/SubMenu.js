@@ -159,6 +159,18 @@ const SubMenu = ({
     resetTabIndex();
   };
 
+  const closeMenuWithoutIndex = () => {
+    if (!isControlled) {
+      setIsOpen(false);
+    }
+
+    if (onClose) {
+      onClose();
+    }
+
+    resetTabIndex();
+  };
+
   const context = {
     activeIndex,
     isOpen: _isOpen,
@@ -178,6 +190,7 @@ const SubMenu = ({
     colorMode,
     mouseOnSubMenuTitle,
     isCollapsable,
+    closeMenuWithoutIndex,
   };
 
   let modeStyleProps = {};
