@@ -61,13 +61,7 @@ const MenuBarItem = forwardRef(
 
       if (event.key === arrows[0]) {
         event.preventDefault();
-
-        if (index === -1) {
-          nextIndex = (index + 2) % count;
-        } else {
-          nextIndex = (index + 1) % count;
-        }
-
+        nextIndex = (index + 1) % count;
         setActiveIndex(nextIndex);
 
         focusableMenuBarItems.current[nextIndex] &&
@@ -101,6 +95,8 @@ const MenuBarItem = forwardRef(
         if (foundNode) {
           nextIndex = focusableMenuBarItems.current.indexOf(foundNode);
           setActiveIndex(nextIndex);
+          focusableMenuBarItems.current[nextIndex] &&
+            focusableMenuBarItems.current[nextIndex].focus();
         }
       }
 

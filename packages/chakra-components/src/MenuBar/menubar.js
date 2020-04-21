@@ -46,7 +46,7 @@ const MenuBar = forwardRef(
     },
     ref,
   ) => {
-    const [activeIndex, setActiveIndex] = useState(-1);
+    const [activeIndex, setActiveIndex] = useState(0);
 
     const menuBarId = `menubar-${useId()}`;
 
@@ -64,7 +64,6 @@ const MenuBar = forwardRef(
         );
 
         focusableMenuBarItems.current = focusables;
-        updateTabIndex(0);
 
         if (spanParent) {
           menuBarRef.current.parentElement.style.position = "relative";
@@ -77,9 +76,7 @@ const MenuBar = forwardRef(
     }, [spanParent, spanMenuBar]);
 
     useEffect(() => {
-      if (activeIndex !== -1) {
-        updateTabIndex(activeIndex);
-      }
+      updateTabIndex(activeIndex);
     }, [activeIndex]);
 
     const updateTabIndex = index => {
@@ -100,11 +97,9 @@ const MenuBar = forwardRef(
       focusableMenuBarItems,
       activeIndex,
       setActiveIndex,
-      updateTabIndex,
       spanParent,
       spanMenuBar,
       trigger,
-      menuBarRef,
       mode,
       isCollapsable,
     };

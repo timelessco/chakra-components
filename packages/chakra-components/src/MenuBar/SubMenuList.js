@@ -30,12 +30,10 @@ const SubMenuList = ({
     focusOnFirstItem,
     focusOnLastItem,
     closeMenu,
-    closeMenuWithoutIndex,
     focusableItems,
     titleRef,
     menuRef,
     closeOnBlur,
-    handleMenu,
     mouseOnSubMenuTitle,
   } = useSubMenuContext();
 
@@ -43,7 +41,8 @@ const SubMenuList = ({
     spanParent,
     spanMenuBar,
     trigger,
-    menuBarRef,
+    setActiveIndex,
+    focusableMenuBarItems,
     mode,
     isCollapsable,
   } = useMenuBarContext();
@@ -70,11 +69,9 @@ const SubMenuList = ({
 
         setTimeout(() => {
           if (mouseOnSubMenuTitle.current === false) {
-            if (isOpen) {
-              handleMenu(false);
-            }
+            closeMenu(false);
           }
-        }, 300);
+        }, 500);
 
         onMouseLeave && onMouseLeave(event);
       },
@@ -101,6 +98,12 @@ const SubMenuList = ({
       event.preventDefault();
     } else if (event.key === "Escape") {
       closeMenu();
+      if (focusableMenuBarItems && focusableMenuBarItems.current.length > 0) {
+        let nextIndex = focusableMenuBarItems.current.indexOf(titleRef.current);
+        setActiveIndex(nextIndex);
+        focusableMenuBarItems.current[nextIndex] &&
+          focusableMenuBarItems.current[nextIndex].focus();
+      }
     }
 
     // Set focus based on first character
@@ -129,16 +132,15 @@ const SubMenuList = ({
       !menuRef.current.contains(event.relatedTarget) &&
       !titleRef.current.contains(event.relatedTarget)
     ) {
-      handleMenu(false);
-      // if (
-      //   menuBarRef &&
-      //   menuBarRef.current &&
-      //   menuBarRef.current.contains(event.relatedTarget)
-      // ) {
-      //   closeMenuWithoutIndex();
-      // } else {
-      //   closeMenu();
-      // }
+      closeMenu();
+      if (focusableMenuBarItems && focusableMenuBarItems.current.length > 0) {
+        let nextIndex = focusableMenuBarItems.current.indexOf(
+          event.currentTarget,
+        );
+        if (nextIndex !== -1) {
+          setActiveIndex(nextIndex);
+        }
+      }
     }
 
     onBlur && onBlur(event);

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useRef, useEffect } from "react";
-import { usePrevious, useColorMode, Flex } from "@chakra-ui/core";
+import { useColorMode, Flex } from "@chakra-ui/core";
 import { useId } from "@reach/auto-id";
 import { getFocusables } from "@chakra-ui/core/dist/utils";
 import { useMenuBarContext } from "./useMenuBarContext";
@@ -31,8 +31,6 @@ const SubMenu = ({
   const { current: isControlled } = useRef(isOpenProp != null);
 
   const _isOpen = isControlled ? isOpenProp : isOpen;
-  const wasPreviouslyOpen = usePrevious(_isOpen);
-  const wasPreviouslyOpenBeforeTimeout = usePrevious(wasPreviouslyOpen);
 
   const menuId = `menu-${useId()}`;
 
@@ -43,7 +41,7 @@ const SubMenu = ({
 
   const { colorMode } = useColorMode();
 
-  const { trigger, isCollapsable } = useMenuBarContext();
+  const { isCollapsable } = useMenuBarContext();
 
   useEffect(() => {
     if (_isOpen && menuRef && menuRef.current) {
@@ -54,28 +52,22 @@ const SubMenu = ({
       );
 
       focusableItems.current = menuRef.current ? focusables : [];
-      // initTabIndex();
     }
   }, [_isOpen]);
 
   useEffect(() => {
-    console.log("Focusing");
-    if (activeIndex !== -1 && isOpen) {
+    if (activeIndex !== -1 && _isOpen) {
       focusableItems.current[activeIndex] &&
         focusableItems.current[activeIndex].focus();
       updateTabIndex(activeIndex);
     }
+  }, [activeIndex, _isOpen]);
 
-    //   if (activeIndex === -1 && !_isOpen && wasPreviouslyOpen) {
-    //     titleRef.current && titleRef.current.focus();
-    //   }
-  }, [activeIndex, isOpen]);
-
-  const initTabIndex = () => {
-    focusableItems.current.forEach(
-      ({ node, index }) => index === 0 && node.setAttribute("tabindex", 0),
-    );
-  };
+  // const initTabIndex = () => {
+  //   focusableItems.current.forEach(
+  //     ({ node, index }) => index === 0 && node.setAttribute("tabindex", 0),
+  //   );
+  // };
 
   const updateTabIndex = index => {
     if (focusableItems.current.length > 0) {
@@ -134,24 +126,6 @@ const SubMenu = ({
     resetTabIndex();
   };
 
-  const closeMenuWithoutIndex = () => {
-    if (!isControlled) {
-      setIsOpen(false);
-    }
-
-    if (onClose) {
-      onClose();
-    }
-
-    resetTabIndex();
-  };
-
-  const handleMenu = value => {
-    if (!isControlled) {
-      setIsOpen(value);
-    }
-  };
-
   const context = {
     activeIndex,
     isOpen: _isOpen,
@@ -168,9 +142,7 @@ const SubMenu = ({
     closeOnSelect,
     closeOnBlur,
     colorMode,
-    closeMenuWithoutIndex,
     mouseOnSubMenuTitle,
-    handleMenu,
   };
 
   let modeStyleProps = {};

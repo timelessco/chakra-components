@@ -33,12 +33,7 @@ const SubMenuItem = forwardRef(
     },
     ref,
   ) => {
-    const {
-      focusableItems,
-      focusAtIndex,
-      closeOnSelect,
-      closeMenu,
-    } = useSubMenuContext();
+    const { closeOnSelect, closeMenu, titleRef } = useSubMenuContext();
 
     const {
       focusableMenuBarItems,
@@ -50,26 +45,38 @@ const SubMenuItem = forwardRef(
     const handleOnClick = event => {
       if (closeOnSelect) {
         closeMenu();
+        if (focusableMenuBarItems && focusableMenuBarItems.current.length > 0) {
+          let nextIndex = focusableMenuBarItems.current.indexOf(
+            titleRef.current,
+          );
+          setActiveIndex(nextIndex);
+          focusableMenuBarItems.current[nextIndex] &&
+            focusableMenuBarItems.current[nextIndex].focus();
+        }
       }
 
       onClick && onClick(event);
     };
 
     const handleOnKeyDown = event => {
-      const menuBarItemscount = focusableMenuBarItems.current.length;
+      const count = focusableMenuBarItems.current.length;
       let nextIndex;
 
       if (event.key === "ArrowRight") {
         event.preventDefault();
-        nextIndex = (index + 1) % menuBarItemscount;
+        nextIndex = (index + 1) % count;
         setActiveIndex(nextIndex);
+        focusableMenuBarItems.current[nextIndex] &&
+          focusableMenuBarItems.current[nextIndex].focus();
         closeMenu();
       }
 
       if (event.key === "ArrowLeft") {
         event.preventDefault();
-        nextIndex = (index - 1 + menuBarItemscount) % menuBarItemscount;
+        nextIndex = (index - 1 + count) % count;
         setActiveIndex(nextIndex);
+        focusableMenuBarItems.current[nextIndex] &&
+          focusableMenuBarItems.current[nextIndex].focus();
         closeMenu();
       }
 

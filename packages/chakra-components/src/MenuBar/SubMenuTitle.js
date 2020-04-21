@@ -44,7 +44,6 @@ const SubMenuTitle = forwardRef(
       autoSelect,
       openMenu,
       titleRef,
-      handleMenu,
       mouseOnSubMenuTitle,
       closeOnBlur,
       menuRef,
@@ -72,7 +71,18 @@ const SubMenuTitle = forwardRef(
       eventHandlers = {
         onClick: event => {
           if (isOpen) {
-            handleMenu(false);
+            if (
+              focusableMenuBarItems &&
+              focusableMenuBarItems.current.length > 0
+            ) {
+              let nextIndex = focusableMenuBarItems.current.indexOf(
+                event.currentTarget,
+              );
+              setActiveIndex(nextIndex);
+              focusableMenuBarItems.current[nextIndex] &&
+                focusableMenuBarItems.current[nextIndex].focus();
+            }
+            closeMenu(false);
           } else {
             if (autoSelect) {
               setTimeout(() => {
@@ -88,7 +98,7 @@ const SubMenuTitle = forwardRef(
                 );
                 setActiveIndex(nextIndex);
               }
-              handleMenu(true);
+              openMenu(true);
             }
           }
 
@@ -110,8 +120,17 @@ const SubMenuTitle = forwardRef(
             !menuRef.current.contains(event.relatedTarget) &&
             !titleRef.current.contains(event.relatedTarget)
           ) {
+            if (
+              focusableMenuBarItems &&
+              focusableMenuBarItems.current.length > 0
+            ) {
+              let nextIndex = focusableMenuBarItems.current.indexOf(
+                event.currentTarget,
+              );
+              setActiveIndex(nextIndex);
+            }
             setTimeout(() => {
-              handleMenu(false);
+              closeMenu(false);
             }, 300);
           }
           onBlur && onBlur(event);
@@ -124,9 +143,11 @@ const SubMenuTitle = forwardRef(
         onMouseEnter: event => {
           mouseOnSubMenuTitle.current = true;
 
-          if (!isOpen) {
-            handleMenu(true);
-          }
+          setTimeout(() => {
+            if (!isOpen) {
+              openMenu(true);
+            }
+          }, 299);
 
           onMouseEnter && onMouseEnter(event);
         },
@@ -136,9 +157,7 @@ const SubMenuTitle = forwardRef(
 
           setTimeout(() => {
             if (mouseOnSubMenuTitle.current === false) {
-              if (isOpen) {
-                handleMenu(false);
-              }
+              closeMenu(false);
             }
           }, 300);
 
@@ -177,13 +196,7 @@ const SubMenuTitle = forwardRef(
 
       if (event.key === menuBarArrows[0]) {
         event.preventDefault();
-
-        if (index === -1) {
-          nextIndex = (index + 2) % count;
-        } else {
-          nextIndex = (index + 1) % count;
-        }
-
+        nextIndex = (index + 1) % count;
         setActiveIndex(nextIndex);
         focusableMenuBarItems.current[nextIndex] &&
           focusableMenuBarItems.current[nextIndex].focus();
@@ -229,6 +242,8 @@ const SubMenuTitle = forwardRef(
         if (foundNode) {
           nextIndex = focusableMenuBarItems.current.indexOf(foundNode);
           setActiveIndex(nextIndex);
+          focusableMenuBarItems.current[nextIndex] &&
+            focusableMenuBarItems.current[nextIndex].focus();
         }
       }
 
