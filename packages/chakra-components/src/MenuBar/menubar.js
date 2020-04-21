@@ -40,13 +40,15 @@ const MenuBar = forwardRef(
       spanParent,
       spanMenuBar,
       trigger = "hover",
-      mode = "horizontal",
+      mode: _mode = "horizontal",
       isCollapsable,
+      responsive,
       ...props
     },
     ref,
   ) => {
     const [activeIndex, setActiveIndex] = useState(0);
+    const [mode, setMode] = useState(_mode);
 
     const menuBarId = `menubar-${useId()}`;
 
@@ -72,8 +74,33 @@ const MenuBar = forwardRef(
         if (spanMenuBar) {
           menuBarRef.current.style.position = "relative";
         }
+
+        if (responsive) {
+          menuBarRef.current.style.flexDirection = "row";
+          const menuBarChildrens = Array.from(menuBarRef.current.children);
+          let width = 0;
+          menuBarChildrens.forEach(node => {
+            width += node.children[0].clientWidth;
+          });
+
+          const handleResize = () => {
+            if (menuBarRef && menuBarRef.current) {
+              const menuBarWidth = menuBarRef.current.clientWidth;
+              if (menuBarWidth - width < 100) {
+                setMode("vertical");
+                menuBarRef.current.style.flexDirection = "column";
+              } else {
+                setMode("horizontal");
+                menuBarRef.current.style.flexDirection = "row";
+              }
+            }
+          };
+
+          handleResize();
+          window.addEventListener("resize", handleResize);
+        }
       }
-    }, [spanParent, spanMenuBar]);
+    }, [spanParent, spanMenuBar, responsive]);
 
     useEffect(() => {
       updateTabIndex(activeIndex);
@@ -111,9 +138,11 @@ const MenuBar = forwardRef(
 
     if (mode === "vertical") {
       modeStyleProps = {
-        display: "flex",
         flexDirection: "column",
-        alignItems: "left",
+      };
+    } else {
+      modeStyleProps = {
+        flexDirection: "row",
       };
     }
 
