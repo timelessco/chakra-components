@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react";
 import { Box, Text, Divider, Link, Flex } from "@chakra-ui/core";
 
-import { useMenuItemStyle } from "@chakra-ui/core/dist/Menu/styles";
+import { useMenuItemStyle } from "./styles";
 
 import { useMenuBarContext } from "./useMenuBarContext";
 import { useSubMenuContext } from "./useSubMenuContext";
@@ -55,19 +55,6 @@ const SubMenuItem = forwardRef(
       onClick && onClick(event);
     };
 
-    const handleOnMouseEnter = event => {
-      if (
-        focusableItems &&
-        focusableItems.current &&
-        focusableItems.current.length > 0
-      ) {
-        let nextIndex = focusableItems.current.indexOf(event.currentTarget);
-        focusAtIndex(nextIndex);
-      }
-
-      onMouseEnter && onMouseEnter(event);
-    };
-
     const handleOnKeyDown = event => {
       const menuBarItemscount = focusableMenuBarItems.current.length;
       let nextIndex;
@@ -118,7 +105,6 @@ const SubMenuItem = forwardRef(
             role={role}
             tabIndex={-1}
             onClick={handleOnClick}
-            onMouseEnter={handleOnMouseEnter}
             onKeyDown={handleOnKeyDown}
             {...styleProps}
             {...props}
@@ -142,7 +128,6 @@ const SubMenuItem = forwardRef(
           role={role}
           tabIndex={-1}
           onClick={handleOnClick}
-          onMouseEnter={handleOnMouseEnter}
           onKeyDown={handleOnKeyDown}
           {...styleProps}
           {...props}

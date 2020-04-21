@@ -39,10 +39,11 @@ const SubMenu = ({
   const focusableItems = useRef(null);
   const menuRef = useRef(null);
   const titleRef = useRef(null);
+  const mouseOnSubMenuTitle = useRef(false);
 
   const { colorMode } = useColorMode();
 
-  const { trigger, isCollapsable, mouseOnSubMenuTitle } = useMenuBarContext();
+  const { trigger, isCollapsable } = useMenuBarContext();
 
   useEffect(() => {
     if (_isOpen && menuRef && menuRef.current) {
@@ -53,48 +54,33 @@ const SubMenu = ({
       );
 
       focusableItems.current = menuRef.current ? focusables : [];
-      initTabIndex();
+      // initTabIndex();
     }
   }, [_isOpen]);
 
-  useEffect(() => {
-    if (activeIndex !== -1) {
-      focusableItems.current[activeIndex] &&
-        focusableItems.current[activeIndex].focus();
-      updateTabIndex(activeIndex);
-    }
+  // useEffect(() => {
+  //   if (activeIndex !== -1) {
+  //     focusableItems.current[activeIndex] &&
+  //       focusableItems.current[activeIndex].focus();
+  //     updateTabIndex(activeIndex);
+  //   }
 
-    if (trigger === "click") {
-      if (activeIndex === -1 && !_isOpen && wasPreviouslyOpen) {
-        titleRef.current && titleRef.current.focus();
-      }
-    }
+  //   if (activeIndex === -1 && !_isOpen && wasPreviouslyOpen) {
+  //     titleRef.current && titleRef.current.focus();
+  //   }
 
-    if (trigger === "hover") {
-      if (
-        activeIndex === -1 &&
-        !_isOpen &&
-        (wasPreviouslyOpenBeforeTimeout ||
-          wasPreviouslyOpen ||
-          mouseOnSubMenuTitle.current === false)
-      ) {
-        titleRef.current && titleRef.current.focus();
-      }
-    }
-
-    if (activeIndex === -1 && _isOpen) {
-      menuRef.current && menuRef.current.focus();
-    }
-  }, [
-    activeIndex,
-    _isOpen,
-    titleRef,
-    menuRef,
-    trigger,
-    wasPreviouslyOpen,
-    wasPreviouslyOpenBeforeTimeout,
-    mouseOnSubMenuTitle,
-  ]);
+  //   if (activeIndex === -1 && _isOpen) {
+  //     menuRef.current && menuRef.current.focus();
+  //   }
+  // }, [
+  //   activeIndex,
+  //   _isOpen,
+  //   titleRef,
+  //   menuRef,
+  //   trigger,
+  //   wasPreviouslyOpen,
+  //   wasPreviouslyOpenBeforeTimeout,
+  // ]);
 
   const initTabIndex = () => {
     focusableItems.current.forEach(
@@ -171,6 +157,13 @@ const SubMenu = ({
     resetTabIndex();
   };
 
+  const handleMenu = value => {
+    console.log("%cvalue", "color: #f2ceb6", value);
+    if (!isControlled) {
+      setIsOpen(value);
+    }
+  };
+
   const context = {
     activeIndex,
     isOpen: _isOpen,
@@ -188,6 +181,8 @@ const SubMenu = ({
     closeOnBlur,
     colorMode,
     closeMenuWithoutIndex,
+    mouseOnSubMenuTitle,
+    handleMenu,
   };
 
   let modeStyleProps = {};

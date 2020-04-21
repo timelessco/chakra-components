@@ -4,7 +4,7 @@ import Popper, { PopperArrow } from "@chakra-ui/core/dist/Popper";
 import { useMenuBarContext } from "./useMenuBarContext";
 import { Box, Collapse } from "@chakra-ui/core";
 import { useSubMenuContext } from "./useSubMenuContext";
-import { useMenuListStyle } from "@chakra-ui/core/dist/Menu/styles";
+import { useMenuListStyle } from "./styles";
 
 /* =========================================================================
   SubMenuList
@@ -35,6 +35,8 @@ const SubMenuList = ({
     titleRef,
     menuRef,
     closeOnBlur,
+    handleMenu,
+    mouseOnSubMenuTitle,
   } = useSubMenuContext();
 
   const {
@@ -43,7 +45,6 @@ const SubMenuList = ({
     trigger,
     menuBarRef,
     mode,
-    mouseOnSubMenuTitle,
     isCollapsable,
   } = useMenuBarContext();
 
@@ -69,7 +70,9 @@ const SubMenuList = ({
 
         setTimeout(() => {
           if (mouseOnSubMenuTitle.current === false) {
-            closeMenu();
+            if (isOpen) {
+              handleMenu(false);
+            }
           }
         }, 300);
 

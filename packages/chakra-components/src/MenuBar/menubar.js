@@ -52,7 +52,6 @@ const MenuBar = forwardRef(
 
     const focusableMenuBarItems = useRef(null);
     const menuBarRef = useRef(null);
-    const mouseOnSubMenuTitle = useRef(false);
 
     if (isCollapsable) {
       trigger = "click";
@@ -75,7 +74,7 @@ const MenuBar = forwardRef(
           menuBarRef.current.style.position = "relative";
         }
       }
-    }, []);
+    }, [spanParent, spanMenuBar]);
 
     useEffect(() => {
       if (activeIndex !== -1) {
@@ -109,7 +108,6 @@ const MenuBar = forwardRef(
       spanMenuBar,
       trigger,
       menuBarRef,
-      mouseOnSubMenuTitle,
       mode,
       isCollapsable,
     };

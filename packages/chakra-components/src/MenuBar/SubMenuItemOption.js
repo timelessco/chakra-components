@@ -5,7 +5,7 @@ import { cloneElement, forwardRef, useRef, useState } from "react";
 import { SubMenuGroup } from "./SubMenuItem";
 import { Box, Icon, PseudoBox, Flex } from "@chakra-ui/core";
 import { cleanChildren } from "@chakra-ui/core/dist/utils";
-import { useMenuItemStyle } from "@chakra-ui/core/dist/Menu/styles";
+import { useMenuItemStyle } from "./styles";
 import { useSubMenuContext } from "./useSubMenuContext";
 import { useMenuBarContext } from "./useMenuBarContext";
 
