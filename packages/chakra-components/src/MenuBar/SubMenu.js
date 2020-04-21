@@ -58,29 +58,18 @@ const SubMenu = ({
     }
   }, [_isOpen]);
 
-  // useEffect(() => {
-  //   if (activeIndex !== -1) {
-  //     focusableItems.current[activeIndex] &&
-  //       focusableItems.current[activeIndex].focus();
-  //     updateTabIndex(activeIndex);
-  //   }
+  useEffect(() => {
+    console.log("Focusing");
+    if (activeIndex !== -1 && isOpen) {
+      focusableItems.current[activeIndex] &&
+        focusableItems.current[activeIndex].focus();
+      updateTabIndex(activeIndex);
+    }
 
-  //   if (activeIndex === -1 && !_isOpen && wasPreviouslyOpen) {
-  //     titleRef.current && titleRef.current.focus();
-  //   }
-
-  //   if (activeIndex === -1 && _isOpen) {
-  //     menuRef.current && menuRef.current.focus();
-  //   }
-  // }, [
-  //   activeIndex,
-  //   _isOpen,
-  //   titleRef,
-  //   menuRef,
-  //   trigger,
-  //   wasPreviouslyOpen,
-  //   wasPreviouslyOpenBeforeTimeout,
-  // ]);
+    //   if (activeIndex === -1 && !_isOpen && wasPreviouslyOpen) {
+    //     titleRef.current && titleRef.current.focus();
+    //   }
+  }, [activeIndex, isOpen]);
 
   const initTabIndex = () => {
     focusableItems.current.forEach(
@@ -158,7 +147,6 @@ const SubMenu = ({
   };
 
   const handleMenu = value => {
-    console.log("%cvalue", "color: #f2ceb6", value);
     if (!isControlled) {
       setIsOpen(value);
     }

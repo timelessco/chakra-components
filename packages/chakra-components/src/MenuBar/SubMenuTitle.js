@@ -1,9 +1,9 @@
-import React, { forwardRef, useRef } from "react";
+import React, { forwardRef } from "react";
 import { Link } from "@chakra-ui/core";
 
 import { useMenuBarContext } from "./useMenuBarContext";
 import { useSubMenuContext } from "./useSubMenuContext";
-import { useForkRef, wrapEvent } from "@chakra-ui/core/dist/utils";
+import { useForkRef } from "@chakra-ui/core/dist/utils";
 
 import { useMenuBarItemStyle } from "./styles";
 
@@ -29,6 +29,7 @@ const SubMenuTitle = forwardRef(
       onMouseLeave,
       onMouseEnter,
       onMouseDown,
+      onBlur,
       as: Comp = SubMenuTitleLink,
       role = "menuitem",
       ...rest
@@ -45,6 +46,8 @@ const SubMenuTitle = forwardRef(
       titleRef,
       handleMenu,
       mouseOnSubMenuTitle,
+      closeOnBlur,
+      menuRef,
     } = useSubMenuContext();
 
     const {
@@ -69,21 +72,50 @@ const SubMenuTitle = forwardRef(
       eventHandlers = {
         onClick: event => {
           if (isOpen) {
-            closeMenu();
+            handleMenu(false);
           } else {
             if (autoSelect) {
-              focusOnFirstItem();
+              setTimeout(() => {
+                focusOnFirstItem();
+              });
             } else {
-              openMenu();
+              if (
+                focusableMenuBarItems &&
+                focusableMenuBarItems.current.length > 0
+              ) {
+                let nextIndex = focusableMenuBarItems.current.indexOf(
+                  event.currentTarget,
+                );
+                setActiveIndex(nextIndex);
+              }
+              handleMenu(true);
             }
           }
 
           onClick && onClick(event);
         },
+        onMouseDown: event => {
+          if (autoSelect) {
+            event.preventDefault();
+          }
 
-        onMouseDown: wrapEvent(onMouseDown, event => {
-          event.preventDefault();
-        }),
+          onMouseDown && onMouseDown(event);
+        },
+        onBlur: event => {
+          if (
+            closeOnBlur &&
+            isOpen &&
+            menuRef.current &&
+            titleRef.current &&
+            !menuRef.current.contains(event.relatedTarget) &&
+            !titleRef.current.contains(event.relatedTarget)
+          ) {
+            setTimeout(() => {
+              handleMenu(false);
+            }, 300);
+          }
+          onBlur && onBlur(event);
+        },
       };
     }
 
@@ -153,12 +185,16 @@ const SubMenuTitle = forwardRef(
         }
 
         setActiveIndex(nextIndex);
+        focusableMenuBarItems.current[nextIndex] &&
+          focusableMenuBarItems.current[nextIndex].focus();
       }
 
       if (event.key === menuBarArrows[1]) {
         event.preventDefault();
         nextIndex = (index - 1 + count) % count;
         setActiveIndex(nextIndex);
+        focusableMenuBarItems.current[nextIndex] &&
+          focusableMenuBarItems.current[nextIndex].focus();
       }
 
       if (event.key === "Home") {

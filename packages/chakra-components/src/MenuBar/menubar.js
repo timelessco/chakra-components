@@ -78,9 +78,6 @@ const MenuBar = forwardRef(
 
     useEffect(() => {
       if (activeIndex !== -1) {
-        focusableMenuBarItems.current[activeIndex] &&
-          focusableMenuBarItems.current[activeIndex].focus();
-
         updateTabIndex(activeIndex);
       }
     }, [activeIndex]);

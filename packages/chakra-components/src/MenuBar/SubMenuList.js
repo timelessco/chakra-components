@@ -129,15 +129,16 @@ const SubMenuList = ({
       !menuRef.current.contains(event.relatedTarget) &&
       !titleRef.current.contains(event.relatedTarget)
     ) {
-      if (
-        menuBarRef &&
-        menuBarRef.current &&
-        menuBarRef.current.contains(event.relatedTarget)
-      ) {
-        closeMenuWithoutIndex();
-      } else {
-        closeMenu();
-      }
+      handleMenu(false);
+      // if (
+      //   menuBarRef &&
+      //   menuBarRef.current &&
+      //   menuBarRef.current.contains(event.relatedTarget)
+      // ) {
+      //   closeMenuWithoutIndex();
+      // } else {
+      //   closeMenu();
+      // }
     }
 
     onBlur && onBlur(event);

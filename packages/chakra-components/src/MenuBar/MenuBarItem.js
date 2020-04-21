@@ -69,12 +69,18 @@ const MenuBarItem = forwardRef(
         }
 
         setActiveIndex(nextIndex);
+
+        focusableMenuBarItems.current[nextIndex] &&
+          focusableMenuBarItems.current[nextIndex].focus();
       }
 
       if (event.key === arrows[1]) {
         event.preventDefault();
         nextIndex = (index - 1 + count) % count;
         setActiveIndex(nextIndex);
+
+        focusableMenuBarItems.current[nextIndex] &&
+          focusableMenuBarItems.current[nextIndex].focus();
       }
 
       if (event.key === "Home") {
