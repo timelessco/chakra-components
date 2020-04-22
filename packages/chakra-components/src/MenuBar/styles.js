@@ -8,6 +8,7 @@ export const useMenuBarStyle = () => {
   const baseProps = {
     fontSize: "md",
     lineHeight: "shorter",
+    whiteSpace: "nowrap",
   };
 
   return { ...baseProps };
