@@ -55,7 +55,7 @@ const MenuBar = forwardRef(
     const focusableMenuBarItems = useRef(null);
     const menuBarRef = useRef(null);
 
-    if (isCollapsable) {
+    if (isCollapsable && mode === "vertical") {
       trigger = "click";
     }
 

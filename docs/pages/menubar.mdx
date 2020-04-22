@@ -209,6 +209,7 @@ typed.
 
 - If `isCollapsable`, all the SubMenuItems will be shown in collapsable effect.
 - All the SubMenu are activated only using `trigger: 'click'`.
+  ``isCollapsable`only work in`mode`-`vertical`
 
 ```jsx
 <MenuBar mode="vertical" isCollapsable maxWidth="150px">
@@ -241,6 +242,50 @@ typed.
       <SubMenuItem>Mark as Draft</SubMenuItem>
       <SubMenuItem>Delete</SubMenuItem>
       <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
+### Resposive MenuBar
+
+- Adding the prop `responsive` makes the `mode` change from `horizontal` to
+  `vertical` automatic before the menuitems wrap.
+- Giving `mode` prop is useless here.
+
+```jsx
+<MenuBar ariaLabel="Dishes" responsive isCollapsable>
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <SubMenu>
+    <SubMenuTitle>Meal Plans</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Downloaded</SubMenuItem>
+      <SubMenuItem>Create a Copyed</SubMenuItem>
+      <SubMenuItem>Mark as Drafted</SubMenuItem>
+      <SubMenuItem>Deleted</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle>Groceries</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle>Workouts</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Downloading</SubMenuItem>
+      <SubMenuItem>Create a Coping</SubMenuItem>
+      <SubMenuItem>Mark as Drafting</SubMenuItem>
+      <SubMenuItem>Deleting</SubMenuItem>
+      <SubMenuItem>Attending</SubMenuItem>
     </SubMenuList>
   </SubMenu>
   <MenuBarItem>Video</MenuBarItem>

@@ -41,7 +41,7 @@ const SubMenu = ({
 
   const { colorMode } = useColorMode();
 
-  const { isCollapsable } = useMenuBarContext();
+  const { isCollapsable, mode } = useMenuBarContext();
 
   useEffect(() => {
     if (_isOpen && menuRef && menuRef.current) {
@@ -147,7 +147,7 @@ const SubMenu = ({
 
   let modeStyleProps = {};
 
-  if (isCollapsable) {
+  if (isCollapsable && mode === "vertical") {
     modeStyleProps = {
       flexDirection: "column",
     };

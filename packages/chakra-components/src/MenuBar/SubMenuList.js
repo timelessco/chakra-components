@@ -170,7 +170,7 @@ const SubMenuList = ({
   };
   const styleProps = useMenuListStyle();
 
-  if (isCollapsable) {
+  if (isCollapsable && mode === "vertical") {
     return (
       <Collapse isOpen={isOpen}>
         <Box

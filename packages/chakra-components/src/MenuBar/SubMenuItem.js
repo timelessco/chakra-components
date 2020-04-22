@@ -40,6 +40,7 @@ const SubMenuItem = forwardRef(
       activeIndex: index,
       setActiveIndex,
       isCollapsable,
+      mode,
     } = useMenuBarContext();
 
     const handleOnClick = event => {
@@ -97,7 +98,7 @@ const SubMenuItem = forwardRef(
 
     const styleProps = useMenuItemStyle();
 
-    if (isCollapsable) {
+    if (isCollapsable && mode === "vertical") {
       return (
         <Flex as="li" role="none" align="center">
           <Comp
