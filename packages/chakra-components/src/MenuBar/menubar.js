@@ -55,34 +55,41 @@ const MenuBar = forwardRef(
     const focusableMenuBarItems = useRef(null);
     const menuBarRef = useRef(null);
 
+    // Automatically change trigger to `click` when "vertical" and "Collapsable"
     if (isCollapsable && mode === "vertical") {
       trigger = "click";
     }
 
     useEffect(() => {
       if (menuBarRef && menuBarRef.current) {
+        // Get all the focusable menubaritems
         let focusables = getFocusables(menuBarRef.current).filter(node =>
           node.getAttribute("data-menubar-item"),
         );
 
         focusableMenuBarItems.current = focusables;
 
+        // Adds position: "relative" to menubar's parent to make the popper wide till menubar width
         if (spanParent) {
           menuBarRef.current.parentElement.style.position = "relative";
         }
 
+        // Adds position: "relative" to the menubar to make the popper wide till menubar width
         if (spanMenuBar) {
           menuBarRef.current.style.position = "relative";
         }
 
         if (responsive) {
-          menuBarRef.current.style.flexDirection = "row";
           const menuBarChildrens = Array.from(menuBarRef.current.children);
           let width = 0;
+
+          // Programmatically make flexDirection: row to calculate the width of the menubar items
+          menuBarRef.current.style.flexDirection = "row";
           menuBarChildrens.forEach(node => {
             width += node.children[0].clientWidth;
           });
 
+          // Change the mode when menubar width nears the wholesome menubaritems width
           const handleResize = () => {
             if (menuBarRef && menuBarRef.current) {
               const menuBarWidth = menuBarRef.current.clientWidth;
@@ -106,6 +113,7 @@ const MenuBar = forwardRef(
       updateTabIndex(activeIndex);
     }, [activeIndex]);
 
+    // Roving tab-index for tab management
     const updateTabIndex = index => {
       if (focusableMenuBarItems.current.length > 0) {
         let nodeAtIndex = focusableMenuBarItems.current[index];
@@ -133,7 +141,6 @@ const MenuBar = forwardRef(
 
     const menuBarForkRef = useForkRef(menuBarRef, ref);
     const styleProps = useMenuBarStyle();
-
     let modeStyleProps = {};
 
     if (mode === "vertical") {
