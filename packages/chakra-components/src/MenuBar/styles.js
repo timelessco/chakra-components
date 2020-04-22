@@ -24,11 +24,13 @@ export const useMenuBarItemStyle = () => {
       cursor: "pointer",
       display: "flex",
       alignItems: "center",
+      width: "full",
       textDecoration: "none",
       color: "inherit",
       textAlign: "left",
       outline: "none",
       px: 2,
+      rounded: "sm",
     };
   };
 
@@ -102,6 +104,7 @@ export const useMenuItemStyle = () => {
     flex: " 0 0 auto",
     userSelect: "none",
     transition: "background-color 220ms, color 220ms",
+    rounded: "sm",
   };
 
   const interactionProps = ({ colorMode }) => {

@@ -1,13 +1,14 @@
 /** @jsx jsx */
+import { cloneElement, forwardRef, useRef, useState } from "react";
 import { jsx } from "@emotion/core";
 import { useId } from "@reach/auto-id";
-import { cloneElement, forwardRef, useRef, useState } from "react";
 import { SubMenuGroup } from "./SubMenuItem";
 import { Box, Icon, PseudoBox, Flex } from "@chakra-ui/core";
 import { cleanChildren } from "@chakra-ui/core/dist/utils";
-import { useMenuItemStyle } from "./styles";
 import { useSubMenuContext } from "./useSubMenuContext";
 import { useMenuBarContext } from "./useMenuBarContext";
+
+import { useMenuItemStyle } from "./styles";
 
 /* =========================================================================
   SubMenuItemOption
@@ -28,24 +29,26 @@ export const SubMenuItemOption = forwardRef(
     },
     ref,
   ) => {
-    const {
-      focusableItems,
-      focusAtIndex,
-      closeMenu,
-      closeOnSelect,
-    } = useSubMenuContext();
+    const { closeMenu, closeOnSelect, titleRef } = useSubMenuContext();
 
     const {
       focusableMenuBarItems,
       activeIndex: index,
       setActiveIndex,
+      focusAtIndex,
     } = useMenuBarContext();
 
     const role = `menuitem${type}`;
 
     const handleSelect = () => {
+      if (closeOnSelect) {
+        closeMenu();
+
+        let nextIndex = focusableMenuBarItems.current.indexOf(titleRef.current);
+        setActiveIndex(nextIndex);
+        focusAtIndex(nextIndex);
+      }
       onClick && onClick();
-      closeOnSelect && closeMenu();
     };
 
     const handleClick = event => {
@@ -54,6 +57,7 @@ export const SubMenuItemOption = forwardRef(
         event.preventDefault();
         return;
       }
+
       handleSelect();
     };
 
@@ -65,20 +69,20 @@ export const SubMenuItemOption = forwardRef(
 
       if (event.key === "ArrowRight") {
         event.preventDefault();
+        closeMenu();
+
         nextIndex = (index + 1) % count;
         setActiveIndex(nextIndex);
-        focusableMenuBarItems.current[nextIndex] &&
-          focusableMenuBarItems.current[nextIndex].focus();
-        closeMenu();
+        focusAtIndex(nextIndex);
       }
 
       if (event.key === "ArrowLeft") {
         event.preventDefault();
+        closeMenu();
+
         nextIndex = (index - 1 + count) % count;
         setActiveIndex(nextIndex);
-        focusableMenuBarItems.current[nextIndex] &&
-          focusableMenuBarItems.current[nextIndex].focus();
-        closeMenu();
+        focusAtIndex(nextIndex);
       }
 
       if (["Enter", " "].includes(event.key)) {
@@ -86,23 +90,7 @@ export const SubMenuItemOption = forwardRef(
         handleSelect();
       }
 
-      if (onKeyDown) {
-        onKeyDown(event);
-      }
-    };
-
-    const handleMouseEnter = event => {
-      if (isDisabled) {
-        event.stopPropagation();
-        event.preventDefault();
-        return;
-      }
-      let nextIndex = focusableItems.current.indexOf(event.currentTarget);
-      focusAtIndex(nextIndex);
-
-      if (onMouseEnter) {
-        onMouseEnter(event);
-      }
+      onKeyDown && onKeyDown(event);
     };
 
     const styleProps = useMenuItemStyle();
@@ -121,7 +109,6 @@ export const SubMenuItemOption = forwardRef(
           aria-checked={isChecked}
           disabled={isDisabled}
           aria-disabled={isDisabled ? "" : undefined}
-          onMouseEnter={handleMouseEnter}
           onKeyDown={handleKeyDown}
           {...styleProps}
           {...rest}
@@ -217,6 +204,9 @@ export const SubMenuOptionGroup = ({
             isChecked: derivedValue.includes(child.props.value),
           });
         }
+
+        // fix Eslint no arrow function return
+        return null;
       })}
     </SubMenuGroup>
   );

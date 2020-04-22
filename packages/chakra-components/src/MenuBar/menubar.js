@@ -7,8 +7,8 @@ import React, {
 } from "react";
 import { Flex } from "@chakra-ui/core";
 import { useId } from "@reach/auto-id";
-
 import { getFocusables, useForkRef } from "@chakra-ui/core/dist/utils";
+
 import { useMenuBarStyle } from "./styles";
 
 /* =========================================================================
@@ -21,7 +21,7 @@ export const MenuBarContext = createContext();
   Default ul component when no `as` is not provided for MenuBar
   ========================================================================== */
 
-const PseudoUnorderedList = forwardRef(({ ...props }, ref) => {
+const PseudoUnorderedList = forwardRef((props, ref) => {
   return <Flex as="ul" ref={ref} {...props} />;
 });
 
@@ -128,10 +128,16 @@ const MenuBar = forwardRef(
       }
     };
 
+    const focusAtIndex = index => {
+      focusableMenuBarItems.current[index] &&
+        focusableMenuBarItems.current[index].focus();
+    };
+
     const context = {
       focusableMenuBarItems,
       activeIndex,
       setActiveIndex,
+      focusAtIndex,
       spanParent,
       spanMenuBar,
       trigger,

@@ -1,9 +1,9 @@
 import React from "react";
-
 import Popper, { PopperArrow } from "@chakra-ui/core/dist/Popper";
 import { useMenuBarContext } from "./useMenuBarContext";
 import { Box, Collapse } from "@chakra-ui/core";
 import { useSubMenuContext } from "./useSubMenuContext";
+
 import { useMenuListStyle } from "./styles";
 
 /* =========================================================================
@@ -46,14 +46,6 @@ const SubMenuList = ({
     mode,
     isCollapsable,
   } = useMenuBarContext();
-
-  if (spanParent || spanMenuBar) {
-    width = "full";
-  }
-
-  if (mode === "vertical") {
-    placement = "right";
-  }
 
   let eventHandlers = {};
 
@@ -98,12 +90,11 @@ const SubMenuList = ({
       event.preventDefault();
     } else if (event.key === "Escape") {
       closeMenu();
-      if (focusableMenuBarItems && focusableMenuBarItems.current.length > 0) {
-        let nextIndex = focusableMenuBarItems.current.indexOf(titleRef.current);
-        setActiveIndex(nextIndex);
-        focusableMenuBarItems.current[nextIndex] &&
-          focusableMenuBarItems.current[nextIndex].focus();
-      }
+
+      let nextIndex = focusableMenuBarItems.current.indexOf(titleRef.current);
+      setActiveIndex(nextIndex);
+      focusableMenuBarItems.current[nextIndex] &&
+        focusableMenuBarItems.current[nextIndex].focus();
     }
 
     // Set focus based on first character
@@ -133,19 +124,21 @@ const SubMenuList = ({
       !titleRef.current.contains(event.relatedTarget)
     ) {
       closeMenu();
-      if (focusableMenuBarItems && focusableMenuBarItems.current.length > 0) {
-        let nextIndex = focusableMenuBarItems.current.indexOf(
-          event.currentTarget,
-        );
-        if (nextIndex !== -1) {
-          setActiveIndex(nextIndex);
-        }
+
+      let nextIndex = focusableMenuBarItems.current.indexOf(
+        event.currentTarget,
+      );
+
+      // Conflicts with the SubMenuTitle Blur
+      if (nextIndex !== -1) {
+        setActiveIndex(nextIndex);
       }
     }
 
     onBlur && onBlur(event);
   };
 
+  // To fix the width full popper overflow
   function fixedWidth(data) {
     const newData = data;
 
@@ -169,6 +162,14 @@ const SubMenuList = ({
     offset: { enabled: true, offset: `${skid}, ${gutter}` },
   };
   const styleProps = useMenuListStyle();
+
+  if (spanParent || spanMenuBar) {
+    width = "full";
+  }
+
+  if (mode === "vertical") {
+    placement = "right";
+  }
 
   if (isCollapsable && mode === "vertical") {
     return (

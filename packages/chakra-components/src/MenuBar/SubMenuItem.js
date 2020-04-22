@@ -1,10 +1,9 @@
 import React, { forwardRef } from "react";
 import { Box, Text, Divider, Link, Flex } from "@chakra-ui/core";
-
-import { useMenuItemStyle } from "./styles";
-
 import { useMenuBarContext } from "./useMenuBarContext";
 import { useSubMenuContext } from "./useSubMenuContext";
+
+import { useMenuItemStyle } from "./styles";
 
 /* =========================================================================
   Default Link component when no `as` is not provided for SubMenuItemLink
@@ -39,6 +38,7 @@ const SubMenuItem = forwardRef(
       focusableMenuBarItems,
       activeIndex: index,
       setActiveIndex,
+      focusAtIndex,
       isCollapsable,
       mode,
     } = useMenuBarContext();
@@ -46,14 +46,10 @@ const SubMenuItem = forwardRef(
     const handleOnClick = event => {
       if (closeOnSelect) {
         closeMenu();
-        if (focusableMenuBarItems && focusableMenuBarItems.current.length > 0) {
-          let nextIndex = focusableMenuBarItems.current.indexOf(
-            titleRef.current,
-          );
-          setActiveIndex(nextIndex);
-          focusableMenuBarItems.current[nextIndex] &&
-            focusableMenuBarItems.current[nextIndex].focus();
-        }
+
+        let nextIndex = focusableMenuBarItems.current.indexOf(titleRef.current);
+        setActiveIndex(nextIndex);
+        focusAtIndex(nextIndex);
       }
 
       onClick && onClick(event);
@@ -65,32 +61,26 @@ const SubMenuItem = forwardRef(
 
       if (event.key === "ArrowRight") {
         event.preventDefault();
+        closeMenu();
+
         nextIndex = (index + 1) % count;
         setActiveIndex(nextIndex);
-        focusableMenuBarItems.current[nextIndex] &&
-          focusableMenuBarItems.current[nextIndex].focus();
-        closeMenu();
+        focusAtIndex(nextIndex);
       }
 
       if (event.key === "ArrowLeft") {
         event.preventDefault();
+        closeMenu();
+
         nextIndex = (index - 1 + count) % count;
         setActiveIndex(nextIndex);
-        focusableMenuBarItems.current[nextIndex] &&
-          focusableMenuBarItems.current[nextIndex].focus();
-        closeMenu();
+        focusAtIndex(nextIndex);
       }
 
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
-
-        if (onClick) {
-          onClick();
-        }
-
-        if (closeOnSelect) {
-          closeMenu();
-        }
+        closeOnSelect && closeMenu();
+        onClick && onClick(event);
       }
 
       onKeyDown && onKeyDown(event);

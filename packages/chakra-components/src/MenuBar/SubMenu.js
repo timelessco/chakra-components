@@ -1,5 +1,5 @@
 import React, { createContext, useState, useRef, useEffect } from "react";
-import { useColorMode, Flex } from "@chakra-ui/core";
+import { Flex } from "@chakra-ui/core";
 import { useId } from "@reach/auto-id";
 import { getFocusables } from "@chakra-ui/core/dist/utils";
 import { useMenuBarContext } from "./useMenuBarContext";
@@ -39,8 +39,6 @@ const SubMenu = ({
   const titleRef = useRef(null);
   const mouseOnSubMenuTitle = useRef(false);
 
-  const { colorMode } = useColorMode();
-
   const { isCollapsable, mode } = useMenuBarContext();
 
   useEffect(() => {
@@ -63,6 +61,7 @@ const SubMenu = ({
     }
   }, [activeIndex, _isOpen]);
 
+  // * May be used later
   // const initTabIndex = () => {
   //   focusableItems.current.forEach(
   //     ({ node, index }) => index === 0 && node.setAttribute("tabindex", 0),
@@ -84,9 +83,7 @@ const SubMenu = ({
   };
 
   const resetTabIndex = () => {
-    if (focusableItems.current) {
-      focusableItems.current.forEach(node => node.setAttribute("tabindex", -1));
-    }
+    focusableItems.current.forEach(node => node.setAttribute("tabindex", -1));
   };
 
   const focusOnFirstItem = () => {
@@ -110,7 +107,11 @@ const SubMenu = ({
 
   const focusOnLastItem = () => {
     openMenu();
-    setActiveIndex(focusableItems.current.length - 1);
+
+    // To give enougth time to calculate focusableItems
+    setTimeout(() => {
+      setActiveIndex(focusableItems.current.length - 1);
+    });
   };
 
   const closeMenu = () => {
@@ -141,7 +142,6 @@ const SubMenu = ({
     autoSelect,
     closeOnSelect,
     closeOnBlur,
-    colorMode,
     mouseOnSubMenuTitle,
   };
 
