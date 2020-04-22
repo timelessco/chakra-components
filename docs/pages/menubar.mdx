@@ -1,7 +1,8 @@
 # MenuBar
 
-An accessible menubar for both horizontal and vertical navigations. `MenuBar`
-uses roving tabIndex for focus management.
+MenuBar is a navigation component that is composable, extensible and accessible
+using Chakra UI. An accessible menubar for both horizontal and vertical
+navigations. `MenuBar` uses roving tabIndex for focus management.
 
 By default, `MenuBar` used ul, li, a components as default but they can be
 modified using `as` prop.
@@ -12,8 +13,7 @@ Chakra Components exports 11 components for rendering menubar:
 
 - `MenuBar`: The wrapper component that provides context, state, and focus
   management.
-- `MenuBarItem`: Items of the MenuBar which are the direct childrens of
-  `MenuBar`
+- `MenuBarItem`: Items of the MenuBar which are the direct children of `MenuBar`
 - `SubMenu`: The wrapper component that provides context, state, and focus
   management for `SubMenu` components.
 - `SubMenuTitle`: The trigger for the `SubMenuList`. Must be a direct child of
@@ -254,6 +254,7 @@ typed.
 - Adding the prop `responsive` makes the `mode` change from `horizontal` to
   `vertical` automatic before the menuitems wrap.
 - Giving `mode` prop is useless here.
+- To have the Collapsable effect on vertical, pass `isCollapsable`
 
 ```jsx
 <MenuBar ariaLabel="Dishes" responsive isCollapsable>
@@ -516,17 +517,18 @@ To group related `SubMenuItem`s, use the `SubMenuGroup` component and pass it a
 
 ### MenuBar Props
 
-| Name            | Type                           | Default      | Description                                                                  |
-| --------------- | ------------------------------ | ------------ | ---------------------------------------------------------------------------- |
-| children        | `React.ReactNode`              |              | The childrens of the `MenuBar` must be `MenuBarItem`                         |
-| ariaLabel       | `string`                       |              | Title for the `MenuBar` as aria label                                        |
-| as              | `React.ReactNode`, `HTML tags` | `ul`         | HTML Tag or Component to be rendered opposing default tag                    |
-| trigger         | `hover`, `click`               | `hover`      | The interaction that triggers the popover.                                   |
-| spanParent      | `boolean`                      | `false`      | If `true`, `SubMenu` popover will span to the width of its immediate parent  |
-| spanMenuBar     | `boolean`                      | `false`      | If `true`, `SubMenu` popover will span to the width of the menubar container |
-| mode            | `vertical`, `horizontal`       | `horizontal` | If `mode: 'vertical'`, `MenuBarItems` are rendered in flex direction column  |
-| ariaOrientation | `vertical`, `horizontal`       | `horizontal` | If `mode: 'vertical'`, `ariaOrientation` is set to vertical                  |
-| isCollapsable   | `boolean`                      | `false`      | If `true`, `SubMenuList` is rendered in `Collapse` instead of `Popper`       |
+| Name            | Type                           | Default      | Description                                                                    |
+| --------------- | ------------------------------ | ------------ | ------------------------------------------------------------------------------ |
+| children        | `React.ReactNode`              |              | The childrens of the `MenuBar` must be `MenuBarItem`                           |
+| ariaLabel       | `string`                       |              | Title for the `MenuBar` as aria label                                          |
+| as              | `React.ReactNode`, `HTML tags` | `ul`         | HTML Tag or Component to be rendered opposing default tag                      |
+| trigger         | `hover`, `click`               | `hover`      | The interaction that triggers the popover.                                     |
+| spanParent      | `boolean`                      | `false`      | If `true`, `SubMenu` popover will span to the width of its immediate parent    |
+| spanMenuBar     | `boolean`                      | `false`      | If `true`, `SubMenu` popover will span to the width of the menubar container   |
+| mode            | `vertical`, `horizontal`       | `horizontal` | If `mode: 'vertical'`, `MenuBarItems` are rendered in flex direction column    |
+| ariaOrientation | `vertical`, `horizontal`       | `horizontal` | If `mode: 'vertical'`, `ariaOrientation` is set to vertical                    |
+| isCollapsable   | `boolean`                      | `false`      | If `true`, `SubMenuList` is rendered in `Collapse` instead of `Popper`         |
+| responsive      | `boolean`                      | `false`      | If `true`, `MenuBarItems` are renders in `mode: horizontal/vertical` automatic |
 
 ### MenuBarItem
 
