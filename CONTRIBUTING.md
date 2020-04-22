@@ -46,6 +46,11 @@ yarn contributors:generate  # generate allcontributors to readme
 
 ## HMR support in development
 
+Install `yarn add -g nodemon` and run
+`nodemon --exec "yarn build" --watch packages/chakra-components/src --ignore dist/`
+
+OR
+
 Start the development server with `yarn docs`.
 
 Install
