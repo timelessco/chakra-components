@@ -4,11 +4,9 @@
 import {
   ComboBox,
   ComboBoxInput,
-  ComboBoxPopover
+  ComboBoxPopover,
+  ComboBoxOption,
 } from "@chakra-components/core";
-import {
-  Text
-} from "@chakra-ui/core";
 ```
 
 ## Basic Usage
@@ -16,8 +14,10 @@ import {
 ```jsx
 <ComboBox>
   <ComboBoxInput/>
-  <ComboBoxPopover>
-    <Text>this is popover</Text>
+  <ComboBoxPopover width="500px">
+    <ComboBoxOption>this is popover</ComboBoxOption>
+    <ComboBoxOption>this is popover</ComboBoxOption>
+    <ComboBoxOption>this is popover</ComboBoxOption>
   </ComboBoxPopover>
 </ComboBox>
 ```

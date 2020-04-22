@@ -32,10 +32,11 @@ const ComboBox = forwardRef(
 
     const comboBoxId = `combobox-${useId()}`;
 
-    const focusableComboBoxItems = useRef(null);
+    const inputRef = useRef(null);
     const comboBoxRef = useRef(null);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const context = {
+      inputRef,
       comboBoxRef,
       isPopoverOpen,
       setIsPopoverOpen,
