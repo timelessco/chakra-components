@@ -87,6 +87,7 @@ export default function useSelect({
   shiftAmount = 5,
   filterFn = defaultFilterFn,
   optionsRef,
+  cyclic,
   getDebounce = options =>
     options.length > 10000 ? 1000 : options.length > 1000 ? 200 : 0,
 }) {
@@ -231,19 +232,24 @@ export default function useSelect({
 
   const highlightIndex = React.useCallback(
     (value, position = null) => {
+      const toHighlightIndex = old =>
+        typeof value === "function" ? value(old.highlightedIndex) : value;
+      let highlightedIndex;
+      const getHighlightedIndex = old => {
+        highlightedIndex = toHighlightIndex(old);
+        if (highlightedIndex > options.length - 1) {
+          highlightedIndex = options.length - 1;
+        } else if (highlightedIndex < 0) {
+          highlightedIndex = 0;
+        }
+        return highlightedIndex;
+      };
+
       setState(old => {
         return {
           ...old,
-          // TODO: review this
-          // highlightedIndex: Math.min(
-          //   Math.max(
-          //     0,
-          //     typeof value === "function" ? value(old.highlightedIndex) : value,
-          //   ),
-          //   options.length - 1,
-          // ),
-          highlightedIndex:
-            typeof value === "function" ? value(old.highlightedIndex) : value,
+          highlightedIndex: getHighlightedIndex(old),
+
           highlightToPosition: position,
         };
       }, actions.highlightIndex);
@@ -507,7 +513,6 @@ export default function useSelect({
 
   // When the highlightedIndex changes, scroll to that item
   React.useEffect(() => {
-    console.log("highlight change ", highlightedIndex);
     scrollToIndexRef.current(highlightedIndex, highlightToPosition);
   }, [highlightedIndex, highlightIndex]);
 
