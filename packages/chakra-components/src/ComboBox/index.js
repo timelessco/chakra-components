@@ -34,11 +34,12 @@ const MySelect = ({
   const reactWindowInstanceRef = useRef();
   const optionsRef = useRef();
 
-  const scrollToIndex = index => {
+  const scrollToIndex = (index, position = "start") => {
     if (!reactWindowInstanceRef.current) {
       return;
     }
-    reactWindowInstanceRef.current.scrollToItem(index);
+    console.log("scrolling item to -> ", index);
+    reactWindowInstanceRef.current.scrollToItem(index, position);
   };
 
   const shiftAmount = pageSize;
@@ -65,6 +66,7 @@ const MySelect = ({
   const height =
     Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;
 
+  console.log("search value ", getInputProps().value);
   return (
     <div
       style={{
