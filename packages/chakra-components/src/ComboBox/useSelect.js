@@ -231,7 +231,7 @@ export default function useSelect({
   );
 
   const highlightIndex = React.useCallback(
-    (value, position = null) => {
+    (value, position = null, isOpenWhenTriggeredHighlight) => {
       const toHighlightIndex = old =>
         typeof value === "function" ? value(old.highlightedIndex) : value;
       let highlightedIndex;
@@ -239,19 +239,11 @@ export default function useSelect({
         highlightedIndex = toHighlightIndex(old);
         if (
           highlightedIndex >
-          (isOpen ? options.length - 1 : originalOptions.length - 1)
+          (isOpenWhenTriggeredHighlight
+            ? options.length - 1
+            : originalOptions.length - 1)
         ) {
-          console.log(
-            "big case 1",
-            isOpen,
-            ":",
-            highlightedIndex,
-            " : ",
-            options.length - 1,
-            " : ",
-            originalOptions.length - 1,
-          );
-          highlightedIndex = isOpen
+          highlightedIndex = isOpenWhenTriggeredHighlight
             ? options.length - 1
             : originalOptions.length - 1;
         } else if (highlightedIndex < 0) {
@@ -345,7 +337,7 @@ export default function useSelect({
         : 1;
     setOpen(true);
     if (isOpen) {
-      highlightIndex(old => old - amount);
+      highlightIndex(old => old - amount, null, isOpen);
     }
   };
 
@@ -363,7 +355,7 @@ export default function useSelect({
         : 1;
     setOpen(true);
     if (isOpen) {
-      highlightIndex(old => old + amount);
+      highlightIndex(old => old + amount, isOpen);
     }
   };
 
@@ -551,7 +543,6 @@ export default function useSelect({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, inputRef.current]);
 
-  console.log("highlighted index ", highlightedIndex);
   return {
     // State
     searchValue,
