@@ -19,7 +19,9 @@
     "version": "yarn build"
   },
   "dependencies": {
-    "@reach/auto-id": "^0.10.1"
+    "@reach/auto-id": "^0.10.1",
+    "match-sorter": "^4.1.0",
+    "react-window": "^1.8.5"
   },
   "peerDependencies": {
     "@chakra-ui/core": "0.7.0",
@@ -46,6 +48,5 @@
     "components",
     "emotion",
     "library"
-  ],
-  "gitHead": "8d0fdbd8b4faf08309c5a26af5e2702fb69cbbe0"
+  ]
 }
