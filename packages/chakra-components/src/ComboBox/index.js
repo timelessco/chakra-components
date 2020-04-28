@@ -66,7 +66,6 @@ const MySelect = ({
   const height =
     Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;
 
-  console.log("search value ", getInputProps().value);
   return (
     <div
       style={{
@@ -88,7 +87,12 @@ const MySelect = ({
           ))}
         </div>
       ) : null}
-      <input {...getInputProps()} placeholder="Select one..." />
+      <input {...getInputProps()} />
+      <span style={{ position: "absolute", left: "0px", top: "0px" }}>
+        {selectedOption.value && isOpen && !getInputProps().value
+          ? selectedOption.value
+          : null}
+      </span>
       <OptionsWrapper ref={optionsRef}>
         {isOpen ? (
           <Options

@@ -47,6 +47,7 @@ const initialState = {
   resolvedSearchValue: "",
   isOpen: false,
   highlightedIndex: 0,
+  highlightToPosition: null,
 };
 
 const actions = {
@@ -88,7 +89,13 @@ export default function useSelect({
     options.length > 10000 ? 1000 : options.length > 1000 ? 200 : 0,
 }) {
   const [
-    { searchValue, resolvedSearchValue, isOpen, highlightedIndex },
+    {
+      searchValue,
+      resolvedSearchValue,
+      isOpen,
+      highlightedIndex,
+      highlightToPosition,
+    },
     setState,
   ] = useHoistedState(initialState, stateReducer);
 
@@ -101,7 +108,10 @@ export default function useSelect({
   const getCreateLabelRef = React.useRef();
   const scrollToIndexRef = React.useRef();
 
+  // Ref pointing to Filter function
   filterFnRef.current = filterFn;
+
+  // Points the scroll function from parent
   scrollToIndexRef.current = scrollToIndex;
   getCreateLabelRef.current = getCreateLabel;
 
@@ -215,7 +225,7 @@ export default function useSelect({
   );
 
   const highlightIndex = React.useCallback(
-    value => {
+    (value, position = null) => {
       setState(old => {
         return {
           ...old,
@@ -226,6 +236,7 @@ export default function useSelect({
             ),
             options.length - 1,
           ),
+          highlightToPosition: position,
         };
       }, actions.highlightIndex);
     },
@@ -440,7 +451,22 @@ export default function useSelect({
 
   // When we open and close the options, set the highlightedIndex to 0
   React.useEffect(() => {
-    highlightIndex(0);
+    // highlightIndex(0);
+
+    if (isOpen) {
+      // TODO: SCROLL LOGIC when the highlighting changes
+
+      const scrollToIndex =
+        originalOptions.findIndex(d => d.value === value) || 0;
+
+      if (scrollToIndex !== highlightedIndex) {
+        // When opened first time after selected, highlightIndex would not have been updated
+        highlightIndex(scrollToIndex, "start");
+      } else {
+        // On repeated focus without changing the values
+        scrollToIndexRef.current(scrollToIndex, "start");
+      }
+    }
 
     if (!isOpen && onBlurRef.current.event) {
       onBlurRef.current.cb(onBlurRef.current.event);
@@ -450,7 +476,7 @@ export default function useSelect({
 
   // When the highlightedIndex changes, scroll to that item
   React.useEffect(() => {
-    scrollToIndexRef.current(highlightedIndex);
+    scrollToIndexRef.current(highlightedIndex, highlightToPosition);
   }, [highlightedIndex]);
 
   React.useEffect(() => {
