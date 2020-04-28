@@ -1,8 +1,7 @@
 import React, { forwardRef } from "react";
-import { Link, PseudoBox } from "@chakra-ui/core";
-
+import { Link, Flex } from "@chakra-ui/core";
 import { useMenuBarContext } from "./useMenuBarContext";
-import { wrapEvent } from "@chakra-ui/core/dist/utils";
+
 import { useMenuBarItemStyle } from "./styles";
 
 /* =========================================================================
@@ -10,8 +9,7 @@ import { useMenuBarItemStyle } from "./styles";
   ========================================================================== */
 
 const MenuBarItemLink = forwardRef((props, ref) => {
-  const styleProps = useMenuBarItemStyle();
-  return <Link ref={ref} {...styleProps} {...props} />;
+  return <Link ref={ref} {...props} />;
 });
 
 MenuBarItemLink.displayName = "MenuBarItemLink";
@@ -23,10 +21,10 @@ MenuBarItemLink.displayName = "MenuBarItemLink";
 const MenuBarItem = forwardRef(
   (
     {
-      onKeyDown,
-      onClick,
       role = "menuitem",
       as: Comp = MenuBarItemLink,
+      onClick,
+      onKeyDown,
       ...props
     },
     ref,
@@ -35,24 +33,51 @@ const MenuBarItem = forwardRef(
       focusableMenuBarItems,
       activeIndex: index,
       setActiveIndex,
+      focusAtIndex,
+      mode,
     } = useMenuBarContext();
+
+    let switchArrowsOnMode = ["ArrowRight", "ArrowLeft"];
+
+    if (mode === "vertical") {
+      switchArrowsOnMode = ["ArrowDown", "ArrowUp"];
+    }
+
+    const handleOnClick = event => {
+      let nextIndex = focusableMenuBarItems.current.indexOf(
+        event.currentTarget,
+      );
+      setActiveIndex(nextIndex);
+
+      onClick && onClick(event);
+    };
 
     const handleKeyDown = event => {
       const count = focusableMenuBarItems.current.length;
       let nextIndex;
 
-      if (event.key === "ArrowRight") {
+      if (event.key === switchArrowsOnMode[0]) {
         event.preventDefault();
         nextIndex = (index + 1) % count;
         setActiveIndex(nextIndex);
-      } else if (event.key === "ArrowLeft") {
+        focusAtIndex(nextIndex);
+      }
+
+      if (event.key === switchArrowsOnMode[1]) {
         event.preventDefault();
         nextIndex = (index - 1 + count) % count;
         setActiveIndex(nextIndex);
-      } else if (event.key === "Home") {
+        focusAtIndex(nextIndex);
+      }
+
+      if (event.key === "Home") {
         setActiveIndex(0);
-      } else if (event.key === "End") {
+        focusAtIndex(0);
+      }
+
+      if (event.key === "End") {
         setActiveIndex(focusableMenuBarItems.current.length - 1);
+        focusAtIndex(focusableMenuBarItems.current.length - 1);
       }
 
       // Set focus based on first character
@@ -65,33 +90,28 @@ const MenuBarItem = forwardRef(
         if (foundNode) {
           nextIndex = focusableMenuBarItems.current.indexOf(foundNode);
           setActiveIndex(nextIndex);
+          focusAtIndex(nextIndex);
         }
       }
 
       onKeyDown && onKeyDown(event);
     };
 
+    const styleProps = useMenuBarItemStyle();
+
     return (
-      <PseudoBox as="li" role="none" display="flex" alignItems="center">
+      <Flex as="li" role="none" align="center">
         <Comp
           ref={ref}
           role={role}
           tabIndex={0}
+          data-menubar-item={true}
           onKeyDown={handleKeyDown}
-          onClick={wrapEvent(onClick, event => {
-            if (
-              focusableMenuBarItems &&
-              focusableMenuBarItems.current.length > 0
-            ) {
-              let nextIndex = focusableMenuBarItems.current.indexOf(
-                event.currentTarget,
-              );
-              setActiveIndex(nextIndex);
-            }
-          })}
+          onClick={handleOnClick}
+          {...styleProps}
           {...props}
         />
-      </PseudoBox>
+      </Flex>
     );
   },
 );

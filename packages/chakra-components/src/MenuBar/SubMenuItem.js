@@ -1,19 +1,16 @@
 import React, { forwardRef } from "react";
-import { Box, PseudoBox, Text, Divider, Link } from "@chakra-ui/core";
-
-import { wrapEvent } from "@chakra-ui/core/dist/utils";
-import { useMenuItemStyle } from "@chakra-ui/core/dist/Menu/styles";
-
+import { Box, Text, Divider, Link, Flex } from "@chakra-ui/core";
 import { useMenuBarContext } from "./useMenuBarContext";
 import { useSubMenuContext } from "./useSubMenuContext";
+
+import { useMenuItemStyle } from "./styles";
 
 /* =========================================================================
   Default Link component when no `as` is not provided for SubMenuItemLink
   ========================================================================== */
 
 const SubMenuItemLink = forwardRef((props, ref) => {
-  const styleProps = useMenuItemStyle();
-  return <Link ref={ref} {...props} {...styleProps} />;
+  return <Link ref={ref} {...props} />;
 });
 
 SubMenuItemLink.displayName = "SubMenuItemLink";
@@ -25,31 +22,97 @@ SubMenuItemLink.displayName = "SubMenuItemLink";
 const SubMenuItem = forwardRef(
   (
     {
+      role = "menuitem",
+      as: Comp = SubMenuItemLink,
       onClick,
       onMouseLeave,
       onMouseEnter,
       onKeyDown,
-      role = "menuitem",
-      as: Comp = SubMenuItemLink,
       ...props
     },
     ref,
   ) => {
-    const {
-      focusableItems,
-      focusAtIndex,
-      closeOnSelect,
-      closeMenu,
-    } = useSubMenuContext();
+    const { closeOnSelect, closeMenu, titleRef } = useSubMenuContext();
 
     const {
       focusableMenuBarItems,
       activeIndex: index,
       setActiveIndex,
+      focusAtIndex,
+      isCollapsable,
+      mode,
     } = useMenuBarContext();
 
+    const handleOnClick = event => {
+      if (closeOnSelect) {
+        closeMenu();
+
+        let nextIndex = focusableMenuBarItems.current.indexOf(titleRef.current);
+        setActiveIndex(nextIndex);
+        focusAtIndex(nextIndex);
+      }
+
+      onClick && onClick(event);
+    };
+
+    const handleOnKeyDown = event => {
+      const count = focusableMenuBarItems.current.length;
+      let nextIndex;
+
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        closeMenu();
+
+        nextIndex = (index + 1) % count;
+        setActiveIndex(nextIndex);
+        focusAtIndex(nextIndex);
+      }
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        closeMenu();
+
+        nextIndex = (index - 1 + count) % count;
+        setActiveIndex(nextIndex);
+        focusAtIndex(nextIndex);
+      }
+
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        closeOnSelect && closeMenu();
+        onClick && onClick(event);
+      }
+
+      onKeyDown && onKeyDown(event);
+    };
+
+    const styleProps = useMenuItemStyle();
+
+    if (isCollapsable && mode === "vertical") {
+      return (
+        <Flex as="li" role="none" align="center">
+          <Comp
+            ref={ref}
+            display="flex"
+            alignItems="center"
+            textDecoration="none"
+            color="inherit"
+            textAlign="left"
+            outline="none"
+            px={4}
+            role={role}
+            tabIndex={-1}
+            onClick={handleOnClick}
+            onKeyDown={handleOnKeyDown}
+            {...styleProps}
+            {...props}
+          />
+        </Flex>
+      );
+    }
+
     return (
-      <PseudoBox as="li" role="none" display="flex" alignItems="center">
+      <Flex as="li" role="none" align="center">
         <Comp
           ref={ref}
           display="flex"
@@ -62,59 +125,12 @@ const SubMenuItem = forwardRef(
           px={4}
           role={role}
           tabIndex={-1}
-          onClick={wrapEvent(onClick, event => {
-            if (closeOnSelect) {
-              closeMenu();
-            }
-          })}
-          onMouseEnter={wrapEvent(onMouseEnter, event => {
-            if (
-              focusableItems &&
-              focusableItems.current &&
-              focusableItems.current.length > 0
-            ) {
-              let nextIndex = focusableItems.current.indexOf(
-                event.currentTarget,
-              );
-              focusAtIndex(nextIndex);
-            }
-          })}
-          onMouseLeave={wrapEvent(onMouseLeave, () => {
-            focusAtIndex(-1);
-          })}
-          onKeyDown={wrapEvent(onKeyDown, event => {
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-
-              if (onClick) {
-                onClick();
-              }
-
-              if (closeOnSelect) {
-                closeMenu();
-              }
-            }
-
-            const menuBarItemscount = focusableMenuBarItems.current.length;
-            let nextIndex;
-
-            if (event.key === "ArrowRight") {
-              event.preventDefault();
-              nextIndex = (index + 1) % menuBarItemscount;
-              setActiveIndex(nextIndex);
-              closeMenu();
-            }
-
-            if (event.key === "ArrowLeft") {
-              event.preventDefault();
-              nextIndex = (index - 1 + menuBarItemscount) % menuBarItemscount;
-              setActiveIndex(nextIndex);
-              closeMenu();
-            }
-          })}
+          onClick={handleOnClick}
+          onKeyDown={handleOnKeyDown}
+          {...styleProps}
           {...props}
         />
-      </PseudoBox>
+      </Flex>
     );
   },
 );

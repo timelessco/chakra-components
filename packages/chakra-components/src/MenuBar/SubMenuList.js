@@ -1,22 +1,26 @@
 import React from "react";
-
 import Popper, { PopperArrow } from "@chakra-ui/core/dist/Popper";
-
+import { useMenuBarContext } from "./useMenuBarContext";
+import { Box, Collapse } from "@chakra-ui/core";
 import { useSubMenuContext } from "./useSubMenuContext";
-import { useMenuListStyle } from "@chakra-ui/core/dist/Menu/styles";
+
+import { useMenuListStyle } from "./styles";
 
 /* =========================================================================
   SubMenuList
   ========================================================================== */
 
 const SubMenuList = ({
+  as: Comp = "ul",
+  width,
+  skid,
+  gutter,
+  placement,
+  ariaLabel,
+  onMouseEnter,
+  onMouseLeave,
   onKeyDown,
   onBlur,
-  as: Comp = "ul",
-  ariaLabel,
-  gutter,
-  skid,
-  width,
   ...props
 }) => {
   const {
@@ -30,9 +34,41 @@ const SubMenuList = ({
     titleRef,
     menuRef,
     closeOnBlur,
-    placement,
     mouseOnSubMenuTitle,
   } = useSubMenuContext();
+
+  const {
+    spanParent,
+    spanMenuBar,
+    trigger,
+    setActiveIndex,
+    focusableMenuBarItems,
+    mode,
+    isCollapsable,
+  } = useMenuBarContext();
+
+  let eventHandlers = {};
+
+  if (trigger === "hover") {
+    eventHandlers = {
+      onMouseEnter: event => {
+        mouseOnSubMenuTitle.current = true;
+
+        onMouseEnter && onMouseEnter(event);
+      },
+      onMouseLeave: event => {
+        mouseOnSubMenuTitle.current = false;
+
+        setTimeout(() => {
+          if (mouseOnSubMenuTitle.current === false) {
+            closeMenu(false);
+          }
+        }, 500);
+
+        onMouseLeave && onMouseLeave(event);
+      },
+    };
+  }
 
   const handleKeyDown = event => {
     const count = focusableItems.current.length;
@@ -54,6 +90,11 @@ const SubMenuList = ({
       event.preventDefault();
     } else if (event.key === "Escape") {
       closeMenu();
+
+      let nextIndex = focusableMenuBarItems.current.indexOf(titleRef.current);
+      setActiveIndex(nextIndex);
+      focusableMenuBarItems.current[nextIndex] &&
+        focusableMenuBarItems.current[nextIndex].focus();
     }
 
     // Set focus based on first character
@@ -83,13 +124,21 @@ const SubMenuList = ({
       !titleRef.current.contains(event.relatedTarget)
     ) {
       closeMenu();
+
+      let nextIndex = focusableMenuBarItems.current.indexOf(
+        event.currentTarget,
+      );
+
+      // Conflicts with the SubMenuTitle Blur
+      if (nextIndex !== -1) {
+        setActiveIndex(nextIndex);
+      }
     }
 
     onBlur && onBlur(event);
   };
 
-  const styleProps = useMenuListStyle();
-
+  // To fix the width full popper overflow
   function fixedWidth(data) {
     const newData = data;
 
@@ -100,54 +149,66 @@ const SubMenuList = ({
     return newData;
   }
 
+  const popperModifiers = {
+    preventOverflow: {
+      enabled: true,
+      boundariesElement: "viewport",
+    },
+    fixedWidth: {
+      enabled: true,
+      fn: fixedWidth,
+      order: 840,
+    },
+    offset: { enabled: true, offset: `${skid}, ${gutter}` },
+  };
+  const styleProps = useMenuListStyle();
+
+  if (spanParent || spanMenuBar) {
+    width = "full";
+  }
+
+  if (mode === "vertical") {
+    placement = "right";
+  }
+
+  if (isCollapsable && mode === "vertical") {
+    return (
+      <Collapse isOpen={isOpen}>
+        <Box
+          as="ul"
+          ref={menuRef}
+          role="menu"
+          aria-label={ariaLabel}
+          tabIndex={-1}
+          _focus={{ outline: 0 }}
+          width={width}
+          onKeyDown={handleKeyDown}
+          {...props}
+        />
+      </Collapse>
+    );
+  }
+
   return (
     <Popper
-      as={Comp}
-      bg="inherit"
       usePortal={false}
-      isOpen={isOpen}
+      as={Comp}
       anchorEl={titleRef.current}
-      placement={placement}
-      modifiers={{
-        preventOverflow: {
-          enabled: true,
-          boundariesElement: "viewport",
-        },
-        fixedWidth: {
-          enabled: true,
-          fn: fixedWidth,
-          order: 840,
-        },
-        offset: { enabled: true, offset: `${skid}, ${gutter}` },
-      }}
-      minW="3xs"
-      rounded="md"
-      role="menu"
       ref={menuRef}
+      isOpen={isOpen}
+      placement={placement}
+      modifiers={popperModifiers}
+      width={width}
+      rounded="md"
       py={2}
+      zIndex="2"
+      _focus={{ outline: 0 }}
+      role="menu"
       aria-label={ariaLabel}
-      onMouseEnter={() => {
-        mouseOnSubMenuTitle.current = true;
-      }}
-      onMouseLeave={() => {
-        mouseOnSubMenuTitle.current = false;
-
-        setTimeout(() => {
-          if (mouseOnSubMenuTitle.current === false) {
-            closeMenu();
-          }
-        }, 300);
-      }}
+      tabIndex={-1}
       onKeyDown={handleKeyDown}
       onBlur={handleBlur}
-      tabIndex={-1}
-      zIndex="2"
-      _focus={{
-        outline: 0,
-      }}
-      fontFamily="Inter"
-      fontSize="md"
-      width={width}
+      {...eventHandlers}
       {...styleProps}
       {...props}
     />

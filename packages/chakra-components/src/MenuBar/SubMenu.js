@@ -1,8 +1,8 @@
 import React, { createContext, useState, useRef, useEffect } from "react";
-import { PseudoBox, usePrevious, useColorMode } from "@chakra-ui/core";
+import { Flex } from "@chakra-ui/core";
 import { useId } from "@reach/auto-id";
-
 import { getFocusables } from "@chakra-ui/core/dist/utils";
+import { useMenuBarContext } from "./useMenuBarContext";
 
 /* =========================================================================
   SubMenuContext
@@ -15,33 +15,31 @@ const SubMenuContext = createContext();
   ========================================================================== */
 
 const SubMenu = ({
-  children,
+  autoSelect = true,
+  closeOnBlur = true,
+  closeOnSelect = true,
   isOpen: isOpenProp,
   defaultIsOpen,
   onOpen,
   onClose,
-  autoSelect = true,
-  closeOnBlur = true,
-  closeOnSelect = true,
   defaultActiveIndex,
-  placement,
+  children,
+  ...props
 }) => {
   const [activeIndex, setActiveIndex] = useState(defaultActiveIndex || -1);
   const [isOpen, setIsOpen] = useState(defaultIsOpen || false);
   const { current: isControlled } = useRef(isOpenProp != null);
 
   const _isOpen = isControlled ? isOpenProp : isOpen;
-  const wasPreviouslyOpen = usePrevious(_isOpen);
 
   const menuId = `menu-${useId()}`;
-  const buttonId = `menubutton-${useId()}`;
 
   const focusableItems = useRef(null);
   const menuRef = useRef(null);
   const titleRef = useRef(null);
   const mouseOnSubMenuTitle = useRef(false);
 
-  const { colorMode } = useColorMode();
+  const { isCollapsable, mode } = useMenuBarContext();
 
   useEffect(() => {
     if (_isOpen && menuRef && menuRef.current) {
@@ -52,31 +50,23 @@ const SubMenu = ({
       );
 
       focusableItems.current = menuRef.current ? focusables : [];
-      initTabIndex();
     }
   }, [_isOpen]);
 
   useEffect(() => {
-    if (activeIndex !== -1) {
+    if (activeIndex !== -1 && _isOpen) {
       focusableItems.current[activeIndex] &&
         focusableItems.current[activeIndex].focus();
       updateTabIndex(activeIndex);
     }
+  }, [activeIndex, _isOpen]);
 
-    if (activeIndex === -1 && !_isOpen && wasPreviouslyOpen) {
-      titleRef.current && titleRef.current.focus();
-    }
-
-    if (activeIndex === -1 && _isOpen) {
-      menuRef.current && menuRef.current.focus();
-    }
-  }, [activeIndex, _isOpen, titleRef, menuRef, wasPreviouslyOpen]);
-
-  const initTabIndex = () => {
-    focusableItems.current.forEach(
-      ({ node, index }) => index === 0 && node.setAttribute("tabindex", 0),
-    );
-  };
+  // * May be used later
+  // const initTabIndex = () => {
+  //   focusableItems.current.forEach(
+  //     ({ node, index }) => index === 0 && node.setAttribute("tabindex", 0),
+  //   );
+  // };
 
   const updateTabIndex = index => {
     if (focusableItems.current.length > 0) {
@@ -93,9 +83,7 @@ const SubMenu = ({
   };
 
   const resetTabIndex = () => {
-    if (focusableItems.current) {
-      focusableItems.current.forEach(node => node.setAttribute("tabindex", -1));
-    }
+    focusableItems.current.forEach(node => node.setAttribute("tabindex", -1));
   };
 
   const focusOnFirstItem = () => {
@@ -119,7 +107,11 @@ const SubMenu = ({
 
   const focusOnLastItem = () => {
     openMenu();
-    setActiveIndex(focusableItems.current.length - 1);
+
+    // To give enougth time to calculate focusableItems
+    setTimeout(() => {
+      setActiveIndex(focusableItems.current.length - 1);
+    });
   };
 
   const closeMenu = () => {
@@ -145,24 +137,32 @@ const SubMenu = ({
     titleRef,
     menuRef,
     focusableItems,
-    placement,
     menuId,
-    buttonId,
     openMenu,
     autoSelect,
     closeOnSelect,
     closeOnBlur,
-    colorMode,
     mouseOnSubMenuTitle,
   };
 
+  let modeStyleProps = {};
+
+  if (isCollapsable && mode === "vertical") {
+    modeStyleProps = {
+      flexDirection: "column",
+    };
+  }
+
   return (
     <SubMenuContext.Provider value={context}>
-      <PseudoBox as="li" role="none" display="flex">
+      <Flex as="li" role="none" {...modeStyleProps} {...props}>
         {typeof children === "function"
-          ? children({ isOpen: _isOpen, onClose: closeMenu })
+          ? children({
+              isOpen: _isOpen,
+              onClose: closeMenu,
+            })
           : children}
-      </PseudoBox>
+      </Flex>
     </SubMenuContext.Provider>
   );
 };

@@ -40,4 +40,4 @@ jobs:
         env:
           NOW_TOKEN: ${{ secrets.NOW_TOKEN }}
         run: |
-          now --token ${NOW_TOKEN} --confirm --name chakra-components --no-clipboard --prod
+          now --token ${NOW_TOKEN} --confirm --name chakra-components --no-clipboard

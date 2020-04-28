@@ -1,9 +1,8 @@
-import React, { forwardRef, useRef } from "react";
+import React, { forwardRef } from "react";
 import { Link } from "@chakra-ui/core";
-
 import { useMenuBarContext } from "./useMenuBarContext";
 import { useSubMenuContext } from "./useSubMenuContext";
-import { useForkRef, wrapEvent } from "@chakra-ui/core/dist/utils";
+import { useForkRef } from "@chakra-ui/core/dist/utils";
 
 import { useMenuBarItemStyle } from "./styles";
 
@@ -12,8 +11,7 @@ import { useMenuBarItemStyle } from "./styles";
   ========================================================================== */
 
 const SubMenuTitleLink = forwardRef((props, ref) => {
-  const styleProps = useMenuBarItemStyle();
-  return <Link ref={ref} {...styleProps} {...props} />;
+  return <Link ref={ref} {...props} />;
 });
 
 SubMenuTitleLink.displayName = "SubMenuTitleLink";
@@ -25,13 +23,14 @@ SubMenuTitleLink.displayName = "SubMenuTitleLink";
 const SubMenuTitle = forwardRef(
   (
     {
+      as: Comp = SubMenuTitleLink,
+      role = "menuitem",
       onClick,
       onKeyDown,
       onMouseLeave,
       onMouseEnter,
       onMouseDown,
-      as: Comp = SubMenuTitleLink,
-      role = "menuitem",
+      onBlur,
       ...rest
     },
     ref,
@@ -41,55 +40,164 @@ const SubMenuTitle = forwardRef(
       focusOnLastItem,
       focusOnFirstItem,
       closeMenu,
-      buttonId,
       autoSelect,
       openMenu,
       titleRef,
       mouseOnSubMenuTitle,
+      closeOnBlur,
+      menuRef,
     } = useSubMenuContext();
 
     const {
       focusableMenuBarItems,
       activeIndex: index,
       setActiveIndex,
-      resetTabIndex,
+      focusAtIndex,
+      trigger,
+      mode,
     } = useMenuBarContext();
 
-    const openTimeout = useRef(null);
+    let switchMenuBarArrowsOnMode = ["ArrowRight", "ArrowLeft"];
+    let switchSubMenuArrowsOnMode = ["ArrowDown", "ArrowUp"];
+
+    if (mode === "vertical") {
+      switchMenuBarArrowsOnMode = ["ArrowDown", "ArrowUp"];
+      switchSubMenuArrowsOnMode = ["ArrowRight", "ArrowLeft"];
+    }
+
+    let eventHandlers = {};
+
+    if (trigger === "click") {
+      eventHandlers = {
+        onClick: event => {
+          if (isOpen) {
+            closeMenu();
+
+            let nextIndex = focusableMenuBarItems.current.indexOf(
+              event.currentTarget,
+            );
+            setActiveIndex(nextIndex);
+            focusAtIndex(nextIndex);
+          } else {
+            if (autoSelect) {
+              focusOnFirstItem();
+            } else {
+              openMenu();
+
+              let nextIndex = focusableMenuBarItems.current.indexOf(
+                event.currentTarget,
+              );
+              setActiveIndex(nextIndex);
+            }
+          }
+
+          onClick && onClick(event);
+        },
+        onMouseDown: event => {
+          // Prevent focusing on SubMenuTitle when in autoSelect
+          if (autoSelect) {
+            event.preventDefault();
+          }
+
+          onMouseDown && onMouseDown(event);
+        },
+        onBlur: event => {
+          if (
+            closeOnBlur &&
+            isOpen &&
+            menuRef.current &&
+            titleRef.current &&
+            !menuRef.current.contains(event.relatedTarget) &&
+            !titleRef.current.contains(event.relatedTarget)
+          ) {
+            let nextIndex = focusableMenuBarItems.current.indexOf(
+              event.currentTarget,
+            );
+            setActiveIndex(nextIndex);
+
+            setTimeout(() => {
+              closeMenu();
+            }, 300);
+          }
+          onBlur && onBlur(event);
+        },
+      };
+    }
+
+    // Set timeout for having a smooth transition when switching SubMenus
+    if (trigger === "hover") {
+      eventHandlers = {
+        onMouseEnter: event => {
+          mouseOnSubMenuTitle.current = true;
+
+          setTimeout(() => {
+            if (!isOpen) {
+              openMenu();
+            }
+          }, 299);
+
+          onMouseEnter && onMouseEnter(event);
+        },
+
+        onMouseLeave: event => {
+          mouseOnSubMenuTitle.current = false;
+
+          setTimeout(() => {
+            if (mouseOnSubMenuTitle.current === false) {
+              closeMenu();
+            }
+          }, 300);
+
+          onMouseLeave && onMouseLeave(event);
+        },
+
+        onClick: event => {
+          let nextIndex = focusableMenuBarItems.current.indexOf(
+            event.currentTarget,
+          );
+          setActiveIndex(nextIndex);
+
+          onClick && onClick(event);
+        },
+      };
+    }
 
     const handleKeyDown = event => {
       const count = focusableMenuBarItems.current.length;
       let nextIndex;
 
-      if (event.key === "ArrowDown") {
+      if (event.key === switchSubMenuArrowsOnMode[0]) {
         event.preventDefault();
         focusOnFirstItem();
-        resetTabIndex();
       }
 
-      if (event.key === "ArrowUp") {
+      if (event.key === switchSubMenuArrowsOnMode[1]) {
         event.preventDefault();
         focusOnLastItem();
       }
 
-      if (event.key === "ArrowRight") {
+      if (event.key === switchMenuBarArrowsOnMode[0]) {
         event.preventDefault();
         nextIndex = (index + 1) % count;
         setActiveIndex(nextIndex);
+        focusAtIndex(nextIndex);
       }
 
-      if (event.key === "ArrowLeft") {
+      if (event.key === switchMenuBarArrowsOnMode[1]) {
         event.preventDefault();
         nextIndex = (index - 1 + count) % count;
         setActiveIndex(nextIndex);
+        focusAtIndex(nextIndex);
       }
 
       if (event.key === "Home") {
         setActiveIndex(0);
+        focusAtIndex(0);
       }
 
       if (event.key === "End") {
         setActiveIndex(focusableMenuBarItems.current.length - 1);
+        focusAtIndex(focusableMenuBarItems.current.length - 1);
       }
 
       if (event.key === "Enter" || event.key === " ") {
@@ -116,76 +224,27 @@ const SubMenuTitle = forwardRef(
         if (foundNode) {
           nextIndex = focusableMenuBarItems.current.indexOf(foundNode);
           setActiveIndex(nextIndex);
+          focusAtIndex(nextIndex);
         }
       }
 
       onKeyDown && onKeyDown(event);
     };
 
+    const styleProps = useMenuBarItemStyle();
     const menutitleRef = useForkRef(titleRef, ref);
 
     return (
       <Comp
+        ref={menutitleRef}
         aria-haspopup="true"
         aria-expanded={isOpen}
-        id={buttonId}
-        ref={menutitleRef}
         role={role}
         tabIndex={0}
-        onClick={wrapEvent(onClick, event => {
-          if (
-            focusableMenuBarItems &&
-            focusableMenuBarItems.current.length > 0
-          ) {
-            let nextIndex = focusableMenuBarItems.current.indexOf(
-              event.currentTarget,
-            );
-            setActiveIndex(nextIndex);
-          }
-
-          if (isOpen) {
-            closeMenu();
-          } else {
-            if (autoSelect) {
-              focusOnFirstItem();
-            } else {
-              openMenu();
-            }
-          }
-        })}
-        onMouseEnter={() => {
-          mouseOnSubMenuTitle.current = true;
-
-          openTimeout.current = setTimeout(() => {
-            if (!isOpen) {
-              if (autoSelect) {
-                focusOnFirstItem();
-              } else {
-                openMenu();
-              }
-            }
-          }, 300);
-        }}
-        onMouseLeave={wrapEvent(onMouseLeave, () => {
-          mouseOnSubMenuTitle.current = false;
-
-          if (openTimeout.current) {
-            clearTimeout(openTimeout.current);
-            openTimeout.current = null;
-          }
-
-          setTimeout(() => {
-            if (mouseOnSubMenuTitle.current === false) {
-              if (isOpen) {
-                closeMenu();
-              }
-            }
-          }, 300);
-        })}
-        onMouseDown={wrapEvent(onMouseDown, event => {
-          event.preventDefault();
-        })}
+        data-menubar-item={true}
         onKeyDown={handleKeyDown}
+        {...eventHandlers}
+        {...styleProps}
         {...rest}
       />
     );
