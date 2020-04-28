@@ -467,6 +467,7 @@ export default function useSelect({
     searchValue,
     isOpen,
     highlightedIndex,
+    highlightedOption: options[highlightedIndex],
     selectedOption,
     visibleOptions: options,
     // Actions

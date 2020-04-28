@@ -103,13 +103,13 @@ function ResizeExample() {
   }));
   
   const [fruit, setFruit] = React.useState(options[0].value);
-
+  console.log('fruit ', fruit)
   return (
     <>
      <MySelect
       value={fruit}
       options={options}
-      onChange={(option) => { console.log(option)}}
+      onChange={setFruit}
       placeholder="Select one..."
     />
     </>
