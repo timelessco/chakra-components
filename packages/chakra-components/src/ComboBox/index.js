@@ -38,7 +38,6 @@ const MySelect = ({
     if (!reactWindowInstanceRef.current) {
       return;
     }
-    console.log("scrolling to ", position);
     reactWindowInstanceRef.current.scrollToItem(index, position);
   };
 

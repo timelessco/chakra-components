@@ -55,6 +55,7 @@ const actions = {
   setOpen: "setOpen",
   setSearch: "setSearch",
   highlightIndex: "highlightIndex",
+  clearHighlightTriggeredBy: "clearHighlightTriggeredBy",
 };
 
 function useHoistedState(initialState, reducer) {
@@ -213,13 +214,13 @@ export default function useSelect({
   }, getDebounce(options));
 
   const setSearch = React.useCallback(
-    value => {
+    (value, highlightTriggeredBy) => {
       setState(
         old => ({
           ...old,
           searchValue: value,
           highlightToPosition: "start",
-          highlightTriggeredBy: "valueChange",
+          highlightTriggeredBy: highlightTriggeredBy,
         }),
         actions.setSearch,
       );
@@ -233,13 +234,16 @@ export default function useSelect({
       setState(old => {
         return {
           ...old,
-          highlightedIndex: Math.min(
-            Math.max(
-              0,
-              typeof value === "function" ? value(old.highlightedIndex) : value,
-            ),
-            options.length - 1,
-          ),
+          // TODO: review this
+          // highlightedIndex: Math.min(
+          //   Math.max(
+          //     0,
+          //     typeof value === "function" ? value(old.highlightedIndex) : value,
+          //   ),
+          //   options.length - 1,
+          // ),
+          highlightedIndex:
+            typeof value === "function" ? value(old.highlightedIndex) : value,
           highlightToPosition: position,
         };
       }, actions.highlightIndex);
@@ -269,6 +273,18 @@ export default function useSelect({
     [multi, options, duplicates, value, setOpen, setSearch],
   );
 
+  const clearHighlightTriggeredBy = React.useCallback(
+    (value, position = null) => {
+      setState(old => {
+        return {
+          ...old,
+          highlightTriggeredBy: null,
+        };
+      }, actions.highlightIndex);
+    },
+    [],
+  );
+
   const removeValue = React.useCallback(
     index => {
       onChangeRef.current(value.filter((d, i) => i !== index));
@@ -279,7 +295,7 @@ export default function useSelect({
   // Handlers
 
   const handleSearchValueChange = e => {
-    setSearch(e.target.value);
+    setSearch(e.target.value, "valueChange");
     setOpen(true);
   };
 
@@ -451,24 +467,36 @@ export default function useSelect({
   // When searching, activate the first option
   React.useEffect(() => {
     if (isOpen) {
-      // TODO: SCROLL LOGIC when the highlighting changes
-
+      // Should always be original options
       const scrollToIndex =
         originalOptions.findIndex(d => d.value === value) || 0;
-      if (highlightTriggeredBy === "valueChange") {
-        highlightIndex(0, "start");
-      } else {
-        if (scrollToIndex !== highlightedIndex) {
-          // When opened first time after selected, highlightIndex would not have been updated
-          highlightIndex(scrollToIndex, "start");
-        } else {
-          // On repeated focus without changing the values
-          scrollToIndexRef.current(scrollToIndex, "start");
-        }
+      if (scrollToIndex !== highlightedIndex) {
+        // When opened first time after selected, highlightIndex would not have been updated
+        highlightIndex(scrollToIndex, "start");
+        // scrollToIndexRef.current(scrollToIndex, "start");
+      }
+      if (scrollToIndex === highlightedIndex) {
+        const actualScrollToIndex =
+          originalOptions.findIndex(d => d.value === value) || 0;
+        // On repeated focus without changing the values
+        scrollToIndexRef.current(scrollToIndex, "start");
       }
     }
-  }, [searchValue, isOpen, highlightIndex]);
+  }, [isOpen]);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      const scrollToIndex =
+        originalOptions.findIndex(d => d.value === value) || 0;
+
+      if (highlightTriggeredBy === "valueChange") {
+        clearHighlightTriggeredBy();
+        highlightIndex(0, "start");
+      }
+    }
+  }, [searchValue]);
+
+  // isOpen, highlightedIndex
   // When we open and close the options, set the highlightedIndex to 0
   React.useEffect(() => {
     if (!isOpen && onBlurRef.current.event) {
@@ -479,8 +507,9 @@ export default function useSelect({
 
   // When the highlightedIndex changes, scroll to that item
   React.useEffect(() => {
+    console.log("highlight change ", highlightedIndex);
     scrollToIndexRef.current(highlightedIndex, highlightToPosition);
-  }, [highlightedIndex]);
+  }, [highlightedIndex, highlightIndex]);
 
   React.useEffect(() => {
     if (isOpen && inputRef.current) {
