@@ -237,11 +237,18 @@ export default function useSelect({
       let highlightedIndex;
       const getHighlightedIndex = old => {
         highlightedIndex = toHighlightIndex(old);
-        if (highlightedIndex > options.length - 1) {
-          highlightedIndex = options.length - 1;
+        if (
+          highlightedIndex >
+          (isOpen ? options.length - 1 : originalOptions.length - 1)
+        ) {
+          highlightedIndex = isOpen
+            ? options.length - 1
+            : originalOptions.length - 1;
         } else if (highlightedIndex < 0) {
+          console.log("came in value 2222", value, highlightedIndex, isOpen);
           highlightedIndex = 0;
         }
+        console.log("highlighting index ~~~~ ", highlightedIndex);
         return highlightedIndex;
       };
 
@@ -351,6 +358,7 @@ export default function useSelect({
     }
   };
 
+  console.log("highlighted index ", highlightedIndex);
   const Escape = () => {
     setOpen(false);
   };
@@ -477,13 +485,14 @@ export default function useSelect({
       const scrollToIndex =
         originalOptions.findIndex(d => d.value === value) || 0;
       if (scrollToIndex !== highlightedIndex) {
+        console.log("moving -> 1", originalOptions.length, scrollToIndex);
         // When opened first time after selected, highlightIndex would not have been updated
         highlightIndex(scrollToIndex, "start");
+
         // scrollToIndexRef.current(scrollToIndex, "start");
       }
       if (scrollToIndex === highlightedIndex) {
-        const actualScrollToIndex =
-          originalOptions.findIndex(d => d.value === value) || 0;
+        console.log("moving -> 2");
         // On repeated focus without changing the values
         scrollToIndexRef.current(scrollToIndex, "start");
       }
@@ -492,10 +501,8 @@ export default function useSelect({
 
   React.useEffect(() => {
     if (isOpen) {
-      const scrollToIndex =
-        originalOptions.findIndex(d => d.value === value) || 0;
-
       if (highlightTriggeredBy === "valueChange") {
+        console.log("moving -> 0");
         clearHighlightTriggeredBy();
         highlightIndex(0, "start");
       }
