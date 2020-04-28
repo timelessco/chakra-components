@@ -34,11 +34,11 @@ const MySelect = ({
   const reactWindowInstanceRef = useRef();
   const optionsRef = useRef();
 
-  const scrollToIndex = (index, position = "start") => {
+  const scrollToIndex = (index, position) => {
     if (!reactWindowInstanceRef.current) {
       return;
     }
-    console.log("scrolling item to -> ", index);
+    console.log("scrolling to ", position);
     reactWindowInstanceRef.current.scrollToItem(index, position);
   };
 
