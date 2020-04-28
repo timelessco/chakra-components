@@ -13,11 +13,14 @@ import {
 } from "@chakra-ui/core";
 import { cleanChildren } from "@chakra-ui/core/dist/utils";
 import useSelect from "./useSelect";
+import Popper from "@chakra-ui/core/dist/Popper";
 // import matchSorter from "match-sorter";
 import { FixedSizeList } from "react-window";
 import { useComboBoxContext } from "./useComboBoxContext";
+import { useForkRef } from "@chakra-ui/core/dist/utils";
 
 import { inputSizes } from "@chakra-ui/core/dist/Input/styles";
+import { useMenuListStyle } from "../MenuBar/styles";
 
 export const ComboBoxContext = createContext();
 
@@ -42,8 +45,8 @@ const ComboBox = forwardRef(
     let right = null;
     const validChildren = cleanChildren(children);
 
-    const reactWindowInstanceRef = useRef();
-    const optionsRef = useRef();
+    const reactWindowInstanceRef = useRef(null);
+    const optionsRef = useRef(null);
 
     const scrollToIndex = index => {
       if (!reactWindowInstanceRef.current) {
@@ -61,6 +64,7 @@ const ComboBox = forwardRef(
       getInputProps,
       getOptionProps,
       isOpen,
+      inputRef,
     } = useSelect({
       options,
       value,
@@ -82,6 +86,7 @@ const ComboBox = forwardRef(
       isOpen,
       height: Optionsheight,
       itemHeight,
+      inputRef,
       optionsRef,
       reactWindowInstanceRef,
     };
@@ -124,39 +129,79 @@ const ComboBoxInput = forwardRef((props, ref) => {
   const { getInputProps } = useComboBoxContext();
 
   return (
-    <Input ref={ref} cursor="default" {...getInputProps()} {...props}></Input>
+    <Input cursor="default" {...getInputProps({ ref })} {...props}></Input>
   );
 });
 
-const ComboBoxList = forwardRef((props, ref) => {
-  const {
-    optionsRef,
-    isOpen,
-    reactWindowInstanceRef,
-    height,
-    visibleOptions,
-    itemHeight,
-    highlightedOption,
-    selectedOption,
-    getOptionProps,
-  } = useComboBoxContext();
+const ComboBoxList = forwardRef(
+  ({ placement, skid, gutter, width = "100%", ...props }, ref) => {
+    const {
+      inputRef,
+      optionsRef,
+      isOpen,
+      reactWindowInstanceRef,
+      height,
+      visibleOptions,
+      itemHeight,
+      highlightedOption,
+      selectedOption,
+      getOptionProps,
+    } = useComboBoxContext();
 
-  return (
-    <Box
-      ref={optionsRef}
-      position="absolute"
-      top="100%"
-      left={0}
-      zIndex={1}
-      {...props}
-    >
-      {isOpen && (
+    // To fix the width full popper overflow
+    function fixedWidth(data) {
+      const newData = data;
+
+      if (width === "full" || width === "100%") {
+        newData.offsets.popper.left = 0;
+      }
+
+      return newData;
+    }
+
+    const popperModifiers = {
+      preventOverflow: {
+        enabled: true,
+        boundariesElement: "viewport",
+      },
+      fixedWidth: {
+        enabled: true,
+        fn: fixedWidth,
+        order: 840,
+      },
+      offset: {
+        enabled: true,
+        offset: `${skid}, ${gutter}`,
+      },
+    };
+    const _optionsRef = useForkRef(optionsRef, ref);
+
+    const styleProps = useMenuListStyle();
+
+    return (
+      <Popper
+        usePortal={false}
+        anchorEl={inputRef.current}
+        ref={_optionsRef}
+        isOpen={isOpen}
+        placement={placement}
+        modifiers={popperModifiers}
+        rounded="md"
+        py={2}
+        zIndex="2"
+        width={width}
+        _focus={{ outline: 0 }}
+        {...styleProps}
+        {...props}
+      >
         <FixedSizeList
           ref={reactWindowInstanceRef}
           height={height}
           itemCount={visibleOptions.length || 1}
           itemSize={itemHeight}
-          css={{ background: "white" }}
+          css={{
+            background: "white",
+          }}
         >
           {forwardRef(({ index, style, ...rest }, ref) => {
             const option = visibleOptions[index];
@@ -183,10 +228,10 @@ const ComboBoxList = forwardRef((props, ref) => {
             );
           })}
         </FixedSizeList>
-      )}
-    </Box>
-  );
-});
+      </Popper>
+    );
+  },
+);
 
 const ComboBoxRightElement = forwardRef((props, ref) => {
   return (
