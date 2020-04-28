@@ -48,6 +48,7 @@ const initialState = {
   isOpen: false,
   highlightedIndex: 0,
   highlightToPosition: null,
+  highlightTriggeredBy: null,
 };
 
 const actions = {
@@ -95,6 +96,7 @@ export default function useSelect({
       isOpen,
       highlightedIndex,
       highlightToPosition,
+      highlightTriggeredBy,
     },
     setState,
   ] = useHoistedState(initialState, stateReducer);
@@ -216,6 +218,8 @@ export default function useSelect({
         old => ({
           ...old,
           searchValue: value,
+          highlightToPosition: "start",
+          highlightTriggeredBy: "valueChange",
         }),
         actions.setSearch,
       );
@@ -446,28 +450,27 @@ export default function useSelect({
 
   // When searching, activate the first option
   React.useEffect(() => {
-    highlightIndex(0);
-  }, [searchValue, highlightIndex]);
-
-  // When we open and close the options, set the highlightedIndex to 0
-  React.useEffect(() => {
-    // highlightIndex(0);
-
     if (isOpen) {
       // TODO: SCROLL LOGIC when the highlighting changes
 
       const scrollToIndex =
         originalOptions.findIndex(d => d.value === value) || 0;
-
-      if (scrollToIndex !== highlightedIndex) {
-        // When opened first time after selected, highlightIndex would not have been updated
-        highlightIndex(scrollToIndex, "start");
+      if (highlightTriggeredBy === "valueChange") {
+        highlightIndex(0, "start");
       } else {
-        // On repeated focus without changing the values
-        scrollToIndexRef.current(scrollToIndex, "start");
+        if (scrollToIndex !== highlightedIndex) {
+          // When opened first time after selected, highlightIndex would not have been updated
+          highlightIndex(scrollToIndex, "start");
+        } else {
+          // On repeated focus without changing the values
+          scrollToIndexRef.current(scrollToIndex, "start");
+        }
       }
     }
+  }, [searchValue, isOpen, highlightIndex]);
 
+  // When we open and close the options, set the highlightedIndex to 0
+  React.useEffect(() => {
     if (!isOpen && onBlurRef.current.event) {
       onBlurRef.current.cb(onBlurRef.current.event);
       onBlurRef.current.event = null;
