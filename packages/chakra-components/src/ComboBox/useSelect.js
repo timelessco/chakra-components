@@ -241,15 +241,23 @@ export default function useSelect({
           highlightedIndex >
           (isOpen ? options.length - 1 : originalOptions.length - 1)
         ) {
+          console.log(
+            "big case 1",
+            isOpen,
+            ":",
+            highlightedIndex,
+            " : ",
+            options.length - 1,
+            " : ",
+            originalOptions.length - 1,
+          );
           highlightedIndex = isOpen
             ? options.length - 1
             : originalOptions.length - 1;
         } else if (highlightedIndex < 0) {
-          console.log("came in value 2222", value, highlightedIndex, isOpen);
           highlightedIndex = 0;
         }
-        console.log("highlighting index ~~~~ ", highlightedIndex);
-        return highlightedIndex;
+        return highlightedIndex >= 0 ? highlightedIndex : 0;
       };
 
       setState(old => {
@@ -325,6 +333,10 @@ export default function useSelect({
 
   const ArrowUp = (defaultShift, defaultMeta) => ({ shift, meta }, e) => {
     e.preventDefault();
+    if (!isOpen) {
+      setSearch("");
+    }
+
     const amount =
       defaultMeta || meta
         ? 1000000000000
@@ -332,11 +344,17 @@ export default function useSelect({
         ? shiftAmount - 1
         : 1;
     setOpen(true);
-    highlightIndex(old => old - amount);
+    if (isOpen) {
+      highlightIndex(old => old - amount);
+    }
   };
 
   const ArrowDown = (defaultShift, defaultMeta) => ({ shift, meta }, e) => {
     e.preventDefault();
+    if (!isOpen) {
+      setSearch("");
+    }
+
     const amount =
       defaultMeta || meta
         ? 1000000000000
@@ -344,7 +362,9 @@ export default function useSelect({
         ? shiftAmount - 1
         : 1;
     setOpen(true);
-    highlightIndex(old => old + amount);
+    if (isOpen) {
+      highlightIndex(old => old + amount);
+    }
   };
 
   const Enter = (_, e) => {
@@ -358,7 +378,6 @@ export default function useSelect({
     }
   };
 
-  console.log("highlighted index ", highlightedIndex);
   const Escape = () => {
     setOpen(false);
   };
@@ -485,14 +504,14 @@ export default function useSelect({
       const scrollToIndex =
         originalOptions.findIndex(d => d.value === value) || 0;
       if (scrollToIndex !== highlightedIndex) {
-        console.log("moving -> 1", originalOptions.length, scrollToIndex);
+        // console.log("moving -> 1", originalOptions.length, scrollToIndex);
         // When opened first time after selected, highlightIndex would not have been updated
         highlightIndex(scrollToIndex, "start");
 
         // scrollToIndexRef.current(scrollToIndex, "start");
       }
       if (scrollToIndex === highlightedIndex) {
-        console.log("moving -> 2");
+        // console.log("moving -> 2");
         // On repeated focus without changing the values
         scrollToIndexRef.current(scrollToIndex, "start");
       }
@@ -502,7 +521,7 @@ export default function useSelect({
   React.useEffect(() => {
     if (isOpen) {
       if (highlightTriggeredBy === "valueChange") {
-        console.log("moving -> 0");
+        // console.log("moving -> 0");
         clearHighlightTriggeredBy();
         highlightIndex(0, "start");
       }
@@ -532,6 +551,7 @@ export default function useSelect({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, inputRef.current]);
 
+  console.log("highlighted index ", highlightedIndex);
   return {
     // State
     searchValue,
