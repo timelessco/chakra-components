@@ -1,38 +1,645 @@
-# Combobox
+# MenuBar
 
+MenuBar is a navigation component that is composable, extensible and accessible
+using Chakra UI. An accessible menubar for both horizontal and vertical
+navigations. `MenuBar` uses roving tabIndex for focus management.
 
+By default, `MenuBar` used ul, li, a components as default but they can be
+modified using `as` prop.
 
 ## Import
 
+Chakra Components exports 11 components for rendering menubar:
 
+- `MenuBar`: The wrapper component that provides context, state, and focus
+  management.
+- `MenuBarItem`: Items of the MenuBar which are the direct children of `MenuBar`
+- `SubMenu`: The wrapper component that provides context, state, and focus
+  management for `SubMenu` components.
+- `SubMenuTitle`: The trigger for the `SubMenuList`. Must be a direct child of
+  `SubMenu`.
+- `SubMenuList`: The wrapper for the `SubMenu` items. Must be a direct child of
+  `SubMenu`.
+- `SubMenuListArrow`: A visual arrow that points to the reference (or trigger).
+- `SubMenuItem`: The trigger that handles submenu selection. Must be a direct
+  child of a `SubMenuList`.
+- `SubMenuGroup`: A wrapper to group related submenu items.
+- `SubMenuDivider`: A visual separator for submenu items and groups.
+- `SubMenuOptionGroup`: A wrapper for checkable menu items (radio and checkbox)
+- `SubMenuItemOption`: The checkable menu item, to be used with MenuOptionGroup
 
 ```js
 import {
-  MySelect
+  MenuBar,
+  MenuBarItem,
+  SubMenu,
+  SubMenuTitle,
+  SubMenuList,
+  SubMenuListArrow,
+  SubMenuItem,
+  SubMenuGroup,
+  SubMenuDivider,
+  SubMenuOptionGroup,
+  SubMenuItemOption,
 } from "@chakra-components/core";
-const options = [
-  "Acai",
-  "Apples",
-  "Apricots",
-  "Avocado"
-];
 ```
 
 ## Basic Usage
 
 ```jsx
-
-
-<MySelect
-  value={"Tomatoes"}
-  options={[
-  "Acai",
-  "Apples",
-  "Apricots",
-  "Avocado"
-]}
-  onChange={() => {}}
-  placeholder="Select one..."
-/>
-
+<MenuBar>
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <MenuBarItem>Meal Plans</MenuBarItem>
+  <MenuBarItem>Groceries</MenuBarItem>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
 ```
+
+## Props in Action
+
+### MenuBar Props
+
+- By default, Menubar renders the `ul` HTML tag
+- `araiLabel` - Defines an accessible name for the menubar.
+- `spanMenuBar` - If `true`, `SubMenu` popover will span to the width of its
+  immediate parent
+- Default `trigger` - `hover`
+
+**Letter navigation**
+
+When focus is on the MenuBar or within the SubMenu and you type a letter key, a
+search begins. Focus will move to the first item that starts with the letter you
+typed.
+
+> Move focus to the `MenuBar`, try and type any letter, say "M" to see the focus
+> movement.
+
+```jsx
+<MenuBar ariaLabel="Dishes" spanMenuBar>
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <SubMenu>
+    <SubMenuTitle>Meal Plans</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Downloaded</SubMenuItem>
+      <SubMenuItem>Create a Copyed</SubMenuItem>
+      <SubMenuItem>Mark as Drafted</SubMenuItem>
+      <SubMenuItem>Deleted</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle>Groceries</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle>Workouts</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Downloading</SubMenuItem>
+      <SubMenuItem>Create a Coping</SubMenuItem>
+      <SubMenuItem>Mark as Drafting</SubMenuItem>
+      <SubMenuItem>Deleting</SubMenuItem>
+      <SubMenuItem>Attending</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
+### More MenuBar Props
+
+- `araiLabel` - Defines an accessible name for the menubar.
+- `spanParent` - If `true`, `SubMenu` popover will span to the width of the
+  menubar container.
+- Default `trigger` - `click`
+
+```jsx
+<MenuBar ariaLabel="Dishes" spanParent trigger="click" as={Flex}>
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <SubMenu>
+    <SubMenuTitle>Meal Plans</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Downloaded</SubMenuItem>
+      <SubMenuItem>Create a Copyed</SubMenuItem>
+      <SubMenuItem>Mark as Drafted</SubMenuItem>
+      <SubMenuItem>Deleted</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle>Groceries</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle>Workouts</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Downloading</SubMenuItem>
+      <SubMenuItem>Create a Coping</SubMenuItem>
+      <SubMenuItem>Mark as Drafting</SubMenuItem>
+      <SubMenuItem>Deleting</SubMenuItem>
+      <SubMenuItem>Attending</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
+### Vetical MenuBar
+
+- You can the the mode of MenuBar from default `horizontal` to `vertical`.
+- By default, SubMenuItems are shown in Right Popper placement.
+
+```jsx
+<MenuBar mode="vertical" maxWidth="120px">
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <SubMenu>
+    <SubMenuTitle>Meal Plans</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuListArrow />
+      <SubMenuItem>Downloaded</SubMenuItem>
+      <SubMenuItem>Create a Copyed</SubMenuItem>
+      <SubMenuItem>Mark as Drafted</SubMenuItem>
+      <SubMenuItem>Deleted</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle>Groceries</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuListArrow />
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle>Workouts</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuListArrow />
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
+### Vetical `isCollapsable` MenuBar
+
+- If `isCollapsable`, all the SubMenuItems will be shown in collapsable effect.
+- All the SubMenu are activated only using `trigger: 'click'`.
+  ``isCollapsable`only work in`mode`-`vertical`
+
+```jsx
+<MenuBar mode="vertical" isCollapsable maxWidth="150px">
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <SubMenu>
+    <SubMenuTitle>Meal Plans</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Downloaded</SubMenuItem>
+      <SubMenuItem>Create a Copyed</SubMenuItem>
+      <SubMenuItem>Mark as Drafted</SubMenuItem>
+      <SubMenuItem>Deleted</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle>Groceries</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle>Workouts</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
+### Resposive MenuBar
+
+- Adding the prop `responsive` makes the `mode` change from `horizontal` to
+  `vertical` automatic before the menuitems wrap.
+- Giving `mode` prop is useless here.
+- To have the Collapsable effect on vertical, pass `isCollapsable`
+
+```jsx
+<MenuBar ariaLabel="Dishes" responsive isCollapsable>
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <SubMenu>
+    <SubMenuTitle>Meal Plans</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Downloaded</SubMenuItem>
+      <SubMenuItem>Create a Copyed</SubMenuItem>
+      <SubMenuItem>Mark as Drafted</SubMenuItem>
+      <SubMenuItem>Deleted</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle>Groceries</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle>Workouts</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Downloading</SubMenuItem>
+      <SubMenuItem>Create a Coping</SubMenuItem>
+      <SubMenuItem>Mark as Drafting</SubMenuItem>
+      <SubMenuItem>Deleting</SubMenuItem>
+      <SubMenuItem>Attending</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
+### MenuBarItem
+
+- MenuBarItem composed on top of `li` with `role: none`.
+- All the items will be an `a` tag by default.
+
+```jsx
+<MenuBar>
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem as={Button}>My Calendar</MenuBarItem>
+  <MenuBarItem>Meal Plans</MenuBarItem>
+  <MenuBarItem>Groceries</MenuBarItem>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
+### SubMenu
+
+- MenuBarItem composed on top of `li` with `role: none`.
+- All the items will be an `a` tag by default.
+- Access the internal state of the `SubMenu`, use a function as a `children`
+  (commonly known as a `render prop`). You'll get access to the internal state
+  `isOpen` and method `onClose`. Must have the prop `trigger="click"` on
+  MenuBar.
+
+### SubMenuTitle
+
+- SubMenuTitle will be an `a` tag by default.
+- Default tag can be changed using `as` prop.
+- Acts as a trigger for the menu to be dropped down.
+
+```jsx
+<MenuBar trigger="click">
+  <MenuBarItem>Recipes</MenuBarItem>
+  <SubMenu autoSelect={false} closeOnBlur={false} closeOnSelect={false}>
+    <SubMenuTitle>Workouts</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    {({ isOpen, onClose }) => (
+      <React.Fragment>
+        <SubMenuTitle as={Button} rightIcon="chevron-down">
+          {isOpen ? "Close" : "Open"}
+        </SubMenuTitle>
+        <SubMenuList>
+          <SubMenuItem>Download</SubMenuItem>
+          <SubMenuItem onClick={() => alert("Clicked")}>
+            Create a Copy
+          </SubMenuItem>
+        </SubMenuList>
+      </React.Fragment>
+    )}
+  </SubMenu>
+  <MenuBarItem>Meal Plans</MenuBarItem>
+  <MenuBarItem>Groceries</MenuBarItem>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
+### SubMenuList
+
+- By default, Menubar renders the `ul` HTML tag
+- `araiLabel` - Defines an accessible name for the menubar.
+- Position of the `SubMenuList` using `skid` for moving in x direction &
+  `gutter` for moving in y direction.
+- **Note:** They accept both position & negative values.
+- Use the `placement` prop, to position the list.
+
+```jsx
+<MenuBar>
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <SubMenu>
+    <SubMenuTitle>Meal Plans</SubMenuTitle>
+    <SubMenuList ariaLabel="Meal Plan Menu" skid={-50} gutter={50}>
+      <SubMenuItem>Downloaded</SubMenuItem>
+      <SubMenuItem>Create a Copyed</SubMenuItem>
+      <SubMenuItem>Mark as Drafted</SubMenuItem>
+      <SubMenuItem>Deleted</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle ariaLabel="Groceries Menu">Groceries</SubMenuTitle>
+    <SubMenuList placement="right">
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Workouts</MenuBarItem>
+  <MenuBarItem>Groceries</MenuBarItem>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
+### SubMenuListArrow
+
+Add this Arrow component as a `SubMenuList` component, to see the arrow pointing
+to the trigger in Popper.
+
+```jsx
+<MenuBar>
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <SubMenu>
+    <SubMenuTitle ariaLabel="Meal Plan Menu">Meal Plans</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuListArrow />
+      <SubMenuItem>Downloaded</SubMenuItem>
+      <SubMenuItem>Create a Copyed</SubMenuItem>
+      <SubMenuItem>Mark as Drafted</SubMenuItem>
+      <SubMenuItem>Deleted</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <SubMenu>
+    <SubMenuTitle ariaLabel="Groceries Menu">Groceries</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuListArrow />
+      <SubMenuItem>Download</SubMenuItem>
+      <SubMenuItem>Create a Copy</SubMenuItem>
+      <SubMenuItem>Mark as Draft</SubMenuItem>
+      <SubMenuItem>Delete</SubMenuItem>
+      <SubMenuItem>Attend a Workshop</SubMenuItem>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Workouts</MenuBarItem>
+  <MenuBarItem>Groceries</MenuBarItem>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
+### SubMenuItem
+
+Add this Arrow component as a `SubMenuList` component, to see the arrow pointing
+to the trigger in Popper.
+
+### SubMenuDivider
+
+Adds a divider inbetween the `SubMenuItem`s
+
+### SubMenuGroup
+
+To group related `SubMenuItem`s, use the `SubMenuGroup` component and pass it a
+`title` - label for the group name.
+
+```jsx
+<MenuBar>
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <SubMenu>
+    <SubMenuTitle ariaLabel="Meal Plan Menu">Meal Plans</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuGroup title="Group 1">
+        <SubMenuItem>Downloaded</SubMenuItem>
+        <SubMenuItem>Create a Copyed</SubMenuItem>
+      </SubMenuGroup>
+      <SubMenuDivider />
+      <SubMenuGroup title="Group 1">
+        <SubMenuItem>Mark as Drafted</SubMenuItem>
+        <SubMenuItem>Deleted</SubMenuItem>
+      </SubMenuGroup>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Workouts</MenuBarItem>
+  <MenuBarItem>Groceries</MenuBarItem>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
+### SubMenuItem
+
+- SubMenuItem will be an `a` tag by default.
+- Default tag can be changed using `as` prop.
+
+### SubMenuOption
+
+- You can compose a menu for table headers to help with sorting and filtering
+  options. Use the MenuOptionGroup and MenuItemOption components.
+- Supports both `radio` and `checkbox`.
+- Works best when `trigger="click"` and `closeOnSelect={false}`.
+
+```jsx
+<MenuBar trigger="click">
+  <MenuBarItem>Recipes</MenuBarItem>
+  <MenuBarItem>My Calendar</MenuBarItem>
+  <SubMenu closeOnSelect={false}>
+    <SubMenuTitle ariaLabel="Meal Plan Menu">Meal Plans</SubMenuTitle>
+    <SubMenuList>
+      <SubMenuOptionGroup defaultValue="asc" title="Order" type="radio">
+        <SubMenuItemOption value="asc">Ascending</SubMenuItemOption>
+        <SubMenuItemOption value="desc">Descending</SubMenuItemOption>
+      </SubMenuOptionGroup>
+      <SubMenuDivider />
+      <SubMenuOptionGroup title="Country" type="checkbox">
+        <SubMenuItemOption value="email">Email</SubMenuItemOption>
+        <SubMenuItemOption value="phone">Phone</SubMenuItemOption>
+        <SubMenuItemOption value="country">Country</SubMenuItemOption>
+      </SubMenuOptionGroup>
+    </SubMenuList>
+  </SubMenu>
+  <MenuBarItem>Workouts</MenuBarItem>
+  <MenuBarItem>Groceries</MenuBarItem>
+  <MenuBarItem>Video</MenuBarItem>
+  <MenuBarItem>Blog</MenuBarItem>
+</MenuBar>
+```
+
+## Props Table
+
+### MenuBar Props
+
+| Name            | Type                           | Default      | Description                                                                    |
+| --------------- | ------------------------------ | ------------ | ------------------------------------------------------------------------------ |
+| children        | `React.ReactNode`              |              | The childrens of the `MenuBar` must be `MenuBarItem`                           |
+| ariaLabel       | `string`                       |              | Title for the `MenuBar` as aria label                                          |
+| as              | `React.ReactNode`, `HTML tags` | `ul`         | HTML Tag or Component to be rendered opposing default tag                      |
+| trigger         | `hover`, `click`               | `hover`      | The interaction that triggers the popover.                                     |
+| spanParent      | `boolean`                      | `false`      | If `true`, `SubMenu` popover will span to the width of its immediate parent    |
+| spanMenuBar     | `boolean`                      | `false`      | If `true`, `SubMenu` popover will span to the width of the menubar container   |
+| mode            | `vertical`, `horizontal`       | `horizontal` | If `mode: 'vertical'`, `MenuBarItems` are rendered in flex direction column    |
+| ariaOrientation | `vertical`, `horizontal`       | `horizontal` | If `mode: 'vertical'`, `ariaOrientation` is set to vertical                    |
+| isCollapsable   | `boolean`                      | `false`      | If `true`, `SubMenuList` is rendered in `Collapse` instead of `Popper`         |
+| responsive      | `boolean`                      | `false`      | If `true`, `MenuBarItems` are renders in `mode: horizontal/vertical` automatic |
+
+### MenuBarItem
+
+| Name     | Type                           | Default | Description                                               |
+| -------- | ------------------------------ | ------- | --------------------------------------------------------- |
+| children | `React.ReactNode`              |         | The children will be MenuBarItem                          |
+| as       | `React.ReactNode`, `HTML tags` | `ul`    | HTML Tag or Component to be rendered opposing default tag |
+
+### SubMenu
+
+| Name          | Type              | Default | Description                                                       |
+| ------------- | ----------------- | ------- | ----------------------------------------------------------------- |
+| children      | `React.ReactNode` |         | The children of the menu must be `SubMenuTitle` and `SubMenuList` |
+| isOpen        | `boolean`         |         | If `true`, the menu will be opened                                |
+| autoSelect    | `boolean`         | `true`  | The menu will select the first enabled item when it opens         |
+| closeOnBlur   | `boolean`         | `true`  | If `true`, the menu will close on outside click or blur           |
+| closeOnSelect | `boolean`         | `true`  | If `true`, the menu will close on menu item select                |
+
+### SubMenuTitle
+
+| Name      | Type                           | Default | Description                                               |
+| --------- | ------------------------------ | ------- | --------------------------------------------------------- |
+| children  | `React.ReactNode`, `string`    |         | The children will be MenuBarItem                          |
+| ariaLabel | `string`                       |         | Title for the `SubMenuList` as aria label                 |
+| as        | `React.ReactNode`, `HTML tags` | `a`     | HTML Tag or Component to be rendered opposing default tag |
+
+### SubMenuList
+
+| Name      | Type                           | Description                                                             |
+| --------- | ------------------------------ | ----------------------------------------------------------------------- |
+| children  | `React.ReactNode`              | The content of the `SubMenuList`, should be the `SubMenuItem` component |
+| placement | `PopperJS.placement`           | The placement of the `SubMenuList`                                      |
+| skid      | `number`                       | Move the `SubMenuList` in x direction                                   |
+| gutter    | `number`                       | Move the `SubMenuList` in y direction                                   |
+| as        | `React.ReactNode`, `HTML tags` | HTML Tag or Component to be rendered opposing default `ul` tag          |
+
+### SubMenuItem
+
+| Name | Type                                            | Description                                                   |
+| ---- | ----------------------------------------------- | ------------------------------------------------------------- |
+| role | `menuitem`, `menuitemradio`, `menuitemcheckbox` | The ARIA role of the menuitem                                 |
+| as   | `React.ReactNode`, `HTML tags`                  | HTML Tag or Component to be rendered opposing default `a` tag |  |
+
+## Accessibility
+
+### Keyboard Interaction
+
+**For `MenuBar`:**
+
+| Key                | Action                                                                                                                                                                               |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ArrowRight`       | Moves focus to the next item in the menubar. If focus is on the last item, moves focus to the first item.                                                                            |
+| `ArrowLeft`        | Moves focus to the previous item in the menubar. If focus is on the first item, moves focus to the last item.                                                                        |
+| `Enter` or `Space` | Opens submenu and moves focus to first item in the submenu.                                                                                                                          |
+| `ArrowDown`        | Opens submenu and moves focus to first item in the submenu.                                                                                                                          |
+| `ArrowUp`          | Opens submenu and moves focus to last item in the submenu.                                                                                                                           |
+| `Escape`           | When the submenu is open, closes the submenu and sets focus to that `SubMenuTitle`                                                                                                   |
+| `Home`             | Moves focus to first item in the menubar.                                                                                                                                            |
+| `End`              | Moves focus to last item in the menubar.                                                                                                                                             |
+| `A-Z` or `a-z`     | Moves focus to next item in the menubar having a name that starts with the typed character. If none of the items have a name starting with the typed character, focus does not move. |
+| `Tab`              | no effect - moves the focus away from `MenuBar`                                                                                                                                      |
+
+**For `SubMenu`:**
+
+| Key                | Action                                                                                                                                                                                                                                                                                             |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Enter` or `Space` | Activates menu item, causing the link to be activated.                                                                                                                                                                                                                                             |
+| `Escape`           | Closes submenu. Moves focus to parent menubar item.                                                                                                                                                                                                                                                |
+| `ArrowRight`       | If focus is on an item with a submenu, opens the submenu and places focus on the first item. If focus is on an item that does not have a submenu: Closes submenu, Moves focus to next item in the menubar, Opens submenu of newly focused menubar item, keeping focus on that parent menubar item. |
+| `ArrowLeft`        | Closes submenu and moves focus to parent menu item. If parent menu item is in the menubar, also: moves focus to previous item in the menubar, Opens submenu of newly focused menubar item, keeping focus on that parent menubar item.                                                              |
+| `ArrowDown`        | Moves focus to the next item in the submenu. If focus is on the last item, moves focus to the first item.                                                                                                                                                                                          |
+| `ArrowUp`          | Moves focus to previous item in the submenu. If focus is on the first item, moves focus to the last item.                                                                                                                                                                                          |
+| `Home`             | Moves focus to the first item in the submenu.                                                                                                                                                                                                                                                      |
+| `End`              | Moves focus to the last item in the submenu.                                                                                                                                                                                                                                                       |
+| `A-Z` or `a-z`     | Moves focus to the next item having a name that starts with the typed character. If none of the items have a name starting with the typed character, focus does not move.                                                                                                                          |
+| `Tab`              | no effect - moves the focus away from `MenuBar`                                                                                                                                                                                                                                                    |
+
+### ARIA roles
+
+**For `MenuBar`:**
+
+- It has `role` set to `menubar`
+- It has an auto `id` as accessible id.
+- It has an `aria-label` prop which needs to be provided.
+
+**For `MenuBarItem`:**
+
+- It has `role` set to `menuitem`.
+- First item will have `tabIndex: 0` rest will have an index of `-1` to hide
+  them from tab navigations.
+
+**For `SubMenu`:**
+
+- It has `role` set to `none` because it is an `li` tag.
+
+**For `SubMenuTitle`:**
+
+- It has `role` set to `menuitem`.
+- It has `aria-haspopup` set to `true`.
+- When the `SubMenuList` is displayed, `SubMenuTitle` has `aria-expanded` set to
+  `true`.
+
+**For `SubMenuList`:**
+
+- It has `role` set to `menu`.
+- `tabIndex` set to `-1` because these elements are not focusable for `tab`
+  navigations
+- It has an `aria-label` prop which needs to be provided.
+
+**For `SubMenuItem`:**
+
+- It has `role` set to `menuitem`.
+- `tabIndex` set to `-1` because these elements are not focusable for `tab`
+  navigations.
