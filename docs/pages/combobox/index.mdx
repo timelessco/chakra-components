@@ -1,120 +1,34 @@
-# Combobox
+# ComboBox
 
-
+An accessible ComboBox with single, multi & accessible select with typeahead &
+autocomplete support.
 
 ## Import
 
-
-
 ```js
-import {
-  MySelect
-} from "@chakra-components/core";
-
-
-
+import { ComboBox } from "@chakra-components/core";
 ```
 
-## Basic Usage
+## Usage
+
+Here's a basic usage of the Select component.
 
 ```jsx
+<ComboBox>
+  <ComboBoxLeftElement color="gray.300" fontSize="1.2em" children="$" />
+  <ComboBoxRightElement
+    children={<Icon name="chevron-down" fontSize="1.5rem" />}
+  />
+  <ComboBoxClearElement />
+  <ComboBoxInput as={Select} placeholder="Enter amount">
+    <option value="option1">Option 1</option>
+    <option value="option2">Option 2</option>
+    <option value="option3">Option 3</option>
+  </ComboBoxInput>
+</ComboBox>
+```
 
-function ResizeExample() {
-  
-  const fruits = [
-    "Acai",
-    "Apples",
-    "Apricots",
-    "Avocado",
-    "Ackee",
-    "Bananas",
-    "Bilberries",
-    "Blueberries",
-    "Blackberries",
-    "Boysenberries",
-    "Bread fruit",
-    "Cantaloupes(cantalope)",
-    "Chocolate - Fruit",
-    "Cherimoya",
-    "Cherries",
-    "Cranberries",
-    "Cucumbers",
-    "Currants",
-    "Dates",
-    "Durian",
-    "Eggplant",
-    "Elderberries",
-    "Figs",
-    "Gooseberries",
-    "Grapes",
-    "Grapefruit",
-    "Guava",
-    "Honeydew melons",
-    "Horned melon(Kiwano)",
-    "Huckleberries",
-    "Ita Palm",
-    "Jujubes",
-    "Kiwis",
-    "Kumquat",
-    "Lemons",
-    "Limes",
-    "Lychees",
-    "Mangos",
-    "Mangosteen",
-    "Mulberries",
-    "Muskmelon",
-    "Nectarines",
-    "Ogden melons",
-    "Olives",
-    "Oranges",
-    "Papaya",
-    "Passion fruit",
-    "Peaches",
-    "Pears",
-    "Peppers",
-    "Persimmon",
-    "Pineapple",
-    "Plums",
-    "Pluot",
-    "Pomegranate",
-    "Prickly Pear",
-    "Quince",
-    "Rambuton",
-    "Raspberries",
-    "Rose Apple",
-    "Starfruit",
-    "Sapadilla",
-    "Strawberries",
-    "Tamarind",
-    "Tangelo",
-    "Tangerines",
-    "Tomatoes",
-    "Ugli fruit",
-    "Voavanga(Spanish Tamarind)",
-    "Watermelons",
-    "Xigua melon",
-    "Yellow watermelon",
-    "Zucchini",
-  ];
+## Experiments
 
-  const options = fruits.map((d, i) => ({
-    value: d,
-    label: d
-  }));
-  
-  const [fruit, setFruit] = React.useState(options[0].value);
-  console.log('fruit ', fruit)
-  return (
-    <>
-     <MySelect
-      value={fruit}
-      options={options}
-      onChange={setFruit}
-      placeholder="Select one..."
-    />
-    </>
-  );
-}
-
-
+```jsx
 ```
