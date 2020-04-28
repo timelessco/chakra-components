@@ -479,6 +479,7 @@ export default function useSelect({
     // Prop Getters
     getInputProps,
     getOptionProps,
+    inputRef,
   };
 }
 
