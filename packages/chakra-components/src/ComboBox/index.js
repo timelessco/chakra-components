@@ -18,7 +18,7 @@ import { useComboBoxContext } from "./useComboBoxContext";
 import useSelect from "./useSelect";
 
 import { inputSizes } from "@chakra-ui/core/dist/Input/styles";
-import { useComboBoxListStyle } from "./styles";
+import { useComboBoxPopperStyle, useComboBoxOptionStyle } from "./styles";
 
 /* =========================================================================
   ComboBoxContext
@@ -83,6 +83,7 @@ const ComboBox = forwardRef(
 
     const Optionsheight =
       Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;
+
     const context = {
       visibleOptions,
       selectedOption,
@@ -163,9 +164,9 @@ const ComboBoxPopper = forwardRef(
         offset: `${skid}, ${gutter}`,
       },
     };
-    const _optionsRef = useForkRef(optionsRef, ref);
 
-    const styleProps = useComboBoxListStyle();
+    const _optionsRef = useForkRef(optionsRef, ref);
+    const styleProps = useComboBoxPopperStyle();
 
     return (
       <Popper
@@ -175,12 +176,6 @@ const ComboBoxPopper = forwardRef(
         isOpen={isOpen}
         placement={placement}
         modifiers={popperModifiers}
-        rounded="md"
-        py={2}
-        zIndex="2"
-        width="full"
-        marginTop="1px !important"
-        _focus={{ outline: 0 }}
         {...styleProps}
         {...props}
       />
@@ -204,24 +199,11 @@ const ComboBoxOption = forwardRef(({ index, style, data, ...rest }, ref) => {
   const highlighted = option === highlightedOption;
   const selected = option === selectedOption;
 
+  const styleProps = useComboBoxOptionStyle({ selected, highlighted });
+
   if (!visibleOptions.length) {
     return (
-      <PseudoBox
-        ref={ref}
-        display="flex"
-        alignItems="center"
-        flex="0 0 auto"
-        color="inherit"
-        px={4}
-        rounded="sm"
-        userSelect="none"
-        transition="background-color 220ms, color 220ms"
-        textAlign="left"
-        textDecoration="none"
-        outline="none"
-        style={style}
-        {...data}
-      >
+      <PseudoBox ref={ref} style={style} {...styleProps} {...data}>
         No options were found...
       </PseudoBox>
     );
@@ -230,30 +212,12 @@ const ComboBoxOption = forwardRef(({ index, style, data, ...rest }, ref) => {
   return (
     <PseudoBox
       ref={ref}
-      display="flex"
-      alignItems="center"
-      flex="0 0 auto"
-      color="inherit"
-      px={4}
-      rounded="sm"
-      userSelect="none"
-      bg={selected ? "blue.200" : highlighted ? "gray.100" : "transparent"}
-      transition="background-color 220ms, color 220ms"
-      textAlign="left"
-      textDecoration="none"
-      outline="none"
-      _focus={{
-        shadow: "outline",
-        outline: 0,
-      }}
-      _active={{
-        bg: "gray.200",
-      }}
       style={style}
       {...getOptionProps({
         index,
         option,
       })}
+      {...styleProps}
       {...data}
     >
       {option.label}
