@@ -242,7 +242,7 @@ const ComboBoxOption = forwardRef(({ index, style, data, ...rest }, ref) => {
   const option = visibleOptions[index];
   const highlighted = option === highlightedOption;
   const selected = option === selectedOption;
-  const disabled = visibleOptions[index].disabled;
+  const disabled = option ? option.disabled : false;
 
   const styleProps = useComboBoxOptionStyle({
     selected,
