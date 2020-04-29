@@ -21,7 +21,7 @@ import { useComboBoxContext } from "./useComboBoxContext";
 import { useForkRef } from "@chakra-ui/core/dist/utils";
 
 import { inputSizes } from "@chakra-ui/core/dist/Input/styles";
-import { useMenuListStyle } from "../MenuBar/styles";
+import { useComboBoxListStyle } from "./styles";
 
 export const ComboBoxContext = createContext();
 
@@ -181,7 +181,7 @@ const ComboBoxList = forwardRef(
     };
     const _optionsRef = useForkRef(optionsRef, ref);
 
-    const styleProps = useMenuListStyle();
+    const styleProps = useComboBoxListStyle();
 
     return (
       <Popper
