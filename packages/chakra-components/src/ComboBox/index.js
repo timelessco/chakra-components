@@ -148,10 +148,18 @@ const ComboBox = forwardRef(
   ComboBoxInput
   ========================================================================== */
 
-const ComboBoxInput = forwardRef((props, ref) => {
-  const { getInputProps } = useComboBoxContext();
+const ComboBoxInput = forwardRef(({ placeholder, ...props }, ref) => {
+  const { getInputProps, selectedOption } = useComboBoxContext();
+  const { value } = getInputProps();
 
-  return <Input cursor="default" {...getInputProps({ ref })} {...props} />;
+  return (
+    <Input
+      cursor="default"
+      placeholder={!value && !selectedOption.value && placeholder}
+      {...getInputProps({ ref })}
+      {...props}
+    />
+  );
 });
 
 /* =========================================================================
@@ -165,6 +173,9 @@ const ComboBoxSelectedGhost = forwardRef(({ size, left, ...props }, ref) => {
   const fontSize = inputSizes[size] && inputSizes[size]["fontSize"];
   const _left = left || (inputSizes[size] && inputSizes[size]["px"]);
 
+  const { getInputProps, selectedOption } = useComboBoxContext();
+  const { value } = getInputProps();
+
   return (
     <Box
       display="flex"
@@ -173,7 +184,6 @@ const ComboBoxSelectedGhost = forwardRef(({ size, left, ...props }, ref) => {
       position="absolute"
       fontSize={fontSize}
       height={height}
-      width={height}
       top="0"
       left={sizes[_left]}
       zIndex={2}
@@ -181,7 +191,7 @@ const ComboBoxSelectedGhost = forwardRef(({ size, left, ...props }, ref) => {
       pointerEvents="none"
       {...props}
     >
-      Test
+      {!value && selectedOption && selectedOption.value}
     </Box>
   );
 });
