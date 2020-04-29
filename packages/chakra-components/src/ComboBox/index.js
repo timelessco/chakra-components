@@ -48,6 +48,7 @@ const ComboBox = forwardRef(
     const reactWindowInstanceRef = useRef(null);
     const optionsRef = useRef(null);
 
+    // Position can be top / center / end
     const scrollToIndex = (index, position) => {
       if (!reactWindowInstanceRef.current) {
         return;
