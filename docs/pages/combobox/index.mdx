@@ -115,6 +115,7 @@ function ComboBoxExample() {
   const options = fruits.map((d, i) => ({
     value: d,
     label: d,
+    disabled: i%4 === 0
   }));
 
   const [fruit, setFruit] = React.useState(null);
