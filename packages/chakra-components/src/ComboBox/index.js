@@ -1,6 +1,4 @@
-/** @jsx jsx */
-import { jsx } from "@emotion/core";
-import { forwardRef, cloneElement, useRef, createContext, memo } from "react";
+import React, { forwardRef, cloneElement, useRef, createContext } from "react";
 import {
   Box,
   PseudoBox,
@@ -14,11 +12,10 @@ import {
 } from "@chakra-ui/core";
 import Popper from "@chakra-ui/core/dist/Popper";
 import matchSorter from "match-sorter";
-import { FixedSizeList, areEqual } from "react-window";
+import { FixedSizeList } from "react-window";
 import { useForkRef, cleanChildren } from "@chakra-ui/core/dist/utils";
 import { useComboBoxContext } from "./useComboBoxContext";
 import useSelect from "./useSelect";
-import memoize from "memoize-one";
 
 import { inputSizes } from "@chakra-ui/core/dist/Input/styles";
 import { useComboBoxListStyle } from "./styles";
@@ -149,10 +146,10 @@ const ComboBoxInput = forwardRef((props, ref) => {
 });
 
 /* =========================================================================
-  ComboBoxList
+  ComboBoxPopper
   ========================================================================== */
 
-const ComboBoxList = forwardRef(
+const ComboBoxPopper = forwardRef(
   ({ placement, skid, gutter = 0, ...props }, ref) => {
     const { inputRef, optionsRef, isOpen } = useComboBoxContext();
 
@@ -195,15 +192,14 @@ const ComboBoxList = forwardRef(
   ComboBoxOption
   ========================================================================== */
 
-const Row = memo(({ index, style, data, ...rest }) => {
+const ComboBoxOption = forwardRef(({ index, style, data, ...rest }, ref) => {
   const {
     visibleOptions,
     highlightedOption,
     selectedOption,
     getOptionProps,
-  } = data;
+  } = useComboBoxContext();
 
-  console.log("%c index", "color: #514080", index);
   const option = visibleOptions[index];
   const highlighted = option === highlightedOption;
   const selected = option === selectedOption;
@@ -211,6 +207,7 @@ const Row = memo(({ index, style, data, ...rest }) => {
   if (!visibleOptions.length) {
     return (
       <PseudoBox
+        ref={ref}
         display="flex"
         alignItems="center"
         flex="0 0 auto"
@@ -223,13 +220,16 @@ const Row = memo(({ index, style, data, ...rest }) => {
         textDecoration="none"
         outline="none"
         style={style}
+        {...data}
       >
         No options were found...
       </PseudoBox>
     );
   }
+
   return (
     <PseudoBox
+      ref={ref}
       display="flex"
       alignItems="center"
       flex="0 0 auto"
@@ -254,48 +254,37 @@ const Row = memo(({ index, style, data, ...rest }) => {
         index,
         option,
       })}
+      {...data}
     >
       {option.label}
     </PseudoBox>
   );
-}, areEqual);
+});
 
-const createItemData = memoize(
-  (visibleOptions, highlightedOption, selectedOption, getOptionProps) => ({
-    visibleOptions,
-    highlightedOption,
-    selectedOption,
-    getOptionProps,
-  }),
-);
+/* =========================================================================
+  ComboBoxList
+  ========================================================================== */
 
-const ComboBoxOption = forwardRef((props, ref) => {
+const ComboBoxList = forwardRef(({ children, ...props }, ref) => {
   const {
     reactWindowInstanceRef,
     height,
     visibleOptions,
     itemHeight,
-    highlightedOption,
-    selectedOption,
-    getOptionProps,
   } = useComboBoxContext();
 
-  const itemData = createItemData(
-    visibleOptions,
-    highlightedOption,
-    selectedOption,
-    getOptionProps,
-  );
+  const _reactWindowInstanceRef = useForkRef(reactWindowInstanceRef, ref);
 
   return (
     <FixedSizeList
-      ref={reactWindowInstanceRef}
+      ref={_reactWindowInstanceRef}
       height={height}
       itemCount={visibleOptions.length || 1}
       itemSize={itemHeight}
-      itemData={itemData}
+      itemData={children.props}
+      {...props}
     >
-      {Row}
+      {children.type}
     </FixedSizeList>
   );
 });
@@ -362,6 +351,7 @@ export {
   ComboBoxLeftAddon,
   ComboBoxRightAddon,
   ComboBoxClearElement,
+  ComboBoxPopper,
   ComboBoxList,
   ComboBoxOption,
 };
