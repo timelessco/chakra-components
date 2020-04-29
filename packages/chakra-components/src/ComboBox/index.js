@@ -21,8 +21,10 @@ const Option = styled.div`
   display: flex;
   alignitems: center;
   padding: 0.5rem;
-  pointer-events: ${props => (props.option.disabled ? "none" : "auto")};
-  color: ${props => (props.option.disabled ? "#a2a2a2" : "#000")};
+  pointer-events: ${props =>
+    props.option && props.option.disabled ? "none" : "auto"};
+  color: ${props =>
+    props.option && props.option.disabled ? "#a2a2a2" : "#000"};
 `;
 
 const MySelect = ({

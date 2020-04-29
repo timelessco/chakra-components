@@ -46,7 +46,7 @@ const initialState = {
   searchValue: "",
   resolvedSearchValue: "",
   isOpen: false,
-  highlightedIndex: 0,
+  highlightedIndex: null,
   highlightToPosition: null,
   highlightTriggeredBy: null,
 };
@@ -359,7 +359,9 @@ export default function useSelect({
       //   : defaultShift || shift
       //   ? shiftAmount - 1
       //   : 1;
-      return options[moveToIndex].disabled ? old : moveToIndex;
+      return !options[moveToIndex] || options[moveToIndex].disabled
+        ? old
+        : moveToIndex;
     };
     setOpen(true);
 
@@ -387,7 +389,9 @@ export default function useSelect({
       //   : defaultShift || shift
       //   ? shiftAmount - 1
       //   : 1;
-      return options[moveToIndex].disabled ? old : moveToIndex;
+      return !options[moveToIndex] || options[moveToIndex].disabled
+        ? old
+        : moveToIndex;
     };
 
     setOpen(true);
@@ -491,6 +495,7 @@ export default function useSelect({
     });
   };
 
+  console.log("highted index ", highlightedIndex);
   const getOptionProps = ({
     index,
     key = index,
@@ -537,20 +542,38 @@ export default function useSelect({
   // When searching, activate the first option
   React.useEffect(() => {
     if (isOpen) {
-      // Should always be original options
-      const scrollToIndex =
-        originalOptions.findIndex(d => d.value === value) || 0;
-      if (scrollToIndex !== highlightedIndex) {
-        // console.log("moving -> 1", originalOptions.length, scrollToIndex);
-        // When opened first time after selected, highlightIndex would not have been updated
-        highlightIndex(scrollToIndex, "start");
+      if (value) {
+        console.log("came in step 1");
+        // Should always be original options
+        const scrollToIndex =
+          originalOptions.findIndex(d => d.value === value) || 0;
 
-        // scrollToIndexRef.current(scrollToIndex, "start");
-      }
-      if (scrollToIndex === highlightedIndex) {
-        // console.log("moving -> 2");
-        // On repeated focus without changing the values
-        scrollToIndexRef.current(scrollToIndex, "start");
+        if (scrollToIndex !== highlightedIndex) {
+          // console.log("moving -> 1", originalOptions.length, scrollToIndex);
+          // When opened first time after selected, highlightIndex would not have been updated
+          highlightIndex(scrollToIndex, "start");
+
+          // scrollToIndexRef.current(scrollToIndex, "start");
+        }
+        if (scrollToIndex === highlightedIndex) {
+          // console.log("moving -> 2");
+          // On repeated focus without changing the values
+          scrollToIndexRef.current(scrollToIndex, "start");
+        }
+      } else {
+        console.log("came in step 2");
+        let moveToIndex = null;
+        for (var index = 0; index < options.length; index++) {
+          if (!options[index].disabled) {
+            moveToIndex = index;
+            break;
+          }
+        }
+
+        if (moveToIndex !== null) {
+          console.log("move to index ", moveToIndex);
+          highlightIndex(moveToIndex, "start");
+        }
       }
     }
   }, [isOpen]);
@@ -560,10 +583,20 @@ export default function useSelect({
       if (highlightTriggeredBy === "valueChange") {
         // console.log("moving -> 0");
         clearHighlightTriggeredBy();
-        highlightIndex(0, "start");
+        let moveToIndex = null;
+        for (var index = 0; index < options.length; index++) {
+          if (!options[index].disabled) {
+            moveToIndex = index;
+            break;
+          }
+        }
+
+        if (moveToIndex !== null) {
+          highlightIndex(moveToIndex, "start");
+        }
       }
     }
-  }, [searchValue]);
+  }, [options, options.length]);
 
   // isOpen, highlightedIndex
   // When we open and close the options, set the highlightedIndex to 0
