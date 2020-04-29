@@ -286,6 +286,23 @@ export default function useSelect({
     [multi, options, duplicates, value, setOpen, setSearch],
   );
 
+  const deselectIndex = React.useCallback(() => {
+    if (!multi) {
+      onChangeRef.current(null);
+    } else {
+      if (duplicates || !value.includes(option.value)) {
+        // TODO: backspace for multi select
+        // onChangeRef.current([...value, option.value], option.value);
+      }
+    }
+
+    if (!multi) {
+      setOpen(false);
+    } else {
+      setSearch("");
+    }
+  }, [multi, options, duplicates, value, setOpen, setSearch]);
+
   const clearHighlightTriggeredBy = React.useCallback(
     (value, position = null) => {
       setState(old => {
@@ -379,6 +396,9 @@ export default function useSelect({
   };
 
   const Backspace = () => {
+    if (!searchValue) {
+      deselectIndex();
+    }
     if (!multi || searchValue) {
       return;
     }

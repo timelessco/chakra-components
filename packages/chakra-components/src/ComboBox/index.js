@@ -64,6 +64,11 @@ const MySelect = ({
 
   const height =
     Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;
+  let placeholder = null;
+
+  if (!isOpen && !selectedOption.value) {
+    placeholder = "Select a value";
+  }
 
   return (
     <div
@@ -86,7 +91,7 @@ const MySelect = ({
           ))}
         </div>
       ) : null}
-      <input {...getInputProps()} />
+      <input {...getInputProps()} placeholder={placeholder} />
       <span style={{ position: "absolute", left: "0px", top: "0px" }}>
         {selectedOption.value && isOpen && !getInputProps().value
           ? selectedOption.value
