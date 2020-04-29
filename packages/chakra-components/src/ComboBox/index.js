@@ -10,6 +10,7 @@ import {
   InputLeftElement,
   InputLeftAddon,
   InputRightAddon,
+  PseudoBox,
 } from "@chakra-ui/core";
 import { cleanChildren } from "@chakra-ui/core/dist/utils";
 import useSelect from "./useSelect";
@@ -97,10 +98,14 @@ const ComboBox = forwardRef(
           {validChildren.map(child => {
             if (child.type === ComboBoxLeftElement) {
               pl = height;
+
+              return cloneElement(child, { size });
             }
 
             if (child.type === ComboBoxRightElement) {
               pr = height;
+
+              return cloneElement(child, { size });
             }
 
             if (child.type === ComboBoxClearElement) {
@@ -117,7 +122,7 @@ const ComboBox = forwardRef(
                 pr: child.props.pr || pr,
               });
             }
-            return cloneElement(child, { size });
+            return cloneElement(child);
           })}
         </Box>
       </ComboBoxContext.Provider>
@@ -134,7 +139,7 @@ const ComboBoxInput = forwardRef((props, ref) => {
 });
 
 const ComboBoxList = forwardRef(
-  ({ placement, skid, gutter, width = "100%", ...props }, ref) => {
+  ({ placement, skid, gutter, width = "100%", children, ...props }, ref) => {
     const {
       inputRef,
       optionsRef,
@@ -199,32 +204,69 @@ const ComboBoxList = forwardRef(
           height={height}
           itemCount={visibleOptions.length || 1}
           itemSize={itemHeight}
-          css={{
-            background: "white",
-          }}
         >
           {forwardRef(({ index, style, ...rest }, ref) => {
             const option = visibleOptions[index];
+            const highlighted = option === highlightedOption;
+            const selected = option === selectedOption;
+
             if (!visibleOptions.length) {
               return (
-                <div ref={ref} style={style}>
+                <PseudoBox
+                  ref={ref}
+                  display="flex"
+                  alignItems="center"
+                  flex="0 0 auto"
+                  color="inherit"
+                  px={4}
+                  rounded="sm"
+                  userSelect="none"
+                  transition="background-color 220ms, color 220ms"
+                  textAlign="left"
+                  textDecoration="none"
+                  outline="none"
+                  style={style}
+                >
                   No options were found...
-                </div>
+                </PseudoBox>
               );
             }
             return (
-              <div
+              <PseudoBox
+                ref={ref}
+                display="flex"
+                alignItems="center"
+                flex="0 0 auto"
+                color="inherit"
+                px={4}
+                rounded="sm"
+                userSelect="none"
+                bg={
+                  selected
+                    ? "blue.200"
+                    : highlighted
+                    ? "gray.100"
+                    : "transparent"
+                }
+                transition="background-color 220ms, color 220ms"
+                textAlign="left"
+                textDecoration="none"
+                outline="none"
+                _focus={{
+                  shadow: "outline",
+                  outline: 0,
+                }}
+                _active={{
+                  bg: "gray.200",
+                }}
+                style={style}
                 {...getOptionProps({
                   index,
                   option,
-                  ref,
-                  style,
-                  highlighted: option === highlightedOption,
-                  selected: option === selectedOption,
                 })}
               >
                 {option.label}
-              </div>
+              </PseudoBox>
             );
           })}
         </FixedSizeList>
@@ -232,6 +274,10 @@ const ComboBoxList = forwardRef(
     );
   },
 );
+
+const ComboBoxOption = forwardRef((props, ref) => {
+  return <li>Test</li>;
+});
 
 const ComboBoxRightElement = forwardRef((props, ref) => {
   return (
@@ -277,4 +323,5 @@ export {
   ComboBoxRightAddon,
   ComboBoxClearElement,
   ComboBoxList,
+  ComboBoxOption,
 };

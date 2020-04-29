@@ -122,7 +122,13 @@ function ComboBoxExample() {
         />
         <ComboBoxClearElement />
         <ComboBoxInput placeholder="Select a fruit..." />
-        <ComboBoxList />
+        <ComboBoxList>
+          {options.map(({ value, label }) => (
+            <ComboBoxOption key={value} value={value}>
+              {label}
+            </ComboBoxOption>
+          ))}
+        </ComboBoxList>
       </ComboBox>
     </>
   );
