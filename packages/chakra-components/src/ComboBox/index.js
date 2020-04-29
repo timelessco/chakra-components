@@ -1,29 +1,37 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
-import { forwardRef, cloneElement, useRef, createContext } from "react";
+import { forwardRef, cloneElement, useRef, createContext, memo } from "react";
 import {
   Box,
-  Input,
+  PseudoBox,
   Icon,
-  useTheme,
+  Input,
   InputRightElement,
   InputLeftElement,
   InputLeftAddon,
   InputRightAddon,
-  PseudoBox,
+  useTheme,
 } from "@chakra-ui/core";
-import { cleanChildren } from "@chakra-ui/core/dist/utils";
-import useSelect from "./useSelect";
 import Popper from "@chakra-ui/core/dist/Popper";
-// import matchSorter from "match-sorter";
-import { FixedSizeList } from "react-window";
+import matchSorter from "match-sorter";
+import { FixedSizeList, areEqual } from "react-window";
+import { useForkRef, cleanChildren } from "@chakra-ui/core/dist/utils";
 import { useComboBoxContext } from "./useComboBoxContext";
-import { useForkRef } from "@chakra-ui/core/dist/utils";
+import useSelect from "./useSelect";
+import memoize from "memoize-one";
 
 import { inputSizes } from "@chakra-ui/core/dist/Input/styles";
 import { useComboBoxListStyle } from "./styles";
 
+/* =========================================================================
+  ComboBoxContext
+  ========================================================================== */
+
 export const ComboBoxContext = createContext();
+
+/* =========================================================================
+  ComboBox
+  ========================================================================== */
 
 const ComboBox = forwardRef(
   (
@@ -55,7 +63,6 @@ const ComboBox = forwardRef(
       }
       reactWindowInstanceRef.current.scrollToItem(index);
     };
-
     const shiftAmount = pageSize;
 
     const {
@@ -73,11 +80,12 @@ const ComboBox = forwardRef(
       scrollToIndex,
       optionsRef,
       shiftAmount,
+      filterFn: (options, value) =>
+        matchSorter(options, value, { keys: ["label"] }),
     });
 
     const Optionsheight =
       Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;
-
     const context = {
       visibleOptions,
       selectedOption,
@@ -130,49 +138,28 @@ const ComboBox = forwardRef(
   },
 );
 
+/* =========================================================================
+  ComboBoxInput
+  ========================================================================== */
+
 const ComboBoxInput = forwardRef((props, ref) => {
   const { getInputProps } = useComboBoxContext();
 
-  return (
-    <Input cursor="default" {...getInputProps({ ref })} {...props}></Input>
-  );
+  return <Input cursor="default" {...getInputProps({ ref })} {...props} />;
 });
 
+/* =========================================================================
+  ComboBoxList
+  ========================================================================== */
+
 const ComboBoxList = forwardRef(
-  ({ placement, skid, gutter, width = "100%", children, ...props }, ref) => {
-    const {
-      inputRef,
-      optionsRef,
-      isOpen,
-      reactWindowInstanceRef,
-      height,
-      visibleOptions,
-      itemHeight,
-      highlightedOption,
-      selectedOption,
-      getOptionProps,
-    } = useComboBoxContext();
-
-    // To fix the width full popper overflow
-    function fixedWidth(data) {
-      const newData = data;
-
-      if (width === "full" || width === "100%") {
-        newData.offsets.popper.left = 0;
-      }
-
-      return newData;
-    }
+  ({ placement, skid, gutter = 0, ...props }, ref) => {
+    const { inputRef, optionsRef, isOpen } = useComboBoxContext();
 
     const popperModifiers = {
       preventOverflow: {
         enabled: true,
         boundariesElement: "viewport",
-      },
-      fixedWidth: {
-        enabled: true,
-        fn: fixedWidth,
-        order: 840,
       },
       offset: {
         enabled: true,
@@ -194,90 +181,127 @@ const ComboBoxList = forwardRef(
         rounded="md"
         py={2}
         zIndex="2"
-        width={width}
+        width="full"
+        marginTop="1px !important"
         _focus={{ outline: 0 }}
         {...styleProps}
         {...props}
-      >
-        <FixedSizeList
-          ref={reactWindowInstanceRef}
-          height={height}
-          itemCount={visibleOptions.length || 1}
-          itemSize={itemHeight}
-        >
-          {forwardRef(({ index, style, ...rest }, ref) => {
-            const option = visibleOptions[index];
-            const highlighted = option === highlightedOption;
-            const selected = option === selectedOption;
-
-            if (!visibleOptions.length) {
-              return (
-                <PseudoBox
-                  ref={ref}
-                  display="flex"
-                  alignItems="center"
-                  flex="0 0 auto"
-                  color="inherit"
-                  px={4}
-                  rounded="sm"
-                  userSelect="none"
-                  transition="background-color 220ms, color 220ms"
-                  textAlign="left"
-                  textDecoration="none"
-                  outline="none"
-                  style={style}
-                >
-                  No options were found...
-                </PseudoBox>
-              );
-            }
-            return (
-              <PseudoBox
-                ref={ref}
-                display="flex"
-                alignItems="center"
-                flex="0 0 auto"
-                color="inherit"
-                px={4}
-                rounded="sm"
-                userSelect="none"
-                bg={
-                  selected
-                    ? "blue.200"
-                    : highlighted
-                    ? "gray.100"
-                    : "transparent"
-                }
-                transition="background-color 220ms, color 220ms"
-                textAlign="left"
-                textDecoration="none"
-                outline="none"
-                _focus={{
-                  shadow: "outline",
-                  outline: 0,
-                }}
-                _active={{
-                  bg: "gray.200",
-                }}
-                style={style}
-                {...getOptionProps({
-                  index,
-                  option,
-                })}
-              >
-                {option.label}
-              </PseudoBox>
-            );
-          })}
-        </FixedSizeList>
-      </Popper>
+      />
     );
   },
 );
 
+/* =========================================================================
+  ComboBoxOption
+  ========================================================================== */
+
+const Row = memo(({ index, style, data, ...rest }) => {
+  const {
+    visibleOptions,
+    highlightedOption,
+    selectedOption,
+    getOptionProps,
+  } = data;
+
+  console.log("%c index", "color: #514080", index);
+  const option = visibleOptions[index];
+  const highlighted = option === highlightedOption;
+  const selected = option === selectedOption;
+
+  if (!visibleOptions.length) {
+    return (
+      <PseudoBox
+        display="flex"
+        alignItems="center"
+        flex="0 0 auto"
+        color="inherit"
+        px={4}
+        rounded="sm"
+        userSelect="none"
+        transition="background-color 220ms, color 220ms"
+        textAlign="left"
+        textDecoration="none"
+        outline="none"
+        style={style}
+      >
+        No options were found...
+      </PseudoBox>
+    );
+  }
+  return (
+    <PseudoBox
+      display="flex"
+      alignItems="center"
+      flex="0 0 auto"
+      color="inherit"
+      px={4}
+      rounded="sm"
+      userSelect="none"
+      bg={selected ? "blue.200" : highlighted ? "gray.100" : "transparent"}
+      transition="background-color 220ms, color 220ms"
+      textAlign="left"
+      textDecoration="none"
+      outline="none"
+      _focus={{
+        shadow: "outline",
+        outline: 0,
+      }}
+      _active={{
+        bg: "gray.200",
+      }}
+      style={style}
+      {...getOptionProps({
+        index,
+        option,
+      })}
+    >
+      {option.label}
+    </PseudoBox>
+  );
+}, areEqual);
+
+const createItemData = memoize(
+  (visibleOptions, highlightedOption, selectedOption, getOptionProps) => ({
+    visibleOptions,
+    highlightedOption,
+    selectedOption,
+    getOptionProps,
+  }),
+);
+
 const ComboBoxOption = forwardRef((props, ref) => {
-  return <li>Test</li>;
+  const {
+    reactWindowInstanceRef,
+    height,
+    visibleOptions,
+    itemHeight,
+    highlightedOption,
+    selectedOption,
+    getOptionProps,
+  } = useComboBoxContext();
+
+  const itemData = createItemData(
+    visibleOptions,
+    highlightedOption,
+    selectedOption,
+    getOptionProps,
+  );
+
+  return (
+    <FixedSizeList
+      ref={reactWindowInstanceRef}
+      height={height}
+      itemCount={visibleOptions.length || 1}
+      itemSize={itemHeight}
+      itemData={itemData}
+    >
+      {Row}
+    </FixedSizeList>
+  );
 });
+/* =========================================================================
+  ComboBoxRightElement
+  ========================================================================== */
 
 const ComboBoxRightElement = forwardRef((props, ref) => {
   return (
@@ -290,17 +314,33 @@ const ComboBoxRightElement = forwardRef((props, ref) => {
   );
 });
 
+/* =========================================================================
+  ComboBoxLeftElement
+  ========================================================================== */
+
 const ComboBoxLeftElement = forwardRef((props, ref) => {
   return <InputLeftElement pointerEvents="none" ref={ref} {...props} />;
 });
+
+/* =========================================================================
+  ComboBoxLeftAddon
+  ========================================================================== */
 
 const ComboBoxLeftAddon = forwardRef((props, ref) => {
   return <InputLeftAddon ref={ref} {...props} />;
 });
 
+/* =========================================================================
+  ComboBoxLeftAddon
+  ========================================================================== */
+
 const ComboBoxRightAddon = forwardRef((props, ref) => {
   return <InputRightAddon ref={ref} {...props} />;
 });
+
+/* =========================================================================
+  ComboBoxLeftElement
+  ========================================================================== */
 
 const ComboBoxClearElement = forwardRef((props, ref) => {
   return (
