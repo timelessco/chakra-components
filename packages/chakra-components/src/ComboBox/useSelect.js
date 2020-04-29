@@ -495,7 +495,6 @@ export default function useSelect({
     });
   };
 
-  console.log("highted index ", highlightedIndex);
   const getOptionProps = ({
     index,
     key = index,
@@ -543,25 +542,21 @@ export default function useSelect({
   React.useEffect(() => {
     if (isOpen) {
       if (value) {
-        console.log("came in step 1");
         // Should always be original options
         const scrollToIndex =
           originalOptions.findIndex(d => d.value === value) || 0;
 
         if (scrollToIndex !== highlightedIndex) {
-          // console.log("moving -> 1", originalOptions.length, scrollToIndex);
           // When opened first time after selected, highlightIndex would not have been updated
           highlightIndex(scrollToIndex, "start");
 
           // scrollToIndexRef.current(scrollToIndex, "start");
         }
         if (scrollToIndex === highlightedIndex) {
-          // console.log("moving -> 2");
           // On repeated focus without changing the values
           scrollToIndexRef.current(scrollToIndex, "start");
         }
       } else {
-        console.log("came in step 2");
         let moveToIndex = null;
         for (var index = 0; index < options.length; index++) {
           if (!options[index].disabled) {
@@ -571,7 +566,6 @@ export default function useSelect({
         }
 
         if (moveToIndex !== null) {
-          console.log("move to index ", moveToIndex);
           highlightIndex(moveToIndex, "start");
         }
       }
@@ -581,7 +575,6 @@ export default function useSelect({
   React.useEffect(() => {
     if (isOpen) {
       if (highlightTriggeredBy === "valueChange") {
-        // console.log("moving -> 0");
         clearHighlightTriggeredBy();
         let moveToIndex = null;
         for (var index = 0; index < options.length; index++) {

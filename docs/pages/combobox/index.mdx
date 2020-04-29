@@ -137,3 +137,67 @@ function ComboBoxExample() {
   );
 }
 ```
+
+## Async fetching
+
+```jsx
+function ComboBoxExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+  ];
+
+  const _axios = ({ speed }) => new Promise(resolve => {
+    setTimeout(() => {
+      resolve([
+        'dynamic-option-1', 
+        'dynamic-option-2', 
+        'dynamic-option-3', 
+        'dynamic-option-4', 
+        'dynamic-option-5'
+      ])
+    }, speed === 'slow' ? 4000 : 1000)
+    
+  })
+
+  const asyncFetchOptions = (value, callback) => {
+    
+    _axios(({
+      speed: 'slow' // 'fast' 
+    })).then((data) => {
+      callback(data.map((d, i) => ({
+        value: d,
+        label: d,
+      })))
+    })
+  }
+
+  const [fruit, setFruit] = React.useState(null);
+  return (
+    <>
+      <ComboBox
+        async
+        value={fruit}
+        onChange={setFruit}
+        loadOptions={asyncFetchOptions}
+      >
+        <ComboBoxRightElement
+          children={<Icon name="chevron-down" fontSize="1.5rem" />}
+        />
+        <ComboBoxClearElement />
+        <ComboBoxInput placeholder="Select a fruit..." />
+        <ComboBoxSelectedGhost />
+        <ComboBoxPopper>
+          <ComboBoxList>
+            <ComboBoxOption />
+          </ComboBoxList>
+        </ComboBoxPopper>
+      </ComboBox>
+    </>
+  );
+}
+```

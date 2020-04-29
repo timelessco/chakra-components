@@ -1,4 +1,10 @@
-import React, { forwardRef, cloneElement, useRef, createContext } from "react";
+import React, {
+  forwardRef,
+  cloneElement,
+  useRef,
+  createContext,
+  useEffect,
+} from "react";
 import {
   Box,
   PseudoBox,
@@ -20,6 +26,7 @@ import splitProps from "./utils";
 
 import { inputSizes } from "@chakra-ui/core/dist/Input/styles";
 import { useComboBoxPopperStyle, useComboBoxOptionStyle } from "./styles";
+import useAsyncFetching from "./useAsyncFetching";
 
 /* =========================================================================
   ComboBoxContext
@@ -36,8 +43,14 @@ const ComboBox = forwardRef(
     {
       value,
       options,
+      defaultOptions = [],
       onChange,
       multi = false,
+      async,
+      loadOptions = null, // Boolean to ind
+      pageSize = 10,
+      itemHeight = 40,
+      children,
       size = "md",
       enableGhost = "true",
       children,
@@ -48,6 +61,16 @@ const ComboBox = forwardRef(
     const reactWindowInstanceRef = useRef(null);
     const optionsRef = useRef(null);
 
+    const {
+      state: {
+        data: asyncOptions,
+        initiated: isAsyncInitiated,
+        success: isAsyncSuccess,
+      },
+      onAsyncStart,
+      onAsyncSuccess,
+    } = useAsyncFetching(loadOptions);
+
     // Position can be top / center / end
     const scrollToIndex = (index, position) => {
       if (!reactWindowInstanceRef.current) {
@@ -55,7 +78,7 @@ const ComboBox = forwardRef(
       }
       reactWindowInstanceRef.current.scrollToItem(index, position);
     };
-
+    const shiftAmount = pageSize;
     const {
       visibleOptions,
       selectedOption,
@@ -66,7 +89,7 @@ const ComboBox = forwardRef(
       inputRef,
     } = useSelect({
       multi,
-      options,
+      options: async ? asyncOptions : options,
       value,
       onChange,
       scrollToIndex,
@@ -74,6 +97,24 @@ const ComboBox = forwardRef(
       filterFn: (options, value) =>
         matchSorter(options, value, { keys: ["label"] }),
     });
+
+    const Optionsheight =
+      Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;
+
+    const inputValue = getInputProps().value;
+
+    useEffect(() => {
+      if (
+        loadOptions !== null &&
+        inputValue &&
+        selectedOption.value !== inputValue // Prevent refetch when selected
+      ) {
+        onAsyncStart(true);
+        loadOptions(inputValue, data => {
+          onAsyncSuccess(data);
+        });
+      }
+    }, [inputValue]);
 
     const context = {
       multi,
