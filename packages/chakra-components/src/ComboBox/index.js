@@ -21,6 +21,8 @@ const Option = styled.div`
   display: flex;
   alignitems: center;
   padding: 0.5rem;
+  pointer-events: ${props => (props.option.disabled ? "none" : "auto")};
+  color: ${props => (props.option.disabled ? "#a2a2a2" : "#000")};
 `;
 
 const MySelect = ({
@@ -78,7 +80,6 @@ const MySelect = ({
     }
   }, [isOpen, selectedOption.value, getInputProps().value]);
 
-  console.log("placeholder ", placeholder);
   return (
     <div
       style={{

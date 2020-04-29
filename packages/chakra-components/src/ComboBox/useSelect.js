@@ -87,7 +87,6 @@ export default function useSelect({
   shiftAmount = 5,
   filterFn = defaultFilterFn,
   optionsRef,
-  cyclic,
   getDebounce = options =>
     options.length > 10000 ? 1000 : options.length > 1000 ? 200 : 0,
 }) {
@@ -346,15 +345,26 @@ export default function useSelect({
       setSearch("");
     }
 
-    const amount =
-      defaultMeta || meta
-        ? 1000000000000
-        : defaultShift || shift
-        ? shiftAmount - 1
-        : 1;
+    const getAmount = old => {
+      let moveToIndex = old - 1;
+      for (var index = old - 1; index >= 0; index--) {
+        if (!options[index].disabled) {
+          moveToIndex = index;
+          break;
+        }
+      }
+      // TODO: Explore why it is
+      // return defaultMeta || meta
+      //   ? 1000000000000
+      //   : defaultShift || shift
+      //   ? shiftAmount - 1
+      //   : 1;
+      return options[moveToIndex].disabled ? old : moveToIndex;
+    };
     setOpen(true);
+
     if (isOpen) {
-      highlightIndex(old => old - amount, null, isOpen);
+      highlightIndex(old => getAmount(old), isOpen);
     }
   };
 
@@ -363,16 +373,26 @@ export default function useSelect({
     if (!isOpen) {
       setSearch("");
     }
+    const getAmount = old => {
+      let moveToIndex = options.length - 1;
+      for (var index = old + 1; index < options.length; index++) {
+        if (!options[index].disabled) {
+          moveToIndex = index;
+          break;
+        }
+      }
+      // TODO: Explore why it is
+      // return defaultMeta || meta
+      //   ? 1000000000000
+      //   : defaultShift || shift
+      //   ? shiftAmount - 1
+      //   : 1;
+      return options[moveToIndex].disabled ? old : moveToIndex;
+    };
 
-    const amount =
-      defaultMeta || meta
-        ? 1000000000000
-        : defaultShift || shift
-        ? shiftAmount - 1
-        : 1;
     setOpen(true);
     if (isOpen) {
-      highlightIndex(old => old + amount, isOpen);
+      highlightIndex(old => getAmount(old), isOpen);
     }
   };
 
@@ -382,6 +402,7 @@ export default function useSelect({
         e.preventDefault();
       }
       if (options[highlightedIndex]) {
+        // inputRef.current.blur();
         selectIndex(highlightedIndex);
       }
     }
@@ -452,6 +473,9 @@ export default function useSelect({
       },
       onClick: e => {
         handleSearchClick(e);
+        if (inputRef) {
+          inputRef.current.focus();
+        }
         if (onClick) {
           onClick(e);
         }
