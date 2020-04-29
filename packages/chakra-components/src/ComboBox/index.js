@@ -128,6 +128,14 @@ const ComboBox = forwardRef(
                 pr: child.props.pr || pr,
               });
             }
+
+            if (child.type === ComboBoxSelectedGhost) {
+              return cloneElement(child, {
+                size,
+                left: pl,
+              });
+            }
+
             return cloneElement(child);
           })}
         </Box>
@@ -144,6 +152,38 @@ const ComboBoxInput = forwardRef((props, ref) => {
   const { getInputProps } = useComboBoxContext();
 
   return <Input cursor="default" {...getInputProps({ ref })} {...props} />;
+});
+
+/* =========================================================================
+  ComboBoxSelectedGhost
+  ========================================================================== */
+
+const ComboBoxSelectedGhost = forwardRef(({ size, left, ...props }, ref) => {
+  const { sizes } = useTheme();
+
+  const height = inputSizes[size] && inputSizes[size]["height"];
+  const fontSize = inputSizes[size] && inputSizes[size]["fontSize"];
+  const _left = left || (inputSizes[size] && inputSizes[size]["px"]);
+
+  return (
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      position="absolute"
+      fontSize={fontSize}
+      height={height}
+      width={height}
+      top="0"
+      left={sizes[_left]}
+      zIndex={2}
+      ref={ref}
+      pointerEvents="none"
+      {...props}
+    >
+      Test
+    </Box>
+  );
 });
 
 /* =========================================================================
@@ -310,6 +350,7 @@ const ComboBoxClearElement = forwardRef((props, ref) => {
 export {
   ComboBox,
   ComboBoxInput,
+  ComboBoxSelectedGhost,
   ComboBoxLeftElement,
   ComboBoxRightElement,
   ComboBoxLeftAddon,
