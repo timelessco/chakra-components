@@ -290,10 +290,10 @@ export default function useSelect({
     if (!multi) {
       onChangeRef.current(null);
     } else {
-      if (duplicates || !value.includes(option.value)) {
-        // TODO: backspace for multi select
-        // onChangeRef.current([...value, option.value], option.value);
-      }
+      // if (duplicates || !value.includes(option.value)) {
+      // TODO: backspace for multi select
+      // onChangeRef.current([...value, option.value], option.value);
+      // }
     }
 
     if (!multi) {
@@ -396,8 +396,9 @@ export default function useSelect({
   };
 
   const Backspace = () => {
-    if (!searchValue) {
+    if (!searchValue || searchValue.length === 1) {
       deselectIndex();
+      return;
     }
     if (!multi || searchValue) {
       return;

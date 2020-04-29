@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import useSelect from "./useSelect";
 import styled from "@emotion/styled";
 import matchSorter from "match-sorter";
@@ -64,12 +64,21 @@ const MySelect = ({
 
   const height =
     Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;
-  let placeholder = null;
 
-  if (!isOpen && !selectedOption.value) {
-    placeholder = "Select a value";
-  }
+  const [placeholder, setPlaceholder] = useState(false);
 
+  useEffect(() => {
+    if (
+      (!isOpen && !selectedOption.value) ||
+      (isOpen && !selectedOption.value && !getInputProps().value)
+    ) {
+      setPlaceholder("Select a value");
+    } else {
+      setPlaceholder(null);
+    }
+  }, [isOpen, selectedOption.value, getInputProps().value]);
+
+  console.log("placeholder ", placeholder);
   return (
     <div
       style={{
