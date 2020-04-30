@@ -284,6 +284,7 @@ const ComboBoxPopper = forwardRef(
       optionsRef,
       isOpen,
       isInputDebouncing,
+      isAsyncInitiated,
     } = useComboBoxContext();
 
     const popperModifiers = {
@@ -301,7 +302,7 @@ const ComboBoxPopper = forwardRef(
     const styleProps = useComboBoxPopperStyle();
 
     // TODO: Need to prevent both list and popper from rendering
-    if (isInputDebouncing) {
+    if (isInputDebouncing || isAsyncInitiated) {
       return null;
     }
 
@@ -383,11 +384,13 @@ const ComboBoxList = forwardRef(
       visibleOptions,
       isAsyncInitiated,
       isAsyncSuccess,
+      isInputDebouncing,
+      isAsyncInitiated,
     } = useComboBoxContext();
     const height =
       Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;
     const _reactWindowInstanceRef = useForkRef(reactWindowInstanceRef, ref);
-    if (isAsyncInitiated) {
+    if (isInputDebouncing || isAsyncInitiated) {
       return null;
     }
     return (
