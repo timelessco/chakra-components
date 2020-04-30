@@ -93,6 +93,7 @@ const ComboBox = forwardRef(
       getOptionProps,
       isOpen,
       inputRef,
+      deselectIndex,
     } = useSelect({
       multi,
       options: async
@@ -163,6 +164,7 @@ const ComboBox = forwardRef(
       isAsyncFailure,
       asyncErrorMessage,
       isInputDebouncing: debounceState,
+      deselectIndex,
     };
 
     const { sizes } = useTheme();
@@ -448,7 +450,7 @@ const ComboBoxRightAddon = forwardRef((props, ref) => {
   ========================================================================== */
 
 const ComboBoxClearElement = forwardRef((props, ref) => {
-  const { isAsyncInitiated } = useComboBoxContext();
+  const { isAsyncInitiated, deselectIndex, inputValue } = useComboBoxContext();
 
   return (
     <InputRightElement
@@ -457,12 +459,22 @@ const ComboBoxClearElement = forwardRef((props, ref) => {
         isAsyncInitiated ? (
           <Spinner size="sm" />
         ) : (
-          <Icon name="close" fontSize="12px" />
+          <Icon
+            name="close"
+            fontSize="12px"
+            cursor="pointer"
+            zIndex={200}
+            onClick={() => {
+              deselectIndex(null);
+            }}
+          />
         )
       }
       cursor="default"
-      pointerEvents="none"
       {...props}
+      onClick={() => {
+        // TODO: without adding this the event is not getting bubbled
+      }}
     />
   );
 });
