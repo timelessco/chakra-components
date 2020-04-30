@@ -56,7 +56,6 @@ const ComboBox = forwardRef(
       children,
       size = "md",
       enableGhost = "true",
-      children,
       ...props
     },
     ref,
@@ -383,9 +382,7 @@ const ComboBoxList = forwardRef(
       reactWindowInstanceRef,
       visibleOptions,
       isAsyncInitiated,
-      isAsyncSuccess,
       isInputDebouncing,
-      isAsyncInitiated,
     } = useComboBoxContext();
     const height =
       Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;

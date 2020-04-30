@@ -12,136 +12,9 @@ with typeahead & autocomplete support. (Accessible in future)
 ```js
 import { ComboBox } from "@chakra-components/core";
 import axios from 'axios'
+
+
 ```
-<<<<<<< HEAD
-
-## Usage
-
-Here's a basic usage of the Select component.
-
-```jsx
-<ComboBox>
-  <ComboBoxLeftElement color="gray.300" fontSize="1.2em" children="$" />
-  <ComboBoxRightElement
-    children={<Icon name="chevron-down" fontSize="1.5rem" />}
-  />
-  <ComboBoxClearElement />
-  <ComboBoxInput as={Select} placeholder="Enter amount">
-    <option value="option1">Option 1</option>
-    <option value="option2">Option 2</option>
-    <option value="option3">Option 3</option>
-  </ComboBoxInput>
-</ComboBox>
-```
-
-## Experiments
-
-```jsx
-function ComboBoxExample() {
-  const fruits = [
-    "Acai",
-    "Apples",
-    "Apricots",
-    "Avocado",
-    "Ackee",
-    "Bananas",
-    "Bilberries",
-    "Blueberries",
-    "Blackberries",
-    "Boysenberries",
-    "Bread fruit",
-    "Cantaloupes(cantalope)",
-    "Chocolate - Fruit",
-    "Cherimoya",
-    "Cherries",
-    "Cranberries",
-    "Cucumbers",
-    "Currants",
-    "Dates",
-    "Durian",
-    "Eggplant",
-    "Elderberries",
-    "Figs",
-    "Gooseberries",
-    "Grapes",
-    "Grapefruit",
-    "Guava",
-    "Honeydew melons",
-    "Horned melon(Kiwano)",
-    "Huckleberries",
-    "Ita Palm",
-    "Jujubes",
-    "Kiwis",
-    "Kumquat",
-    "Lemons",
-    "Limes",
-    "Lychees",
-    "Mangos",
-    "Mangosteen",
-    "Mulberries",
-    "Muskmelon",
-    "Nectarines",
-    "Ogden melons",
-    "Olives",
-    "Oranges",
-    "Papaya",
-    "Passion fruit",
-    "Peaches",
-    "Pears",
-    "Peppers",
-    "Persimmon",
-    "Pineapple",
-    "Plums",
-    "Pluot",
-    "Pomegranate",
-    "Prickly Pear",
-    "Quince",
-    "Rambuton",
-    "Raspberries",
-    "Rose Apple",
-    "Starfruit",
-    "Sapadilla",
-    "Strawberries",
-    "Tamarind",
-    "Tangelo",
-    "Tangerines",
-    "Tomatoes",
-    "Ugli fruit",
-    "Voavanga(Spanish Tamarind)",
-    "Watermelons",
-    "Xigua melon",
-    "Yellow watermelon",
-    "Zucchini",
-  ];
-
-  const options = fruits.map((d, i) => ({
-    value: d,
-    label: d,
-    disabled: i%4 === 0
-  }));
-
-  const [fruit, setFruit] = React.useState(null);
-  return (
-    <>
-      <ComboBox value={fruit} options={options} onChange={setFruit}>
-        <ComboBoxRightElement
-          children={<Icon name="chevron-down" fontSize="1.5rem" />}
-        />
-        <ComboBoxClearElement />
-        <ComboBoxInput placeholder="Select a fruit..." />
-        <ComboBoxPopper>
-          <ComboBoxList>
-            <ComboBoxOption />
-          </ComboBoxList>
-        </ComboBoxPopper>
-      </ComboBox>
-    </>
-  );
-}
-```
-
-=======
->>>>>>> feat(async in select): demoable version with proper behaviour complete
 ## Async fetching
 
 ```jsx
@@ -176,7 +49,12 @@ function ComboBoxExample() {
         value={fruit}
         onChange={setFruit}
         loadOptions={asyncFetchOptions}
-        defaultOptions={[{ label: 'default-option-1', value: 'default-option-1' }, { label: 'default-option-2', value: 'default-option-2' }, { label: 'default-option-3', value: 'default-option-3' }]}
+        defaultOptions={[
+          // Show default options
+          { label: 'default-option-1', value: 'default-option-1' }, 
+          { label: 'default-option-2', value: 'default-option-2' }, 
+          { label: 'default-option-3', value: 'default-option-3' }
+        ]}
       >
         <ComboBoxRightElement
           children={<Icon name="chevron-down" fontSize="1.5rem" />}
