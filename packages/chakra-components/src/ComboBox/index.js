@@ -27,6 +27,7 @@ import splitProps from "./utils";
 import { inputSizes } from "@chakra-ui/core/dist/Input/styles";
 import { useComboBoxPopperStyle, useComboBoxOptionStyle } from "./styles";
 import useAsyncFetching from "./useAsyncFetching";
+import debounce from "./debounce";
 
 /* =========================================================================
   ComboBoxContext
@@ -108,7 +109,6 @@ const ComboBox = forwardRef(
         matchSorter(options, value, { keys: ["label"] }),
     });
 
-    console.log("visible options ", visibleOptions);
     const Optionsheight =
       Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;
 
@@ -121,9 +121,12 @@ const ComboBox = forwardRef(
         selectedOption.value !== inputValue // Prevent refetch when selected
       ) {
         onAsyncStart(true);
-        loadOptions(inputValue, data => {
-          onAsyncSuccess(data);
-        });
+
+        // Callback that is exposed outside
+        const completeCb = data => onAsyncSuccess(data);
+
+        //TODO: Debounce need to be on hook
+        debounce(inputValue, loadOptions, completeCb, 800);
       }
     }, [inputValue]);
 

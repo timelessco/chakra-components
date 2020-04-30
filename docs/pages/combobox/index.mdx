@@ -165,7 +165,7 @@ function ComboBoxExample() {
   })
 
   const asyncFetchOptions = (value, callback) => {
-    
+    console.log('value ', value )
     _axios(({
       speed: 'fast' // 'fast' 
     })).then((data) => {
