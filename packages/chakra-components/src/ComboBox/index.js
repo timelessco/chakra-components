@@ -16,6 +16,7 @@ import { FixedSizeList } from "react-window";
 import { useForkRef, cleanChildren } from "@chakra-ui/core/dist/utils";
 import { useComboBoxContext } from "./useComboBoxContext";
 import useSelect from "./useSelect";
+import splitProps from "./utils";
 
 import { inputSizes } from "@chakra-ui/core/dist/Input/styles";
 import { useComboBoxPopperStyle, useComboBoxOptionStyle } from "./styles";
@@ -40,6 +41,7 @@ const ComboBox = forwardRef(
       itemHeight = 40,
       children,
       size = "md",
+      enableGhost = "true",
       ...props
     },
     ref,
@@ -96,6 +98,7 @@ const ComboBox = forwardRef(
       inputRef,
       optionsRef,
       reactWindowInstanceRef,
+      enableGhost,
     };
 
     return (
@@ -129,13 +132,6 @@ const ComboBox = forwardRef(
               });
             }
 
-            if (child.type === ComboBoxSelectedGhost) {
-              return cloneElement(child, {
-                size,
-                left: pl,
-              });
-            }
-
             return cloneElement(child);
           })}
         </Box>
@@ -149,16 +145,26 @@ const ComboBox = forwardRef(
   ========================================================================== */
 
 const ComboBoxInput = forwardRef(({ placeholder, ...props }, ref) => {
-  const { getInputProps, selectedOption } = useComboBoxContext();
+  const { getInputProps, selectedOption, enableGhost } = useComboBoxContext();
   const { value } = getInputProps();
+  const ghostProps = splitProps(props);
+  const _placeholder =
+    !value && !selectedOption.value ? placeholder : undefined;
 
   return (
-    <Input
-      cursor="default"
-      placeholder={!value && !selectedOption.value && placeholder}
-      {...getInputProps({ ref })}
-      {...props}
-    />
+    <>
+      <Input
+        cursor="default"
+        placeholder={_placeholder}
+        {...getInputProps({ ref })}
+        {...props}
+      />
+      {enableGhost && (
+        <ComboBoxSelectedGhost {...ghostProps}>
+          {!value && selectedOption && selectedOption.value}
+        </ComboBoxSelectedGhost>
+      )}
+    </>
   );
 });
 
@@ -166,15 +172,8 @@ const ComboBoxInput = forwardRef(({ placeholder, ...props }, ref) => {
   ComboBoxSelectedGhost
   ========================================================================== */
 
-const ComboBoxSelectedGhost = forwardRef(({ size, left, ...props }, ref) => {
-  const { sizes } = useTheme();
-
-  const height = inputSizes[size] && inputSizes[size]["height"];
-  const fontSize = inputSizes[size] && inputSizes[size]["fontSize"];
-  const _left = left || (inputSizes[size] && inputSizes[size]["px"]);
-
-  const { getInputProps, selectedOption } = useComboBoxContext();
-  const { value } = getInputProps();
+const ComboBoxSelectedGhost = forwardRef(({ size, ...props }, ref) => {
+  const baseInputProps = inputSizes[size] && inputSizes[size];
 
   return (
     <Box
@@ -182,17 +181,13 @@ const ComboBoxSelectedGhost = forwardRef(({ size, left, ...props }, ref) => {
       alignItems="center"
       justifyContent="center"
       position="absolute"
-      fontSize={fontSize}
-      height={height}
       top="0"
-      left={sizes[_left]}
       zIndex={2}
       ref={ref}
       pointerEvents="none"
+      {...baseInputProps}
       {...props}
-    >
-      {!value && selectedOption && selectedOption.value}
-    </Box>
+    />
   );
 });
 
