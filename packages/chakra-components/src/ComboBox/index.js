@@ -54,11 +54,11 @@ const ComboBox = forwardRef(
     const reactWindowInstanceRef = useRef(null);
     const optionsRef = useRef(null);
 
-    const scrollToIndex = index => {
+    const scrollToIndex = (index, position) => {
       if (!reactWindowInstanceRef.current) {
         return;
       }
-      reactWindowInstanceRef.current.scrollToItem(index);
+      reactWindowInstanceRef.current.scrollToItem(index, position);
     };
     const shiftAmount = pageSize;
 
