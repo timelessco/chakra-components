@@ -151,6 +151,9 @@ const ComboBoxInput = forwardRef(({ placeholder, ...props }, ref) => {
   const _placeholder =
     !value && !selectedOption.value ? placeholder : undefined;
 
+  const _enableGhost =
+    enableGhost && !value && selectedOption && selectedOption.value;
+
   return (
     <>
       <Input
@@ -159,11 +162,11 @@ const ComboBoxInput = forwardRef(({ placeholder, ...props }, ref) => {
         {...getInputProps({ ref })}
         {...props}
       />
-      {enableGhost && (
+      {_enableGhost ? (
         <ComboBoxSelectedGhost {...ghostProps}>
-          {!value && selectedOption && selectedOption.value}
+          {selectedOption.value}
         </ComboBoxSelectedGhost>
-      )}
+      ) : null}
     </>
   );
 });
@@ -182,6 +185,7 @@ const ComboBoxSelectedGhost = forwardRef(({ size, ...props }, ref) => {
       justifyContent="center"
       position="absolute"
       top="0"
+      left="1px"
       zIndex={2}
       ref={ref}
       pointerEvents="none"
