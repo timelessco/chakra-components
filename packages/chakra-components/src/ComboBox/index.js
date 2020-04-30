@@ -15,6 +15,7 @@ import {
   InputLeftAddon,
   InputRightAddon,
   useTheme,
+  Spinner,
 } from "@chakra-ui/core";
 import Popper from "@chakra-ui/core/dist/Popper";
 import matchSorter from "match-sorter";
@@ -120,13 +121,14 @@ const ComboBox = forwardRef(
         inputValue &&
         selectedOption.value !== inputValue // Prevent refetch when selected
       ) {
-        onAsyncStart(true);
+        // Callback when the actual fetch started
+        const fetchStartCb = () => onAsyncStart(true);
 
         // Callback that is exposed outside
-        const completeCb = data => onAsyncSuccess(data);
+        const fetchCompleteCb = data => onAsyncSuccess(data);
 
         //TODO: Debounce need to be on hook
-        debounce(inputValue, loadOptions, completeCb, 800);
+        debounce(inputValue, loadOptions, fetchStartCb, fetchCompleteCb, 800);
       }
     }, [inputValue]);
 
@@ -253,7 +255,12 @@ const ComboBoxSelectedGhost = forwardRef(({ size, ...props }, ref) => {
 
 const ComboBoxPopper = forwardRef(
   ({ placement, skid, gutter = 0, ...props }, ref) => {
-    const { inputRef, optionsRef, isOpen } = useComboBoxContext();
+    const {
+      inputRef,
+      optionsRef,
+      isOpen,
+      isAsyncInitiated,
+    } = useComboBoxContext();
 
     const popperModifiers = {
       preventOverflow: {
@@ -268,6 +275,11 @@ const ComboBoxPopper = forwardRef(
 
     const _optionsRef = useForkRef(optionsRef, ref);
     const styleProps = useComboBoxPopperStyle();
+
+    // TODO: Need to prevent both list and popper from rendering
+    if (isAsyncInitiated) {
+      return null;
+    }
 
     return (
       <Popper
@@ -347,7 +359,7 @@ const ComboBoxList = forwardRef(
       Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;
     const _reactWindowInstanceRef = useForkRef(reactWindowInstanceRef, ref);
     if (isAsyncInitiated) {
-      return <Box>Loading...</Box>;
+      return null;
     }
     return (
       <FixedSizeList
@@ -408,10 +420,18 @@ const ComboBoxRightAddon = forwardRef((props, ref) => {
   ========================================================================== */
 
 const ComboBoxClearElement = forwardRef((props, ref) => {
+  const { isAsyncInitiated } = useComboBoxContext();
+
   return (
     <InputRightElement
       ref={ref}
-      children={<Icon name="close" fontSize="12px" />}
+      children={
+        isAsyncInitiated ? (
+          <Spinner size="sm" />
+        ) : (
+          <Icon name="close" fontSize="12px" />
+        )
+      }
       cursor="default"
       pointerEvents="none"
       {...props}
