@@ -142,6 +142,8 @@ const ComboBox = forwardRef(
       optionsRef,
       reactWindowInstanceRef,
       enableGhost,
+      isAsyncInitiated,
+      isAsyncSuccess,
     };
 
     const { sizes } = useTheme();
@@ -335,11 +337,18 @@ const ComboBoxOption = forwardRef(({ index, style, data, ...rest }, ref) => {
 
 const ComboBoxList = forwardRef(
   ({ itemHeight = 40, pageSize = 10, children, ...props }, ref) => {
-    const { reactWindowInstanceRef, visibleOptions } = useComboBoxContext();
+    const {
+      reactWindowInstanceRef,
+      visibleOptions,
+      isAsyncInitiated,
+      isAsyncSuccess,
+    } = useComboBoxContext();
     const height =
       Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;
     const _reactWindowInstanceRef = useForkRef(reactWindowInstanceRef, ref);
-
+    if (isAsyncInitiated) {
+      return <Box>Loading...</Box>;
+    }
     return (
       <FixedSizeList
         ref={_reactWindowInstanceRef}
@@ -354,6 +363,7 @@ const ComboBoxList = forwardRef(
     );
   },
 );
+
 /* =========================================================================
   ComboBoxRightElement
   ========================================================================== */
