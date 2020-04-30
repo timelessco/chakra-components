@@ -37,22 +37,14 @@ const ComboBox = forwardRef(
       value,
       options,
       onChange,
-      pageSize = 10,
-      itemHeight = 40,
-      children,
+      multi = false,
       size = "md",
       enableGhost = "true",
+      children,
       ...props
     },
     ref,
   ) => {
-    const { sizes } = useTheme();
-    const height = inputSizes[size] && inputSizes[size]["height"];
-    let pl = null;
-    let pr = null;
-    let right = null;
-    const validChildren = cleanChildren(children);
-
     const reactWindowInstanceRef = useRef(null);
     const optionsRef = useRef(null);
 
@@ -62,7 +54,6 @@ const ComboBox = forwardRef(
       }
       reactWindowInstanceRef.current.scrollToItem(index, position);
     };
-    const shiftAmount = pageSize;
 
     const {
       visibleOptions,
@@ -73,33 +64,36 @@ const ComboBox = forwardRef(
       isOpen,
       inputRef,
     } = useSelect({
+      multi,
       options,
       value,
       onChange,
       scrollToIndex,
       optionsRef,
-      shiftAmount,
       filterFn: (options, value) =>
         matchSorter(options, value, { keys: ["label"] }),
     });
 
-    const Optionsheight =
-      Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;
-
     const context = {
+      multi,
       visibleOptions,
       selectedOption,
       highlightedOption,
       getInputProps,
       getOptionProps,
       isOpen,
-      height: Optionsheight,
-      itemHeight,
       inputRef,
       optionsRef,
       reactWindowInstanceRef,
       enableGhost,
     };
+
+    const { sizes } = useTheme();
+    const height = inputSizes[size] && inputSizes[size]["height"];
+    let pl = null;
+    let pr = null;
+    let right = null;
+    const validChildren = cleanChildren(children);
 
     return (
       <ComboBoxContext.Provider value={context}>
@@ -278,29 +272,27 @@ const ComboBoxOption = forwardRef(({ index, style, data, ...rest }, ref) => {
   ComboBoxList
   ========================================================================== */
 
-const ComboBoxList = forwardRef(({ children, ...props }, ref) => {
-  const {
-    reactWindowInstanceRef,
-    height,
-    visibleOptions,
-    itemHeight,
-  } = useComboBoxContext();
+const ComboBoxList = forwardRef(
+  ({ itemHeight = 40, pageSize = 10, children, ...props }, ref) => {
+    const { reactWindowInstanceRef, visibleOptions } = useComboBoxContext();
+    const height =
+      Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;
+    const _reactWindowInstanceRef = useForkRef(reactWindowInstanceRef, ref);
 
-  const _reactWindowInstanceRef = useForkRef(reactWindowInstanceRef, ref);
-
-  return (
-    <FixedSizeList
-      ref={_reactWindowInstanceRef}
-      height={height}
-      itemCount={visibleOptions.length || 1}
-      itemSize={itemHeight}
-      itemData={children.props}
-      {...props}
-    >
-      {children.type}
-    </FixedSizeList>
-  );
-});
+    return (
+      <FixedSizeList
+        ref={_reactWindowInstanceRef}
+        height={height}
+        itemCount={visibleOptions.length || 1}
+        itemSize={itemHeight}
+        itemData={children.props}
+        {...props}
+      >
+        {children.type}
+      </FixedSizeList>
+    );
+  },
+);
 /* =========================================================================
   ComboBoxRightElement
   ========================================================================== */
