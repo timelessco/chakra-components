@@ -167,7 +167,7 @@ function ComboBoxExample() {
   const asyncFetchOptions = (value, callback) => {
     
     _axios(({
-      speed: 'slow' // 'fast' 
+      speed: 'fast' // 'fast' 
     })).then((data) => {
       callback(data.map((d, i) => ({
         value: d,
@@ -184,6 +184,7 @@ function ComboBoxExample() {
         value={fruit}
         onChange={setFruit}
         loadOptions={asyncFetchOptions}
+        defaultOptions={[{ label: 'default-option-1', value: 'default-option-1' }, { label: 'default-option-2', value: 'default-option-2' }, { label: 'default-option-3', value: 'default-option-3' }]}
       >
         <ComboBoxRightElement
           children={<Icon name="chevron-down" fontSize="1.5rem" />}

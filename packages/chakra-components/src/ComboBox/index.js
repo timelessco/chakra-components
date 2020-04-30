@@ -66,6 +66,7 @@ const ComboBox = forwardRef(
         data: asyncOptions,
         initiated: isAsyncInitiated,
         success: isAsyncSuccess,
+        completedOnce: isAsyncCompletedOnce,
       },
       onAsyncStart,
       onAsyncSuccess,
@@ -90,6 +91,15 @@ const ComboBox = forwardRef(
     } = useSelect({
       multi,
       options: async ? asyncOptions : options,
+      options: async
+        ? isAsyncSuccess
+          ? asyncOptions
+          : !isAsyncCompletedOnce
+          ? defaultOptions
+          : []
+        : options,
+      async,
+      isAsyncSuccess,
       value,
       onChange,
       scrollToIndex,
@@ -98,6 +108,7 @@ const ComboBox = forwardRef(
         matchSorter(options, value, { keys: ["label"] }),
     });
 
+    console.log("visible options ", visibleOptions);
     const Optionsheight =
       Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;
 

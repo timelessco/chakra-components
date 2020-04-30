@@ -7,6 +7,7 @@ const initialState = {
   failed: false,
   errorMessage: false,
   data: [],
+  completedOnce: false,
 };
 
 function reducer(state, action) {
@@ -28,6 +29,7 @@ function reducer(state, action) {
         failed: false,
         errorMessage: null,
         data: action.payload.data,
+        completedOnce: true,
       };
     case "PROMISE_RESOLVE_FAILURE":
       return {

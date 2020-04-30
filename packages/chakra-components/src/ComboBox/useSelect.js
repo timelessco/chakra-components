@@ -81,6 +81,8 @@ export default function useSelect({
   stateReducer = (old, newState, action) => newState,
   duplicates,
   options,
+  async,
+  isAsyncSuccess,
   value,
   onChange,
   scrollToIndex = () => {},
@@ -140,11 +142,12 @@ export default function useSelect({
   // If multi and duplicates aren't allowed, filter out the
   // selected options from the options list
   options = React.useMemo(() => {
-    if (multi && !duplicates) {
+    if (multi && !duplicates && !async) {
       return options.filter(d => !value.includes(d.value));
     }
+
     return options;
-  }, [options, value, duplicates, multi]);
+  }, [options, value, duplicates, multi, isAsyncSuccess]);
 
   // Compute the currently selected option(s)
   let selectedOption = React.useMemo(() => {
@@ -170,7 +173,7 @@ export default function useSelect({
   // TODO: This is likely where we will perform async option fetching
   // in the future.
   options = React.useMemo(() => {
-    if (resolvedSearchValue) {
+    if (!async && resolvedSearchValue) {
       return filterFnRef.current(options, resolvedSearchValue);
     }
     return options;
