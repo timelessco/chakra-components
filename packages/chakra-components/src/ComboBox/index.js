@@ -417,9 +417,6 @@ const ComboBoxRightElement = forwardRef((props, ref) => {
       children={<Icon name="chevron-down" fontSize="1.5rem" />}
       pointerEvents="none"
       {...props}
-      onClick={() => {
-        console.log("clicked");
-      }}
     />
   );
 });
@@ -468,7 +465,6 @@ const ComboBoxClearElement = forwardRef((props, ref) => {
             cursor="pointer"
             zIndex={200}
             onClick={() => {
-              console.log("event ");
               deselectIndex(null);
             }}
           />

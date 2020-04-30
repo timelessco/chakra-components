@@ -320,7 +320,6 @@ export default function useSelect({
   const removeValue = React.useCallback(
     index => {
       if (value) {
-        console.log("value ", value);
         onChangeRef.current(value.filter((d, i) => i !== index));
       }
     },
