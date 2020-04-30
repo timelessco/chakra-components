@@ -37,7 +37,8 @@ function reducer(state, action) {
         initiated: false,
         success: false,
         failed: true,
-        errorMessage: action.payload.message,
+        errorMessage: action.payload.errorMessage,
+        completedOnce: true,
       };
     default:
       return state;

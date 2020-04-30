@@ -4,6 +4,7 @@ import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 import { mdx } from "@mdx-js/react";
 import * as Chakra from "@chakra-ui/core";
 import * as ChakraComp from "@chakra-components/core";
+import axios from "axios";
 
 const { Box, Button, useClipboard } = Chakra;
 
@@ -117,6 +118,7 @@ const CodeBlock = ({
     scope: {
       ...Chakra,
       ...ChakraComp,
+      axios,
       mdx,
       StarIcon,
     },

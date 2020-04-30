@@ -4,6 +4,7 @@ import React, {
   useRef,
   createContext,
   useEffect,
+  useState,
 } from "react";
 import {
   Box,
@@ -68,11 +69,16 @@ const ComboBox = forwardRef(
         data: asyncOptions,
         initiated: isAsyncInitiated,
         success: isAsyncSuccess,
+        failed: isAsyncFailure,
         completedOnce: isAsyncCompletedOnce,
+        errorMessage: asyncErrorMessage,
       },
       onAsyncStart,
       onAsyncSuccess,
+      onAsyncFailure,
     } = useAsyncFetching(loadOptions);
+
+    const [debounceState, setDebounceState] = useState(false);
 
     // Position can be top / center / end
     const scrollToIndex = (index, position) => {
@@ -121,14 +127,29 @@ const ComboBox = forwardRef(
         inputValue &&
         selectedOption.value !== inputValue // Prevent refetch when selected
       ) {
+        //TODO:
+        // 1. Debounce need to be on hook
+        // 2. Need a better way and encapsulate this
+        // 3. Remove these 3 and call directly. Just written for clarity.
+
         // Callback when the actual fetch started
         const fetchStartCb = () => onAsyncStart(true);
 
         // Callback that is exposed outside
         const fetchCompleteCb = data => onAsyncSuccess(data);
 
-        //TODO: Debounce need to be on hook
-        debounce(inputValue, loadOptions, fetchStartCb, fetchCompleteCb, 800);
+        // Callback when fetch failed
+        const fetchErrorCb = message => onAsyncFailure(message);
+
+        debounce(
+          inputValue,
+          loadOptions,
+          setDebounceState,
+          fetchStartCb,
+          fetchCompleteCb,
+          fetchErrorCb,
+          800,
+        );
       }
     }, [inputValue]);
 
@@ -146,6 +167,9 @@ const ComboBox = forwardRef(
       enableGhost,
       isAsyncInitiated,
       isAsyncSuccess,
+      isAsyncFailure,
+      asyncErrorMessage,
+      isInputDebouncing: debounceState,
     };
 
     const { sizes } = useTheme();
@@ -259,7 +283,7 @@ const ComboBoxPopper = forwardRef(
       inputRef,
       optionsRef,
       isOpen,
-      isAsyncInitiated,
+      isInputDebouncing,
     } = useComboBoxContext();
 
     const popperModifiers = {
@@ -277,7 +301,7 @@ const ComboBoxPopper = forwardRef(
     const styleProps = useComboBoxPopperStyle();
 
     // TODO: Need to prevent both list and popper from rendering
-    if (isAsyncInitiated) {
+    if (isInputDebouncing) {
       return null;
     }
 
@@ -306,6 +330,8 @@ const ComboBoxOption = forwardRef(({ index, style, data, ...rest }, ref) => {
     highlightedOption,
     selectedOption,
     getOptionProps,
+    isAsyncFailure,
+    asyncErrorMessage,
   } = useComboBoxContext();
 
   const option = visibleOptions[index];
@@ -318,11 +344,14 @@ const ComboBoxOption = forwardRef(({ index, style, data, ...rest }, ref) => {
     highlighted,
     disabled,
   });
-
   if (!visibleOptions.length) {
     return (
       <PseudoBox ref={ref} style={style} {...styleProps} {...data}>
-        No options were found...
+        {isAsyncFailure
+          ? asyncErrorMessage
+            ? asyncErrorMessage
+            : "No results found"
+          : null}
       </PseudoBox>
     );
   }

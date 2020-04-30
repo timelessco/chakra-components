@@ -11,7 +11,9 @@ with typeahead & autocomplete support. (Accessible in future)
 
 ```js
 import { ComboBox } from "@chakra-components/core";
+import axios from 'axios'
 ```
+<<<<<<< HEAD
 
 ## Usage
 
@@ -138,6 +140,8 @@ function ComboBoxExample() {
 }
 ```
 
+=======
+>>>>>>> feat(async in select): demoable version with proper behaviour complete
 ## Async fetching
 
 ```jsx
@@ -151,43 +155,17 @@ function ComboBoxExample() {
     "Bananas",
   ];
 
-  const _axios = ({ speed }) => new Promise(resolve => {
-    setTimeout(() => {
-      resolve([
-        'dynamic-option-1', 
-        'dynamic-option-2', 
-        'dynamic-option-3', 
-        'dynamic-option-4', 
-        'dynamic-option-5',
-        'dynamic-option-6', 
-        'dynamic-option-7', 
-        'dynamic-option-8', 
-        'dynamic-option-9', 
-        'dynamic-option-10',
-        'dynamic-option-11', 
-        'dynamic-option-12', 
-        'dynamic-option-13', 
-        'dynamic-option-14', 
-        'dynamic-option-15',
-        'dynamic-option-16', 
-        'dynamic-option-17', 
-        'dynamic-option-18', 
-        'dynamic-option-19', 
-        'dynamic-option-20',
-      ])
-    }, speed === 'slow' ? 4000 : 1000)
-    
-  })
-
-  const asyncFetchOptions = (value, callback) => {
-    _axios(({
-      speed: 'fast' // 'fast' 
-    })).then((data) => {
-      callback(data.map((d, i) => ({
-        value: d,
-        label: d,
-      })))
-    })
+  const asyncFetchOptions = (value, successCb, errorCb) => {
+    axios.get(`https://restcountries.eu/rest/v2/name/${value}`)
+      .then(response => {
+        successCb(response.data.map(eachpiece => ({
+          label: `${eachpiece.name}`,
+          value: `${eachpiece.name}`
+        })))
+      })
+      .catch((e) => {
+        errorCb('Custom error message')
+      })
   }
 
   const [fruit, setFruit] = React.useState(null);
