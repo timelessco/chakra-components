@@ -462,7 +462,7 @@ const ComboBoxRightAddon = forwardRef((props, ref) => {
   ========================================================================== */
 
 const ComboBoxClearElement = forwardRef((props, ref) => {
-  const { isAsyncInitiated, deselectIndex, inputValue } = useComboBoxContext();
+  const { isAsyncInitiated, deselectIndex, inputRef } = useComboBoxContext();
 
   return (
     <InputRightElement
@@ -478,6 +478,7 @@ const ComboBoxClearElement = forwardRef((props, ref) => {
             zIndex={200}
             onClick={() => {
               deselectIndex(null);
+              inputRef.current.focus();
             }}
           />
         )
