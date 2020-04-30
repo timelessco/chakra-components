@@ -194,7 +194,11 @@ const ComboBox = forwardRef(
               right = sizes[height];
               pr += height;
 
-              return cloneElement(child, { size, right });
+              if (selectedOption.value) {
+                return cloneElement(child, { size, right });
+              }
+
+              return null;
             }
 
             if (child.type === ComboBoxInput) {
