@@ -13,7 +13,112 @@ with typeahead & autocomplete support. (Accessible in future)
 import { ComboBox } from "@chakra-components/core";
 ```
 
-### Disabled
+### Basic ComboBox
+
+```jsx
+function ComboBoxExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+    "Cantaloupes(cantalope)",
+    "Chocolate - Fruit",
+    "Cherimoya",
+    "Cherries",
+    "Cranberries",
+    "Cucumbers",
+    "Currants",
+    "Dates",
+    "Durian",
+    "Eggplant",
+    "Elderberries",
+    "Figs",
+    "Gooseberries",
+    "Grapes",
+    "Grapefruit",
+    "Guava",
+    "Honeydew melons",
+    "Horned melon(Kiwano)",
+    "Huckleberries",
+    "Ita Palm",
+    "Jujubes",
+    "Kiwis",
+    "Kumquat",
+    "Lemons",
+    "Limes",
+    "Lychees",
+    "Mangos",
+    "Mangosteen",
+    "Mulberries",
+    "Muskmelon",
+    "Nectarines",
+    "Ogden melons",
+    "Olives",
+    "Oranges",
+    "Papaya",
+    "Passion fruit",
+    "Peaches",
+    "Pears",
+    "Peppers",
+    "Persimmon",
+    "Pineapple",
+    "Plums",
+    "Pluot",
+    "Pomegranate",
+    "Prickly Pear",
+    "Quince",
+    "Rambuton",
+    "Raspberries",
+    "Rose Apple",
+    "Starfruit",
+    "Sapadilla",
+    "Strawberries",
+    "Tamarind",
+    "Tangelo",
+    "Tangerines",
+    "Tomatoes",
+    "Ugli fruit",
+    "Voavanga(Spanish Tamarind)",
+    "Watermelons",
+    "Xigua melon",
+    "Yellow watermelon",
+    "Zucchini",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+  }));
+
+  const [fruit, setFruit] = React.useState(null);
+  return (
+    <>
+      <ComboBox value={fruit} options={options} onChange={setFruit}>
+        <ComboBoxRightElement
+          children={<Icon name="chevron-down" fontSize="1.5rem" />}
+        />
+        <ComboBoxClearElement />
+        <ComboBoxInput placeholder="Select a fruit..." />
+        <ComboBoxPopper>
+          <ComboBoxList>
+            <ComboBoxOption />
+          </ComboBoxList>
+        </ComboBoxPopper>
+      </ComboBox>
+    </>
+  );
+}
+```
+
+### ComboBox with Disabled Options
 
 ```jsx
 function ComboBoxExample() {
@@ -119,7 +224,7 @@ function ComboBoxExample() {
 }
 ```
 
-## Async fetching
+## ComboBox with Async fetching
 
 ```jsx
 function ComboBoxExample() {
