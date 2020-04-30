@@ -51,8 +51,6 @@ const ComboBox = forwardRef(
       multi = false,
       async,
       loadOptions = null, // Boolean to ind
-      pageSize = 10,
-      itemHeight = 40,
       children,
       size = "md",
       enableGhost = "true",
@@ -86,7 +84,7 @@ const ComboBox = forwardRef(
       }
       reactWindowInstanceRef.current.scrollToItem(index, position);
     };
-    const shiftAmount = pageSize;
+
     const {
       visibleOptions,
       selectedOption,
@@ -98,7 +96,6 @@ const ComboBox = forwardRef(
       deselectIndex,
     } = useSelect({
       multi,
-      options: async ? asyncOptions : options,
       options: async
         ? isAsyncSuccess
           ? asyncOptions
@@ -115,9 +112,6 @@ const ComboBox = forwardRef(
       filterFn: (options, value) =>
         matchSorter(options, value, { keys: ["label"] }),
     });
-
-    const Optionsheight =
-      Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;
 
     const inputValue = getInputProps().value;
 
@@ -346,6 +340,7 @@ const ComboBoxOption = forwardRef(({ index, style, data, ...rest }, ref) => {
     highlighted,
     disabled,
   });
+
   if (!visibleOptions.length) {
     return (
       <PseudoBox ref={ref} style={style} {...styleProps} {...data}>
@@ -386,12 +381,16 @@ const ComboBoxList = forwardRef(
       isAsyncInitiated,
       isInputDebouncing,
     } = useComboBoxContext();
+
     const height =
       Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;
+
     const _reactWindowInstanceRef = useForkRef(reactWindowInstanceRef, ref);
+
     if (isInputDebouncing || isAsyncInitiated) {
       return null;
     }
+
     return (
       <FixedSizeList
         ref={_reactWindowInstanceRef}

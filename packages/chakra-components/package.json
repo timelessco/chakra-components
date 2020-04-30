@@ -21,7 +21,6 @@
   "dependencies": {
     "@reach/auto-id": "^0.10.1",
     "match-sorter": "^4.1.0",
-    "memoize-one": "^5.1.1",
     "react-window": "^1.8.5"
   },
   "peerDependencies": {
@@ -49,8 +48,5 @@
     "components",
     "emotion",
     "library"
-  ],
-  "devDependencies": {
-    "axios": "^0.19.2"
-  }
+  ]
 }
