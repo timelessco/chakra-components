@@ -221,8 +221,16 @@ const ComboBoxInput = forwardRef(({ placeholder, ...props }, ref) => {
   const { getInputProps, selectedOption, enableGhost } = useComboBoxContext();
   const { value } = getInputProps();
   const ghostProps = splitProps(props);
-  const _placeholder =
-    !value && !selectedOption.value ? placeholder : undefined;
+
+  const _placeholder = () => {
+    if (!enableGhost) {
+      return placeholder;
+    } else if (!value && !selectedOption.value) {
+      return placeholder;
+    } else {
+      return undefined;
+    }
+  };
 
   const _enableGhost =
     enableGhost && !value && selectedOption && selectedOption.value;
@@ -231,7 +239,7 @@ const ComboBoxInput = forwardRef(({ placeholder, ...props }, ref) => {
     <>
       <Input
         cursor="default"
-        placeholder={_placeholder}
+        placeholder={_placeholder()}
         {...getInputProps({ ref })}
         {...props}
       />
