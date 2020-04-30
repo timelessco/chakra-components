@@ -319,7 +319,10 @@ export default function useSelect({
 
   const removeValue = React.useCallback(
     index => {
-      onChangeRef.current(value.filter((d, i) => i !== index));
+      if (value) {
+        console.log("value ", value);
+        onChangeRef.current(value.filter((d, i) => i !== index));
+      }
     },
     [value],
   );
@@ -627,6 +630,7 @@ export default function useSelect({
     visibleOptions: options,
     // Actions
     selectIndex,
+    deselectIndex,
     removeValue,
     setOpen,
     setSearch,
