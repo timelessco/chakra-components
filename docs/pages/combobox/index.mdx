@@ -396,9 +396,11 @@ function ComboBoxExample() {
     axios
       .get(`https://restcountries.eu/rest/v2/name/a`)
       .then(response => {
-        setCacheOptions(response.data.map(eachpiece => ({
-            label: `${eachpiece.name}`,
-            value: `${eachpiece.name}`,
+        setCacheOptions(response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`
           })))
       })
       .catch(e => {
@@ -412,9 +414,11 @@ function ComboBoxExample() {
       .get(`https://restcountries.eu/rest/v2/name/${value}`)
       .then(response => {
         successCb(
-          response.data.map(eachpiece => ({
-            label: `${eachpiece.name}`,
-            value: `${eachpiece.name}`,
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`
           })),
         );
       })
@@ -439,7 +443,20 @@ function ComboBoxExample() {
         />
         <ComboBoxClearElement />
         <ComboBoxInput placeholder="Select a country..." />
-        <ComboBoxPopup />
+        <ComboBoxPopup 
+          itemHeight={60}
+          renderItem={( {index, data, option, selected, highlighted, disabled} ) => ( 
+            <Flex width="100%" alignItems="center">
+              <Box w="5%">
+                <Box>{option.code}</Box>
+              </Box>
+              <Flex w="95%" flexDirection="column" alignItems="left">
+                <Box as="h4" fontWeight="bold">{option.label}</Box>
+                <Box>{option.timeZone}</Box>
+              </Flex>
+            </Flex>
+          )}
+        />
       </ComboBox>
     </>
   );
