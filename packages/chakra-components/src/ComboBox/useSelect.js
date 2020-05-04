@@ -80,7 +80,7 @@ export default function useSelect({
   getCreateLabel = d => `Use "${d}"`,
   stateReducer = (old, newState, action) => newState,
   duplicates,
-  options,
+  options = [],
   async,
   isAsyncSuccess,
   value,
@@ -88,9 +88,14 @@ export default function useSelect({
   scrollToIndex = () => {},
   shiftAmount = 5,
   filterFn = defaultFilterFn,
+  cacheOptions = [],
   optionsRef,
   getDebounce = options =>
-    options.length > 10000 ? 1000 : options.length > 1000 ? 200 : 0,
+    (options && options.length) > 10000
+      ? 1000
+      : (options && options.length) > 1000
+      ? 200
+      : 0,
 }) {
   const [
     {
@@ -104,6 +109,7 @@ export default function useSelect({
     setState,
   ] = useHoistedState(initialState, stateReducer);
 
+  console.log("cache options ", cacheOptions);
   // Refs
 
   const inputRef = React.useRef();
@@ -132,11 +138,6 @@ export default function useSelect({
     value = defaultMultiValue;
   }
 
-  // If no options are provided, then use an empty array
-  if (!options) {
-    options = defaultOptions;
-  }
-
   const originalOptions = options;
 
   // If multi and duplicates aren't allowed, filter out the
@@ -145,6 +146,11 @@ export default function useSelect({
     if (multi && !duplicates && !async) {
       return options.filter(d => !value.includes(d.value));
     }
+
+    // console.log("value ", value);
+    // if (async && !isOpen) {
+    //   return cacheOptions;
+    // }
 
     return options;
   }, [options, value, duplicates, multi, isAsyncSuccess]);

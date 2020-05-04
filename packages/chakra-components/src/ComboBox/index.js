@@ -48,7 +48,7 @@ const ComboBox = forwardRef(
     {
       value,
       options,
-      defaultOptions = [],
+      cacheOptions = [],
       onChange,
       multi = false,
       async,
@@ -98,11 +98,12 @@ const ComboBox = forwardRef(
       deselectIndex,
     } = useSelect({
       multi,
+      cacheOptions,
       options: async
         ? isAsyncSuccess
           ? asyncOptions
           : !isAsyncCompletedOnce
-          ? defaultOptions
+          ? cacheOptions
           : []
         : options,
       async,
