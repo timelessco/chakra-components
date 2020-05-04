@@ -107,11 +107,80 @@ function ComboBoxExample() {
         />
         <ComboBoxClearElement />
         <ComboBoxInput placeholder="Select a fruit..." />
-        <ComboBoxPopper>
-          <ComboBoxList>
-            <ComboBoxOption />
-          </ComboBoxList>
-        </ComboBoxPopper>
+        <ComboBoxPopup />
+      </ComboBox>
+    </>
+  );
+}
+```
+
+### Combobox with custom renderer
+
+```jsx
+function ComboBoxExample() {
+  const options = [
+    {
+      label: 'bug',
+      description: `Something isn't working`,
+      value: 'bug',
+      color: '#ff0000',
+    },
+    {
+      label: 'documentation',
+      description: `Improvements or addition to documentation`,
+      value: 'documentation',
+      color: '#0000ff',
+    },
+    {
+      label: 'duplicate',
+      description: `This issue or pull requests already exists`,
+      value: 'duplicate',
+      color: '#7f00ff',
+    },
+    {
+      label: 'enhancement',
+      description: `New feature or request`,
+      value: 'enhancement',
+      color: '#00ff00',
+    },
+    {
+      label: 'good first issue',
+      description: `Good for beginners`,
+      value: 'first-issue',
+      color: '#ffa500',
+    },
+    {
+      label: 'help wanted',
+      description: `Need more help`,
+      value: 'help-wanted',
+      color: '#844f38',
+    }
+  ];
+
+
+  const [tag, setTag] = React.useState(null);
+  return (
+    <>
+      <ComboBox value={tag} options={options} onChange={setTag}>
+        <ComboBoxRightElement
+          children={<Icon name="chevron-down" fontSize="1.5rem" />}
+        />
+        <ComboBoxClearElement />
+        <ComboBoxInput placeholder="Select a fruit..." />
+        <ComboBoxPopup
+          itemHeight={60}
+          renderItem={( {index, data, option, selected, highlighted, disabled} ) => (
+            <Flex width="100%" alignItems="center">
+              <Box w="5%">
+                <Box backgroundColor={option.color} width="20px" height="20px" />
+              </Box>
+              <Flex w="95%" flexDirection="column" alignItems="left">
+                <Box as="h4" fontWeight="bold">{option.label}</Box>
+                <Box>{option.description}</Box>
+              </Flex>
+            </Flex>
+          )}
+        />
       </ComboBox>
     </>
   );
