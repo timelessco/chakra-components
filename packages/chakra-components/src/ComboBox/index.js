@@ -413,6 +413,8 @@ const ComboBoxOption = forwardRef(({ index, style, data, ...rest }, ref) => {
       selected,
       highlighted,
       disabled,
+      style, // to expose the basic style by react-window
+      getOptionProps, // All
     });
   }
 

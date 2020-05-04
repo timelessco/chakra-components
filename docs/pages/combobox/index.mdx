@@ -1,16 +1,26 @@
 # ComboBox
 
-An accessible ComboBox Component with
+A combobox option that supports
 
-1. single
-2. multi selectable
+1. Single option select
+2. Multiple option select
+3. Disabled options
+4. Async options fetching
+5. Typeahead & autocomplete support
+6. Disabled options
+7. Virtualizing large lists
 
-with typeahead & autocomplete support. (Accessible in future)
 
 ## Import
 
 ```js
-import { ComboBox } from "@chakra-components/core";
+import { 
+  ComboBox,
+  ComboBoxInput,
+  ComboBoxPopup,
+  ComboBoxClearElement,
+  ComboBoxRightElement
+} from "@chakra-components/core";
 ```
 
 ### Basic ComboBox
@@ -25,72 +35,6 @@ function ComboBoxExample() {
     "Ackee",
     "Bananas",
     "Bilberries",
-    "Blueberries",
-    "Blackberries",
-    "Boysenberries",
-    "Bread fruit",
-    "Cantaloupes(cantalope)",
-    "Chocolate - Fruit",
-    "Cherimoya",
-    "Cherries",
-    "Cranberries",
-    "Cucumbers",
-    "Currants",
-    "Dates",
-    "Durian",
-    "Eggplant",
-    "Elderberries",
-    "Figs",
-    "Gooseberries",
-    "Grapes",
-    "Grapefruit",
-    "Guava",
-    "Honeydew melons",
-    "Horned melon(Kiwano)",
-    "Huckleberries",
-    "Ita Palm",
-    "Jujubes",
-    "Kiwis",
-    "Kumquat",
-    "Lemons",
-    "Limes",
-    "Lychees",
-    "Mangos",
-    "Mangosteen",
-    "Mulberries",
-    "Muskmelon",
-    "Nectarines",
-    "Ogden melons",
-    "Olives",
-    "Oranges",
-    "Papaya",
-    "Passion fruit",
-    "Peaches",
-    "Pears",
-    "Peppers",
-    "Persimmon",
-    "Pineapple",
-    "Plums",
-    "Pluot",
-    "Pomegranate",
-    "Prickly Pear",
-    "Quince",
-    "Rambuton",
-    "Raspberries",
-    "Rose Apple",
-    "Starfruit",
-    "Sapadilla",
-    "Strawberries",
-    "Tamarind",
-    "Tangelo",
-    "Tangerines",
-    "Tomatoes",
-    "Ugli fruit",
-    "Voavanga(Spanish Tamarind)",
-    "Watermelons",
-    "Xigua melon",
-    "Yellow watermelon",
-    "Zucchini",
   ];
 
   const options = fruits.map((d, i) => ({
@@ -98,10 +42,13 @@ function ComboBoxExample() {
     label: d,
   }));
 
-  const [fruit, setFruit] = React.useState(null);
+  const handleFruitChange = (fruit) => {
+    alert(`Selected: ${fruit}`)
+  }
+
   return (
     <>
-      <ComboBox value={fruit} options={options} onChange={setFruit}>
+      <ComboBox options={options} onChange={handleFruitChange}>
         <ComboBoxRightElement
           children={<Icon name="chevron-down" fontSize="1.5rem" />}
         />
@@ -114,10 +61,14 @@ function ComboBoxExample() {
 }
 ```
 
-### Combobox with custom renderer
+### Combobox with custom option renderer
+
+#### 1. Only the renderer , keeping the <b>highlighted, selected </b> styles as default. Use this to quickly change just the content.
 
 ```jsx
 function ComboBoxExample() {
+  
+
   const options = [
     {
       label: 'bug',
@@ -169,7 +120,7 @@ function ComboBoxExample() {
         <ComboBoxInput placeholder="Select a fruit..." />
         <ComboBoxPopup
           itemHeight={60}
-          renderItem={( {index, data, option, selected, highlighted, disabled} ) => (
+          renderItem={( {index, data, option, selected, highlighted, disabled} ) => ( 
             <Flex width="100%" alignItems="center">
               <Box w="5%">
                 <Box backgroundColor={option.color} width="20px" height="20px" />
@@ -187,7 +138,145 @@ function ComboBoxExample() {
 }
 ```
 
-### ComboBox with Disabled Options
+#### 2. Complete option renderer. Use this when you need complete control.
+
+Here, the default hover, selected and disabled style has been changed.
+Also complete control of select box styling has been changed.
+
+```jsx
+function ComboBoxExample() {
+  const getOptionStyles = (selected, highlighted, disabled) => {
+
+    const styles = {
+      display: "flex",
+      alignItems: "center",
+      flex: "0 0 auto",
+      width: "full",
+      userSelect: "none",
+      transition: "background-color 220ms, color 220ms",
+      rounded: "sm",
+      outline: "none",
+      textAlign: "left",
+      textDecoration: "none",
+      color: disabled ? "gray.400" : "inherit",
+      pointerEvents: disabled ? "none" : "auto",
+      px: 4,
+      bg: selected
+        ? `teal.300`
+        : highlighted
+        ? `teal.100`
+        : "transparent",
+      _active: {
+        bg: 'gray.200',
+      },
+      _focus: {
+        shadow: "outline",
+        outline: 0,
+      },
+      _disabled: {
+        opacity: 0.4,
+        cursor: "not-allowed",
+      },
+      _before: {
+        position: "absolute",
+        content: "''",
+        left: 0,
+        top: "50%",
+        right: 0,
+        borderTop: disabled ? '1px solid' : null,
+        borderColor: 'red',
+      }
+    }
+
+    return styles;
+  }
+  const options = [
+    {
+      label: 'bug',
+      description: `Something isn't working`,
+      value: 'bug',
+      color: '#ff0000',
+      disabled: true
+    },
+    {
+      label: 'documentation',
+      description: `Improvements or addition to documentation`,
+      value: 'documentation',
+      color: '#0000ff',
+    },
+    {
+      label: 'duplicate',
+      description: `This issue or pull requests already exists`,
+      value: 'duplicate',
+      color: '#7f00ff',
+    },
+    {
+      label: 'enhancement',
+      description: `New feature or request`,
+      value: 'enhancement',
+      color: '#00ff00',
+    },
+    {
+      label: 'good first issue',
+      description: `Good for beginners`,
+      value: 'first-issue',
+      color: '#ffa500',
+    },
+    {
+      label: 'help wanted',
+      description: `Need more help`,
+      value: 'help-wanted',
+      color: '#844f38',
+    }
+  ];
+
+
+  const [tag, setTag] = React.useState(null);
+  return (
+    <>
+      <ComboBox value={tag} options={options} onChange={setTag}>
+        <ComboBoxRightElement
+          children={<Icon name="chevron-down" fontSize="1.5rem" />}
+        />
+        <ComboBoxClearElement />
+        <ComboBoxInput placeholder="Select a fruit..." />
+        <ComboBoxPopup
+          itemHeight={60}
+          renderOption={({ 
+            index, 
+            data, 
+            option, 
+            selected, 
+            highlighted, 
+            disabled, 
+            style, 
+            getOptionProps 
+          }) => (
+              <PseudoBox
+                {...getOptionProps({ index, option })}
+                {...getOptionStyles(selected, highlighted, disabled)}  
+                style={style}
+              >
+              <Flex width="100%" alignItems="center">
+                <Box w="5%">
+                  <Box backgroundColor={option.color} width="20px" height="20px" />
+                </Box>
+                <Flex w="95%" flexDirection="column" alignItems="left">
+                  <Box as="h4" fontWeight="bold">{option.label}</Box>
+                  <Box>{option.description}</Box>
+                </Flex>
+              </Flex>
+            </PseudoBox>
+          )}
+        />
+      </ComboBox>
+    </>
+  );
+}
+```
+
+
+### ComboBox with large options and disabled set
 
 ```jsx
 function ComboBoxExample() {
@@ -282,11 +371,7 @@ function ComboBoxExample() {
         />
         <ComboBoxClearElement />
         <ComboBoxInput placeholder="Select a fruit..." />
-        <ComboBoxPopper>
-          <ComboBoxList>
-            <ComboBoxOption />
-          </ComboBoxList>
-        </ComboBoxPopper>
+        <ComboBoxPopup />
       </ComboBox>
     </>
   );
@@ -335,12 +420,7 @@ function ComboBoxExample() {
         />
         <ComboBoxClearElement />
         <ComboBoxInput placeholder="Select a fruit..." />
-        <ComboBoxSelectedGhost />
-        <ComboBoxPopper>
-          <ComboBoxList>
-            <ComboBoxOption />
-          </ComboBoxList>
-        </ComboBoxPopper>
+        <ComboBoxPopup />
       </ComboBox>
     </>
   );
