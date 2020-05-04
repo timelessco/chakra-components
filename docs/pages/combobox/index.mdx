@@ -13,26 +13,7 @@ with typeahead & autocomplete support. (Accessible in future)
 import { ComboBox } from "@chakra-components/core";
 ```
 
-## Usage
-
-Here's a basic usage of the Select component.
-
-```jsx
-<ComboBox>
-  <ComboBoxLeftElement color="gray.300" fontSize="1.2em" children="$" />
-  <ComboBoxRightElement
-    children={<Icon name="chevron-down" fontSize="1.5rem" />}
-  />
-  <ComboBoxClearElement />
-  <ComboBoxInput as={Select} placeholder="Enter amount">
-    <option value="option1">Option 1</option>
-    <option value="option2">Option 2</option>
-    <option value="option3">Option 3</option>
-  </ComboBoxInput>
-</ComboBox>
-```
-
-## Experiments
+### Basic ComboBox
 
 ```jsx
 function ComboBoxExample() {
@@ -126,6 +107,235 @@ function ComboBoxExample() {
         />
         <ComboBoxClearElement />
         <ComboBoxInput placeholder="Select a fruit..." />
+        <ComboBoxPopup />
+      </ComboBox>
+    </>
+  );
+}
+```
+
+### Combobox with custom renderer
+
+```jsx
+function ComboBoxExample() {
+  const options = [
+    {
+      label: 'bug',
+      description: `Something isn't working`,
+      value: 'bug',
+      color: '#ff0000',
+    },
+    {
+      label: 'documentation',
+      description: `Improvements or addition to documentation`,
+      value: 'documentation',
+      color: '#0000ff',
+    },
+    {
+      label: 'duplicate',
+      description: `This issue or pull requests already exists`,
+      value: 'duplicate',
+      color: '#7f00ff',
+    },
+    {
+      label: 'enhancement',
+      description: `New feature or request`,
+      value: 'enhancement',
+      color: '#00ff00',
+    },
+    {
+      label: 'good first issue',
+      description: `Good for beginners`,
+      value: 'first-issue',
+      color: '#ffa500',
+    },
+    {
+      label: 'help wanted',
+      description: `Need more help`,
+      value: 'help-wanted',
+      color: '#844f38',
+    }
+  ];
+
+
+  const [tag, setTag] = React.useState(null);
+  return (
+    <>
+      <ComboBox value={tag} options={options} onChange={setTag}>
+        <ComboBoxRightElement
+          children={<Icon name="chevron-down" fontSize="1.5rem" />}
+        />
+        <ComboBoxClearElement />
+        <ComboBoxInput placeholder="Select a fruit..." />
+        <ComboBoxPopup
+          itemHeight={60}
+          renderItem={( {index, data, option, selected, highlighted, disabled} ) => (
+            <Flex width="100%" alignItems="center">
+              <Box w="5%">
+                <Box backgroundColor={option.color} width="20px" height="20px" />
+              </Box>
+              <Flex w="95%" flexDirection="column" alignItems="left">
+                <Box as="h4" fontWeight="bold">{option.label}</Box>
+                <Box>{option.description}</Box>
+              </Flex>
+            </Flex>
+          )}
+        />
+      </ComboBox>
+    </>
+  );
+}
+```
+
+### ComboBox with Disabled Options
+
+```jsx
+function ComboBoxExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+    "Cantaloupes(cantalope)",
+    "Chocolate - Fruit",
+    "Cherimoya",
+    "Cherries",
+    "Cranberries",
+    "Cucumbers",
+    "Currants",
+    "Dates",
+    "Durian",
+    "Eggplant",
+    "Elderberries",
+    "Figs",
+    "Gooseberries",
+    "Grapes",
+    "Grapefruit",
+    "Guava",
+    "Honeydew melons",
+    "Horned melon(Kiwano)",
+    "Huckleberries",
+    "Ita Palm",
+    "Jujubes",
+    "Kiwis",
+    "Kumquat",
+    "Lemons",
+    "Limes",
+    "Lychees",
+    "Mangos",
+    "Mangosteen",
+    "Mulberries",
+    "Muskmelon",
+    "Nectarines",
+    "Ogden melons",
+    "Olives",
+    "Oranges",
+    "Papaya",
+    "Passion fruit",
+    "Peaches",
+    "Pears",
+    "Peppers",
+    "Persimmon",
+    "Pineapple",
+    "Plums",
+    "Pluot",
+    "Pomegranate",
+    "Prickly Pear",
+    "Quince",
+    "Rambuton",
+    "Raspberries",
+    "Rose Apple",
+    "Starfruit",
+    "Sapadilla",
+    "Strawberries",
+    "Tamarind",
+    "Tangelo",
+    "Tangerines",
+    "Tomatoes",
+    "Ugli fruit",
+    "Voavanga(Spanish Tamarind)",
+    "Watermelons",
+    "Xigua melon",
+    "Yellow watermelon",
+    "Zucchini",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+    disabled: i % 4 === 0,
+  }));
+
+  const [fruit, setFruit] = React.useState(null);
+  return (
+    <>
+      <ComboBox value={fruit} options={options} onChange={setFruit}>
+        <ComboBoxRightElement
+          children={<Icon name="chevron-down" fontSize="1.5rem" />}
+        />
+        <ComboBoxClearElement />
+        <ComboBoxInput placeholder="Select a fruit..." />
+        <ComboBoxPopper>
+          <ComboBoxList>
+            <ComboBoxOption />
+          </ComboBoxList>
+        </ComboBoxPopper>
+      </ComboBox>
+    </>
+  );
+}
+```
+
+## ComboBox with Async fetching
+
+```jsx
+function ComboBoxExample() {
+  const fruits = ["Acai", "Apples", "Apricots", "Avocado", "Ackee", "Bananas"];
+
+  const asyncFetchOptions = (value, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${value}`)
+      .then(response => {
+        successCb(
+          response.data.map(eachpiece => ({
+            label: `${eachpiece.name}`,
+            value: `${eachpiece.name}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Custom error message");
+      });
+  };
+
+  const [fruit, setFruit] = React.useState(null);
+  return (
+    <>
+      <ComboBox
+        async
+        value={fruit}
+        onChange={setFruit}
+        loadOptions={asyncFetchOptions}
+        defaultOptions={[
+          // Show default options
+          { label: "default-option-1", value: "default-option-1" },
+          { label: "default-option-2", value: "default-option-2" },
+          { label: "default-option-3", value: "default-option-3" },
+        ]}
+      >
+        <ComboBoxRightElement
+          children={<Icon name="chevron-down" fontSize="1.5rem" />}
+        />
+        <ComboBoxClearElement />
+        <ComboBoxInput placeholder="Select a fruit..." />
+        <ComboBoxSelectedGhost />
         <ComboBoxPopper>
           <ComboBoxList>
             <ComboBoxOption />

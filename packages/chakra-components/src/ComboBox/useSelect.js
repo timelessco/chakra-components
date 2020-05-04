@@ -81,6 +81,8 @@ export default function useSelect({
   stateReducer = (old, newState, action) => newState,
   duplicates,
   options,
+  async,
+  isAsyncSuccess,
   value,
   onChange,
   scrollToIndex = () => {},
@@ -140,11 +142,12 @@ export default function useSelect({
   // If multi and duplicates aren't allowed, filter out the
   // selected options from the options list
   options = React.useMemo(() => {
-    if (multi && !duplicates) {
+    if (multi && !duplicates && !async) {
       return options.filter(d => !value.includes(d.value));
     }
+
     return options;
-  }, [options, value, duplicates, multi]);
+  }, [options, value, duplicates, multi, isAsyncSuccess]);
 
   // Compute the currently selected option(s)
   let selectedOption = React.useMemo(() => {
@@ -170,7 +173,7 @@ export default function useSelect({
   // TODO: This is likely where we will perform async option fetching
   // in the future.
   options = React.useMemo(() => {
-    if (resolvedSearchValue) {
+    if (!async && resolvedSearchValue) {
       return filterFnRef.current(options, resolvedSearchValue);
     }
     return options;
@@ -316,7 +319,9 @@ export default function useSelect({
 
   const removeValue = React.useCallback(
     index => {
-      onChangeRef.current(value.filter((d, i) => i !== index));
+      if (value) {
+        onChangeRef.current(value.filter((d, i) => i !== index));
+      }
     },
     [value],
   );
@@ -495,7 +500,6 @@ export default function useSelect({
     });
   };
 
-  console.log("highted index ", highlightedIndex);
   const getOptionProps = ({
     index,
     key = index,
@@ -543,25 +547,21 @@ export default function useSelect({
   React.useEffect(() => {
     if (isOpen) {
       if (value) {
-        console.log("came in step 1");
         // Should always be original options
         const scrollToIndex =
           originalOptions.findIndex(d => d.value === value) || 0;
 
         if (scrollToIndex !== highlightedIndex) {
-          // console.log("moving -> 1", originalOptions.length, scrollToIndex);
           // When opened first time after selected, highlightIndex would not have been updated
           highlightIndex(scrollToIndex, "start");
 
           // scrollToIndexRef.current(scrollToIndex, "start");
         }
         if (scrollToIndex === highlightedIndex) {
-          // console.log("moving -> 2");
           // On repeated focus without changing the values
           scrollToIndexRef.current(scrollToIndex, "start");
         }
       } else {
-        console.log("came in step 2");
         let moveToIndex = null;
         for (var index = 0; index < options.length; index++) {
           if (!options[index].disabled) {
@@ -571,7 +571,6 @@ export default function useSelect({
         }
 
         if (moveToIndex !== null) {
-          console.log("move to index ", moveToIndex);
           highlightIndex(moveToIndex, "start");
         }
       }
@@ -581,7 +580,6 @@ export default function useSelect({
   React.useEffect(() => {
     if (isOpen) {
       if (highlightTriggeredBy === "valueChange") {
-        // console.log("moving -> 0");
         clearHighlightTriggeredBy();
         let moveToIndex = null;
         for (var index = 0; index < options.length; index++) {
@@ -631,6 +629,7 @@ export default function useSelect({
     visibleOptions: options,
     // Actions
     selectIndex,
+    deselectIndex,
     removeValue,
     setOpen,
     setSearch,

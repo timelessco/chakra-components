@@ -1,4 +1,11 @@
-import React, { forwardRef, cloneElement, useRef, createContext } from "react";
+import React, {
+  forwardRef,
+  cloneElement,
+  useRef,
+  createContext,
+  useEffect,
+  useState,
+} from "react";
 import {
   Box,
   PseudoBox,
@@ -9,23 +16,28 @@ import {
   InputLeftAddon,
   InputRightAddon,
   useTheme,
+  Spinner,
 } from "@chakra-ui/core";
 import Popper from "@chakra-ui/core/dist/Popper";
 import matchSorter from "match-sorter";
 import { FixedSizeList } from "react-window";
 import { useForkRef, cleanChildren } from "@chakra-ui/core/dist/utils";
 import { useComboBoxContext } from "./useComboBoxContext";
+import { useComboBoxPopupContext } from "./useComboBoxPopupContext";
 import useSelect from "./useSelect";
 import splitProps from "./utils";
 
 import { inputSizes } from "@chakra-ui/core/dist/Input/styles";
 import { useComboBoxPopperStyle, useComboBoxOptionStyle } from "./styles";
+import useAsyncFetching from "./useAsyncFetching";
+import debounce from "./debounce";
 
 /* =========================================================================
   ComboBoxContext
   ========================================================================== */
 
 export const ComboBoxContext = createContext();
+export const ComboBoxPopupContext = createContext();
 
 /* =========================================================================
   ComboBox
@@ -36,11 +48,14 @@ const ComboBox = forwardRef(
     {
       value,
       options,
+      defaultOptions = [],
       onChange,
       multi = false,
+      async,
+      loadOptions = null, // Boolean to ind
+      children,
       size = "md",
       enableGhost = "true",
-      children,
       ...props
     },
     ref,
@@ -48,6 +63,23 @@ const ComboBox = forwardRef(
     const reactWindowInstanceRef = useRef(null);
     const optionsRef = useRef(null);
 
+    const {
+      state: {
+        data: asyncOptions,
+        initiated: isAsyncInitiated,
+        success: isAsyncSuccess,
+        failed: isAsyncFailure,
+        completedOnce: isAsyncCompletedOnce,
+        errorMessage: asyncErrorMessage,
+      },
+      onAsyncStart,
+      onAsyncSuccess,
+      onAsyncFailure,
+    } = useAsyncFetching(loadOptions);
+
+    const [debounceState, setDebounceState] = useState(false);
+
+    // Position can be top / center / end
     const scrollToIndex = (index, position) => {
       if (!reactWindowInstanceRef.current) {
         return;
@@ -63,9 +95,18 @@ const ComboBox = forwardRef(
       getOptionProps,
       isOpen,
       inputRef,
+      deselectIndex,
     } = useSelect({
       multi,
-      options,
+      options: async
+        ? isAsyncSuccess
+          ? asyncOptions
+          : !isAsyncCompletedOnce
+          ? defaultOptions
+          : []
+        : options,
+      async,
+      isAsyncSuccess,
       value,
       onChange,
       scrollToIndex,
@@ -73,6 +114,40 @@ const ComboBox = forwardRef(
       filterFn: (options, value) =>
         matchSorter(options, value, { keys: ["label"] }),
     });
+
+    const inputValue = getInputProps().value;
+
+    useEffect(() => {
+      if (
+        loadOptions !== null &&
+        inputValue &&
+        selectedOption.value !== inputValue // Prevent refetch when selected
+      ) {
+        //TODO:
+        // 1. Debounce need to be on hook
+        // 2. Need a better way and encapsulate this
+        // 3. Remove these 3 and call directly. Just written for clarity.
+
+        // Callback when the actual fetch started
+        const fetchStartCb = () => onAsyncStart(true);
+
+        // Callback that is exposed outside
+        const fetchCompleteCb = data => onAsyncSuccess(data);
+
+        // Callback when fetch failed
+        const fetchErrorCb = message => onAsyncFailure(message);
+
+        debounce(
+          inputValue,
+          loadOptions,
+          setDebounceState,
+          fetchStartCb,
+          fetchCompleteCb,
+          fetchErrorCb,
+          800,
+        );
+      }
+    }, [inputValue]);
 
     const context = {
       multi,
@@ -86,6 +161,12 @@ const ComboBox = forwardRef(
       optionsRef,
       reactWindowInstanceRef,
       enableGhost,
+      isAsyncInitiated,
+      isAsyncSuccess,
+      isAsyncFailure,
+      asyncErrorMessage,
+      isInputDebouncing: debounceState,
+      deselectIndex,
     };
 
     const { sizes } = useTheme();
@@ -115,7 +196,11 @@ const ComboBox = forwardRef(
               right = sizes[height];
               pr += height;
 
-              return cloneElement(child, { size, right });
+              if (selectedOption.value) {
+                return cloneElement(child, { size, right });
+              }
+
+              return null;
             }
 
             if (child.type === ComboBoxInput) {
@@ -142,8 +227,16 @@ const ComboBoxInput = forwardRef(({ placeholder, ...props }, ref) => {
   const { getInputProps, selectedOption, enableGhost } = useComboBoxContext();
   const { value } = getInputProps();
   const ghostProps = splitProps(props);
-  const _placeholder =
-    !value && !selectedOption.value ? placeholder : undefined;
+
+  const _placeholder = () => {
+    if (!enableGhost) {
+      return placeholder;
+    } else if (!value && !selectedOption.value) {
+      return placeholder;
+    } else {
+      return undefined;
+    }
+  };
 
   const _enableGhost =
     enableGhost && !value && selectedOption && selectedOption.value;
@@ -152,7 +245,7 @@ const ComboBoxInput = forwardRef(({ placeholder, ...props }, ref) => {
     <>
       <Input
         cursor="default"
-        placeholder={_placeholder}
+        placeholder={_placeholder()}
         {...getInputProps({ ref })}
         {...props}
       />
@@ -190,12 +283,53 @@ const ComboBoxSelectedGhost = forwardRef(({ size, ...props }, ref) => {
 });
 
 /* =========================================================================
+  ComboBoxPopup
+  ========================================================================== */
+const ComboBoxPopup = forwardRef(
+  (
+    {
+      placement,
+      skid,
+      gutter,
+      itemHeight,
+      pageSize,
+      renderItem,
+      renderOption,
+      ...props
+    },
+    ref,
+  ) => {
+    // TODO: Reorganize this context, with the right props once the structure is confirmed
+
+    const context = {
+      renderItem, // Keeps the default root Psuedobox and styles. Just controls the inner element
+      renderOption, // Gives the entire option itself
+    };
+    return (
+      <ComboBoxPopupContext.Provider value={context}>
+        <ComboBoxPopper placement={placement} skid={skid} gutter={gutter}>
+          <ComboBoxList itemHeight={itemHeight} pageSize={pageSize}>
+            <ComboBoxOption />
+          </ComboBoxList>
+        </ComboBoxPopper>
+      </ComboBoxPopupContext.Provider>
+    );
+  },
+);
+
+/* =========================================================================
   ComboBoxPopper
   ========================================================================== */
 
 const ComboBoxPopper = forwardRef(
   ({ placement, skid, gutter = 0, ...props }, ref) => {
-    const { inputRef, optionsRef, isOpen } = useComboBoxContext();
+    const {
+      inputRef,
+      optionsRef,
+      isOpen,
+      isInputDebouncing,
+      isAsyncInitiated,
+    } = useComboBoxContext();
 
     const popperModifiers = {
       preventOverflow: {
@@ -210,6 +344,11 @@ const ComboBoxPopper = forwardRef(
 
     const _optionsRef = useForkRef(optionsRef, ref);
     const styleProps = useComboBoxPopperStyle();
+
+    // TODO: Need to prevent both list and popper from rendering
+    if (isInputDebouncing || isAsyncInitiated) {
+      return null;
+    }
 
     return (
       <Popper
@@ -236,22 +375,73 @@ const ComboBoxOption = forwardRef(({ index, style, data, ...rest }, ref) => {
     highlightedOption,
     selectedOption,
     getOptionProps,
+    isAsyncFailure,
+    asyncErrorMessage,
   } = useComboBoxContext();
+
+  const { renderItem, renderOption } = useComboBoxPopupContext();
 
   const option = visibleOptions[index];
   const highlighted = option === highlightedOption;
   const selected = option === selectedOption;
+  const disabled = option ? option.disabled : false;
 
-  const styleProps = useComboBoxOptionStyle({ selected, highlighted });
+  const styleProps = useComboBoxOptionStyle({
+    selected,
+    highlighted,
+    disabled,
+  });
 
   if (!visibleOptions.length) {
     return (
       <PseudoBox ref={ref} style={style} {...styleProps} {...data}>
-        No options were found...
+        {isAsyncFailure
+          ? asyncErrorMessage
+            ? asyncErrorMessage
+            : "No results found"
+          : null}
       </PseudoBox>
     );
   }
 
+  // Controls the entire option box. Need to set the entire style for every case when using this
+  if (renderOption && typeof renderOption === "function") {
+    return renderOption({
+      index,
+      data,
+      option,
+      selected,
+      highlighted,
+      disabled,
+    });
+  }
+
+  // Controls just the inner Box element, used for rendering the option
+  if (renderItem && typeof renderItem === "function") {
+    return (
+      <PseudoBox
+        ref={ref}
+        style={style}
+        {...getOptionProps({
+          index,
+          option,
+        })}
+        {...styleProps}
+        {...data}
+      >
+        {renderItem({
+          index,
+          data,
+          option,
+          selected,
+          highlighted,
+          disabled,
+        })}
+      </PseudoBox>
+    );
+  }
+
+  // Default renderer
   return (
     <PseudoBox
       ref={ref}
@@ -274,10 +464,21 @@ const ComboBoxOption = forwardRef(({ index, style, data, ...rest }, ref) => {
 
 const ComboBoxList = forwardRef(
   ({ itemHeight = 40, pageSize = 10, children, ...props }, ref) => {
-    const { reactWindowInstanceRef, visibleOptions } = useComboBoxContext();
+    const {
+      reactWindowInstanceRef,
+      visibleOptions,
+      isAsyncInitiated,
+      isInputDebouncing,
+    } = useComboBoxContext();
+
     const height =
       Math.max(Math.min(pageSize, visibleOptions.length), 1) * itemHeight;
+
     const _reactWindowInstanceRef = useForkRef(reactWindowInstanceRef, ref);
+
+    if (isInputDebouncing || isAsyncInitiated) {
+      return null;
+    }
 
     return (
       <FixedSizeList
@@ -293,6 +494,7 @@ const ComboBoxList = forwardRef(
     );
   },
 );
+
 /* =========================================================================
   ComboBoxRightElement
   ========================================================================== */
@@ -337,13 +539,32 @@ const ComboBoxRightAddon = forwardRef((props, ref) => {
   ========================================================================== */
 
 const ComboBoxClearElement = forwardRef((props, ref) => {
+  const { isAsyncInitiated, deselectIndex, inputRef } = useComboBoxContext();
+
   return (
     <InputRightElement
       ref={ref}
-      children={<Icon name="close" fontSize="12px" />}
+      children={
+        isAsyncInitiated ? (
+          <Spinner size="sm" />
+        ) : (
+          <Icon
+            name="close"
+            fontSize="12px"
+            cursor="pointer"
+            zIndex={200}
+            onClick={() => {
+              deselectIndex(null);
+              inputRef.current.focus();
+            }}
+          />
+        )
+      }
       cursor="default"
-      pointerEvents="none"
       {...props}
+      onClick={() => {
+        // TODO: without adding this the event is not getting bubbled
+      }}
     />
   );
 });
@@ -359,5 +580,6 @@ export {
   ComboBoxClearElement,
   ComboBoxPopper,
   ComboBoxList,
+  ComboBoxPopup,
   ComboBoxOption,
 };

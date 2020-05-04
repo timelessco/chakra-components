@@ -43,6 +43,11 @@ export const useComboBoxOptionStyle = optionState => {
   const { colorMode } = useColorMode();
   const props = { colorMode, ...optionState };
 
+  const _optionTextDisabledColor = {
+    light: "gray.400",
+    dark: "gray.200",
+  };
+
   const baseProps = {
     display: "flex",
     alignItems: "center",
@@ -54,11 +59,12 @@ export const useComboBoxOptionStyle = optionState => {
     outline: "none",
     textAlign: "left",
     textDecoration: "none",
-    color: "inherit",
+    color: props.disabled ? _optionTextDisabledColor[colorMode] : "inherit",
+    pointerEvents: props.disabled ? "none" : "auto",
     px: 4,
   };
 
-  const interactionProps = ({ colorMode, selected, highlighted }) => {
+  const interactionProps = ({ colorMode, selected, highlighted, disabled }) => {
     const _bgHighlightedColor = { light: "gray.100", dark: "whiteAlpha.100" };
     const _bgSelectedColor = { light: "blue.300", dark: "blue.500" };
     const _activeColor = { light: "gray.200", dark: "whiteAlpha.200" };
