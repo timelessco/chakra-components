@@ -140,12 +140,13 @@ function ComboBoxExample() {
 
 #### 2. Complete option renderer. Use this when you need complete control.
 
-Here, the default hover, selected and disabled style has been changed.
-Also complete control of select box styling has been changed.
 
 ```jsx
 function ComboBoxExample() {
   const getOptionStyles = (selected, highlighted, disabled) => {
+
+    // Here, the default hover, selected and disabled style has been changed.
+    // Also complete control of select box styling has been changed.
 
     const styles = {
       display: "flex",
@@ -190,6 +191,8 @@ function ComboBoxExample() {
 
     return styles;
   }
+
+  // Set of options
   const options = [
     {
       label: 'bug',
@@ -230,8 +233,8 @@ function ComboBoxExample() {
     }
   ];
 
-
   const [tag, setTag] = React.useState(null);
+
   return (
     <>
       <ComboBox value={tag} options={options} onChange={setTag}>
@@ -274,7 +277,6 @@ function ComboBoxExample() {
   );
 }
 ```
-
 
 ### ComboBox with large options and disabled set
 
@@ -384,7 +386,12 @@ function ComboBoxExample() {
 function ComboBoxExample() {
 
   const [cacheOptions, setCacheOptions] = React.useState([])
-  
+
+  // Entire select option lifecycle is cached with countries starting with 'a'
+  // Cache options can be used to show options when no option is selected and nothing istyped.
+  // Once the user starts typing, the new set of options are fetched
+  // Once we clear all options, cache gets loaded
+  // cacheOptions can be dynamic like in here or can be a static array set
   React.useEffect(() => {
     axios
       .get(`https://restcountries.eu/rest/v2/name/a`)
@@ -399,6 +406,7 @@ function ComboBoxExample() {
       });
   }, [])
 
+  // Callback that fetches when debounced value changes
   const asyncFetchOptions = (value, successCb, errorCb) => {
     axios
       .get(`https://restcountries.eu/rest/v2/name/${value}`)
@@ -415,11 +423,14 @@ function ComboBoxExample() {
       });
   };
 
+  const [fruit, setFruit] = React.useState(null);
+
   return (
     <>
       <ComboBox
         async
-        onChange={() => {}}
+        value={fruit}
+        onChange={setFruit}
         loadOptions={asyncFetchOptions}
         cacheOptions={cacheOptions}
       >

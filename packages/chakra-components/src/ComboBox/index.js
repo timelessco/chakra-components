@@ -99,15 +99,10 @@ const ComboBox = forwardRef(
     } = useSelect({
       multi,
       cacheOptions,
-      options: async
-        ? isAsyncSuccess
-          ? asyncOptions
-          : !isAsyncCompletedOnce
-          ? cacheOptions
-          : []
-        : options,
+      options: async ? asyncOptions : options,
       async,
       isAsyncSuccess,
+      isAsyncCompletedOnce,
       value,
       onChange,
       scrollToIndex,
@@ -197,11 +192,7 @@ const ComboBox = forwardRef(
               right = sizes[height];
               pr += height;
 
-              if (selectedOption.value) {
-                return cloneElement(child, { size, right });
-              }
-
-              return null;
+              return cloneElement(child, { size, right });
             }
 
             if (child.type === ComboBoxInput) {
@@ -542,7 +533,12 @@ const ComboBoxRightAddon = forwardRef((props, ref) => {
   ========================================================================== */
 
 const ComboBoxClearElement = forwardRef((props, ref) => {
-  const { isAsyncInitiated, deselectIndex, inputRef } = useComboBoxContext();
+  const {
+    isAsyncInitiated,
+    deselectIndex,
+    inputRef,
+    selectedOption,
+  } = useComboBoxContext();
 
   return (
     <InputRightElement
@@ -550,7 +546,7 @@ const ComboBoxClearElement = forwardRef((props, ref) => {
       children={
         isAsyncInitiated ? (
           <Spinner size="sm" />
-        ) : (
+        ) : selectedOption.value ? (
           <Icon
             name="close"
             fontSize="12px"
@@ -561,7 +557,7 @@ const ComboBoxClearElement = forwardRef((props, ref) => {
               inputRef.current.focus();
             }}
           />
-        )
+        ) : null
       }
       cursor="default"
       {...props}

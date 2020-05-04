@@ -83,6 +83,7 @@ export default function useSelect({
   options = [],
   async,
   isAsyncSuccess,
+  isAsyncCompletedOnce,
   value,
   onChange,
   scrollToIndex = () => {},
@@ -109,7 +110,6 @@ export default function useSelect({
     setState,
   ] = useHoistedState(initialState, stateReducer);
 
-  console.log("cache options ", cacheOptions);
   // Refs
 
   const inputRef = React.useRef();
@@ -138,7 +138,27 @@ export default function useSelect({
     value = defaultMultiValue;
   }
 
-  const originalOptions = options;
+  let originalOptions = React.useMemo(() => {
+    if (async) {
+      if ((isAsyncSuccess && !value && !searchValue) || !isAsyncCompletedOnce) {
+        originalOptions = cacheOptions;
+      } else {
+        originalOptions = options;
+      }
+    } else {
+      originalOptions = options;
+    }
+
+    return originalOptions;
+  }, [
+    options,
+    value,
+    duplicates,
+    multi,
+    isAsyncSuccess,
+    isAsyncCompletedOnce,
+    cacheOptions,
+  ]);
 
   // If multi and duplicates aren't allowed, filter out the
   // selected options from the options list
@@ -147,13 +167,22 @@ export default function useSelect({
       return options.filter(d => !value.includes(d.value));
     }
 
-    // console.log("value ", value);
-    // if (async && !isOpen) {
-    //   return cacheOptions;
-    // }
+    if (async) {
+      if ((isAsyncSuccess && !value && !searchValue) || !isAsyncCompletedOnce) {
+        options = cacheOptions;
+      }
+    }
 
     return options;
-  }, [options, value, duplicates, multi, isAsyncSuccess]);
+  }, [
+    options,
+    value,
+    duplicates,
+    multi,
+    isAsyncSuccess,
+    isAsyncCompletedOnce,
+    cacheOptions,
+  ]);
 
   // Compute the currently selected option(s)
   let selectedOption = React.useMemo(() => {
@@ -269,7 +298,7 @@ export default function useSelect({
         };
       }, actions.highlightIndex);
     },
-    [options, setState],
+    [options, originalOptions, setState],
   );
 
   const selectIndex = React.useCallback(
@@ -482,6 +511,7 @@ export default function useSelect({
       },
       onFocus: e => {
         handleSearchFocus(e);
+
         if (onFocus) {
           onFocus(e);
         }
