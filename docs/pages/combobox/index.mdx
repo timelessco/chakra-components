@@ -382,7 +382,22 @@ function ComboBoxExample() {
 
 ```jsx
 function ComboBoxExample() {
-  const fruits = ["Acai", "Apples", "Apricots", "Avocado", "Ackee", "Bananas"];
+
+  const [cacheOptions, setCacheOptions] = React.useState([])
+  
+  React.useEffect(() => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/a`)
+      .then(response => {
+        setCacheOptions(response.data.map(eachpiece => ({
+            label: `${eachpiece.name}`,
+            value: `${eachpiece.name}`,
+          })))
+      })
+      .catch(e => {
+        alert('Failed async fetch ', e.message)
+      });
+  }, [])
 
   const asyncFetchOptions = (value, successCb, errorCb) => {
     axios
@@ -400,26 +415,19 @@ function ComboBoxExample() {
       });
   };
 
-  const [fruit, setFruit] = React.useState(null);
   return (
     <>
       <ComboBox
         async
-        value={fruit}
-        onChange={setFruit}
+        onChange={() => {}}
         loadOptions={asyncFetchOptions}
-        defaultOptions={[
-          // Show default options
-          { label: "default-option-1", value: "default-option-1" },
-          { label: "default-option-2", value: "default-option-2" },
-          { label: "default-option-3", value: "default-option-3" },
-        ]}
+        cacheOptions={cacheOptions}
       >
         <ComboBoxRightElement
           children={<Icon name="chevron-down" fontSize="1.5rem" />}
         />
         <ComboBoxClearElement />
-        <ComboBoxInput placeholder="Select a fruit..." />
+        <ComboBoxInput placeholder="Select a country..." />
         <ComboBoxPopup />
       </ComboBox>
     </>
