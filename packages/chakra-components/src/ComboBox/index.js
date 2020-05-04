@@ -23,6 +23,7 @@ import matchSorter from "match-sorter";
 import { FixedSizeList } from "react-window";
 import { useForkRef, cleanChildren } from "@chakra-ui/core/dist/utils";
 import { useComboBoxContext } from "./useComboBoxContext";
+import { useComboBoxPopupContext } from "./useComboBoxPopupContext";
 import useSelect from "./useSelect";
 import splitProps from "./utils";
 
@@ -36,6 +37,7 @@ import debounce from "./debounce";
   ========================================================================== */
 
 export const ComboBoxContext = createContext();
+export const ComboBoxPopupContext = createContext();
 
 /* =========================================================================
   ComboBox
@@ -281,6 +283,41 @@ const ComboBoxSelectedGhost = forwardRef(({ size, ...props }, ref) => {
 });
 
 /* =========================================================================
+  ComboBoxPopup
+  ========================================================================== */
+const ComboBoxPopup = forwardRef(
+  (
+    {
+      placement,
+      skid,
+      gutter,
+      itemHeight,
+      pageSize,
+      renderItem,
+      renderOption,
+      ...props
+    },
+    ref,
+  ) => {
+    // TODO: Reorganize this context, with the right props once the structure is confirmed
+
+    const context = {
+      renderItem, // Keeps the default root Psuedobox and styles. Just controls the inner element
+      renderOption, // Gives the entire option itself
+    };
+    return (
+      <ComboBoxPopupContext.Provider value={context}>
+        <ComboBoxPopper placement={placement} skid={skid} gutter={gutter}>
+          <ComboBoxList itemHeight={itemHeight} pageSize={pageSize}>
+            <ComboBoxOption />
+          </ComboBoxList>
+        </ComboBoxPopper>
+      </ComboBoxPopupContext.Provider>
+    );
+  },
+);
+
+/* =========================================================================
   ComboBoxPopper
   ========================================================================== */
 
@@ -342,6 +379,8 @@ const ComboBoxOption = forwardRef(({ index, style, data, ...rest }, ref) => {
     asyncErrorMessage,
   } = useComboBoxContext();
 
+  const { renderItem, renderOption } = useComboBoxPopupContext();
+
   const option = visibleOptions[index];
   const highlighted = option === highlightedOption;
   const selected = option === selectedOption;
@@ -365,6 +404,44 @@ const ComboBoxOption = forwardRef(({ index, style, data, ...rest }, ref) => {
     );
   }
 
+  // Controls the entire option box. Need to set the entire style for every case when using this
+  if (renderOption && typeof renderOption === "function") {
+    return renderOption({
+      index,
+      data,
+      option,
+      selected,
+      highlighted,
+      disabled,
+    });
+  }
+
+  // Controls just the inner Box element, used for rendering the option
+  if (renderItem && typeof renderItem === "function") {
+    return (
+      <PseudoBox
+        ref={ref}
+        style={style}
+        {...getOptionProps({
+          index,
+          option,
+        })}
+        {...styleProps}
+        {...data}
+      >
+        {renderItem({
+          index,
+          data,
+          option,
+          selected,
+          highlighted,
+          disabled,
+        })}
+      </PseudoBox>
+    );
+  }
+
+  // Default renderer
   return (
     <PseudoBox
       ref={ref}
@@ -503,5 +580,6 @@ export {
   ComboBoxClearElement,
   ComboBoxPopper,
   ComboBoxList,
+  ComboBoxPopup,
   ComboBoxOption,
 };
