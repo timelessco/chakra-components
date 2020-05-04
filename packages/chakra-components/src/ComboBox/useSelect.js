@@ -118,6 +118,7 @@ export default function useSelect({
   const filterFnRef = React.useRef();
   const getCreateLabelRef = React.useRef();
   const scrollToIndexRef = React.useRef();
+  const highlightDebouncer = React.useRef();
 
   // Ref pointing to Filter function
   filterFnRef.current = filterFn;
@@ -559,7 +560,19 @@ export default function useSelect({
         }
       },
       onMouseEnter: e => {
-        highlightIndex(index);
+        // TODO: Replace this with a better debouncing ref function
+        if (!highlightDebouncer.current) {
+          highlightDebouncer.current = setTimeout(() => {
+            highlightIndex(index);
+          }, 50);
+        } else {
+          clearTimeout(highlightDebouncer.current);
+          highlightDebouncer.current = setTimeout(() => {
+            highlightIndex(index);
+          }, 50);
+        }
+
+        // highlightIndex(index);
         if (onMouseEnter) {
           onMouseEnter(e);
         }

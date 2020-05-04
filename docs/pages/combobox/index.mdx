@@ -445,10 +445,11 @@ function ComboBoxExample() {
         <ComboBoxInput placeholder="Select a country..." />
         <ComboBoxPopup 
           itemHeight={60}
+          pageSize={5}
           renderItem={( {index, data, option, selected, highlighted, disabled} ) => ( 
             <Flex width="100%" alignItems="center">
               <Box w="5%">
-                <Box>{option.code}</Box>
+                <Box fontWeight="900" fontSize="1.3rem">{option.code}</Box>
               </Box>
               <Flex w="95%" flexDirection="column" alignItems="left">
                 <Box as="h4" fontWeight="bold">{option.label}</Box>
