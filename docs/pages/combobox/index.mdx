@@ -49,9 +49,7 @@ function ComboBoxExample() {
   return (
     <>
       <ComboBox options={options} onChange={handleFruitChange}>
-        <ComboBoxRightElement
-          children={<Icon name="chevron-down" fontSize="1.5rem" />}
-        />
+        <ComboBoxRightElement />
         <ComboBoxClearElement />
         <ComboBoxInput placeholder="Select a fruit..." />
         <ComboBoxPopup />
@@ -61,7 +59,7 @@ function ComboBoxExample() {
 }
 ```
 
-### Combobox with custom option renderer
+### Combobox with custom option renderer, custom icon
 
 #### 1. Only the renderer , keeping the <b>highlighted, selected </b> styles as default. Use this to quickly change just the content.
 
@@ -114,7 +112,7 @@ function ComboBoxExample() {
     <>
       <ComboBox value={tag} options={options} onChange={setTag}>
         <ComboBoxRightElement
-          children={<Icon name="chevron-down" fontSize="1.5rem" />}
+          children={<Icon name="up-down" fontSize="1.2rem" />}
         />
         <ComboBoxClearElement />
         <ComboBoxInput placeholder="Select a fruit..." />
@@ -238,9 +236,7 @@ function ComboBoxExample() {
   return (
     <>
       <ComboBox value={tag} options={options} onChange={setTag}>
-        <ComboBoxRightElement
-          children={<Icon name="chevron-down" fontSize="1.5rem" />}
-        />
+        <ComboBoxRightElement />
         <ComboBoxClearElement />
         <ComboBoxInput placeholder="Select a fruit..." />
         <ComboBoxPopup
@@ -368,9 +364,7 @@ function ComboBoxExample() {
   return (
     <>
       <ComboBox value={fruit} options={options} onChange={setFruit}>
-        <ComboBoxRightElement
-          children={<Icon name="chevron-down" fontSize="1.5rem" />}
-        />
+        <ComboBoxRightElement />
         <ComboBoxClearElement />
         <ComboBoxInput placeholder="Select a fruit..." />
         <ComboBoxPopup />
@@ -438,20 +432,18 @@ function ComboBoxExample() {
         loadOptions={asyncFetchOptions}
         cacheOptions={cacheOptions}
       >
-        <ComboBoxRightElement
-          children={<Icon name="chevron-down" fontSize="1.5rem" />}
-        />
+        <ComboBoxRightElement />
         <ComboBoxClearElement />
         <ComboBoxInput placeholder="Select a country..." />
         <ComboBoxPopup 
           itemHeight={60}
-          pageSize={5}
+          pageSize={7}
           renderItem={( {index, data, option, selected, highlighted, disabled} ) => ( 
             <Flex width="100%" alignItems="center">
-              <Box w="5%">
-                <Box fontWeight="900" fontSize="1.3rem">{option.code}</Box>
+              <Box w="10%">
+                <Avatar name={option.label} />
               </Box>
-              <Flex w="95%" flexDirection="column" alignItems="left">
+              <Flex w="90%" flexDirection="column" alignItems="left">
                 <Box as="h4" fontWeight="bold">{option.label}</Box>
                 <Box>{option.timeZone}</Box>
               </Flex>

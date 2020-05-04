@@ -494,10 +494,17 @@ const ComboBoxList = forwardRef(
   ========================================================================== */
 
 const ComboBoxRightElement = forwardRef((props, ref) => {
+  const { isOpen } = useComboBoxContext();
   return (
     <InputRightElement
       ref={ref}
-      children={<Icon name="chevron-down" fontSize="1.5rem" />}
+      children={
+        !isOpen ? (
+          <Icon name="chevron-down" fontSize="1.5rem" />
+        ) : (
+          <Icon name="chevron-up" fontSize="1.5rem" />
+        )
+      }
       pointerEvents="none"
       {...props}
     />
