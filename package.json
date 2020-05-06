@@ -19,7 +19,8 @@
     "format": "yarn prettier --write",
     "validate": "yarn lint && yarn prettier --list-different",
     "contributors:add": "all-contributors add",
-    "contributors:generate": "all-contributors generate"
+    "contributors:generate": "all-contributors generate",
+    "test": "yarn workspace @chakra-components/core test"
   },
   "commitlint": {
     "extends": [
