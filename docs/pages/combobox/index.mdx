@@ -10,16 +10,15 @@ A combobox option that supports
 6. Disabled options
 7. Virtualizing large lists
 
-
 ## Import
 
 ```js
-import { 
+import {
   ComboBox,
   ComboBoxInput,
   ComboBoxPopup,
   ComboBoxClearElement,
-  ComboBoxRightElement
+  ComboBoxRightElement,
 } from "@chakra-components/core";
 ```
 
@@ -42,13 +41,15 @@ function ComboBoxExample() {
     label: d,
   }));
 
-  const handleFruitChange = (fruit) => {
-    alert(`Selected: ${fruit}`)
-  }
+  const handleFruitChange = fruit => {
+    setFruit(fruit);
+  };
+
+  const [fruit, setFruit] = React.useState(null);
 
   return (
     <>
-      <ComboBox options={options} onChange={handleFruitChange}>
+      <ComboBox options={options} value={fruit} onChange={handleFruitChange}>
         <ComboBoxRightElement />
         <ComboBoxClearElement />
         <ComboBoxInput placeholder="Select a fruit..." />
@@ -65,47 +66,44 @@ function ComboBoxExample() {
 
 ```jsx
 function ComboBoxExample() {
-  
-
   const options = [
     {
-      label: 'bug',
+      label: "bug",
       description: `Something isn't working`,
-      value: 'bug',
-      color: '#ff0000',
+      value: "bug",
+      color: "#ff0000",
     },
     {
-      label: 'documentation',
+      label: "documentation",
       description: `Improvements or addition to documentation`,
-      value: 'documentation',
-      color: '#0000ff',
+      value: "documentation",
+      color: "#0000ff",
     },
     {
-      label: 'duplicate',
+      label: "duplicate",
       description: `This issue or pull requests already exists`,
-      value: 'duplicate',
-      color: '#7f00ff',
+      value: "duplicate",
+      color: "#7f00ff",
     },
     {
-      label: 'enhancement',
+      label: "enhancement",
       description: `New feature or request`,
-      value: 'enhancement',
-      color: '#00ff00',
+      value: "enhancement",
+      color: "#00ff00",
     },
     {
-      label: 'good first issue',
+      label: "good first issue",
       description: `Good for beginners`,
-      value: 'first-issue',
-      color: '#ffa500',
+      value: "first-issue",
+      color: "#ffa500",
     },
     {
-      label: 'help wanted',
+      label: "help wanted",
       description: `Need more help`,
-      value: 'help-wanted',
-      color: '#844f38',
-    }
+      value: "help-wanted",
+      color: "#844f38",
+    },
   ];
-
 
   const [tag, setTag] = React.useState(null);
   return (
@@ -118,13 +116,26 @@ function ComboBoxExample() {
         <ComboBoxInput placeholder="Select a fruit..." />
         <ComboBoxPopup
           itemHeight={60}
-          renderItem={( {index, data, option, selected, highlighted, disabled} ) => ( 
+          renderItem={({
+            index,
+            data,
+            option,
+            selected,
+            highlighted,
+            disabled,
+          }) => (
             <Flex width="100%" alignItems="center">
               <Box w="5%">
-                <Box backgroundColor={option.color} width="20px" height="20px" />
+                <Box
+                  backgroundColor={option.color}
+                  width="20px"
+                  height="20px"
+                />
               </Box>
               <Flex w="95%" flexDirection="column" alignItems="left">
-                <Box as="h4" fontWeight="bold">{option.label}</Box>
+                <Box as="h4" fontWeight="bold">
+                  {option.label}
+                </Box>
                 <Box>{option.description}</Box>
               </Flex>
             </Flex>
@@ -138,11 +149,9 @@ function ComboBoxExample() {
 
 #### 2. Complete option renderer. Use this when you need complete control.
 
-
 ```jsx
 function ComboBoxExample() {
   const getOptionStyles = (selected, highlighted, disabled) => {
-
     // Here, the default hover, selected and disabled style has been changed.
     // Also complete control of select box styling has been changed.
 
@@ -160,13 +169,9 @@ function ComboBoxExample() {
       color: disabled ? "gray.400" : "inherit",
       pointerEvents: disabled ? "none" : "auto",
       px: 4,
-      bg: selected
-        ? `teal.300`
-        : highlighted
-        ? `teal.100`
-        : "transparent",
+      bg: selected ? `teal.300` : highlighted ? `teal.100` : "transparent",
       _active: {
-        bg: 'gray.200',
+        bg: "gray.200",
       },
       _focus: {
         shadow: "outline",
@@ -182,53 +187,53 @@ function ComboBoxExample() {
         left: 0,
         top: "50%",
         right: 0,
-        borderTop: disabled ? '1px solid' : null,
-        borderColor: 'red',
-      }
-    }
+        borderTop: disabled ? "1px solid" : null,
+        borderColor: "red",
+      },
+    };
 
     return styles;
-  }
+  };
 
   // Set of options
   const options = [
     {
-      label: 'bug',
+      label: "bug",
       description: `Something isn't working`,
-      value: 'bug',
-      color: '#ff0000',
-      disabled: true
+      value: "bug",
+      color: "#ff0000",
+      disabled: true,
     },
     {
-      label: 'documentation',
+      label: "documentation",
       description: `Improvements or addition to documentation`,
-      value: 'documentation',
-      color: '#0000ff',
+      value: "documentation",
+      color: "#0000ff",
     },
     {
-      label: 'duplicate',
+      label: "duplicate",
       description: `This issue or pull requests already exists`,
-      value: 'duplicate',
-      color: '#7f00ff',
+      value: "duplicate",
+      color: "#7f00ff",
     },
     {
-      label: 'enhancement',
+      label: "enhancement",
       description: `New feature or request`,
-      value: 'enhancement',
-      color: '#00ff00',
+      value: "enhancement",
+      color: "#00ff00",
     },
     {
-      label: 'good first issue',
+      label: "good first issue",
       description: `Good for beginners`,
-      value: 'first-issue',
-      color: '#ffa500',
+      value: "first-issue",
+      color: "#ffa500",
     },
     {
-      label: 'help wanted',
+      label: "help wanted",
       description: `Need more help`,
-      value: 'help-wanted',
-      color: '#844f38',
-    }
+      value: "help-wanted",
+      color: "#844f38",
+    },
   ];
 
   const [tag, setTag] = React.useState(null);
@@ -241,27 +246,33 @@ function ComboBoxExample() {
         <ComboBoxInput placeholder="Select a fruit..." />
         <ComboBoxPopup
           itemHeight={60}
-          renderOption={({ 
-            index, 
-            data, 
-            option, 
-            selected, 
-            highlighted, 
-            disabled, 
-            style, 
-            getOptionProps 
+          renderOption={({
+            index,
+            data,
+            option,
+            selected,
+            highlighted,
+            disabled,
+            style,
+            getOptionProps,
           }) => (
-              <PseudoBox
-                {...getOptionProps({ index, option })}
-                {...getOptionStyles(selected, highlighted, disabled)}  
-                style={style}
-              >
+            <PseudoBox
+              {...getOptionProps({ index, option })}
+              {...getOptionStyles(selected, highlighted, disabled)}
+              style={style}
+            >
               <Flex width="100%" alignItems="center">
                 <Box w="5%">
-                  <Box backgroundColor={option.color} width="20px" height="20px" />
+                  <Box
+                    backgroundColor={option.color}
+                    width="20px"
+                    height="20px"
+                  />
                 </Box>
                 <Flex w="95%" flexDirection="column" alignItems="left">
-                  <Box as="h4" fontWeight="bold">{option.label}</Box>
+                  <Box as="h4" fontWeight="bold">
+                    {option.label}
+                  </Box>
                   <Box>{option.description}</Box>
                 </Flex>
               </Flex>
@@ -378,8 +389,7 @@ function ComboBoxExample() {
 
 ```jsx
 function ComboBoxExample() {
-
-  const [cacheOptions, setCacheOptions] = React.useState([])
+  const [cacheOptions, setCacheOptions] = React.useState([]);
 
   // Entire select option lifecycle is cached with countries starting with 'a'
   // Cache options can be used to show options when no option is selected and nothing istyped.
@@ -390,17 +400,19 @@ function ComboBoxExample() {
     axios
       .get(`https://restcountries.eu/rest/v2/name/a`)
       .then(response => {
-        setCacheOptions(response.data.map(ep => ({
+        setCacheOptions(
+          response.data.map(ep => ({
             label: `${ep.name}`,
             value: `${ep.name}`,
             code: `${ep.alpha2Code}`,
-            timeZone: `${ep.timezones[0]}`
-          })))
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
       })
       .catch(e => {
-        alert('Failed async fetch ', e.message)
+        alert("Failed async fetch ", e.message);
       });
-  }, [])
+  }, []);
 
   // Callback that fetches when debounced value changes
   const asyncFetchOptions = (value, successCb, errorCb) => {
@@ -412,7 +424,7 @@ function ComboBoxExample() {
             label: `${ep.name}`,
             value: `${ep.name}`,
             code: `${ep.alpha2Code}`,
-            timeZone: `${ep.timezones[0]}`
+            timeZone: `${ep.timezones[0]}`,
           })),
         );
       })
@@ -435,16 +447,25 @@ function ComboBoxExample() {
         <ComboBoxRightElement />
         <ComboBoxClearElement />
         <ComboBoxInput placeholder="Select a country..." />
-        <ComboBoxPopup 
+        <ComboBoxPopup
           itemHeight={60}
           pageSize={7}
-          renderItem={( {index, data, option, selected, highlighted, disabled} ) => ( 
+          renderItem={({
+            index,
+            data,
+            option,
+            selected,
+            highlighted,
+            disabled,
+          }) => (
             <Flex width="100%" alignItems="center">
               <Box w="10%">
                 <Avatar name={option.label} />
               </Box>
               <Flex w="90%" flexDirection="column" alignItems="left">
-                <Box as="h4" fontWeight="bold">{option.label}</Box>
+                <Box as="h4" fontWeight="bold">
+                  {option.label}
+                </Box>
                 <Box>{option.timeZone}</Box>
               </Flex>
             </Flex>
@@ -457,20 +478,28 @@ function ComboBoxExample() {
 ```
 
 ## ComboBox with Customizable option select
+
 ```jsx
 function ComboBoxExample() {
   const options = [
-    { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: '1' },
-    { label: "Kola Tioluwani", img: "https://bit.ly/tioluwani-kolawole", value: '2' },
-    { label: "Kent Dodds", img: "https://bit.ly/kent-c-dodds", value: '3' },
-    { label: "Ryan Florence", img: "https://bit.ly/ryan-florence", value: '4'  },
-    { label: "Prosper Otemuyiwa", img: "https://bit.ly/prosper-baba", value: '5' },
-    { label: "Christian Nwamba", img: "https://bit.ly/code-beast", value: '6' },
-    { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: '7' },
-  ]
-  
+    { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1" },
+    {
+      label: "Kola Tioluwani",
+      img: "https://bit.ly/tioluwani-kolawole",
+      value: "2",
+    },
+    { label: "Kent Dodds", img: "https://bit.ly/kent-c-dodds", value: "3" },
+    { label: "Ryan Florence", img: "https://bit.ly/ryan-florence", value: "4" },
+    {
+      label: "Prosper Otemuyiwa",
+      img: "https://bit.ly/prosper-baba",
+      value: "5",
+    },
+    { label: "Christian Nwamba", img: "https://bit.ly/code-beast", value: "6" },
+    { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
+  ];
 
-  const [user, setUser] = React.useState(null)
+  const [user, setUser] = React.useState(null);
 
   return (
     <>
@@ -479,14 +508,16 @@ function ComboBoxExample() {
         <ComboBoxClearElement />
         <ComboBoxInput
           placeholder="Select user..."
-          renderSelectedOption={(option) => (
+          renderSelectedOption={option => (
             <Flex w="100%" alignItems="center">
               <Avatar name={option.label} src={option.img} size="xs" mr={2} />
-              <Box as="h4" fontWeight="bold">{option.label}</Box>
+              <Box as="h4" fontWeight="bold">
+                {option.label}
+              </Box>
             </Flex>
           )}
         />
-        <ComboBoxPopup 
+        <ComboBoxPopup
           itemHeight={60}
           renderItem={({ option }) => (
             <Flex w="100%" alignItems="center">
@@ -494,7 +525,9 @@ function ComboBoxExample() {
                 <Avatar name={option.label} src={option.img} />
               </Box>
               <Flex w="90%" flexDirection="column" alignItems="left">
-                <Box as="h4" fontWeight="bold">{option.label}</Box>
+                <Box as="h4" fontWeight="bold">
+                  {option.label}
+                </Box>
               </Flex>
             </Flex>
           )}
