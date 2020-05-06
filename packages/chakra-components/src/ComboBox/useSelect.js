@@ -80,17 +80,23 @@ export default function useSelect({
   getCreateLabel = d => `Use "${d}"`,
   stateReducer = (old, newState, action) => newState,
   duplicates,
-  options,
+  options = [],
   async,
   isAsyncSuccess,
+  isAsyncCompletedOnce,
   value,
   onChange,
   scrollToIndex = () => {},
   shiftAmount = 5,
   filterFn = defaultFilterFn,
+  cacheOptions = [],
   optionsRef,
   getDebounce = options =>
-    options.length > 10000 ? 1000 : options.length > 1000 ? 200 : 0,
+    (options && options.length) > 10000
+      ? 1000
+      : (options && options.length) > 1000
+      ? 200
+      : 0,
 }) {
   const [
     {
@@ -112,6 +118,7 @@ export default function useSelect({
   const filterFnRef = React.useRef();
   const getCreateLabelRef = React.useRef();
   const scrollToIndexRef = React.useRef();
+  const highlightDebouncer = React.useRef();
 
   // Ref pointing to Filter function
   filterFnRef.current = filterFn;
@@ -132,12 +139,27 @@ export default function useSelect({
     value = defaultMultiValue;
   }
 
-  // If no options are provided, then use an empty array
-  if (!options) {
-    options = defaultOptions;
-  }
+  let originalOptions = React.useMemo(() => {
+    if (async) {
+      if ((isAsyncSuccess && !value && !searchValue) || !isAsyncCompletedOnce) {
+        originalOptions = cacheOptions;
+      } else {
+        originalOptions = options;
+      }
+    } else {
+      originalOptions = options;
+    }
 
-  const originalOptions = options;
+    return originalOptions;
+  }, [
+    options,
+    value,
+    duplicates,
+    multi,
+    isAsyncSuccess,
+    isAsyncCompletedOnce,
+    cacheOptions,
+  ]);
 
   // If multi and duplicates aren't allowed, filter out the
   // selected options from the options list
@@ -146,8 +168,22 @@ export default function useSelect({
       return options.filter(d => !value.includes(d.value));
     }
 
+    if (async) {
+      if ((isAsyncSuccess && !value && !searchValue) || !isAsyncCompletedOnce) {
+        options = cacheOptions;
+      }
+    }
+
     return options;
-  }, [options, value, duplicates, multi, isAsyncSuccess]);
+  }, [
+    options,
+    value,
+    duplicates,
+    multi,
+    isAsyncSuccess,
+    isAsyncCompletedOnce,
+    cacheOptions,
+  ]);
 
   // Compute the currently selected option(s)
   let selectedOption = React.useMemo(() => {
@@ -263,7 +299,7 @@ export default function useSelect({
         };
       }, actions.highlightIndex);
     },
-    [options, setState],
+    [options, originalOptions, setState],
   );
 
   const selectIndex = React.useCallback(
@@ -476,6 +512,7 @@ export default function useSelect({
       },
       onFocus: e => {
         handleSearchFocus(e);
+
         if (onFocus) {
           onFocus(e);
         }
@@ -523,7 +560,19 @@ export default function useSelect({
         }
       },
       onMouseEnter: e => {
-        highlightIndex(index);
+        // TODO: Replace this with a better debouncing ref function
+        if (!highlightDebouncer.current) {
+          highlightDebouncer.current = setTimeout(() => {
+            highlightIndex(index);
+          }, 50);
+        } else {
+          clearTimeout(highlightDebouncer.current);
+          highlightDebouncer.current = setTimeout(() => {
+            highlightIndex(index);
+          }, 50);
+        }
+
+        // highlightIndex(index);
         if (onMouseEnter) {
           onMouseEnter(e);
         }

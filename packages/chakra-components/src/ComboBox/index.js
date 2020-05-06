@@ -48,7 +48,7 @@ const ComboBox = forwardRef(
     {
       value,
       options,
-      defaultOptions = [],
+      cacheOptions = [],
       onChange,
       multi = false,
       async,
@@ -98,15 +98,11 @@ const ComboBox = forwardRef(
       deselectIndex,
     } = useSelect({
       multi,
-      options: async
-        ? isAsyncSuccess
-          ? asyncOptions
-          : !isAsyncCompletedOnce
-          ? defaultOptions
-          : []
-        : options,
+      cacheOptions,
+      options: async ? asyncOptions : options,
       async,
       isAsyncSuccess,
+      isAsyncCompletedOnce,
       value,
       onChange,
       scrollToIndex,
@@ -196,11 +192,7 @@ const ComboBox = forwardRef(
               right = sizes[height];
               pr += height;
 
-              if (selectedOption.value) {
-                return cloneElement(child, { size, right });
-              }
-
-              return null;
+              return cloneElement(child, { size, right });
             }
 
             if (child.type === ComboBoxInput) {
@@ -223,40 +215,61 @@ const ComboBox = forwardRef(
   ComboBoxInput
   ========================================================================== */
 
-const ComboBoxInput = forwardRef(({ placeholder, ...props }, ref) => {
-  const { getInputProps, selectedOption, enableGhost } = useComboBoxContext();
-  const { value } = getInputProps();
-  const ghostProps = splitProps(props);
+const ComboBoxInput = forwardRef(
+  ({ placeholder, renderSelectedOption, ...props }, ref) => {
+    const {
+      getInputProps,
+      selectedOption,
+      enableGhost,
+      isOpen,
+    } = useComboBoxContext();
+    const { value } = getInputProps();
+    const ghostProps = splitProps(props);
 
-  const _placeholder = () => {
-    if (!enableGhost) {
-      return placeholder;
-    } else if (!value && !selectedOption.value) {
-      return placeholder;
-    } else {
-      return undefined;
-    }
-  };
+    const _placeholder = () => {
+      if (!enableGhost) {
+        return placeholder;
+      } else if (!value && !selectedOption.value) {
+        return placeholder;
+      } else {
+        return undefined;
+      }
+    };
 
-  const _enableGhost =
-    enableGhost && !value && selectedOption && selectedOption.value;
+    // TODO: Ghost always get enabled when we don't type something
+    // Also ghost get enabled when we typed something and set its value and the dropdown is closed
+    // This is how use select handles that it sets the input value when we select an option
+    const _enableGhost =
+      enableGhost &&
+      selectedOption &&
+      selectedOption.value &&
+      (!value || (value && !isOpen)); // condition for ghost to enable
 
-  return (
-    <>
-      <Input
-        cursor="default"
-        placeholder={_placeholder()}
-        {...getInputProps({ ref })}
-        {...props}
-      />
-      {_enableGhost ? (
-        <ComboBoxSelectedGhost {...ghostProps}>
-          {selectedOption.value}
-        </ComboBoxSelectedGhost>
-      ) : null}
-    </>
-  );
-});
+    return (
+      <>
+        <Input
+          cursor="default"
+          placeholder={_placeholder()}
+          {...getInputProps({ ref })}
+          {...props}
+          color={_enableGhost ? "transparent" : "inherit"}
+        />
+
+        {_enableGhost ? (
+          renderSelectedOption && typeof renderSelectedOption === "function" ? (
+            <ComboBoxSelectedGhost {...ghostProps}>
+              {renderSelectedOption(selectedOption)}
+            </ComboBoxSelectedGhost>
+          ) : (
+            <ComboBoxSelectedGhost {...ghostProps}>
+              {selectedOption.value}
+            </ComboBoxSelectedGhost>
+          )
+        ) : null}
+      </>
+    );
+  },
+);
 
 /* =========================================================================
   ComboBoxSelectedGhost
@@ -413,6 +426,8 @@ const ComboBoxOption = forwardRef(({ index, style, data, ...rest }, ref) => {
       selected,
       highlighted,
       disabled,
+      style, // to expose the basic style by react-window
+      getOptionProps, // All
     });
   }
 
@@ -500,10 +515,17 @@ const ComboBoxList = forwardRef(
   ========================================================================== */
 
 const ComboBoxRightElement = forwardRef((props, ref) => {
+  const { isOpen } = useComboBoxContext();
   return (
     <InputRightElement
       ref={ref}
-      children={<Icon name="chevron-down" fontSize="1.5rem" />}
+      children={
+        !isOpen ? (
+          <Icon name="chevron-down" fontSize="1.5rem" />
+        ) : (
+          <Icon name="chevron-up" fontSize="1.5rem" />
+        )
+      }
       pointerEvents="none"
       {...props}
     />
@@ -539,7 +561,12 @@ const ComboBoxRightAddon = forwardRef((props, ref) => {
   ========================================================================== */
 
 const ComboBoxClearElement = forwardRef((props, ref) => {
-  const { isAsyncInitiated, deselectIndex, inputRef } = useComboBoxContext();
+  const {
+    isAsyncInitiated,
+    deselectIndex,
+    inputRef,
+    selectedOption,
+  } = useComboBoxContext();
 
   return (
     <InputRightElement
@@ -547,7 +574,7 @@ const ComboBoxClearElement = forwardRef((props, ref) => {
       children={
         isAsyncInitiated ? (
           <Spinner size="sm" />
-        ) : (
+        ) : selectedOption.value ? (
           <Icon
             name="close"
             fontSize="12px"
@@ -558,7 +585,7 @@ const ComboBoxClearElement = forwardRef((props, ref) => {
               inputRef.current.focus();
             }}
           />
-        )
+        ) : null
       }
       cursor="default"
       {...props}
