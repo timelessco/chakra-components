@@ -1,8 +1,7 @@
 import expect from "expect";
 import React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
-
-import Text from "@chakra-ui/core";
+import { Text } from "@chakra-ui/core";
 
 describe("Component", () => {
   let node;

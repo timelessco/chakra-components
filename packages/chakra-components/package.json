@@ -12,12 +12,11 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "yarn build:cjs && yarn build:es",
-    "build:cjs": "cross-env NODE_ENV=production BABEL_ENV=cjs babel --root-mode upward src -d dist",
-    "build:esm": "cross-env NODE_ENV=production BABEL_ENV=esm babel --root-mode upward src -d dist/esm",
-    "build:es": "cross-env NODE_ENV=production BABEL_ENV=es babel --root-mode upward src -d dist/es",
+    "build:cjs": "cross-env NODE_ENV=production BABEL_ENV=cjs babel --root-mode upward src -d dist --ignore \"**/*.test.js\"",
+    "build:esm": "cross-env NODE_ENV=production BABEL_ENV=esm babel --root-mode upward src -d dist/esm --ignore \"**/*.test.js\"",
+    "build:es": "cross-env NODE_ENV=production BABEL_ENV=es babel --root-mode upward src -d dist/es --ignore \"**/*.test.js\"",
     "build:umd": "cross-env NODE_ENV=production-umd rollup -c",
-    "version": "yarn build",
-    "test": "NODE_ENV=testing && jest"
+    "version": "yarn build"
   },
   "dependencies": {
     "@reach/auto-id": "^0.10.1",
@@ -49,9 +48,5 @@
     "components",
     "emotion",
     "library"
-  ],
-  "devDependencies": {
-    "@testing-library/react": "^10.0.4",
-    "jest": "^26.0.1"
-  }
+  ]
 }
