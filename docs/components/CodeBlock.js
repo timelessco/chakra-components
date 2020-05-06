@@ -118,6 +118,7 @@ const CodeBlock = ({
     scope: {
       ...Chakra,
       ...ChakraComp,
+      ...React,
       axios,
       mdx,
       StarIcon,
