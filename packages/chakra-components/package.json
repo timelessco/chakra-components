@@ -48,5 +48,8 @@
     "components",
     "emotion",
     "library"
-  ]
+  ],
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.5.0"
+  }
 }

@@ -1,23 +1,92 @@
-import expect from "expect";
-import React from "react";
-import { render, unmountComponentAtNode } from "react-dom";
+import React, { useState } from "react";
+import {
+  render,
+  fireEvent,
+  cleanup,
+  screen,
+  waitForElement,
+} from "@testing-library/react";
+import "@testing-library/jest-dom";
+import { ThemeProvider, CSSReset } from "@chakra-ui/core";
+import {
+  ComboBox,
+  ComboBoxInput,
+  ComboBoxPopup,
+  ComboBoxClearElement,
+  ComboBoxRightElement,
+} from "../index.js";
 
-import Text from "@chakra-ui/core";
+import { Flex, Box, Avatar } from "@chakra-ui/core";
 
-describe("Component", () => {
-  let node;
+const options = [
+  { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1" },
+  {
+    label: "Kola Tioluwani",
+    img: "https://bit.ly/tioluwani-kolawole",
+    value: "2",
+  },
+  { label: "Kent Dodds", img: "https://bit.ly/kent-c-dodds", value: "3" },
+  { label: "Ryan Florence", img: "https://bit.ly/ryan-florence", value: "4" },
+  {
+    label: "Prosper Otemuyiwa",
+    img: "https://bit.ly/prosper-baba",
+    value: "5",
+  },
+];
 
-  beforeEach(() => {
-    node = document.createElement("div");
-  });
+const Combo_Box = () => {
+  const [user, setUser] = useState(null);
+  return (
+    <ThemeProvider>
+      <ComboBox value={user} options={options} onChange={setUser}>
+        <ComboBoxRightElement />
+        <ComboBoxClearElement />
+        <ComboBoxInput
+          data-testid="input"
+          placeholder="Select user..."
+          renderSelectedOption={option => (
+            <Flex w="100%" alignItems="center">
+              <Avatar name={option.label} src={option.img} size="xs" mr={2} />
+              <Box as="h4" fontWeight="bold">
+                {option.label}
+              </Box>
+            </Flex>
+          )}
+        />
+        <ComboBoxPopup
+          data-testid="popup"
+          itemHeight={60}
+          renderItem={({ option }) => (
+            <Flex w="100%" alignItems="center" as="li" data-testid="option">
+              <Box w="10%">
+                <Avatar name={option.label} src={option.img} />
+              </Box>
+              <Flex w="90%" flexDirection="column" alignItems="left">
+                <Box as="h4" fontWeight="bold">
+                  {option.label}
+                </Box>
+              </Flex>
+            </Flex>
+          )}
+        />
+      </ComboBox>
+    </ThemeProvider>
+  );
+};
 
-  afterEach(() => {
-    unmountComponentAtNode(node);
-  });
+afterEach(cleanup);
 
-  it("displays a welcome message", () => {
-    render(<Text>Welcome to React components</Text>, node, () => {
-      expect(node.innerHTML).toContain("Welcome to React components");
-    });
-  });
+it("combo-box", () => {
+  const { getByPlaceholderText } = render(<Combo_Box />);
+  // input box render
+  expect(getByPlaceholderText("Select user...").placeholder).toBe(
+    "Select user...",
+  );
+});
+
+it("combo-box", () => {
+  const { getAllByTestId, getByTestId } = render(<Combo_Box />);
+  const inputBox = getByTestId("input");
+  inputBox.focus();
+  getAllByTestId("option").map(row => row.nodeName === "LI");
 });
