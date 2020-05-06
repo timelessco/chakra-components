@@ -26,7 +26,7 @@ import {
 
 ```jsx
 function Listbox() {
-    const fruits = [
+  const fruits = [
     "Acai",
     "Apples",
     "Apricots",
@@ -105,7 +105,7 @@ function Listbox() {
   const options = fruits.map((d, i) => ({
     value: d,
     label: d,
-    disabled: i%4 == 0,
+    disabled: i % 4 == 0,
   }));
 
   const handleFruitChange = fruit => {
@@ -116,7 +116,12 @@ function Listbox() {
 
   return (
     <>
-      <ComboBox options={options} value={fruit} onChange={handleFruitChange} isListBox>
+      <ComboBox
+        options={options}
+        value={fruit}
+        onChange={handleFruitChange}
+        isListBox
+      >
         <ComboBoxInput
           placeholder="Select fruit..."
           renderSelectedOption={option => (
@@ -158,11 +163,16 @@ function ComboBoxExample() {
     setFruit(fruit);
   };
 
-  const [fruit, setFruit] = React.useState(null);
+  const [fruit, setFruit] = React.useState([]);
 
   return (
     <>
-      <ComboBox options={options} value={fruit} onChange={handleFruitChange}>
+      <ComboBox
+        options={options}
+        value={fruit}
+        onChange={handleFruitChange}
+        multi
+      >
         <ComboBoxRightElement />
         <ComboBoxClearElement />
         <ComboBoxInput placeholder="Select a fruit..." />
@@ -173,7 +183,7 @@ function ComboBoxExample() {
 }
 ```
 
-### Combobox with custom option renderer, custom icon
+<!-- ### Combobox with custom option renderer, custom icon
 
 #### 1. Only the renderer , keeping the <b>highlighted, selected </b> styles as default. Use this to quickly change just the content.
 
@@ -650,4 +660,3 @@ function ComboBoxExample() {
   );
 }
 ```
-
