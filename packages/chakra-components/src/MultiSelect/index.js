@@ -5,7 +5,7 @@ import { useMultiSelectStyle } from "./styles";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const Input = forwardRef((props, ref) => {
+const MultiSelectInput = forwardRef((props, ref) => {
   const {
     size,
     as,
@@ -48,12 +48,57 @@ const Input = forwardRef((props, ref) => {
   );
 });
 
-Input.displayName = "Input";
+MultiSelectInput.displayName = "MultiSelectInput";
 
-Input.defaultProps = {
+MultiSelectInput.defaultProps = {
   size: "md",
   as: "input",
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const MultiSelectHiddenInput = () => {
+  return <input type="hidden" name="color" value="red" />;
+};
+
+MultiSelectHiddenInput.displayName = "MultiSelectHiddenInput";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const MultiSelectSelectedOption = () => {
+  return (
+    <PseudoBox
+      position="absolute"
+      textOverflow="ellipsis"
+      whiteSpace="nowrap"
+      top="50%"
+      transform="translateY(-50%)"
+      mx="2px"
+      maxW="calc(100% - 8px)"
+    >
+      Orange
+    </PseudoBox>
+  );
+};
+
+MultiSelectSelectedOption.displayName = "MultiSelectSelectedOption";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const MultiSelectPlaceholder = () => {
+  return (
+    <PseudoBox
+      position="absolute"
+      top="50%"
+      transform="translateY(-50%)"
+      mx="2px"
+    >
+      Select One...
+    </PseudoBox>
+  );
+};
+
+MultiSelectPlaceholder.displayName = "MultiSelectPlaceholder";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -88,25 +133,6 @@ export const MultiSelect = ({
             p="2px 8px"
             overflow="hidden"
           >
-            {/* <PseudoBox
-              position="absolute"
-              textOverflow="ellipsis"
-              whiteSpace="nowrap"
-              top="50%"
-              transform="translateY(-50%)"
-              mx="2px"
-              maxW="calc(100% - 8px)"
-            >
-              Orange
-            </PseudoBox> */}
-            {/* <PseudoBox
-              position="absolute"
-              top="50%"
-              transform="translateY(-50%)"
-              mx="2px"
-            >
-              Select One...
-            </PseudoBox> */}
             <PseudoBox
               py="2px"
               m="2px"
@@ -114,7 +140,7 @@ export const MultiSelect = ({
               visibility="visible"
             >
               <PseudoBox display="inline-block">
-                <Input />
+                <MultiSelectInput />
                 <PseudoBox
                   position="absolute"
                   top="0px"
@@ -142,7 +168,7 @@ export const MultiSelect = ({
             <Icon name="warning" />
           </PseudoBox>
         </PseudoBox>
-        <HiddenInput />
+        <MultiSelectHiddenInput />
       </PseudoBox>
     </MultiSelectContext.Provider>
   );
@@ -154,12 +180,6 @@ MultiSelect.defaultProps = {
   size: "md",
   focusBorderColor: "blue.500",
   errorBorderColor: "red.500",
-};
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-const HiddenInput = () => {
-  return <input type="hidden" name="color" value="red" />;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
