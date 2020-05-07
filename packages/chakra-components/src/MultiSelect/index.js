@@ -416,7 +416,7 @@ const MultiSelectSelectedOption = ({ ...props }) => {
       <>
         {value.map(val => (
           <MultiSelectTagAddons>
-            <Tag size="md" variant="solid" variantColor="cyan">
+            <Tag size="md" variant="solid" variantColor="blue">
               <TagLabel>{val}</TagLabel>
               <TagCloseButton />
             </Tag>
