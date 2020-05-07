@@ -31,7 +31,7 @@ const MultiSelect = forwardRef(
   (
     {
       options,
-      value,
+      value: initialValue,
       onChange,
       isMulti,
       focusBorderColor = "blue.500",
@@ -42,27 +42,43 @@ const MultiSelect = forwardRef(
   ) => {
     const [isFocused, setIsFocused] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const [value, setValue] = useState(initialValue);
 
+    const multiSelectWrapperRef = useRef(null);
     const multiSelectRef = useRef(null);
     const inputRef = useRef(null);
+    const popperRef = useRef(null);
 
     const handleOnClick = e => {
       if (!isFocused) {
         inputRef.current.focus();
+      }
+
+      if (inputRef.current && inputRef.current.style.opacity === "0") {
+        inputRef.current.style.opacity = 1;
+      }
+
+      if (isOpen) {
+        setIsOpen(false);
+      } else {
+        setIsOpen(true);
       }
     };
 
     const context = {
       options,
       value,
+      setValue,
       onChange,
       multiSelectRef,
+      multiSelectWrapperRef,
       isMulti,
       inputRef,
       setIsFocused,
       isFocused,
       isOpen,
       setIsOpen,
+      popperRef,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -79,6 +95,7 @@ const MultiSelect = forwardRef(
           <PseudoBox
             ref={_multiSelectRef}
             height={10}
+            tabIndex={-1}
             onClick={handleOnClick}
             {...styleProps}
             {...rest}
@@ -105,6 +122,8 @@ const MultiSelectInput = forwardRef((props, ref) => {
     setIsFocused,
     isOpen,
     setIsOpen,
+    multiSelectRef,
+    popperRef,
   } = useMultiSelectContext();
   const {
     "aria-label": ariaLabel,
@@ -119,24 +138,42 @@ const MultiSelectInput = forwardRef((props, ref) => {
   const formControl = useFormControl(props);
   const _inputRef = useForkRef(inputRef, ref);
 
-  const handleFocus = () => {
+  const handleOnFocus = event => {
     if (!isFocused) {
       setIsFocused(true);
     }
 
-    if (!isOpen) {
-      setIsOpen(true);
+    if (inputRef.current && inputRef.current.style.opacity === "0") {
+      inputRef.current.style.opacity = 1;
     }
   };
 
-  const handleBlur = () => {
-    if (isFocused) {
-      setIsFocused(false);
+  const handleOnBlur = event => {
+    if (!isOpen && !multiSelectRef.current.contains(event.relatedTarget)) {
+      if (isFocused) {
+        setIsFocused(false);
+      }
+
+      return;
     }
 
-    if (isOpen) {
-      setIsOpen(false);
+    if (
+      isOpen &&
+      !popperRef.current.contains(event.relatedTarget) &&
+      !multiSelectRef.current.contains(event.relatedTarget)
+    ) {
+      if (isFocused) {
+        setIsFocused(false);
+      }
+
+      if (isOpen) {
+        setIsOpen(false);
+      }
+
+      return;
     }
+
+    inputRef.current.focus();
   };
 
   return (
@@ -157,8 +194,8 @@ const MultiSelectInput = forwardRef((props, ref) => {
         opacity={1}
         cursor="default"
         outline="none"
-        onFocus={handleFocus}
-        onBlur={handleBlur}
+        onFocus={handleOnFocus}
+        onBlur={handleOnBlur}
         {...rest}
       />
       <PseudoBox
@@ -185,13 +222,38 @@ MultiSelectInput.displayName = "MultiSelectInput";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
-  const { options } = useMultiSelectContext();
+  const {
+    options,
+    setValue,
+    isOpen,
+    setIsOpen,
+    inputRef,
+  } = useMultiSelectContext();
+
+  const option = options[index];
+
+  const handleOnClick = event => {
+    setValue(option.value);
+
+    if (isOpen) {
+      setIsOpen(false);
+    }
+
+    inputRef.current.style.opacity = 0;
+  };
 
   const styleProps = useMultiSelectOptionStyle();
 
   return (
-    <PseudoBox ref={ref} style={style} {...styleProps} {...rest}>
-      {options[index].label}
+    <PseudoBox
+      ref={ref}
+      style={style}
+      tabIndex={-1}
+      onClick={handleOnClick}
+      {...styleProps}
+      {...rest}
+    >
+      {option.label}
     </PseudoBox>
   );
 });
@@ -205,7 +267,12 @@ const MultiSelectList = forwardRef(
     { placement, skid, gutter, itemHeight = 40, pageSize = 10, ...props },
     ref,
   ) => {
-    const { multiSelectRef, options, isOpen } = useMultiSelectContext();
+    const {
+      multiSelectRef,
+      options,
+      isOpen,
+      popperRef,
+    } = useMultiSelectContext();
 
     const popperModifiers = {
       preventOverflow: {
@@ -218,11 +285,14 @@ const MultiSelectList = forwardRef(
       },
     };
 
+    const _popperRef = useForkRef(popperRef, ref);
+
     const height = options.length * itemHeight;
     const styleProps = useMultiSelectListStyle();
 
     return (
       <Popper
+        ref={_popperRef}
         usePortal={false}
         anchorEl={multiSelectRef.current}
         isOpen={isOpen}
