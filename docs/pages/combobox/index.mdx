@@ -22,6 +22,52 @@ import {
 } from "@chakra-components/core";
 ```
 
+## Basic Listbox
+
+```jsx
+function Listbox() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+  }));
+
+  const handleFruitChange = fruit => {
+    setFruit(fruit);
+  };
+
+  const [fruit, setFruit] = React.useState(null);
+
+  return (
+    <>
+      <ComboBox options={options} value={fruit} onChange={handleFruitChange} isListBox>
+        <ComboBoxInput
+          placeholder="Select user..."
+          renderSelectedOption={option => (
+            <Flex w="100%" alignItems="center">
+              <Avatar name={option.label} src={option.img} size="xs" mr={2} />
+              <Box as="h4" fontWeight="bold">
+                {option.label}
+              </Box>
+            </Flex>
+          )}
+        />
+        <ComboBoxPopup />
+      </ComboBox>
+    </>
+  );
+}
+```
+
 ### Basic ComboBox
 
 ```jsx
@@ -537,3 +583,4 @@ function ComboBoxExample() {
   );
 }
 ```
+
