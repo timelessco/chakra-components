@@ -99,6 +99,7 @@ const ComboBox = forwardRef(
       deselectIndex,
       setOpen,
     } = useSelect({
+      isListBox,
       multi,
       cacheOptions,
       options: async ? asyncOptions : options,
@@ -232,6 +233,9 @@ const ComboBoxInput = forwardRef(
     const ghostProps = splitProps(props);
 
     const _placeholder = () => {
+      if (isListBox) {
+        return undefined;
+      }
       if (!enableGhost) {
         return placeholder;
       } else if (!value && !selectedOption.value) {
@@ -258,7 +262,9 @@ const ComboBoxInput = forwardRef(
           {...getInputProps({ ref })}
           {...props}
           color={_enableGhost ? "transparent" : "inherit"}
-          visibility="hidden"
+          onClick={() => {
+            console.log("clicked ");
+          }}
         />
 
         {_enableGhost ? (

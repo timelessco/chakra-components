@@ -74,8 +74,11 @@ function useHoistedState(initialState, reducer) {
   return [state, setState];
 }
 
+let rapidTypeaheadDebouncer = null;
+
 export default function useSelect({
   multi,
+  isListBox,
   create,
   getCreateLabel = d => `Use "${d}"`,
   stateReducer = (old, newState, action) => newState,
@@ -164,7 +167,7 @@ export default function useSelect({
   // If multi and duplicates aren't allowed, filter out the
   // selected options from the options list
   options = React.useMemo(() => {
-    if (multi && !duplicates && !async) {
+    if (multi && !duplicates && !async && !isListBox) {
       return options.filter(d => !value.includes(d.value));
     }
 
@@ -183,6 +186,7 @@ export default function useSelect({
     isAsyncSuccess,
     isAsyncCompletedOnce,
     cacheOptions,
+    isListBox,
   ]);
 
   // Compute the currently selected option(s)
@@ -209,7 +213,7 @@ export default function useSelect({
   // TODO: This is likely where we will perform async option fetching
   // in the future.
   options = React.useMemo(() => {
-    if (!async && resolvedSearchValue) {
+    if (!async && resolvedSearchValue && !isListBox) {
       return filterFnRef.current(options, resolvedSearchValue);
     }
     return options;
@@ -254,16 +258,41 @@ export default function useSelect({
 
   const setSearch = React.useCallback(
     (value, highlightTriggeredBy) => {
-      setState(
-        old => ({
-          ...old,
-          searchValue: value,
-          highlightToPosition: "start",
-          highlightTriggeredBy: highlightTriggeredBy,
-        }),
-        actions.setSearch,
-      );
-      setResolvedSearch(value);
+      if (isListBox && value) {
+        setState(
+          old => ({
+            ...old,
+            searchValue: value,
+            highlightToPosition: "start",
+            highlightTriggeredBy: highlightTriggeredBy,
+          }),
+          actions.setSearch,
+        );
+
+        setResolvedSearch(value);
+
+        if (!rapidTypeaheadDebouncer) {
+          rapidTypeaheadDebouncer = setTimeout(() => {
+            setSearch("");
+          }, 700);
+        } else {
+          clearTimeout(rapidTypeaheadDebouncer);
+          rapidTypeaheadDebouncer = setTimeout(() => {
+            setSearch("");
+          }, 700);
+        }
+      } else {
+        setState(
+          old => ({
+            ...old,
+            searchValue: value,
+            highlightToPosition: "start",
+            highlightTriggeredBy: highlightTriggeredBy,
+          }),
+          actions.setSearch,
+        );
+        setResolvedSearch(value);
+      }
     },
     [setState, setResolvedSearch],
   );
@@ -644,6 +673,31 @@ export default function useSelect({
       }
     }
   }, [options, options.length]);
+
+  // For list box
+  React.useEffect(() => {
+    if (isListBox && searchValue) {
+      let moveToIndex = null;
+      for (var index = 0; index < options.length; index++) {
+        const option = options[index];
+        const eachOption = option.value.toLowerCase();
+        const searchedValue = searchValue.toLowerCase();
+        const eachOptionFormatted = eachOption.substring(
+          0,
+          searchedValue.length,
+        );
+        if (eachOptionFormatted === searchedValue) {
+          moveToIndex = index;
+          break;
+        }
+      }
+      if (moveToIndex !== null && moveToIndex < highlightedIndex) {
+        highlightIndex(moveToIndex, "start");
+      } else if (moveToIndex !== null) {
+        highlightIndex(moveToIndex, "end");
+      }
+    }
+  }, [searchValue]);
 
   // isOpen, highlightedIndex
   // When we open and close the options, set the highlightedIndex to 0
