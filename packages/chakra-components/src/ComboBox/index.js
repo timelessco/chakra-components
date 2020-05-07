@@ -257,7 +257,7 @@ const ComboBoxInput = forwardRef(
     return (
       <>
         <Input
-          cursor="default"
+          cursor={isListBox ? "grabbing" : "default"}
           placeholder={_placeholder()}
           {...getInputProps({ ref })}
           {...props}
@@ -272,11 +272,11 @@ const ComboBoxInput = forwardRef(
             <ComboBoxSelectedGhost {...ghostProps}>
               {selectedOption.value
                 ? renderSelectedOption(selectedOption)
-                : _placeholder()}
+                : placeholder}
             </ComboBoxSelectedGhost>
           ) : (
             <ComboBoxSelectedGhost {...ghostProps}>
-              {selectedOption.value ? selectedOption.value : _placeholder()}
+              {selectedOption.value ? selectedOption.value : placeholder}
             </ComboBoxSelectedGhost>
           )
         ) : null}
@@ -298,7 +298,6 @@ const ComboBoxSelectedGhost = forwardRef(({ size, ...props }, ref) => {
     <Box
       display="flex"
       alignItems="center"
-      justifyContent="center"
       position="absolute"
       top="0"
       left="1px"

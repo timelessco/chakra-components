@@ -117,7 +117,7 @@ function Listbox() {
     <>
       <ComboBox options={options} value={fruit} onChange={handleFruitChange} isListBox>
         <ComboBoxInput
-          placeholder="Select user..."
+          placeholder="Select fruit..."
           renderSelectedOption={option => (
             <Flex w="100%" alignItems="center">
               <Avatar name={option.label} src={option.img} size="xs" mr={2} />
