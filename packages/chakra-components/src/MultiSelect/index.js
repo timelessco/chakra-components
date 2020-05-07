@@ -1,4 +1,4 @@
-import React, { forwardRef, createContext, useRef } from "react";
+import React, { forwardRef, createContext, useRef, useState } from "react";
 import {
   Box,
   PseudoBox,
@@ -13,7 +13,6 @@ import {
 import { useForkRef } from "@chakra-ui/core/dist/utils";
 import Popper from "@chakra-ui/core/dist/Popper";
 import { useMultiSelectContext } from "./useMultiSelectContext";
-
 import { FixedSizeList as List } from "react-window";
 
 import {
@@ -42,28 +41,44 @@ export const MultiSelect = forwardRef(
     },
     ref,
   ) => {
+    const [isFocused, setIsFocused] = useState(false);
+
     const multiSelectRef = useRef(null);
+    const inputRef = useRef(null);
 
-    const context = { options, value, onChange, multiSelectRef, isMulti };
+    const handleOnClick = e => {
+      inputRef.current.focus();
+    };
 
-    const { border, borderColor, rounded, ...styleProps } = useMultiSelectStyle(
-      {
-        size,
-        focusBorderColor,
-        errorBorderColor,
-      },
-    );
+    const context = {
+      options,
+      value,
+      onChange,
+      multiSelectRef,
+      isMulti,
+      inputRef,
+      setIsFocused,
+      isFocused,
+    };
+
+    const styleProps = useMultiSelectStyle({
+      isFocused,
+      focusBorderColor,
+      errorBorderColor,
+    });
 
     const _multiSelectRef = useForkRef(multiSelectRef, ref);
 
     return (
       <MultiSelectContext.Provider value={context}>
-        <PseudoBox
-          ref={_multiSelectRef}
-          pos="relative"
-          {...{ border, borderColor, rounded }}
-        >
-          <PseudoBox height={10} {...styleProps} {...{ rounded }} {...rest}>
+        <PseudoBox pos="relative">
+          <PseudoBox
+            ref={_multiSelectRef}
+            height={10}
+            onClick={handleOnClick}
+            {...styleProps}
+            {...rest}
+          >
             <MultiSelectInputGroup />
             <MultiSelectRightElements />
           </PseudoBox>
@@ -183,6 +198,7 @@ MultiSelectInputGroup.displayName = "MultiSelectInputGroup";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectInput = forwardRef((props, ref) => {
+  const { inputRef, isFocused, setIsFocused } = useMultiSelectContext();
   const {
     "aria-label": ariaLabel,
     "aria-describedby": ariaDescribedby,
@@ -194,12 +210,25 @@ const MultiSelectInput = forwardRef((props, ref) => {
   } = props;
 
   const formControl = useFormControl(props);
+  const _inputRef = useForkRef(inputRef, ref);
+
+  const handleFocus = () => {
+    if (!isFocused) {
+      setIsFocused(true);
+    }
+  };
+
+  const handleBlur = () => {
+    if (isFocused) {
+      setIsFocused(false);
+    }
+  };
 
   return (
     <PseudoBox display="inline-block" py="2px" m="2px" visibility="visible">
       <PseudoBox
         as="input"
-        ref={ref}
+        ref={_inputRef}
         readOnly={formControl.isReadOnly}
         aria-readonly={isReadOnly}
         disabled={formControl.isDisabled}
@@ -213,6 +242,8 @@ const MultiSelectInput = forwardRef((props, ref) => {
         opacity={1}
         cursor="default"
         outline="none"
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         {...rest}
       />
       <PseudoBox
@@ -245,7 +276,7 @@ const MultiSelectRightAddons = forwardRef(({ children, ...props }, ref) => {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      p={2}
+      p="7px"
       {...props}
     >
       {children}

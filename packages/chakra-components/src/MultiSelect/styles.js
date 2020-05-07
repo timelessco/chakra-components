@@ -6,7 +6,7 @@ import { useTheme, useColorMode } from "@chakra-ui/core";
   ========================================================================== */
 
 export const useMultiSelectStyle = ({
-  size,
+  isFocused,
   focusBorderColor,
   errorBorderColor,
 }) => {
@@ -52,16 +52,16 @@ export const useMultiSelectStyle = ({
 
   const interactionProps = {
     _hover: {
-      borderColor: hoverColor[colorMode],
+      borderColor: isFocused ? _focusBorderColor : hoverColor[colorMode],
     },
-    _disabled: {
-      opacity: "0.4",
-      cursor: "not-allowed",
-    },
-    _focus: {
+    ...(isFocused && {
       zIndex: 1,
       borderColor: _focusBorderColor,
       boxShadow: `0 0 0 1px ${_focusBorderColor}`,
+    }),
+    _disabled: {
+      opacity: "0.4",
+      cursor: "not-allowed",
     },
     _invalid: {
       borderColor: _errorBorderColor,
