@@ -1,4 +1,4 @@
-### Basic MultiSelect
+### Basic Select
 
 ```jsx
 function ComboBoxExample() {
@@ -29,6 +29,44 @@ function ComboBoxExample() {
         options={options}
         value={fruit}
         onChange={handleFruitChange}
+      />
+    </>
+  );
+}
+```
+
+### Multi Select
+
+```jsx
+function ComboBoxExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+  }));
+
+  const handleFruitChange = fruit => {
+    setFruit(fruit);
+  };
+
+  const [fruit, setFruit] = useState(["Acai", "Apples"]);
+
+  return (
+    <>
+      <MultiSelect
+        options={options}
+        value={fruit}
+        onChange={handleFruitChange}
+        isMulti
       />
     </>
   );
