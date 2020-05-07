@@ -38,7 +38,12 @@ const Combo_Box = () => {
   const [user, setUser] = useState(null);
   return (
     <ThemeProvider>
-      <ComboBox value={user} options={options} onChange={setUser}>
+      <ComboBox
+        value={user}
+        options={options}
+        onChange={setUser}
+        data-testid="combobox"
+      >
         <ComboBoxRightElement />
         <ComboBoxClearElement />
         <ComboBoxInput
@@ -75,18 +80,28 @@ const Combo_Box = () => {
 };
 
 afterEach(cleanup);
-
+// input render
 it("combo-box", () => {
   const { getByPlaceholderText } = render(<Combo_Box />);
-  // input box render
   expect(getByPlaceholderText("Select user...").placeholder).toBe(
     "Select user...",
   );
 });
-
+// on input focus
 it("combo-box", () => {
-  const { getAllByTestId, getByTestId } = render(<Combo_Box />);
+  const { getAllByTestId, getByTestId, queryAllByTestId } = render(
+    <Combo_Box />,
+  );
   const inputBox = getByTestId("input");
+
+  // on focus of input box
   inputBox.focus();
-  getAllByTestId("option").map(row => row.nodeName === "LI");
+  const options = getAllByTestId("option");
+  expect(options.map(item => item.nodeName)).toEqual(
+    expect.arrayContaining(["LI", "LI", "LI", "LI", "LI"]),
+  );
+
+  // on blur of input box
+  fireEvent.click(options[0]);
+  expect(queryAllByTestId("option")).toHaveLength(0);
 });
