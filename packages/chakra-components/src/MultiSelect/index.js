@@ -7,6 +7,8 @@ import {
   Tag,
   TagLabel,
   TagCloseButton,
+  useTheme,
+  useColorMode,
 } from "@chakra-ui/core";
 import { useForkRef } from "@chakra-ui/core/dist/utils";
 import Popper from "@chakra-ui/core/dist/Popper";
@@ -32,6 +34,7 @@ export const MultiSelect = forwardRef(
       options,
       value,
       onChange,
+      isMulti,
       size = "md",
       focusBorderColor = "blue.500",
       errorBorderColor = "red.500",
@@ -41,7 +44,7 @@ export const MultiSelect = forwardRef(
   ) => {
     const multiSelectRef = useRef(null);
 
-    const context = { options, value, onChange, multiSelectRef };
+    const context = { options, value, onChange, multiSelectRef, isMulti };
 
     const { border, borderColor, rounded, ...styleProps } = useMultiSelectStyle(
       {
@@ -87,6 +90,8 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
     </PseudoBox>
   );
 });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectList = forwardRef(
   (
@@ -154,6 +159,8 @@ MultiSelectTagAddons.displayName = "MultiSelectTagAddons";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectInputGroup = ({ size = "md", ...rest }) => {
+  const { value } = useMultiSelectContext();
+
   return (
     <PseudoBox
       position="relative"
@@ -165,26 +172,7 @@ const MultiSelectInputGroup = ({ size = "md", ...rest }) => {
       overflow="hidden"
       {...rest}
     >
-      {/* <MultiSelectTagAddons>
-        <Tag size={size} variant="solid" variantColor="cyan">
-          <TagLabel>Cyan</TagLabel>
-          <TagCloseButton />
-        </Tag>
-      </MultiSelectTagAddons>
-      <MultiSelectTagAddons>
-        <Tag size={size} variant="solid" variantColor="cyan">
-          <TagLabel>Cyan</TagLabel>
-          <TagCloseButton />
-        </Tag>
-      </MultiSelectTagAddons>
-      <MultiSelectTagAddons>
-        <Tag size={size} variant="solid" variantColor="cyan">
-          <TagLabel>Cyan</TagLabel>
-          <TagCloseButton />
-        </Tag>
-      </MultiSelectTagAddons>
-      <MultiSelectSelectedOption />
-      <MultiSelectPlaceholder /> */}
+      {value ? <MultiSelectSelectedOption /> : <MultiSelectPlaceholder />}
       <MultiSelectInput />
     </PseudoBox>
   );
@@ -297,7 +285,24 @@ MultiSelectHiddenInput.displayName = "MultiSelectHiddenInput";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectSelectedOption = props => {
+const MultiSelectSelectedOption = ({ ...props }) => {
+  const { isMulti, value } = useMultiSelectContext();
+
+  if (isMulti) {
+    return (
+      <>
+        {value.map(val => (
+          <MultiSelectTagAddons>
+            <Tag size="md" variant="solid" variantColor="cyan">
+              <TagLabel>{val}</TagLabel>
+              <TagCloseButton />
+            </Tag>
+          </MultiSelectTagAddons>
+        ))}
+      </>
+    );
+  }
+
   return (
     <PseudoBox
       position="absolute"
@@ -309,7 +314,7 @@ const MultiSelectSelectedOption = props => {
       maxW="calc(100% - 8px)"
       {...props}
     >
-      Orange
+      {value}
     </PseudoBox>
   );
 };
@@ -319,12 +324,21 @@ MultiSelectSelectedOption.displayName = "MultiSelectSelectedOption";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectPlaceholder = props => {
+  const theme = useTheme();
+  const { colorMode } = useColorMode();
+
+  const placeholderColor = {
+    light: theme.colors.gray[400],
+    dark: theme.colors.whiteAlpha[400],
+  };
+
   return (
     <PseudoBox
       position="absolute"
       top="50%"
       transform="translateY(-50%)"
       mx="2px"
+      color={placeholderColor[colorMode]}
       {...props}
     >
       Select One...
