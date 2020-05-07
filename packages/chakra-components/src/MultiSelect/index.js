@@ -1,4 +1,4 @@
-import React, { forwardRef, createContext } from "react";
+import React, { forwardRef, createContext, useRef } from "react";
 import {
   Box,
   PseudoBox,
@@ -8,43 +8,129 @@ import {
   TagLabel,
   TagCloseButton,
 } from "@chakra-ui/core";
+import { useForkRef } from "@chakra-ui/core/dist/utils";
+import Popper from "@chakra-ui/core/dist/Popper";
+import { useMultiSelectContext } from "./useMultiSelectContext";
 
-import { useMultiSelectStyle } from "./styles";
+import { FixedSizeList as List } from "react-window";
+
+import {
+  useMultiSelectStyle,
+  useMultiSelectListStyle,
+  useMultiSelectOptionStyle,
+} from "./styles";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectContext = createContext();
+export const MultiSelectContext = createContext();
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const MultiSelect = ({
-  size = "md",
-  focusBorderColor = "blue.500",
-  errorBorderColor = "red.500",
-  ...rest
-}) => {
-  const context = {};
+export const MultiSelect = forwardRef(
+  (
+    {
+      options,
+      value,
+      onChange,
+      size = "md",
+      focusBorderColor = "blue.500",
+      errorBorderColor = "red.500",
+      ...rest
+    },
+    ref,
+  ) => {
+    const multiSelectRef = useRef(null);
 
-  const { border, borderColor, rounded, ...styleProps } = useMultiSelectStyle({
-    size,
-    focusBorderColor,
-    errorBorderColor,
-  });
+    const context = { options, value, onChange, multiSelectRef };
 
-  return (
-    <MultiSelectContext.Provider value={context}>
-      <PseudoBox pos="relative" {...{ border, borderColor, rounded }}>
-        <PseudoBox height={10} {...styleProps} {...{ rounded }} {...rest}>
-          <MultiSelectInputGroup />
-          <MultiSelectRightElements />
+    const { border, borderColor, rounded, ...styleProps } = useMultiSelectStyle(
+      {
+        size,
+        focusBorderColor,
+        errorBorderColor,
+      },
+    );
+
+    const _multiSelectRef = useForkRef(multiSelectRef, ref);
+
+    return (
+      <MultiSelectContext.Provider value={context}>
+        <PseudoBox
+          ref={_multiSelectRef}
+          pos="relative"
+          {...{ border, borderColor, rounded }}
+        >
+          <PseudoBox height={10} {...styleProps} {...{ rounded }} {...rest}>
+            <MultiSelectInputGroup />
+            <MultiSelectRightElements />
+          </PseudoBox>
+          <MultiSelectList />
+          <MultiSelectHiddenInput />
         </PseudoBox>
-        <MultiSelectHiddenInput />
-      </PseudoBox>
-    </MultiSelectContext.Provider>
-  );
-};
+      </MultiSelectContext.Provider>
+    );
+  },
+);
 
 MultiSelect.displayName = "MultiSelect";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
+  const { options } = useMultiSelectContext();
+
+  const styleProps = useMultiSelectOptionStyle();
+
+  return (
+    <PseudoBox ref={ref} style={style} {...styleProps} {...rest}>
+      {options[index].label}
+    </PseudoBox>
+  );
+});
+
+const MultiSelectList = forwardRef(
+  (
+    { placement, skid, gutter, itemHeight = 40, pageSize = 10, ...props },
+    ref,
+  ) => {
+    const { multiSelectRef, options } = useMultiSelectContext();
+
+    const popperModifiers = {
+      preventOverflow: {
+        enabled: true,
+        boundariesElement: "viewport",
+      },
+      offset: {
+        enabled: true,
+        offset: `${skid}, ${gutter}`,
+      },
+    };
+
+    const height = options.length * itemHeight;
+    const styleProps = useMultiSelectListStyle();
+
+    return (
+      <Popper
+        usePortal={false}
+        anchorEl={multiSelectRef.current}
+        isOpen={true}
+        placement={placement}
+        modifiers={popperModifiers}
+        {...styleProps}
+        {...props}
+      >
+        <List
+          itemSize={itemHeight}
+          itemCount={options.length}
+          height={height}
+          {...props}
+        >
+          {MultiSelectOption}
+        </List>
+      </Popper>
+    );
+  },
+);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -79,7 +165,7 @@ const MultiSelectInputGroup = ({ size = "md", ...rest }) => {
       overflow="hidden"
       {...rest}
     >
-      <MultiSelectTagAddons>
+      {/* <MultiSelectTagAddons>
         <Tag size={size} variant="solid" variantColor="cyan">
           <TagLabel>Cyan</TagLabel>
           <TagCloseButton />
@@ -97,6 +183,8 @@ const MultiSelectInputGroup = ({ size = "md", ...rest }) => {
           <TagCloseButton />
         </Tag>
       </MultiSelectTagAddons>
+      <MultiSelectSelectedOption />
+      <MultiSelectPlaceholder /> */}
       <MultiSelectInput />
     </PseudoBox>
   );
