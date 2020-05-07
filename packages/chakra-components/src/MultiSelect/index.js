@@ -34,7 +34,6 @@ export const MultiSelect = forwardRef(
       value,
       onChange,
       isMulti,
-      size = "md",
       focusBorderColor = "blue.500",
       errorBorderColor = "red.500",
       ...rest
@@ -173,7 +172,7 @@ MultiSelectTagAddons.displayName = "MultiSelectTagAddons";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectInputGroup = ({ size = "md", ...rest }) => {
+const MultiSelectInputGroup = props => {
   const { value } = useMultiSelectContext();
 
   return (
@@ -185,7 +184,7 @@ const MultiSelectInputGroup = ({ size = "md", ...rest }) => {
       flex=" 1 1 0%"
       px={2}
       overflow="hidden"
-      {...rest}
+      {...props}
     >
       {value ? <MultiSelectSelectedOption /> : <MultiSelectPlaceholder />}
       <MultiSelectInput />
