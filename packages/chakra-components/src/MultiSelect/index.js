@@ -7,8 +7,6 @@ import { useMultiSelectStyle } from "./styles";
 
 const MultiSelectInput = forwardRef((props, ref) => {
   const {
-    size,
-    as,
     "aria-label": ariaLabel,
     "aria-describedby": ariaDescribedby,
     isReadOnly,
@@ -21,51 +19,57 @@ const MultiSelectInput = forwardRef((props, ref) => {
   const formControl = useFormControl(props);
 
   return (
-    <PseudoBox
-      ref={ref}
-      as={as}
-      readOnly={formControl.isReadOnly}
-      aria-readonly={isReadOnly}
-      disabled={formControl.isDisabled}
-      aria-label={ariaLabel}
-      aria-invalid={formControl.isInvalid}
-      required={formControl.isRequired}
-      aria-required={formControl.isRequired}
-      aria-disabled={formControl.isDisabled}
-      aria-describedby={ariaDescribedby}
-      boxSizing="content-box"
-      width="2px"
-      background="0px center"
-      border="0px"
-      fontSize="inherit"
-      opacity={1}
-      outline="0px"
-      padding="0px"
-      color="inherit"
-      cursor="default"
-      {...rest}
-    />
+    <PseudoBox display="inline-block" py="2px" m="2px" visibility="visible">
+      <PseudoBox
+        as="input"
+        ref={ref}
+        readOnly={formControl.isReadOnly}
+        aria-readonly={isReadOnly}
+        disabled={formControl.isDisabled}
+        aria-label={ariaLabel}
+        aria-invalid={formControl.isInvalid}
+        required={formControl.isRequired}
+        aria-required={formControl.isRequired}
+        aria-disabled={formControl.isDisabled}
+        aria-describedby={ariaDescribedby}
+        width="2px"
+        opacity={1}
+        cursor="default"
+        outline="none"
+        {...rest}
+      />
+      <PseudoBox
+        position="absolute"
+        top="0px"
+        left="0px"
+        visibility="hidden"
+        height="0px"
+        overflow="scroll"
+        whiteSpace="pre"
+        fontSize="16px"
+        fontFamily="system-ui"
+        fontWeight="400"
+        fontStyle="normal"
+        letterSpacing="normal"
+        textTransform="none"
+      ></PseudoBox>
+    </PseudoBox>
   );
 });
 
 MultiSelectInput.displayName = "MultiSelectInput";
 
-MultiSelectInput.defaultProps = {
-  size: "md",
-  as: "input",
-};
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectHiddenInput = () => {
-  return <input type="hidden" name="color" value="red" />;
+const MultiSelectHiddenInput = props => {
+  return <input type="hidden" name="color" value="red" {...props} />;
 };
 
 MultiSelectHiddenInput.displayName = "MultiSelectHiddenInput";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectSelectedOption = () => {
+const MultiSelectSelectedOption = props => {
   return (
     <PseudoBox
       position="absolute"
@@ -75,6 +79,7 @@ const MultiSelectSelectedOption = () => {
       transform="translateY(-50%)"
       mx="2px"
       maxW="calc(100% - 8px)"
+      {...props}
     >
       Orange
     </PseudoBox>
@@ -85,13 +90,14 @@ MultiSelectSelectedOption.displayName = "MultiSelectSelectedOption";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectPlaceholder = () => {
+const MultiSelectPlaceholder = props => {
   return (
     <PseudoBox
       position="absolute"
       top="50%"
       transform="translateY(-50%)"
       mx="2px"
+      {...props}
     >
       Select One...
     </PseudoBox>
@@ -99,6 +105,45 @@ const MultiSelectPlaceholder = () => {
 };
 
 MultiSelectPlaceholder.displayName = "MultiSelectPlaceholder";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const MultiSelectRightElements = props => {
+  return (
+    <PseudoBox
+      display="flex"
+      alignItems="center"
+      alignSelf="stretch"
+      flexShrink="0"
+      {...props}
+    >
+      <Icon name="warning" />
+    </PseudoBox>
+  );
+};
+
+MultiSelectRightElements.displayName = "MultiSelectRightElements";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const MultiSelectInputGroup = props => {
+  return (
+    <PseudoBox
+      position="relative"
+      display="flex"
+      alignItems="center"
+      flexWrap="wrap"
+      flex=" 1 1 0%"
+      p="2px 8px"
+      overflow="hidden"
+      {...props}
+    >
+      <MultiSelectInput />
+    </PseudoBox>
+  );
+};
+
+MultiSelectInputGroup.displayName = "MultiSelectInputGroup";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -124,49 +169,8 @@ export const MultiSelect = ({
     <MultiSelectContext.Provider value={context}>
       <PseudoBox pos="relative">
         <PseudoBox {...styleProps} {...rest}>
-          <PseudoBox
-            position="relative"
-            display="flex"
-            alignItems="center"
-            flexWrap="wrap"
-            flex=" 1 1 0%"
-            p="2px 8px"
-            overflow="hidden"
-          >
-            <PseudoBox
-              py="2px"
-              m="2px"
-              color="rgb(51, 51, 51)"
-              visibility="visible"
-            >
-              <PseudoBox display="inline-block">
-                <MultiSelectInput />
-                <PseudoBox
-                  position="absolute"
-                  top="0px"
-                  left="0px"
-                  visibility="hidden"
-                  height="0px"
-                  overflow="scroll"
-                  whiteSpace="pre"
-                  fontSize="16px"
-                  fontFamily="system-ui"
-                  fontWeight="400"
-                  fontStyle="normal"
-                  letterSpacing="normal"
-                  textTransform="none"
-                ></PseudoBox>
-              </PseudoBox>
-            </PseudoBox>
-          </PseudoBox>
-          <PseudoBox
-            display="flex"
-            alignItems="center"
-            alignSelf="stretch"
-            flexShrink="0"
-          >
-            <Icon name="warning" />
-          </PseudoBox>
+          <MultiSelectInputGroup />
+          <MultiSelectRightElements />
         </PseudoBox>
         <MultiSelectHiddenInput />
       </PseudoBox>
