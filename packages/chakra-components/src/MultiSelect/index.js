@@ -1,7 +1,15 @@
 import React, { forwardRef, createContext } from "react";
-import { Box, PseudoBox, Icon, useFormControl } from "@chakra-ui/core";
+import {
+  Box,
+  PseudoBox,
+  Icon,
+  useFormControl,
+  Tag,
+  TagLabel,
+  TagCloseButton,
+} from "@chakra-ui/core";
 
-import { useMultiSelectStyle, inputSizes } from "./styles";
+import { useMultiSelectStyle } from "./styles";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -17,7 +25,7 @@ export const MultiSelect = ({
 }) => {
   const context = {};
 
-  const styleProps = useMultiSelectStyle({
+  const { border, borderColor, rounded, ...styleProps } = useMultiSelectStyle({
     size,
     focusBorderColor,
     errorBorderColor,
@@ -25,8 +33,8 @@ export const MultiSelect = ({
 
   return (
     <MultiSelectContext.Provider value={context}>
-      <PseudoBox pos="relative">
-        <PseudoBox {...styleProps} {...rest}>
+      <PseudoBox pos="relative" {...{ border, borderColor, rounded }}>
+        <PseudoBox height={10} {...styleProps} {...rest}>
           <MultiSelectInputGroup />
           <MultiSelectRightElements />
         </PseudoBox>
@@ -40,10 +48,26 @@ MultiSelect.displayName = "MultiSelect";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectInputGroup = ({ size = "md", ...rest }) => {
-  const height = inputSizes[size] && inputSizes[size]["height"];
-  const px = inputSizes[size] && inputSizes[size]["px"];
+const MultiSelectTagAddons = forwardRef(({ children, ...props }, ref) => {
+  return (
+    <Box
+      ref={ref}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      m="2px"
+      {...props}
+    >
+      {children}
+    </Box>
+  );
+});
 
+MultiSelectTagAddons.displayName = "MultiSelectTagAddons";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const MultiSelectInputGroup = ({ size = "md", ...rest }) => {
   return (
     <PseudoBox
       position="relative"
@@ -51,12 +75,28 @@ const MultiSelectInputGroup = ({ size = "md", ...rest }) => {
       alignItems="center"
       flexWrap="wrap"
       flex=" 1 1 0%"
-      px={px}
-      height={height}
+      px={2}
       overflow="hidden"
       {...rest}
     >
-      {...rest}>
+      <MultiSelectTagAddons>
+        <Tag size={size} variant="solid" variantColor="cyan">
+          <TagLabel>Cyan</TagLabel>
+          <TagCloseButton />
+        </Tag>
+      </MultiSelectTagAddons>
+      <MultiSelectTagAddons>
+        <Tag size={size} variant="solid" variantColor="cyan">
+          <TagLabel>Cyan</TagLabel>
+          <TagCloseButton />
+        </Tag>
+      </MultiSelectTagAddons>
+      <MultiSelectTagAddons>
+        <Tag size={size} variant="solid" variantColor="cyan">
+          <TagLabel>Cyan</TagLabel>
+          <TagCloseButton />
+        </Tag>
+      </MultiSelectTagAddons>
       <MultiSelectInput />
     </PseudoBox>
   );
@@ -122,28 +162,22 @@ MultiSelectInput.displayName = "MultiSelectInput";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectAddons = forwardRef(
-  ({ size = "md", children, disablePointerEvents = false, ...props }, ref) => {
-    const height = inputSizes[size] && inputSizes[size]["height"];
-    const fontSize = inputSizes[size] && inputSizes[size]["fontSize"];
+const MultiSelectRightAddons = forwardRef(({ children, ...props }, ref) => {
+  return (
+    <Box
+      ref={ref}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      p={2}
+      {...props}
+    >
+      {children}
+    </Box>
+  );
+});
 
-    return (
-      <Box
-        ref={ref}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        height={height}
-        width={height}
-        fontSize={fontSize}
-        {...(disablePointerEvents && { pointerEvents: "none" })}
-        {...props}
-      >
-        {children}
-      </Box>
-    );
-  },
-);
+MultiSelectRightAddons.displayName = "MultiSelectRightAddons";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -156,9 +190,9 @@ const MultiSelectRightElements = props => {
       flexShrink="0"
       {...props}
     >
-      <MultiSelectAddons>
+      <MultiSelectRightAddons>
         <Icon name="chevron-down" fontSize="1.5rem" />
-      </MultiSelectAddons>
+      </MultiSelectRightAddons>
     </PseudoBox>
   );
 };
