@@ -34,7 +34,7 @@ export const MultiSelect = ({
   return (
     <MultiSelectContext.Provider value={context}>
       <PseudoBox pos="relative" {...{ border, borderColor, rounded }}>
-        <PseudoBox height={10} {...styleProps} {...rest}>
+        <PseudoBox height={10} {...styleProps} {...{ rounded }} {...rest}>
           <MultiSelectInputGroup />
           <MultiSelectRightElements />
         </PseudoBox>
