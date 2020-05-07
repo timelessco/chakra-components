@@ -304,6 +304,7 @@ const ComboBoxSelectedGhost = forwardRef(({ size, ...props }, ref) => {
       zIndex={2}
       ref={ref}
       width={isListBox ? "100%" : null}
+      cursor="default"
       {...baseInputProps}
       {...props}
       onClick={() => setOpen(!isOpen)}

@@ -105,6 +105,7 @@ function Listbox() {
   const options = fruits.map((d, i) => ({
     value: d,
     label: d,
+    disabled: i%4 == 0,
   }));
 
   const handleFruitChange = fruit => {
@@ -119,7 +120,7 @@ function Listbox() {
         <ComboBoxInput
           placeholder="Select fruit..."
           renderSelectedOption={option => (
-            <Flex w="100%" alignItems="center">
+            <Flex w="100%" alignItems="center" cursor="default">
               <Avatar name={option.label} src={option.img} size="xs" mr={2} />
               <Box as="h4" fontWeight="bold">
                 {option.label}
