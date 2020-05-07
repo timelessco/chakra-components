@@ -1,7 +1,7 @@
 import React, { forwardRef, createContext } from "react";
-import { PseudoBox, Icon, useFormControl } from "@chakra-ui/core";
+import { Box, PseudoBox, Icon, useFormControl } from "@chakra-ui/core";
 
-import { useMultiSelectStyle } from "./styles";
+import { useMultiSelectStyle, inputSizes } from "./styles";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -10,9 +10,9 @@ const MultiSelectContext = createContext();
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const MultiSelect = ({
-  size,
-  focusBorderColor,
-  errorBorderColor,
+  size = "md",
+  focusBorderColor = "blue.500",
+  errorBorderColor = "red.500",
   ...rest
 }) => {
   const context = {};
@@ -38,15 +38,12 @@ export const MultiSelect = ({
 
 MultiSelect.displayName = "MultiSelect";
 
-MultiSelect.defaultProps = {
-  size: "md",
-  focusBorderColor: "blue.500",
-  errorBorderColor: "red.500",
-};
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectInputGroup = props => {
+const MultiSelectInputGroup = ({ size = "md", ...rest }) => {
+  const height = inputSizes[size] && inputSizes[size]["height"];
+  const px = inputSizes[size] && inputSizes[size]["px"];
+
   return (
     <PseudoBox
       position="relative"
@@ -54,10 +51,12 @@ const MultiSelectInputGroup = props => {
       alignItems="center"
       flexWrap="wrap"
       flex=" 1 1 0%"
-      p="2px 8px"
+      px={px}
+      height={height}
       overflow="hidden"
-      {...props}
+      {...rest}
     >
+      {...rest}>
       <MultiSelectInput />
     </PseudoBox>
   );
@@ -123,6 +122,31 @@ MultiSelectInput.displayName = "MultiSelectInput";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+const MultiSelectAddons = forwardRef(
+  ({ size = "md", children, disablePointerEvents = false, ...props }, ref) => {
+    const height = inputSizes[size] && inputSizes[size]["height"];
+    const fontSize = inputSizes[size] && inputSizes[size]["fontSize"];
+
+    return (
+      <Box
+        ref={ref}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        height={height}
+        width={height}
+        fontSize={fontSize}
+        {...(disablePointerEvents && { pointerEvents: "none" })}
+        {...props}
+      >
+        {children}
+      </Box>
+    );
+  },
+);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 const MultiSelectRightElements = props => {
   return (
     <PseudoBox
@@ -132,7 +156,9 @@ const MultiSelectRightElements = props => {
       flexShrink="0"
       {...props}
     >
-      <Icon name="warning" />
+      <MultiSelectAddons>
+        <Icon name="chevron-down" fontSize="1.5rem" />
+      </MultiSelectAddons>
     </PseudoBox>
   );
 };
