@@ -1,27 +1,6 @@
 import { get } from "styled-system";
 import { useTheme, useColorMode } from "@chakra-ui/core";
 
-export const inputSizes = {
-  lg: {
-    fontSize: "lg",
-    px: 4,
-    height: 12,
-    rounded: "md",
-  },
-  md: {
-    fontSize: "md",
-    px: 4,
-    height: 10,
-    rounded: "md",
-  },
-  sm: {
-    fontSize: "sm",
-    px: 3,
-    height: 8,
-    rounded: "sm",
-  },
-};
-
 export const useMultiSelectStyle = ({
   size,
   focusBorderColor,
@@ -32,7 +11,6 @@ export const useMultiSelectStyle = ({
 
   const bg = { light: "white", dark: "whiteAlpha.100" };
   const borderColor = { light: "inherit", dark: "whiteAlpha.50" };
-  const { rounded } = inputSizes[size];
 
   const baseProps = {
     position: "relative",
@@ -43,7 +21,7 @@ export const useMultiSelectStyle = ({
     bg: bg[colorMode],
     border: "1px",
     borderColor: borderColor[colorMode],
-    rounded,
+    rounded: "md",
     cursor: "default",
     transition: "all 0.2s",
     outline: "none",
