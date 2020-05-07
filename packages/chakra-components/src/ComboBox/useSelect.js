@@ -691,9 +691,13 @@ export default function useSelect({
           break;
         }
       }
-      if (moveToIndex !== null && moveToIndex < highlightedIndex) {
+      if (
+        moveToIndex !== null &&
+        !options[moveToIndex].disabled &&
+        moveToIndex < highlightedIndex
+      ) {
         highlightIndex(moveToIndex, "start");
-      } else if (moveToIndex !== null) {
+      } else if (moveToIndex !== null && !options[moveToIndex].disabled) {
         highlightIndex(moveToIndex, "end");
       }
     }
