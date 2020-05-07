@@ -5,6 +5,68 @@ import { useMultiSelectStyle } from "./styles";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+const MultiSelectContext = createContext();
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const MultiSelect = ({
+  size,
+  focusBorderColor,
+  errorBorderColor,
+  ...rest
+}) => {
+  const context = {};
+
+  const styleProps = useMultiSelectStyle({
+    size,
+    focusBorderColor,
+    errorBorderColor,
+  });
+
+  return (
+    <MultiSelectContext.Provider value={context}>
+      <PseudoBox pos="relative">
+        <PseudoBox {...styleProps} {...rest}>
+          <MultiSelectInputGroup />
+          <MultiSelectRightElements />
+        </PseudoBox>
+        <MultiSelectHiddenInput />
+      </PseudoBox>
+    </MultiSelectContext.Provider>
+  );
+};
+
+MultiSelect.displayName = "MultiSelect";
+
+MultiSelect.defaultProps = {
+  size: "md",
+  focusBorderColor: "blue.500",
+  errorBorderColor: "red.500",
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const MultiSelectInputGroup = props => {
+  return (
+    <PseudoBox
+      position="relative"
+      display="flex"
+      alignItems="center"
+      flexWrap="wrap"
+      flex=" 1 1 0%"
+      p="2px 8px"
+      overflow="hidden"
+      {...props}
+    >
+      <MultiSelectInput />
+    </PseudoBox>
+  );
+};
+
+MultiSelectInputGroup.displayName = "MultiSelectInputGroup";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 const MultiSelectInput = forwardRef((props, ref) => {
   const {
     "aria-label": ariaLabel,
@@ -61,6 +123,24 @@ MultiSelectInput.displayName = "MultiSelectInput";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+const MultiSelectRightElements = props => {
+  return (
+    <PseudoBox
+      display="flex"
+      alignItems="center"
+      alignSelf="stretch"
+      flexShrink="0"
+      {...props}
+    >
+      <Icon name="warning" />
+    </PseudoBox>
+  );
+};
+
+MultiSelectRightElements.displayName = "MultiSelectRightElements";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 const MultiSelectHiddenInput = props => {
   return <input type="hidden" name="color" value="red" {...props} />;
 };
@@ -105,85 +185,5 @@ const MultiSelectPlaceholder = props => {
 };
 
 MultiSelectPlaceholder.displayName = "MultiSelectPlaceholder";
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-const MultiSelectRightElements = props => {
-  return (
-    <PseudoBox
-      display="flex"
-      alignItems="center"
-      alignSelf="stretch"
-      flexShrink="0"
-      {...props}
-    >
-      <Icon name="warning" />
-    </PseudoBox>
-  );
-};
-
-MultiSelectRightElements.displayName = "MultiSelectRightElements";
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-const MultiSelectInputGroup = props => {
-  return (
-    <PseudoBox
-      position="relative"
-      display="flex"
-      alignItems="center"
-      flexWrap="wrap"
-      flex=" 1 1 0%"
-      p="2px 8px"
-      overflow="hidden"
-      {...props}
-    >
-      <MultiSelectInput />
-    </PseudoBox>
-  );
-};
-
-MultiSelectInputGroup.displayName = "MultiSelectInputGroup";
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-const MultiSelectContext = createContext();
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-export const MultiSelect = ({
-  size,
-  focusBorderColor,
-  errorBorderColor,
-  ...rest
-}) => {
-  const context = {};
-
-  const styleProps = useMultiSelectStyle({
-    size,
-    focusBorderColor,
-    errorBorderColor,
-  });
-
-  return (
-    <MultiSelectContext.Provider value={context}>
-      <PseudoBox pos="relative">
-        <PseudoBox {...styleProps} {...rest}>
-          <MultiSelectInputGroup />
-          <MultiSelectRightElements />
-        </PseudoBox>
-        <MultiSelectHiddenInput />
-      </PseudoBox>
-    </MultiSelectContext.Provider>
-  );
-};
-
-MultiSelect.displayName = "MultiSelect";
-
-MultiSelect.defaultProps = {
-  size: "md",
-  focusBorderColor: "blue.500",
-  errorBorderColor: "red.500",
-};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
