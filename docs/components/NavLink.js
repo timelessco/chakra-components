@@ -19,7 +19,7 @@ const NavLink = ({ children, ...props }) => {
 };
 
 export const stringToUrl = (str, path = "/") => {
-  return `${path}${str.toLowerCase().split(" ").join("-")}`;
+  return `${path}${str.toLowerCase().split(" ").join("-")}/`;
 };
 
 export const SideNavLink = forwardRef(({ children, icon, ...props }, ref) => {
