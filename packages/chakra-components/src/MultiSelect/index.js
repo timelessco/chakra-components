@@ -450,6 +450,17 @@ MultiSelectRightAddons.displayName = "MultiSelectRightAddons";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectRightElements = props => {
+  const { value, setValue, isFocused, inputRef } = useMultiSelectContext();
+
+  const handleOnClick = event => {
+    event.stopPropagation();
+    setValue([]);
+
+    if (!isFocused) {
+      inputRef.current.focus();
+    }
+  };
+
   return (
     <PseudoBox
       display="flex"
@@ -458,6 +469,11 @@ const MultiSelectRightElements = props => {
       flexShrink="0"
       {...props}
     >
+      {!!value.length && (
+        <MultiSelectRightAddons onClick={handleOnClick}>
+          <Icon name="close" fontSize="0.75rem" />
+        </MultiSelectRightAddons>
+      )}
       <MultiSelectRightAddons>
         <Icon name="chevron-down" fontSize="1.5rem" />
       </MultiSelectRightAddons>
