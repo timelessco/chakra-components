@@ -164,13 +164,19 @@ export const useMultiSelectOptionStyle = optionState => {
     px: 4,
   };
 
-  const interactionProps = ({ colorMode, selected }) => {
+  const interactionProps = ({ colorMode, selected, focused }) => {
     const _focusColor = { light: "gray.100", dark: "whiteAlpha.100" };
     const _activeColor = { light: "gray.200", dark: "whiteAlpha.200" };
     const _bgSelectedColor = { light: "blue.300", dark: "blue.500" };
 
     return {
-      bg: `${selected ? _bgSelectedColor[colorMode] : "transparent"}`,
+      bg: `${
+        selected
+          ? _bgSelectedColor[colorMode]
+          : focused
+          ? _focusColor[colorMode]
+          : "transparent"
+      }`,
       _active: {
         bg: _activeColor[colorMode],
       },
