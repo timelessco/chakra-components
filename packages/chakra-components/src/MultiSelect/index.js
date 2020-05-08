@@ -515,6 +515,7 @@ const MultiSelectList = forwardRef(
       Math.max(Math.min(pageSize, filteredOptions.length), 1) * itemHeight;
     const styleProps = useMultiSelectListStyle();
 
+    console.log("%c isOpen", "color: #364cd9", isOpen);
     return (
       <Popper
         ref={_popperRef}
@@ -606,11 +607,22 @@ MultiSelectRightAddons.displayName = "MultiSelectRightAddons";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectRightElements = props => {
-  const { values, setValues, isFocused, inputRef } = useMultiSelectContext();
+  const {
+    values,
+    setValues,
+    isFocused,
+    inputRef,
+    isOpen,
+    setIsOpen,
+  } = useMultiSelectContext();
 
   const handleOnClick = event => {
     event.stopPropagation();
     setValues([]);
+
+    if (isOpen) {
+      setIsOpen(false);
+    }
 
     if (!isFocused) {
       inputRef.current.focus();
