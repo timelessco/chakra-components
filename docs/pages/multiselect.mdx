@@ -1,4 +1,4 @@
-### Basic Select
+### Basic Searchable Select
 
 ```jsx
 function ComboBoxExample() {
@@ -17,21 +17,11 @@ function ComboBoxExample() {
     label: d,
   }));
 
-  const handleFruitChange = fruit => {
-    setFruit(fruit);
-  };
-
-  const [fruit, setFruit] = useState(null);
-
-  return (
-    <>
-      <MultiSelect options={options} />
-    </>
-  );
+  return <MultiSelect options={options} />;
 }
 ```
 
-### Multi Select
+### Searchable Multi Select
 
 ```jsx
 function ComboBoxExample() {
@@ -50,16 +40,6 @@ function ComboBoxExample() {
     label: d,
   }));
 
-  const handleFruitChange = fruit => {
-    setFruit(fruit);
-  };
-
-  const [fruit, setFruit] = useState(["Acai", "Apples"]);
-
-  return (
-    <>
-      <MultiSelect options={options} isMulti />
-    </>
-  );
+  return <MultiSelect options={options} isMulti />;
 }
 ```
