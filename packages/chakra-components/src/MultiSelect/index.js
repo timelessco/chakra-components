@@ -14,6 +14,7 @@ import { useForkRef } from "@chakra-ui/core/dist/utils";
 import Popper from "@chakra-ui/core/dist/Popper";
 import { useMultiSelectContext } from "./useMultiSelectContext";
 import { FixedSizeList as List } from "react-window";
+import AutosizeInput from "react-input-autosize";
 
 import {
   useMultiSelectStyle,
@@ -43,6 +44,7 @@ const MultiSelect = forwardRef(
     const [isFocused, setIsFocused] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [value, setValue] = useState(initialValue);
+    const [inputValue, setInputValue] = useState("");
 
     const multiSelectWrapperRef = useRef(null);
     const multiSelectRef = useRef(null);
@@ -79,6 +81,8 @@ const MultiSelect = forwardRef(
       isOpen,
       setIsOpen,
       popperRef,
+      inputValue,
+      setInputValue,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -115,107 +119,131 @@ MultiSelect.displayName = "MultiSelect";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectInput = forwardRef((props, ref) => {
-  const {
-    inputRef,
-    isFocused,
-    setIsFocused,
-    isOpen,
-    setIsOpen,
-    multiSelectRef,
-    popperRef,
-  } = useMultiSelectContext();
-  const {
-    "aria-label": ariaLabel,
-    "aria-describedby": ariaDescribedby,
-    isReadOnly,
-    isDisabled,
-    isInvalid,
-    isRequired,
-    ...rest
-  } = props;
+const MultiSelectInput = forwardRef(
+  (
+    {
+      "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledby,
+      isReadOnly,
+      isDisabled,
+      isInvalid,
+      isRequired,
+      ...props
+    },
+    ref,
+  ) => {
+    const {
+      inputRef,
+      isFocused,
+      setIsFocused,
+      isOpen,
+      setIsOpen,
+      multiSelectRef,
+      popperRef,
+      inputIsHidden,
+      inputValue,
+      setInputValue,
+    } = useMultiSelectContext();
 
-  const formControl = useFormControl(props);
-  const _inputRef = useForkRef(inputRef, ref);
+    // const formControl = useFormControl(props);
+    const _inputRef = useForkRef(inputRef, ref);
 
-  const handleOnFocus = event => {
-    if (!isFocused) {
-      setIsFocused(true);
-    }
+    const handleOnChange = event => {
+      setInputValue(event.currentTarget.value);
 
-    if (inputRef.current && inputRef.current.style.opacity === "0") {
-      inputRef.current.style.opacity = 1;
-    }
-  };
+      if (!isOpen) {
+        setIsOpen(true);
+      }
+    };
 
-  const handleOnBlur = event => {
-    if (!isOpen && !multiSelectRef.current.contains(event.relatedTarget)) {
-      if (isFocused) {
-        setIsFocused(false);
+    const handleOnFocus = event => {
+      if (!isFocused) {
+        setIsFocused(true);
       }
 
-      return;
-    }
+      if (inputRef.current && inputRef.current.style.opacity === "0") {
+        inputRef.current.style.opacity = 1;
+      }
+    };
 
-    if (
-      isOpen &&
-      !popperRef.current.contains(event.relatedTarget) &&
-      !multiSelectRef.current.contains(event.relatedTarget)
-    ) {
-      if (isFocused) {
-        setIsFocused(false);
+    const handleOnBlur = event => {
+      if (!isOpen && !multiSelectRef.current.contains(event.relatedTarget)) {
+        if (isFocused) {
+          setIsFocused(false);
+        }
+
+        setInputValue("");
+
+        return;
       }
 
-      if (isOpen) {
-        setIsOpen(false);
+      if (
+        isOpen &&
+        !popperRef.current.contains(event.relatedTarget) &&
+        !multiSelectRef.current.contains(event.relatedTarget)
+      ) {
+        if (isFocused) {
+          setIsFocused(false);
+        }
+
+        if (isOpen) {
+          setIsOpen(false);
+        }
+
+        setInputValue("");
+
+        return;
       }
 
-      return;
-    }
+      inputRef.current.focus();
+    };
 
-    inputRef.current.focus();
-  };
+    const inputWrapperStyle = ({ isDisabled }) => ({
+      m: "2px",
+      py: "2px",
+      visibility: isDisabled ? "hidden" : "visible",
+      color: "inherit",
+    });
 
-  return (
-    <PseudoBox display="inline-block" py="2px" m="2px" visibility="visible">
-      <PseudoBox
-        as="input"
-        ref={_inputRef}
-        readOnly={formControl.isReadOnly}
-        aria-readonly={isReadOnly}
-        disabled={formControl.isDisabled}
-        aria-label={ariaLabel}
-        aria-invalid={formControl.isInvalid}
-        required={formControl.isRequired}
-        aria-required={formControl.isRequired}
-        aria-disabled={formControl.isDisabled}
-        aria-describedby={ariaDescribedby}
-        width="2px"
-        opacity={1}
-        cursor="default"
-        outline="none"
-        onFocus={handleOnFocus}
-        onBlur={handleOnBlur}
-        {...rest}
-      />
-      <PseudoBox
-        position="absolute"
-        top="0px"
-        left="0px"
-        visibility="hidden"
-        height="0px"
-        overflow="scroll"
-        whiteSpace="pre"
-        fontSize="16px"
-        fontFamily="system-ui"
-        fontWeight="400"
-        fontStyle="normal"
-        letterSpacing="normal"
-        textTransform="none"
-      ></PseudoBox>
-    </PseudoBox>
-  );
-});
+    const inputStyle = isHidden => ({
+      label: "input",
+      background: 0,
+      border: 0,
+      fontSize: "inherit",
+      opacity: isHidden ? 0 : 1,
+      outline: 0,
+      padding: 0,
+      color: "inherit",
+    });
+
+    const ariaAttributes = {
+      "aria-autocomplete": "list",
+      "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledby,
+    };
+
+    return (
+      <PseudoBox {...inputWrapperStyle({ isDisabled })}>
+        <AutosizeInput
+          type="text"
+          inputRef={_inputRef}
+          disabled={isDisabled}
+          value={inputValue}
+          onChange={handleOnChange}
+          onFocus={handleOnFocus}
+          onBlur={handleOnBlur}
+          inputStyle={inputStyle(inputIsHidden)}
+          autoCapitalize="none"
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck="false"
+          {...ariaAttributes}
+          {...props}
+        />
+      </PseudoBox>
+    );
+  },
+);
 
 MultiSelectInput.displayName = "MultiSelectInput";
 
@@ -228,12 +256,14 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
     isOpen,
     setIsOpen,
     inputRef,
+    setInputValue,
   } = useMultiSelectContext();
 
   const option = options[index];
 
   const handleOnClick = event => {
     setValue(option.value);
+    setInputValue("");
 
     if (isOpen) {
       setIsOpen(false);
@@ -338,8 +368,6 @@ MultiSelectTagAddons.displayName = "MultiSelectTagAddons";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectInputGroup = props => {
-  const { value } = useMultiSelectContext();
-
   return (
     <PseudoBox
       position="relative"
@@ -351,7 +379,8 @@ const MultiSelectInputGroup = props => {
       overflow="hidden"
       {...props}
     >
-      {value ? <MultiSelectSelectedOption /> : <MultiSelectPlaceholder />}
+      <MultiSelectSelectedOption />
+      <MultiSelectPlaceholder />
       <MultiSelectInput />
     </PseudoBox>
   );
@@ -409,13 +438,13 @@ MultiSelectHiddenInput.displayName = "MultiSelectHiddenInput";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectSelectedOption = ({ ...props }) => {
-  const { isMulti, value } = useMultiSelectContext();
+  const { isMulti, value, inputValue } = useMultiSelectContext();
 
   if (isMulti) {
     return (
       <>
-        {value.map(val => (
-          <MultiSelectTagAddons>
+        {value.map((val, index) => (
+          <MultiSelectTagAddons key={index}>
             <Tag size="md" variant="solid" variantColor="blue">
               <TagLabel>{val}</TagLabel>
               <TagCloseButton />
@@ -426,20 +455,28 @@ const MultiSelectSelectedOption = ({ ...props }) => {
     );
   }
 
-  return (
-    <PseudoBox
-      position="absolute"
-      textOverflow="ellipsis"
-      whiteSpace="nowrap"
-      top="50%"
-      transform="translateY(-50%)"
-      mx="2px"
-      maxW="calc(100% - 8px)"
-      {...props}
-    >
-      {value}
-    </PseudoBox>
-  );
+  if (inputValue) {
+    return null;
+  }
+
+  if (value) {
+    return (
+      <PseudoBox
+        position="absolute"
+        textOverflow="ellipsis"
+        whiteSpace="nowrap"
+        top="50%"
+        transform="translateY(-50%)"
+        mx="2px"
+        maxW="calc(100% - 8px)"
+        {...props}
+      >
+        {value}
+      </PseudoBox>
+    );
+  }
+
+  return null;
 };
 
 MultiSelectSelectedOption.displayName = "MultiSelectSelectedOption";
@@ -447,6 +484,8 @@ MultiSelectSelectedOption.displayName = "MultiSelectSelectedOption";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectPlaceholder = props => {
+  const { value, inputValue } = useMultiSelectContext();
+
   const theme = useTheme();
   const { colorMode } = useColorMode();
 
@@ -455,18 +494,22 @@ const MultiSelectPlaceholder = props => {
     dark: theme.colors.whiteAlpha[400],
   };
 
-  return (
-    <PseudoBox
-      position="absolute"
-      top="50%"
-      transform="translateY(-50%)"
-      mx="2px"
-      color={placeholderColor[colorMode]}
-      {...props}
-    >
-      Select One...
-    </PseudoBox>
-  );
+  if (!value) {
+    return inputValue ? null : (
+      <PseudoBox
+        position="absolute"
+        top="50%"
+        transform="translateY(-50%)"
+        mx="2px"
+        color={placeholderColor[colorMode]}
+        {...props}
+      >
+        Select One...
+      </PseudoBox>
+    );
+  }
+
+  return null;
 };
 
 MultiSelectPlaceholder.displayName = "MultiSelectPlaceholder";
