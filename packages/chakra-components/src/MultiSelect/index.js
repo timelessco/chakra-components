@@ -65,13 +65,7 @@ const MultiSelect = forwardRef(
 
     const [values, setValues] = useState(_initialValues);
 
-    let _options = options;
-
-    if (isMulti) {
-      _options = options.filter(option => !values.includes(option.value));
-    }
-
-    const [filteredOptions, setFilteredOptions] = useState(_options);
+    const [filteredOptions, setFilteredOptions] = useState(options);
 
     const multiSelectWrapperRef = useRef(null);
     const multiSelectRef = useRef(null);
@@ -88,10 +82,22 @@ const MultiSelect = forwardRef(
     }, [isMulti, options, values]);
 
     useEffect(() => {
-      if (listRef.current) {
-        listRef.current.scrollToItem(focusedOptionIndex);
+      listRef.current && listRef.current.scrollToItem(focusedOptionIndex);
+    }, [isOpen, focusedOptionIndex]);
+
+    useEffect(() => {
+      if (!isMulti) {
+        const selectedOption = filteredOptions.find(
+          option => option.value === values[0],
+        );
+
+        const selectedIndex = filteredOptions.indexOf(selectedOption);
+
+        if (selectedIndex !== -1) {
+          setFocusedOptionIndex(selectedIndex);
+        }
       }
-    }, [focusedOptionIndex]);
+    }, [isMulti, filteredOptions, values]);
 
     const handleOnClick = e => {
       if (!isFocused) {
@@ -107,7 +113,24 @@ const MultiSelect = forwardRef(
         setInputValue("");
       } else {
         setIsOpen(true);
-        setFocusedOptionIndex(0);
+
+        if (!isMulti) {
+          if (!values.length) {
+            setFocusedOptionIndex(0);
+          } else {
+            const selectedOption = filteredOptions.find(
+              option => option.value === values[0],
+            );
+
+            const selectedIndex = filteredOptions.indexOf(selectedOption);
+
+            if (selectedIndex !== -1) {
+              setFocusedOptionIndex(selectedIndex);
+            }
+          }
+        } else {
+          setFocusedOptionIndex(0);
+        }
       }
     };
 
@@ -198,6 +221,7 @@ const MultiSelectInput = forwardRef(
       focusedOptionIndex,
       setFocusedOptionIndex,
       isMulti,
+      values,
       setValues,
     } = useMultiSelectContext();
 
@@ -209,7 +233,10 @@ const MultiSelectInput = forwardRef(
 
       if (!isOpen) {
         setIsOpen(true);
-        setFocusedOptionIndex(0);
+
+        if (!values.length) {
+          setFocusedOptionIndex(0);
+        }
       }
     };
 
@@ -234,7 +261,25 @@ const MultiSelectInput = forwardRef(
 
         if (!isOpen) {
           setIsOpen(true);
-          setFocusedOptionIndex(0);
+
+          if (!isMulti) {
+            if (!values.length) {
+              setFocusedOptionIndex(0);
+            } else {
+              const selectedOption = filteredOptions.find(
+                option => option.value === values[0],
+              );
+
+              const selectedIndex = filteredOptions.indexOf(selectedOption);
+
+              if (selectedIndex !== -1) {
+                setFocusedOptionIndex(selectedIndex);
+              }
+            }
+          } else {
+            setFocusedOptionIndex(0);
+          }
+
           return;
         }
 
@@ -249,7 +294,25 @@ const MultiSelectInput = forwardRef(
 
         if (!isOpen) {
           setIsOpen(true);
-          setFocusedOptionIndex(filteredOptions.length - 1);
+
+          if (!isMulti) {
+            if (!values.length) {
+              setFocusedOptionIndex(filteredOptions.length - 1);
+            } else {
+              const selectedOption = filteredOptions.find(
+                option => option.value === values[0],
+              );
+
+              const selectedIndex = filteredOptions.indexOf(selectedOption);
+
+              if (selectedIndex !== -1) {
+                setFocusedOptionIndex(selectedIndex);
+              }
+            }
+          } else {
+            setFocusedOptionIndex(filteredOptions.length - 1);
+          }
+
           return;
         }
 
