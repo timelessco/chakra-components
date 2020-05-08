@@ -25,11 +25,7 @@ function ComboBoxExample() {
 
   return (
     <>
-      <MultiSelect
-        options={options}
-        value={fruit}
-        onChange={handleFruitChange}
-      />
+      <MultiSelect options={options} />
     </>
   );
 }
@@ -62,12 +58,7 @@ function ComboBoxExample() {
 
   return (
     <>
-      <MultiSelect
-        options={options}
-        value={fruit}
-        onChange={handleFruitChange}
-        isMulti
-      />
+      <MultiSelect options={options} isMulti />
     </>
   );
 }
