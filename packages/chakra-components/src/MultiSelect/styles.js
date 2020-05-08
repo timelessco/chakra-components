@@ -81,6 +81,35 @@ export const useMultiSelectStyle = ({
 };
 
 /* =========================================================================
+  useMultiSelectInputStyle
+  ========================================================================== */
+
+export const useMultiSelectInputStyle = ({ isDisabled, inputIsHidden }) => {
+  const inputWrapperStyle = {
+    m: "2px",
+    py: "2px",
+    visibility: isDisabled ? "hidden" : "visible",
+    color: "inherit",
+  };
+
+  const inputStyle = {
+    label: "input",
+    background: 0,
+    border: 0,
+    fontSize: "inherit",
+    opacity: inputIsHidden ? 0 : 1,
+    outline: 0,
+    padding: 0,
+    color: "inherit",
+  };
+
+  return {
+    inputWrapperStyle,
+    inputStyle,
+  };
+};
+
+/* =========================================================================
   useMultiSelectListStyle
   ========================================================================== */
 

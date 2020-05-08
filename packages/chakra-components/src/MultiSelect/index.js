@@ -3,7 +3,6 @@ import {
   Box,
   PseudoBox,
   Icon,
-  useFormControl,
   Tag,
   TagLabel,
   TagCloseButton,
@@ -20,6 +19,7 @@ import {
   useMultiSelectStyle,
   useMultiSelectListStyle,
   useMultiSelectOptionStyle,
+  useMultiSelectInputStyle,
 } from "./styles";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,6 +45,7 @@ const MultiSelect = forwardRef(
     const [isOpen, setIsOpen] = useState(false);
     const [value, setValue] = useState(initialValue);
     const [inputValue, setInputValue] = useState("");
+    const [inputIsHidden, setInputIsHidden] = useState(false);
 
     const multiSelectWrapperRef = useRef(null);
     const multiSelectRef = useRef(null);
@@ -56,12 +57,13 @@ const MultiSelect = forwardRef(
         inputRef.current.focus();
       }
 
-      if (inputRef.current && inputRef.current.style.opacity === "0") {
-        inputRef.current.style.opacity = 1;
+      if (inputIsHidden) {
+        setInputIsHidden(false);
       }
 
       if (isOpen) {
         setIsOpen(false);
+        setInputValue("");
       } else {
         setIsOpen(true);
       }
@@ -83,6 +85,8 @@ const MultiSelect = forwardRef(
       popperRef,
       inputValue,
       setInputValue,
+      inputIsHidden,
+      setInputIsHidden,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -140,9 +144,10 @@ const MultiSelectInput = forwardRef(
       setIsOpen,
       multiSelectRef,
       popperRef,
-      inputIsHidden,
       inputValue,
       setInputValue,
+      inputIsHidden,
+      setInputIsHidden,
     } = useMultiSelectContext();
 
     // const formControl = useFormControl(props);
@@ -161,8 +166,8 @@ const MultiSelectInput = forwardRef(
         setIsFocused(true);
       }
 
-      if (inputRef.current && inputRef.current.style.opacity === "0") {
-        inputRef.current.style.opacity = 1;
+      if (inputIsHidden) {
+        setInputIsHidden(false);
       }
     };
 
@@ -198,32 +203,19 @@ const MultiSelectInput = forwardRef(
       inputRef.current.focus();
     };
 
-    const inputWrapperStyle = ({ isDisabled }) => ({
-      m: "2px",
-      py: "2px",
-      visibility: isDisabled ? "hidden" : "visible",
-      color: "inherit",
-    });
-
-    const inputStyle = isHidden => ({
-      label: "input",
-      background: 0,
-      border: 0,
-      fontSize: "inherit",
-      opacity: isHidden ? 0 : 1,
-      outline: 0,
-      padding: 0,
-      color: "inherit",
-    });
-
     const ariaAttributes = {
       "aria-autocomplete": "list",
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabelledby,
     };
 
+    const { inputWrapperStyle, inputStyle } = useMultiSelectInputStyle({
+      isDisabled,
+      inputIsHidden,
+    });
+
     return (
-      <PseudoBox {...inputWrapperStyle({ isDisabled })}>
+      <PseudoBox {...inputWrapperStyle}>
         <AutosizeInput
           type="text"
           inputRef={_inputRef}
@@ -232,7 +224,7 @@ const MultiSelectInput = forwardRef(
           onChange={handleOnChange}
           onFocus={handleOnFocus}
           onBlur={handleOnBlur}
-          inputStyle={inputStyle(inputIsHidden)}
+          inputStyle={inputStyle}
           autoCapitalize="none"
           autoComplete="off"
           autoCorrect="off"
@@ -255,8 +247,9 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
     setValue,
     isOpen,
     setIsOpen,
-    inputRef,
     setInputValue,
+    inputIsHidden,
+    setInputIsHidden,
   } = useMultiSelectContext();
 
   const option = options[index];
@@ -269,7 +262,9 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
       setIsOpen(false);
     }
 
-    inputRef.current.style.opacity = 0;
+    if (!inputIsHidden) {
+      setInputIsHidden(true);
+    }
   };
 
   const styleProps = useMultiSelectOptionStyle();
