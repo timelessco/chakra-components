@@ -41,6 +41,11 @@ const MultiSelect = forwardRef(
     },
     ref,
   ) => {
+    const [isFocused, setIsFocused] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [inputValue, setInputValue] = useState("");
+    const [inputIsHidden, setInputIsHidden] = useState(false);
+
     let _initialValue = [];
 
     if (initialValue) {
@@ -52,10 +57,6 @@ const MultiSelect = forwardRef(
     }
 
     const [value, setValue] = useState(_initialValue);
-    const [isFocused, setIsFocused] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
-    const [inputValue, setInputValue] = useState("");
-    const [inputIsHidden, setInputIsHidden] = useState(false);
 
     const multiSelectWrapperRef = useRef(null);
     const multiSelectRef = useRef(null);
@@ -112,7 +113,6 @@ const MultiSelect = forwardRef(
         <PseudoBox pos="relative">
           <PseudoBox
             ref={_multiSelectRef}
-            height={10}
             tabIndex={-1}
             onClick={handleOnClick}
             {...styleProps}
@@ -260,20 +260,31 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
     setInputValue,
     inputIsHidden,
     setInputIsHidden,
+    isMulti,
   } = useMultiSelectContext();
 
   const option = options[index];
 
   const handleOnClick = event => {
-    setValue([option.value]);
+    if (!isMulti) {
+      setValue([option.value]);
+
+      if (!inputIsHidden) {
+        setInputIsHidden(true);
+      }
+    } else {
+      setValue(oldOptions => {
+        if (oldOptions.includes(option.value)) {
+          return oldOptions;
+        }
+
+        return [...oldOptions, option.value];
+      });
+    }
     setInputValue("");
 
     if (isOpen) {
       setIsOpen(false);
-    }
-
-    if (!inputIsHidden) {
-      setInputIsHidden(true);
     }
   };
 
@@ -452,7 +463,7 @@ const MultiSelectSelectedOption = ({ ...props }) => {
           <MultiSelectTagAddons key={index}>
             <Tag size="md" variant="solid" variantColor="blue">
               <TagLabel>{val}</TagLabel>
-              <TagCloseButton />
+              <TagCloseButton tabIndex={-1} />
             </Tag>
           </MultiSelectTagAddons>
         ))}
@@ -464,7 +475,7 @@ const MultiSelectSelectedOption = ({ ...props }) => {
     return null;
   }
 
-  if (value) {
+  if (value.length) {
     return (
       <PseudoBox
         position="absolute"
@@ -499,7 +510,7 @@ const MultiSelectPlaceholder = props => {
     dark: theme.colors.whiteAlpha[400],
   };
 
-  if (!value) {
+  if (!value.length) {
     return inputValue ? null : (
       <PseudoBox
         position="absolute"
