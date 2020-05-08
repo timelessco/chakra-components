@@ -1,4 +1,10 @@
-import React, { forwardRef, createContext, useRef, useState } from "react";
+import React, {
+  forwardRef,
+  createContext,
+  useRef,
+  useState,
+  useEffect,
+} from "react";
 import {
   Box,
   PseudoBox,
@@ -58,10 +64,26 @@ const MultiSelect = forwardRef(
 
     const [value, setValue] = useState(_initialValue);
 
+    let _options = options;
+
+    if (isMulti) {
+      _options = options.filter(option => !value.includes(option.value));
+    }
+
+    const [filteredOptions, setFilteredOptions] = useState(_options);
+
     const multiSelectWrapperRef = useRef(null);
     const multiSelectRef = useRef(null);
     const inputRef = useRef(null);
     const popperRef = useRef(null);
+
+    useEffect(() => {
+      if (isMulti) {
+        setFilteredOptions(
+          options.filter(option => !value.includes(option.value)),
+        );
+      }
+    }, [isMulti, options, value]);
 
     const handleOnClick = e => {
       if (!isFocused) {
@@ -98,6 +120,8 @@ const MultiSelect = forwardRef(
       setInputValue,
       inputIsHidden,
       setInputIsHidden,
+      filteredOptions,
+      setFilteredOptions,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -253,7 +277,6 @@ MultiSelectInput.displayName = "MultiSelectInput";
 
 const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
   const {
-    options,
     setValue,
     isOpen,
     setIsOpen,
@@ -261,9 +284,10 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
     inputIsHidden,
     setInputIsHidden,
     isMulti,
+    filteredOptions,
   } = useMultiSelectContext();
 
-  const option = options[index];
+  const option = filteredOptions[index];
 
   const handleOnClick = event => {
     if (!isMulti) {
@@ -315,7 +339,7 @@ const MultiSelectList = forwardRef(
   ) => {
     const {
       multiSelectRef,
-      options,
+      filteredOptions,
       isOpen,
       popperRef,
     } = useMultiSelectContext();
@@ -333,7 +357,7 @@ const MultiSelectList = forwardRef(
 
     const _popperRef = useForkRef(popperRef, ref);
 
-    const height = options.length * itemHeight;
+    const height = filteredOptions.length * itemHeight;
     const styleProps = useMultiSelectListStyle();
 
     return (
@@ -349,7 +373,7 @@ const MultiSelectList = forwardRef(
       >
         <List
           itemSize={itemHeight}
-          itemCount={options.length}
+          itemCount={filteredOptions.length}
           height={height}
           {...props}
         >
