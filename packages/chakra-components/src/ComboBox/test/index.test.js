@@ -16,7 +16,7 @@ import {
   ComboBoxRightElement,
 } from "../index.js";
 
-import { Flex, Box, Avatar } from "@chakra-ui/core";
+import { Flex, Box, Avatar, Button } from "@chakra-ui/core";
 
 const options = [
   { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1" },
@@ -75,6 +75,7 @@ const Combo_Box = () => {
           )}
         />
       </ComboBox>
+      <Button data-testid="button">button</Button>
     </ThemeProvider>
   );
 };
@@ -87,6 +88,7 @@ it("combo-box", () => {
     "Select user...",
   );
 });
+
 // on input focus
 it("combo-box", () => {
   const { getAllByTestId, getByTestId, queryAllByTestId } = render(
@@ -103,5 +105,9 @@ it("combo-box", () => {
 
   // on blur of input box
   fireEvent.click(options[0]);
+
+  // checking the input value if 0th item selected.
+  expect(inputBox.value).toBe("Dan Abrahmov");
+
   expect(queryAllByTestId("option")).toHaveLength(0);
 });
