@@ -358,6 +358,10 @@ const MultiSelectInput = forwardRef(
 
       if (event.key === "Backspace") {
         if (!inputValue) {
+          if (inputIsHidden) {
+            setInputIsHidden(false);
+          }
+
           if (!isMulti) {
             setValues([]);
           } else {
