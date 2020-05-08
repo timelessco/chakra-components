@@ -38,7 +38,7 @@ const MultiSelect = forwardRef(
   (
     {
       options,
-      value: initialValue,
+      value: initialValues,
       onChange,
       isMulti,
       focusBorderColor = "blue.500",
@@ -52,22 +52,22 @@ const MultiSelect = forwardRef(
     const [inputValue, setInputValue] = useState("");
     const [inputIsHidden, setInputIsHidden] = useState(false);
 
-    let _initialValue = [];
+    let _initialValues = [];
 
-    if (initialValue) {
-      if (typeof initialValue === "string" || initialValue instanceof String) {
-        _initialValue = [initialValue];
-      } else if (Array.isArray(initialValue)) {
-        _initialValue = initialValue;
+    if (initialValues) {
+      if (typeof initialValue === "string" || initialValues instanceof String) {
+        _initialValues = [initialValues];
+      } else if (Array.isArray(initialValues)) {
+        _initialValues = initialValues;
       }
     }
 
-    const [value, setValue] = useState(_initialValue);
+    const [values, setValues] = useState(_initialValues);
 
     let _options = options;
 
     if (isMulti) {
-      _options = options.filter(option => !value.includes(option.value));
+      _options = options.filter(option => !values.includes(option.value));
     }
 
     const [filteredOptions, setFilteredOptions] = useState(_options);
@@ -80,10 +80,10 @@ const MultiSelect = forwardRef(
     useEffect(() => {
       if (isMulti) {
         setFilteredOptions(
-          options.filter(option => !value.includes(option.value)),
+          options.filter(option => !values.includes(option.value)),
         );
       }
-    }, [isMulti, options, value]);
+    }, [isMulti, options, values]);
 
     const handleOnClick = e => {
       if (!isFocused) {
@@ -104,8 +104,8 @@ const MultiSelect = forwardRef(
 
     const context = {
       options,
-      value,
-      setValue,
+      values,
+      setValues,
       onChange,
       multiSelectRef,
       multiSelectWrapperRef,
@@ -277,7 +277,7 @@ MultiSelectInput.displayName = "MultiSelectInput";
 
 const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
   const {
-    setValue,
+    setValues,
     isOpen,
     setIsOpen,
     setInputValue,
@@ -291,13 +291,13 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
 
   const handleOnClick = event => {
     if (!isMulti) {
-      setValue([option.value]);
+      setValues([option.value]);
 
       if (!inputIsHidden) {
         setInputIsHidden(true);
       }
     } else {
-      setValue(oldOptions => {
+      setValues(oldOptions => {
         if (oldOptions.includes(option.value)) {
           return oldOptions;
         }
@@ -450,11 +450,11 @@ MultiSelectRightAddons.displayName = "MultiSelectRightAddons";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectRightElements = props => {
-  const { value, setValue, isFocused, inputRef } = useMultiSelectContext();
+  const { values, setValues, isFocused, inputRef } = useMultiSelectContext();
 
   const handleOnClick = event => {
     event.stopPropagation();
-    setValue([]);
+    setValues([]);
 
     if (!isFocused) {
       inputRef.current.focus();
@@ -469,7 +469,7 @@ const MultiSelectRightElements = props => {
       flexShrink="0"
       {...props}
     >
-      {!!value.length && (
+      {!!values.length && (
         <MultiSelectRightAddons onClick={handleOnClick}>
           <Icon name="close" fontSize="0.75rem" />
         </MultiSelectRightAddons>
@@ -494,16 +494,37 @@ MultiSelectHiddenInput.displayName = "MultiSelectHiddenInput";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectSelectedOption = ({ ...props }) => {
-  const { isMulti, value, inputValue } = useMultiSelectContext();
+  const {
+    isMulti,
+    values,
+    inputValue,
+    isFocused,
+    inputRef,
+    setValues,
+  } = useMultiSelectContext();
+
+  const handleOnClick = (event, value) => {
+    event.stopPropagation();
+    setValues(oldValues =>
+      oldValues.filter(oldValue => !oldValue.includes(value)),
+    );
+
+    if (!isFocused) {
+      inputRef.current.focus();
+    }
+  };
 
   if (isMulti) {
     return (
       <>
-        {value.map((val, index) => (
+        {values.map((val, index) => (
           <MultiSelectTagAddons key={index}>
             <Tag size="md" variant="solid" variantColor="blue">
               <TagLabel>{val}</TagLabel>
-              <TagCloseButton tabIndex={-1} />
+              <TagCloseButton
+                tabIndex={-1}
+                onClick={e => handleOnClick(e, val)}
+              />
             </Tag>
           </MultiSelectTagAddons>
         ))}
@@ -515,7 +536,7 @@ const MultiSelectSelectedOption = ({ ...props }) => {
     return null;
   }
 
-  if (value.length) {
+  if (values.length) {
     return (
       <PseudoBox
         position="absolute"
@@ -527,7 +548,7 @@ const MultiSelectSelectedOption = ({ ...props }) => {
         maxW="calc(100% - 8px)"
         {...props}
       >
-        {value[0]}
+        {values[0]}
       </PseudoBox>
     );
   }
@@ -540,7 +561,7 @@ MultiSelectSelectedOption.displayName = "MultiSelectSelectedOption";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectPlaceholder = props => {
-  const { value, inputValue } = useMultiSelectContext();
+  const { values, inputValue } = useMultiSelectContext();
 
   const theme = useTheme();
   const { colorMode } = useColorMode();
@@ -550,7 +571,7 @@ const MultiSelectPlaceholder = props => {
     dark: theme.colors.whiteAlpha[400],
   };
 
-  if (!value.length) {
+  if (!values.length) {
     return inputValue ? null : (
       <PseudoBox
         position="absolute"
