@@ -197,6 +197,8 @@ const MultiSelectInput = forwardRef(
       filteredOptions,
       focusedOptionIndex,
       setFocusedOptionIndex,
+      isMulti,
+      setValues,
     } = useMultiSelectContext();
 
     // const formControl = useFormControl(props);
@@ -226,6 +228,10 @@ const MultiSelectInput = forwardRef(
       let nextIndex;
 
       if (event.key === "ArrowDown") {
+        if (inputIsHidden) {
+          setInputIsHidden(false);
+        }
+
         if (!isOpen) {
           setIsOpen(true);
           setFocusedOptionIndex(0);
@@ -237,6 +243,10 @@ const MultiSelectInput = forwardRef(
       }
 
       if (event.key === "ArrowUp") {
+        if (inputIsHidden) {
+          setInputIsHidden(false);
+        }
+
         if (!isOpen) {
           setIsOpen(true);
           setFocusedOptionIndex(filteredOptions.length - 1);
@@ -245,6 +255,32 @@ const MultiSelectInput = forwardRef(
 
         nextIndex = (focusedOptionIndex - 1 + count) % count;
         setFocusedOptionIndex(nextIndex);
+      }
+
+      if (event.key === "Enter") {
+        if (!isMulti) {
+          setValues([filteredOptions[focusedOptionIndex].value]);
+
+          if (!inputIsHidden) {
+            setInputIsHidden(true);
+          }
+        } else {
+          setValues(oldOptions => {
+            if (
+              oldOptions.includes(filteredOptions[focusedOptionIndex].value)
+            ) {
+              return oldOptions;
+            }
+
+            return [...oldOptions, filteredOptions[focusedOptionIndex].value];
+          });
+        }
+
+        setInputValue("");
+
+        if (isOpen) {
+          setIsOpen(false);
+        }
       }
     };
 
