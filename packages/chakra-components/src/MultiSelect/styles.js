@@ -150,7 +150,7 @@ export const useMultiSelectListStyle = () => {
 
 export const useMultiSelectOptionStyle = optionState => {
   const { colorMode } = useColorMode();
-  const props = { colorMode };
+  const props = { colorMode, ...optionState };
 
   const baseProps = {
     display: "flex",
@@ -164,11 +164,13 @@ export const useMultiSelectOptionStyle = optionState => {
     px: 4,
   };
 
-  const interactionProps = ({ colorMode }) => {
+  const interactionProps = ({ colorMode, selected }) => {
     const _focusColor = { light: "gray.100", dark: "whiteAlpha.100" };
     const _activeColor = { light: "gray.200", dark: "whiteAlpha.200" };
+    const _bgSelectedColor = { light: "blue.300", dark: "blue.500" };
 
     return {
+      bg: `${selected ? _bgSelectedColor[colorMode] : "transparent"}`,
       _active: {
         bg: _activeColor[colorMode],
       },
@@ -177,7 +179,9 @@ export const useMultiSelectOptionStyle = optionState => {
         outline: 0,
       },
       _hover: {
-        bg: _focusColor[colorMode],
+        bg: `${
+          selected ? _bgSelectedColor[colorMode] : _focusColor[colorMode]
+        }`,
       },
       _disabled: {
         opacity: 0.4,
