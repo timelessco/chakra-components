@@ -277,6 +277,7 @@ MultiSelectInput.displayName = "MultiSelectInput";
 
 const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
   const {
+    values,
     setValues,
     isOpen,
     setIsOpen,
@@ -288,6 +289,7 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
   } = useMultiSelectContext();
 
   const option = filteredOptions[index];
+  const selected = values.includes(option.value);
 
   const handleOnClick = event => {
     if (!isMulti) {
@@ -312,7 +314,7 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
     }
   };
 
-  const styleProps = useMultiSelectOptionStyle();
+  const styleProps = useMultiSelectOptionStyle({ selected });
 
   return (
     <PseudoBox
