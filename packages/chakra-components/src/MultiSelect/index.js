@@ -282,6 +282,12 @@ const MultiSelectInput = forwardRef(
           setIsOpen(false);
         }
       }
+
+      if (event.key === "Escape") {
+        if (isOpen) {
+          setIsOpen(false);
+        }
+      }
     };
 
     const handleOnBlur = event => {
