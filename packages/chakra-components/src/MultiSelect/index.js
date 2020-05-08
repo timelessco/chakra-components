@@ -88,10 +88,10 @@ const MultiSelect = forwardRef(
     }, [isMulti, options, values]);
 
     useEffect(() => {
-      if (isOpen && listRef.current) {
+      if (listRef.current) {
         listRef.current.scrollToItem(focusedOptionIndex);
       }
-    }, [isOpen, focusedOptionIndex]);
+    }, [focusedOptionIndex]);
 
     const handleOnClick = e => {
       if (!isFocused) {
@@ -107,6 +107,7 @@ const MultiSelect = forwardRef(
         setInputValue("");
       } else {
         setIsOpen(true);
+        setFocusedOptionIndex(0);
       }
     };
 
@@ -132,6 +133,7 @@ const MultiSelect = forwardRef(
       setFilteredOptions,
       listRef,
       focusedOptionIndex,
+      setFocusedOptionIndex,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -192,7 +194,9 @@ const MultiSelectInput = forwardRef(
       setInputValue,
       inputIsHidden,
       setInputIsHidden,
-      listRef,
+      filteredOptions,
+      focusedOptionIndex,
+      setFocusedOptionIndex,
     } = useMultiSelectContext();
 
     // const formControl = useFormControl(props);
@@ -203,6 +207,7 @@ const MultiSelectInput = forwardRef(
 
       if (!isOpen) {
         setIsOpen(true);
+        setFocusedOptionIndex(0);
       }
     };
 
@@ -217,10 +222,29 @@ const MultiSelectInput = forwardRef(
     };
 
     const handleOnKeyDown = event => {
+      const count = filteredOptions.length;
+      let nextIndex;
+
       if (event.key === "ArrowDown") {
         if (!isOpen) {
           setIsOpen(true);
+          setFocusedOptionIndex(0);
+          return;
         }
+
+        nextIndex = (focusedOptionIndex + 1) % count;
+        setFocusedOptionIndex(nextIndex);
+      }
+
+      if (event.key === "ArrowUp") {
+        if (!isOpen) {
+          setIsOpen(true);
+          setFocusedOptionIndex(filteredOptions.length - 1);
+          return;
+        }
+
+        nextIndex = (focusedOptionIndex - 1 + count) % count;
+        setFocusedOptionIndex(nextIndex);
       }
     };
 
