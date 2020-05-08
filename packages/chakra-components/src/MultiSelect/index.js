@@ -231,12 +231,16 @@ const MultiSelectInput = forwardRef(
     const handleOnChange = event => {
       setInputValue(event.currentTarget.value);
 
+      if (inputIsHidden) {
+        setInputIsHidden(false);
+      }
+
+      if (focusedOptionIndex !== 0) {
+        setFocusedOptionIndex(0);
+      }
+
       if (!isOpen) {
         setIsOpen(true);
-
-        if (!values.length) {
-          setFocusedOptionIndex(0);
-        }
       }
     };
 
@@ -515,7 +519,6 @@ const MultiSelectList = forwardRef(
       Math.max(Math.min(pageSize, filteredOptions.length), 1) * itemHeight;
     const styleProps = useMultiSelectListStyle();
 
-    console.log("%c isOpen", "color: #364cd9", isOpen);
     return (
       <Popper
         ref={_popperRef}
