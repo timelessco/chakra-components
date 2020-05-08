@@ -41,9 +41,19 @@ const MultiSelect = forwardRef(
     },
     ref,
   ) => {
+    let _initialValue = [];
+
+    if (initialValue) {
+      if (typeof initialValue === "string" || initialValue instanceof String) {
+        _initialValue = [initialValue];
+      } else if (Array.isArray(initialValue)) {
+        _initialValue = initialValue;
+      }
+    }
+
+    const [value, setValue] = useState(_initialValue);
     const [isFocused, setIsFocused] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-    const [value, setValue] = useState(initialValue);
     const [inputValue, setInputValue] = useState("");
     const [inputIsHidden, setInputIsHidden] = useState(false);
 
@@ -255,7 +265,7 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
   const option = options[index];
 
   const handleOnClick = event => {
-    setValue(option.value);
+    setValue([option.value]);
     setInputValue("");
 
     if (isOpen) {
@@ -466,7 +476,7 @@ const MultiSelectSelectedOption = ({ ...props }) => {
         maxW="calc(100% - 8px)"
         {...props}
       >
-        {value}
+        {value[0]}
       </PseudoBox>
     );
   }
