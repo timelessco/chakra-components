@@ -51,6 +51,7 @@ const MultiSelect = forwardRef(
     const [isOpen, setIsOpen] = useState(false);
     const [inputValue, setInputValue] = useState("");
     const [inputIsHidden, setInputIsHidden] = useState(false);
+    const [focusedOptionIndex, setFocusedOptionIndex] = useState(0);
 
     let _initialValues = [];
 
@@ -76,6 +77,7 @@ const MultiSelect = forwardRef(
     const multiSelectRef = useRef(null);
     const inputRef = useRef(null);
     const popperRef = useRef(null);
+    const listRef = useRef(null);
 
     useEffect(() => {
       if (isMulti) {
@@ -84,6 +86,12 @@ const MultiSelect = forwardRef(
         );
       }
     }, [isMulti, options, values]);
+
+    useEffect(() => {
+      if (isOpen && listRef.current) {
+        listRef.current.scrollToItem(focusedOptionIndex);
+      }
+    }, [isOpen, focusedOptionIndex]);
 
     const handleOnClick = e => {
       if (!isFocused) {
@@ -122,6 +130,8 @@ const MultiSelect = forwardRef(
       setInputIsHidden,
       filteredOptions,
       setFilteredOptions,
+      listRef,
+      focusedOptionIndex,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -182,6 +192,7 @@ const MultiSelectInput = forwardRef(
       setInputValue,
       inputIsHidden,
       setInputIsHidden,
+      listRef,
     } = useMultiSelectContext();
 
     // const formControl = useFormControl(props);
@@ -202,6 +213,14 @@ const MultiSelectInput = forwardRef(
 
       if (inputIsHidden) {
         setInputIsHidden(false);
+      }
+    };
+
+    const handleOnKeyDown = event => {
+      if (event.key === "ArrowDown") {
+        if (!isOpen) {
+          setIsOpen(true);
+        }
       }
     };
 
@@ -258,6 +277,7 @@ const MultiSelectInput = forwardRef(
           onChange={handleOnChange}
           onFocus={handleOnFocus}
           onBlur={handleOnBlur}
+          onKeyDown={handleOnKeyDown}
           inputStyle={inputStyle}
           autoCapitalize="none"
           autoComplete="off"
@@ -286,10 +306,12 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
     setInputIsHidden,
     isMulti,
     filteredOptions,
+    focusedOptionIndex,
   } = useMultiSelectContext();
 
   const option = filteredOptions[index];
   const selected = values.includes(option.value);
+  const focused = focusedOptionIndex === index;
 
   const handleOnClick = event => {
     if (!isMulti) {
@@ -314,7 +336,7 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
     }
   };
 
-  const styleProps = useMultiSelectOptionStyle({ selected });
+  const styleProps = useMultiSelectOptionStyle({ selected, focused });
 
   return (
     <PseudoBox
@@ -344,6 +366,7 @@ const MultiSelectList = forwardRef(
       filteredOptions,
       isOpen,
       popperRef,
+      listRef,
     } = useMultiSelectContext();
 
     const popperModifiers = {
@@ -359,14 +382,15 @@ const MultiSelectList = forwardRef(
 
     const _popperRef = useForkRef(popperRef, ref);
 
-    const height = filteredOptions.length * itemHeight;
+    const height =
+      Math.max(Math.min(pageSize, filteredOptions.length), 1) * itemHeight;
     const styleProps = useMultiSelectListStyle();
 
     return (
       <Popper
         ref={_popperRef}
         usePortal={false}
-        anchorEl={multiSelectRef.current}
+        anchorEl={multiSelectRef.current || 1}
         isOpen={isOpen}
         placement={placement}
         modifiers={popperModifiers}
@@ -374,6 +398,7 @@ const MultiSelectList = forwardRef(
         {...props}
       >
         <List
+          ref={listRef}
           itemSize={itemHeight}
           itemCount={filteredOptions.length}
           height={height}
