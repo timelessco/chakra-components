@@ -355,6 +355,19 @@ const MultiSelectInput = forwardRef(
           setIsOpen(false);
         }
       }
+
+      if (event.key === "Backspace") {
+        if (!inputValue) {
+          if (!isMulti) {
+            setValues([]);
+          } else {
+            if (values.length) {
+              const newValues = values.slice(0, values.length - 1);
+              setValues(newValues);
+            }
+          }
+        }
+      }
     };
 
     const handleOnBlur = event => {
