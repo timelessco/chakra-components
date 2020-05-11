@@ -84,13 +84,7 @@ function ComboBoxExample() {
     disabled: i % 4 === 0,
   }));
 
-  return (
-    <MultiSelect options={options}>
-      <MultiSelectInputGroup />
-      <MultiSelectRightElements />
-      <MultiSelectList />
-    </MultiSelect>
-  );
+  return <MultiSelect options={options} />;
 }
 ```
 
@@ -181,5 +175,123 @@ function ComboBoxExample() {
   }));
 
   return <MultiSelect options={options} isMulti />;
+}
+```
+
+### Custom Searchable Single Select(MultiSelectSelectedOption)
+
+```jsx
+function ComboBoxExample() {
+  const options = [
+    { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1" },
+    {
+      label: "Kola Tioluwani",
+      img: "https://bit.ly/tioluwani-kolawole",
+      value: "2",
+    },
+    { label: "Kent Dodds", img: "https://bit.ly/kent-c-dodds", value: "3" },
+    { label: "Ryan Florence", img: "https://bit.ly/ryan-florence", value: "4" },
+    {
+      label: "Prosper Otemuyiwa",
+      img: "https://bit.ly/prosper-baba",
+      value: "5",
+    },
+    { label: "Christian Nwamba", img: "https://bit.ly/code-beast", value: "6" },
+    { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
+  ];
+
+  return (
+    <MultiSelect options={options}>
+      <MultiSelectInputGroup>
+        <MultiSelectSelectedOption>
+          {({ selectedOption }) => (
+            <Flex w="100%" alignItems="center">
+              <Avatar
+                name={selectedOption.label}
+                src={selectedOption.img}
+                size="xs"
+                mr={2}
+              />
+              <Box as="h4" fontWeight="bold">
+                {selectedOption.label}
+              </Box>
+            </Flex>
+          )}
+        </MultiSelectSelectedOption>
+      </MultiSelectInputGroup>
+      <MultiSelectRightElements />
+      <MultiSelectList />
+    </MultiSelect>
+  );
+}
+```
+
+### Custom Searchable Multi Select(MultiSelectSelectedOption)
+
+```jsx
+function ComboBoxExample() {
+  const options = [
+    { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1" },
+    {
+      label: "Kola Tioluwani",
+      img: "https://bit.ly/tioluwani-kolawole",
+      value: "2",
+    },
+    { label: "Kent Dodds", img: "https://bit.ly/kent-c-dodds", value: "3" },
+    { label: "Ryan Florence", img: "https://bit.ly/ryan-florence", value: "4" },
+    {
+      label: "Prosper Otemuyiwa",
+      img: "https://bit.ly/prosper-baba",
+      value: "5",
+    },
+    { label: "Christian Nwamba", img: "https://bit.ly/code-beast", value: "6" },
+    { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
+  ];
+
+  return (
+    <MultiSelect options={options} isMulti>
+      <MultiSelectInputGroup>
+        <MultiSelectSelectedOption>
+          {({ selectedOptions, onClick }) => {
+            return (
+              <>
+                {selectedOptions.map((selectedOption, i) => (
+                  <Box
+                    key={`i-${i}`}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    m="2px"
+                  >
+                    <Tag size="md" variant="solid" variantColor="blue">
+                      <TagLabel>
+                        <Flex w="100%" alignItems="center">
+                          <Avatar
+                            name={selectedOption.label}
+                            src={selectedOption.img}
+                            size="xs"
+                            mr={2}
+                          />
+                          <Box as="h4" fontWeight="bold">
+                            {selectedOption.label}
+                          </Box>
+                        </Flex>
+                      </TagLabel>
+                      <TagCloseButton
+                        tabIndex={-1}
+                        onClick={e => onClick(e, selectedOption.value)}
+                      />
+                    </Tag>
+                  </Box>
+                ))}
+              </>
+            );
+          }}
+        </MultiSelectSelectedOption>
+      </MultiSelectInputGroup>
+      <MultiSelectRightElements />
+      <MultiSelectList />
+    </MultiSelect>
+  );
 }
 ```

@@ -6,6 +6,8 @@ import React, {
   useEffect,
 } from "react";
 import {
+  Flex,
+  Avatar,
   Box,
   PseudoBox,
   Icon,
@@ -20,7 +22,6 @@ import Popper from "@chakra-ui/core/dist/Popper";
 import { useMultiSelectContext } from "./useMultiSelectContext";
 import { FixedSizeList as List } from "react-window";
 import AutosizeInput from "react-input-autosize";
-import { inputSizes } from "@chakra-ui/core/dist/Input/styles";
 
 import {
   useMultiSelectStyle,
@@ -69,6 +70,7 @@ const MultiSelect = forwardRef(
 
     const [values, setValues] = useState(_initialValues);
 
+    const [selectedOptions, setSelectedOptions] = useState([]);
     const [notSelectedOptions, setNotSelectedOptions] = useState(options);
     const [filteredOptions, setFilteredOptions] = useState(notSelectedOptions);
 
@@ -77,6 +79,12 @@ const MultiSelect = forwardRef(
     const inputRef = useRef(null);
     const popperRef = useRef(null);
     const listRef = useRef(null);
+
+    useEffect(() => {
+      setSelectedOptions(
+        options.filter(option => values.includes(option.value)),
+      );
+    }, [options, values]);
 
     useEffect(() => {
       if (isMulti) {
@@ -89,7 +97,7 @@ const MultiSelect = forwardRef(
     const filter = (options, input) => {
       if (input) {
         return options.filter(option =>
-          option.value.toLowerCase().includes(input.toLowerCase()),
+          option.label.toLowerCase().includes(input.toLowerCase()),
         );
       } else {
         return options;
@@ -178,6 +186,7 @@ const MultiSelect = forwardRef(
       listRef,
       focusedOptionIndex,
       setFocusedOptionIndex,
+      selectedOptions,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -220,6 +229,175 @@ const MultiSelect = forwardRef(
 );
 
 MultiSelect.displayName = "MultiSelect";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const MultiSelectInputGroup = ({ children, ...props }) => {
+  const validChildren = cleanChildren(children);
+
+  const SelectedOption = validChildren.find(
+    child => child.type === MultiSelectSelectedOption,
+  );
+  const Placeholder = validChildren.find(
+    child => child.type === MultiSelectPlaceholder,
+  );
+  const Input = validChildren.find(child => child.type === MultiSelectInput);
+
+  return (
+    <PseudoBox
+      position="relative"
+      display="flex"
+      alignItems="center"
+      flexWrap="wrap"
+      flex=" 1 1 0%"
+      px={2}
+      overflow="hidden"
+      {...props}
+    >
+      {SelectedOption || <MultiSelectSelectedOption />}
+      {Placeholder || <MultiSelectPlaceholder />}
+      {Input || <MultiSelectInput />}
+    </PseudoBox>
+  );
+};
+
+MultiSelectInputGroup.displayName = "MultiSelectInputGroup";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const DefaultMultiSelectOptions = forwardRef(
+  ({ selectedOptions, onClick, ...props }, ref) => {
+    return (
+      <>
+        {selectedOptions.map((selectedOption, i) => (
+          <Box
+            key={`i-${i}`}
+            ref={ref}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            m="2px"
+            {...props}
+          >
+            <Tag size="md" variant="solid" variantColor="blue">
+              <TagLabel>{selectedOption.label}</TagLabel>
+              <TagCloseButton
+                tabIndex={-1}
+                onClick={e => onClick(e, selectedOption.value)}
+              />
+            </Tag>
+          </Box>
+        ))}
+      </>
+    );
+  },
+);
+
+DefaultMultiSelectOptions.displayName = "DefaultMultiSelectOptions";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const MultiSelectSelectedOption = ({ children, ...props }) => {
+  const {
+    isMulti,
+    inputValue,
+    isFocused,
+    inputRef,
+    setValues,
+    selectedOptions,
+  } = useMultiSelectContext();
+
+  const handleOnClick = (event, value) => {
+    event.stopPropagation();
+    setValues(oldValues =>
+      oldValues.filter(oldValue => !oldValue.includes(value)),
+    );
+
+    if (!isFocused) {
+      inputRef.current.focus();
+    }
+  };
+
+  if (isMulti) {
+    return (
+      <>
+        {typeof children === "function" ? (
+          children({
+            selectedOptions: selectedOptions,
+            onClick: handleOnClick,
+          })
+        ) : (
+          <DefaultMultiSelectOptions
+            selectedOptions={selectedOptions}
+            onClick={handleOnClick}
+          />
+        )}
+      </>
+    );
+  }
+
+  if (inputValue) {
+    return null;
+  }
+
+  if (selectedOptions.length) {
+    return (
+      <PseudoBox
+        position="absolute"
+        textOverflow="ellipsis"
+        whiteSpace="nowrap"
+        top="50%"
+        transform="translateY(-50%)"
+        mx="2px"
+        maxW="calc(100% - 8px)"
+        {...props}
+      >
+        {typeof children === "function"
+          ? children({
+              selectedOption: selectedOptions[0],
+            })
+          : selectedOptions[0].label}
+      </PseudoBox>
+    );
+  }
+
+  return null;
+};
+
+MultiSelectSelectedOption.displayName = "MultiSelectSelectedOption";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const MultiSelectPlaceholder = props => {
+  const { values, inputValue } = useMultiSelectContext();
+
+  const theme = useTheme();
+  const { colorMode } = useColorMode();
+
+  const placeholderColor = {
+    light: theme.colors.gray[400],
+    dark: theme.colors.whiteAlpha[400],
+  };
+
+  if (!values.length) {
+    return inputValue ? null : (
+      <PseudoBox
+        position="absolute"
+        top="50%"
+        transform="translateY(-50%)"
+        mx="2px"
+        color={placeholderColor[colorMode]}
+        {...props}
+      >
+        Select One...
+      </PseudoBox>
+    );
+  }
+
+  return null;
+};
+
+MultiSelectPlaceholder.displayName = "MultiSelectPlaceholder";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -642,51 +820,6 @@ MultiSelectList.displayName = "MultiSelectList";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectTagAddons = forwardRef(({ children, ...props }, ref) => {
-  return (
-    <Box
-      ref={ref}
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      m="2px"
-      {...props}
-    >
-      {children}
-    </Box>
-  );
-});
-
-MultiSelectTagAddons.displayName = "MultiSelectTagAddons";
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-const MultiSelectInputGroup = ({ size = "md", ...props }) => {
-  const height = inputSizes[size] && inputSizes[size]["height"];
-
-  return (
-    <PseudoBox
-      position="relative"
-      display="flex"
-      alignItems="center"
-      flexWrap="wrap"
-      flex=" 1 1 0%"
-      px={2}
-      overflow="hidden"
-      height={height}
-      {...props}
-    >
-      <MultiSelectSelectedOption />
-      <MultiSelectPlaceholder />
-      <MultiSelectInput />
-    </PseudoBox>
-  );
-};
-
-MultiSelectInputGroup.displayName = "MultiSelectInputGroup";
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 const MultiSelectRightAddons = forwardRef(({ children, ...props }, ref) => {
   return (
     <Box
@@ -782,109 +915,12 @@ MultiSelectHiddenInput.displayName = "MultiSelectHiddenInput";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectSelectedOption = ({ ...props }) => {
-  const {
-    isMulti,
-    values,
-    inputValue,
-    isFocused,
-    inputRef,
-    setValues,
-  } = useMultiSelectContext();
-
-  const handleOnClick = (event, value) => {
-    event.stopPropagation();
-    setValues(oldValues =>
-      oldValues.filter(oldValue => !oldValue.includes(value)),
-    );
-
-    if (!isFocused) {
-      inputRef.current.focus();
-    }
-  };
-
-  if (isMulti) {
-    return (
-      <>
-        {values.map((val, index) => (
-          <MultiSelectTagAddons key={index}>
-            <Tag size="md" variant="solid" variantColor="blue">
-              <TagLabel>{val}</TagLabel>
-              <TagCloseButton
-                tabIndex={-1}
-                onClick={e => handleOnClick(e, val)}
-              />
-            </Tag>
-          </MultiSelectTagAddons>
-        ))}
-      </>
-    );
-  }
-
-  if (inputValue) {
-    return null;
-  }
-
-  if (values.length) {
-    return (
-      <PseudoBox
-        position="absolute"
-        textOverflow="ellipsis"
-        whiteSpace="nowrap"
-        top="50%"
-        transform="translateY(-50%)"
-        mx="2px"
-        maxW="calc(100% - 8px)"
-        {...props}
-      >
-        {values[0]}
-      </PseudoBox>
-    );
-  }
-
-  return null;
-};
-
-MultiSelectSelectedOption.displayName = "MultiSelectSelectedOption";
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-const MultiSelectPlaceholder = props => {
-  const { values, inputValue } = useMultiSelectContext();
-
-  const theme = useTheme();
-  const { colorMode } = useColorMode();
-
-  const placeholderColor = {
-    light: theme.colors.gray[400],
-    dark: theme.colors.whiteAlpha[400],
-  };
-
-  if (!values.length) {
-    return inputValue ? null : (
-      <PseudoBox
-        position="absolute"
-        top="50%"
-        transform="translateY(-50%)"
-        mx="2px"
-        color={placeholderColor[colorMode]}
-        {...props}
-      >
-        Select One...
-      </PseudoBox>
-    );
-  }
-
-  return null;
-};
-
-MultiSelectPlaceholder.displayName = "MultiSelectPlaceholder";
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 export {
   MultiSelect,
   MultiSelectInputGroup,
   MultiSelectRightElements,
   MultiSelectList,
+  MultiSelectSelectedOption,
+  MultiSelectPlaceholder,
+  MultiSelectInput,
 };
