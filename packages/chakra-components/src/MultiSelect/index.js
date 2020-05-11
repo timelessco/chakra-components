@@ -15,11 +15,12 @@ import {
   useTheme,
   useColorMode,
 } from "@chakra-ui/core";
-import { useForkRef } from "@chakra-ui/core/dist/utils";
+import { useForkRef, cleanChildren } from "@chakra-ui/core/dist/utils";
 import Popper from "@chakra-ui/core/dist/Popper";
 import { useMultiSelectContext } from "./useMultiSelectContext";
 import { FixedSizeList as List } from "react-window";
 import AutosizeInput from "react-input-autosize";
+import { inputSizes } from "@chakra-ui/core/dist/Input/styles";
 
 import {
   useMultiSelectStyle,
@@ -45,6 +46,7 @@ const MultiSelect = forwardRef(
       isMulti,
       focusBorderColor = "blue.500",
       errorBorderColor = "red.500",
+      children,
       ...rest
     },
     ref,
@@ -186,6 +188,16 @@ const MultiSelect = forwardRef(
 
     const _multiSelectRef = useForkRef(multiSelectRef, ref);
 
+    const validChildren = cleanChildren(children);
+
+    const InputGroup = validChildren.find(
+      child => child.type === MultiSelectInputGroup,
+    );
+    const RightElements = validChildren.find(
+      child => child.type === MultiSelectRightElements,
+    );
+    const List = validChildren.find(child => child.type === MultiSelectList);
+
     return (
       <MultiSelectContext.Provider value={context}>
         <PseudoBox pos="relative">
@@ -196,10 +208,10 @@ const MultiSelect = forwardRef(
             {...styleProps}
             {...rest}
           >
-            <MultiSelectInputGroup />
-            <MultiSelectRightElements />
+            {InputGroup || <MultiSelectInputGroup />}
+            {RightElements || <MultiSelectRightElements />}
           </PseudoBox>
-          <MultiSelectList />
+          {List || <MultiSelectList />}
           <MultiSelectHiddenInput />
         </PseudoBox>
       </MultiSelectContext.Provider>
@@ -649,7 +661,9 @@ MultiSelectTagAddons.displayName = "MultiSelectTagAddons";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectInputGroup = props => {
+const MultiSelectInputGroup = ({ size = "md", ...props }) => {
+  const height = inputSizes[size] && inputSizes[size]["height"];
+
   return (
     <PseudoBox
       position="relative"
@@ -659,6 +673,7 @@ const MultiSelectInputGroup = props => {
       flex=" 1 1 0%"
       px={2}
       overflow="hidden"
+      height={height}
       {...props}
     >
       <MultiSelectSelectedOption />
@@ -742,7 +757,7 @@ const MultiSelectHiddenInput = props => {
   const { name, isDisabled, isMulti, values } = useMultiSelectContext();
 
   if (!name || isDisabled) {
-    return;
+    return null;
   }
 
   if (!isMulti) {
@@ -867,4 +882,9 @@ MultiSelectPlaceholder.displayName = "MultiSelectPlaceholder";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export { MultiSelect };
+export {
+  MultiSelect,
+  MultiSelectInputGroup,
+  MultiSelectRightElements,
+  MultiSelectList,
+};
