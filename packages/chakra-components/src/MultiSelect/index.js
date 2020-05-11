@@ -350,7 +350,7 @@ MultiSelectSelectedOption.displayName = "MultiSelectSelectedOption";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectPlaceholder = props => {
+const MultiSelectPlaceholder = ({ children = "Select one..", ...props }) => {
   const { values, inputValue } = useMultiSelectContext();
 
   const theme = useTheme();
@@ -371,7 +371,7 @@ const MultiSelectPlaceholder = props => {
         color={placeholderColor[colorMode]}
         {...props}
       >
-        Select One...
+        {children}
       </PseudoBox>
     );
   }
@@ -396,6 +396,7 @@ const MultiSelectInput = forwardRef(
     },
     ref,
   ) => {
+    console.log("%c props", "color: #00bf00", props);
     const {
       inputRef,
       isFocused,
@@ -621,7 +622,7 @@ const MultiSelectInput = forwardRef(
     });
 
     return (
-      <PseudoBox {...inputWrapperStyle}>
+      <PseudoBox {...inputWrapperStyle} {...props}>
         <AutosizeInput
           type="text"
           inputRef={_inputRef}
@@ -637,7 +638,6 @@ const MultiSelectInput = forwardRef(
           autoCorrect="off"
           spellCheck="false"
           {...ariaAttributes}
-          {...props}
         />
       </PseudoBox>
     );
