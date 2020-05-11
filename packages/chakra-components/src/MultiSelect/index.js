@@ -541,9 +541,11 @@ const MultiSelectList = forwardRef(
     } = useMultiSelectContext();
 
     const popperModifiers = {
+      hide: {
+        enabled: false,
+      },
       preventOverflow: {
-        enabled: true,
-        boundariesElement: "viewport",
+        enabled: false,
       },
       offset: {
         enabled: true,

@@ -150,9 +150,11 @@ const SubMenuList = ({
   }
 
   const popperModifiers = {
+    hide: {
+      enabled: false,
+    },
     preventOverflow: {
-      enabled: true,
-      boundariesElement: "viewport",
+      enabled: false,
     },
     fixedWidth: {
       enabled: true,
