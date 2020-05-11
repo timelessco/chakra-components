@@ -280,3 +280,73 @@ function ComboBoxExample() {
   );
 }
 ```
+
+### Custom Searchable Multi Select(MultiSelectPlaceholder)
+
+```jsx
+function ComboBoxExample() {
+  const options = [
+    { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1" },
+    {
+      label: "Kola Tioluwani",
+      img: "https://bit.ly/tioluwani-kolawole",
+      value: "2",
+    },
+    { label: "Kent Dodds", img: "https://bit.ly/kent-c-dodds", value: "3" },
+    { label: "Ryan Florence", img: "https://bit.ly/ryan-florence", value: "4" },
+    {
+      label: "Prosper Otemuyiwa",
+      img: "https://bit.ly/prosper-baba",
+      value: "5",
+    },
+    { label: "Christian Nwamba", img: "https://bit.ly/code-beast", value: "6" },
+    { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
+  ];
+
+  return (
+    <MultiSelect options={options} isMulti>
+      <MultiSelectInputGroup>
+        <MultiSelectPlaceholder color="teal.500">
+          Select as many as you can..
+        </MultiSelectPlaceholder>
+      </MultiSelectInputGroup>
+      <MultiSelectRightElements />
+      <MultiSelectList />
+    </MultiSelect>
+  );
+}
+```
+
+### Custom Searchable Single Select(MultiSelectInput) (Basic styles can be configured for now)
+
+```jsx
+function ComboBoxExample() {
+  const options = [
+    { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1" },
+    {
+      label: "Kola Tioluwani",
+      img: "https://bit.ly/tioluwani-kolawole",
+      value: "2",
+    },
+    { label: "Kent Dodds", img: "https://bit.ly/kent-c-dodds", value: "3" },
+    { label: "Ryan Florence", img: "https://bit.ly/ryan-florence", value: "4" },
+    {
+      label: "Prosper Otemuyiwa",
+      img: "https://bit.ly/prosper-baba",
+      value: "5",
+    },
+    { label: "Christian Nwamba", img: "https://bit.ly/code-beast", value: "6" },
+    { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
+  ];
+
+  return (
+    <MultiSelect options={options}>
+      <MultiSelectInputGroup>
+        <MultiSelectInput color="orange.500" />
+      </MultiSelectInputGroup>
+      <MultiSelectRightElements />
+      <MultiSelectList />
+    </MultiSelect>
+  );
+}
+```
