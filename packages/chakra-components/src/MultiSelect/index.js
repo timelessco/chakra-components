@@ -65,7 +65,8 @@ const MultiSelect = forwardRef(
 
     const [values, setValues] = useState(_initialValues);
 
-    const [filteredOptions, setFilteredOptions] = useState(options);
+    const [notSelectedOptions, setNotSelectedOptions] = useState(options);
+    const [filteredOptions, setFilteredOptions] = useState(notSelectedOptions);
 
     const multiSelectWrapperRef = useRef(null);
     const multiSelectRef = useRef(null);
@@ -75,11 +76,25 @@ const MultiSelect = forwardRef(
 
     useEffect(() => {
       if (isMulti) {
-        setFilteredOptions(
+        setNotSelectedOptions(
           options.filter(option => !values.includes(option.value)),
         );
       }
     }, [isMulti, options, values]);
+
+    const filter = (options, input) => {
+      if (input) {
+        return options.filter(option =>
+          option.value.toLowerCase().includes(input.toLowerCase()),
+        );
+      } else {
+        return options;
+      }
+    };
+
+    useEffect(() => {
+      setFilteredOptions(filter(notSelectedOptions, inputValue));
+    }, [notSelectedOptions, inputValue]);
 
     useEffect(() => {
       listRef.current && listRef.current.scrollToItem(focusedOptionIndex);
