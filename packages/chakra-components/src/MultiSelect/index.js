@@ -59,7 +59,10 @@ const MultiSelect = forwardRef(
     let _initialValues = [];
 
     if (initialValues) {
-      if (typeof initialValue === "string" || initialValues instanceof String) {
+      if (
+        typeof initialValues === "string" ||
+        initialValues instanceof String
+      ) {
         _initialValues = [initialValues];
       } else if (Array.isArray(initialValues)) {
         _initialValues = initialValues;
@@ -252,6 +255,7 @@ const MultiSelectInputGroup = ({ children, ...props }) => {
       flex=" 1 1 0%"
       px={2}
       overflow="hidden"
+      minHeight="2.5rem"
       {...props}
     >
       {SelectedOption || <MultiSelectSelectedOption />}
@@ -396,7 +400,6 @@ const MultiSelectInput = forwardRef(
     },
     ref,
   ) => {
-    console.log("%c props", "color: #00bf00", props);
     const {
       inputRef,
       isFocused,
@@ -648,6 +651,106 @@ MultiSelectInput.displayName = "MultiSelectInput";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+const MultiSelectRightAddons = forwardRef(({ children, ...props }, ref) => {
+  return (
+    <Box
+      ref={ref}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      height="2.5rem"
+      width="2.5rem"
+      p="7px"
+      {...props}
+    >
+      {children}
+    </Box>
+  );
+});
+
+MultiSelectRightAddons.displayName = "MultiSelectRightAddons";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const MultiSelectCloseButton = ({ children, ...props }) => {
+  const {
+    values,
+    setValues,
+    isFocused,
+    inputRef,
+    isOpen,
+    setIsOpen,
+  } = useMultiSelectContext();
+
+  const handleOnClick = event => {
+    event.stopPropagation();
+    setValues([]);
+
+    if (isOpen) {
+      setIsOpen(false);
+    }
+
+    if (!isFocused) {
+      inputRef.current.focus();
+    }
+  };
+
+  if (values.length) {
+    return (
+      <MultiSelectRightAddons onClick={handleOnClick} {...props}>
+        {children || <Icon name="close" fontSize="0.8rem" />}
+      </MultiSelectRightAddons>
+    );
+  }
+
+  return null;
+};
+
+MultiSelectCloseButton.displayName = "MultiSelectCloseButton";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const MultiSelectToggleIcon = ({ children, ...props }) => {
+  return (
+    <MultiSelectRightAddons {...props}>
+      {children || <Icon name="chevron-down" fontSize="1.5rem" />}
+    </MultiSelectRightAddons>
+  );
+};
+
+MultiSelectToggleIcon.displayName = "MultiSelectToggleIcon";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const MultiSelectRightElements = ({ children, ...props }) => {
+  const validChildren = cleanChildren(children);
+
+  const CloseButton = validChildren.find(
+    child => child.type === MultiSelectCloseButton,
+  );
+
+  const ToggleIcon = validChildren.find(
+    child => child.type === MultiSelectToggleIcon,
+  );
+
+  return (
+    <PseudoBox
+      display="flex"
+      alignItems="center"
+      alignSelf="stretch"
+      flexShrink="0"
+      {...props}
+    >
+      {CloseButton || <MultiSelectCloseButton />}
+      {ToggleIcon || <MultiSelectToggleIcon />}
+    </PseudoBox>
+  );
+};
+
+MultiSelectRightElements.displayName = "MultiSelectRightElements";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
   const {
     values,
@@ -802,72 +905,6 @@ MultiSelectList.displayName = "MultiSelectList";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectRightAddons = forwardRef(({ children, ...props }, ref) => {
-  return (
-    <Box
-      ref={ref}
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      p="7px"
-      {...props}
-    >
-      {children}
-    </Box>
-  );
-});
-
-MultiSelectRightAddons.displayName = "MultiSelectRightAddons";
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-const MultiSelectRightElements = props => {
-  const {
-    values,
-    setValues,
-    isFocused,
-    inputRef,
-    isOpen,
-    setIsOpen,
-  } = useMultiSelectContext();
-
-  const handleOnClick = event => {
-    event.stopPropagation();
-    setValues([]);
-
-    if (isOpen) {
-      setIsOpen(false);
-    }
-
-    if (!isFocused) {
-      inputRef.current.focus();
-    }
-  };
-
-  return (
-    <PseudoBox
-      display="flex"
-      alignItems="center"
-      alignSelf="stretch"
-      flexShrink="0"
-      {...props}
-    >
-      {!!values.length && (
-        <MultiSelectRightAddons onClick={handleOnClick}>
-          <Icon name="close" fontSize="0.75rem" />
-        </MultiSelectRightAddons>
-      )}
-      <MultiSelectRightAddons>
-        <Icon name="chevron-down" fontSize="1.5rem" />
-      </MultiSelectRightAddons>
-    </PseudoBox>
-  );
-};
-
-MultiSelectRightElements.displayName = "MultiSelectRightElements";
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 const MultiSelectHiddenInput = props => {
   const { name, isDisabled, isMulti, values } = useMultiSelectContext();
 
@@ -905,4 +942,7 @@ export {
   MultiSelectSelectedOption,
   MultiSelectPlaceholder,
   MultiSelectInput,
+  MultiSelectRightAddons,
+  MultiSelectCloseButton,
+  MultiSelectToggleIcon,
 };
