@@ -219,8 +219,6 @@ function ComboBoxExample() {
           )}
         </MultiSelectSelectedOption>
       </MultiSelectInputGroup>
-      <MultiSelectRightElements />
-      <MultiSelectList />
     </MultiSelect>
   );
 }
@@ -274,8 +272,6 @@ function ComboBoxExample() {
           }}
         </MultiSelectSelectedOption>
       </MultiSelectInputGroup>
-      <MultiSelectRightElements />
-      <MultiSelectList />
     </MultiSelect>
   );
 }
@@ -310,8 +306,6 @@ function ComboBoxExample() {
           Select as many as you can..
         </MultiSelectPlaceholder>
       </MultiSelectInputGroup>
-      <MultiSelectRightElements />
-      <MultiSelectList />
     </MultiSelect>
   );
 }
@@ -344,8 +338,44 @@ function ComboBoxExample() {
       <MultiSelectInputGroup>
         <MultiSelectInput color="orange.500" />
       </MultiSelectInputGroup>
-      <MultiSelectRightElements />
-      <MultiSelectList />
+    </MultiSelect>
+  );
+}
+```
+
+### Custom Searchable Single Select(MultiSelectRightElements)
+
+```jsx
+function ComboBoxExample() {
+  const options = [
+    { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1" },
+    {
+      label: "Kola Tioluwani",
+      img: "https://bit.ly/tioluwani-kolawole",
+      value: "2",
+    },
+    { label: "Kent Dodds", img: "https://bit.ly/kent-c-dodds", value: "3" },
+    { label: "Ryan Florence", img: "https://bit.ly/ryan-florence", value: "4" },
+    {
+      label: "Prosper Otemuyiwa",
+      img: "https://bit.ly/prosper-baba",
+      value: "5",
+    },
+    { label: "Christian Nwamba", img: "https://bit.ly/code-beast", value: "6" },
+    { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
+  ];
+
+  return (
+    <MultiSelect value={"1"} options={options}>
+      <MultiSelectRightElements>
+        <MultiSelectCloseButton>
+          <Icon name="delete" />
+        </MultiSelectCloseButton>
+        <MultiSelectToggleIcon>
+          <Icon name="arrow-up-down" fontSize="1rem" />
+        </MultiSelectToggleIcon>
+        <MultiSelectToggleIcon />
+      </MultiSelectRightElements>
     </MultiSelect>
   );
 }
