@@ -84,7 +84,13 @@ function ComboBoxExample() {
     disabled: i % 4 === 0,
   }));
 
-  return <MultiSelect options={options} />;
+  return (
+    <MultiSelect options={options}>
+      <MultiSelectInputGroup />
+      <MultiSelectRightElements />
+      <MultiSelectList />
+    </MultiSelect>
+  );
 }
 ```
 
