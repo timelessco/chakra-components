@@ -184,11 +184,6 @@ export const useMultiSelectOptionStyle = optionState => {
         shadow: "outline",
         outline: 0,
       },
-      _hover: {
-        bg: `${
-          selected ? _bgSelectedColor[colorMode] : _focusColor[colorMode]
-        }`,
-      },
       _disabled: {
         opacity: 0.4,
         cursor: "not-allowed",
