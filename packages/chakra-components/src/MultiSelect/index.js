@@ -6,8 +6,6 @@ import React, {
   useEffect,
 } from "react";
 import {
-  Flex,
-  Avatar,
   Box,
   PseudoBox,
   Icon,
@@ -82,7 +80,9 @@ const MultiSelect = forwardRef(
 
     useEffect(() => {
       setSelectedOptions(
-        options.filter(option => values.includes(option.value)),
+        values.map((value, i) =>
+          options.find(option => option.value === value),
+        ),
       );
     }, [options, values]);
 
