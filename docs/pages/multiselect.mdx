@@ -252,39 +252,24 @@ function ComboBoxExample() {
     <MultiSelect options={options} isMulti>
       <MultiSelectInputGroup>
         <MultiSelectSelectedOption>
-          {({ selectedOptions, onClick }) => {
+          {({ selectedOption, handleOnClick }) => {
             return (
-              <>
-                {selectedOptions.map((selectedOption, i) => (
-                  <Box
-                    key={`i-${i}`}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    m="2px"
-                  >
-                    <Tag size="md" variant="solid" variantColor="blue">
-                      <TagLabel>
-                        <Flex w="100%" alignItems="center">
-                          <Avatar
-                            name={selectedOption.label}
-                            src={selectedOption.img}
-                            size="xs"
-                            mr={2}
-                          />
-                          <Box as="h4" fontWeight="bold">
-                            {selectedOption.label}
-                          </Box>
-                        </Flex>
-                      </TagLabel>
-                      <TagCloseButton
-                        tabIndex={-1}
-                        onClick={e => onClick(e, selectedOption.value)}
-                      />
-                    </Tag>
-                  </Box>
-                ))}
-              </>
+              <Tag size="md" variant="solid" variantColor="blue">
+                <TagLabel>
+                  <Flex w="100%" alignItems="center">
+                    <Avatar
+                      name={selectedOption.label}
+                      src={selectedOption.img}
+                      size="xs"
+                      mr={2}
+                    />
+                    <Box as="h4" fontWeight="bold">
+                      {selectedOption.label}
+                    </Box>
+                  </Flex>
+                </TagLabel>
+                <TagCloseButton tabIndex={-1} onClick={handleOnClick} />
+              </Tag>
             );
           }}
         </MultiSelectSelectedOption>
