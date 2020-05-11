@@ -38,6 +38,8 @@ const MultiSelect = forwardRef(
   (
     {
       options,
+      id,
+      name,
       value: initialValues,
       onChange,
       isMulti,
@@ -150,6 +152,8 @@ const MultiSelect = forwardRef(
     };
 
     const context = {
+      id,
+      name,
       options,
       values,
       setValues,
@@ -735,7 +739,28 @@ MultiSelectRightElements.displayName = "MultiSelectRightElements";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectHiddenInput = props => {
-  return <input type="hidden" name="color" value="red" {...props} />;
+  const { name, isDisabled, isMulti, values } = useMultiSelectContext();
+
+  if (!name || isDisabled) {
+    return;
+  }
+
+  if (!isMulti) {
+    const value = values[0] ? values[0] : "";
+
+    return <input type="hidden" name={name} value={value} {...props} />;
+  } else {
+    const input =
+      values.length > 0 ? (
+        values.map((value, i) => (
+          <input key={`i-${i}`} type="hidden" name={name} value={value} />
+        ))
+      ) : (
+        <input type="hidden" name={name} />
+      );
+
+    return <div>{input}</div>;
+  }
 };
 
 MultiSelectHiddenInput.displayName = "MultiSelectHiddenInput";
