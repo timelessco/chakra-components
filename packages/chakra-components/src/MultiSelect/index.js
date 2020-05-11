@@ -751,7 +751,7 @@ MultiSelectRightElements.displayName = "MultiSelectRightElements";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
+const MultiSelectOption = forwardRef(({ index, style, data }, ref) => {
   const {
     values,
     setValues,
@@ -766,6 +766,7 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
     setFocusedOptionIndex,
   } = useMultiSelectContext();
 
+  const { children, ...rest } = data;
   const option = filteredOptions[index];
   const selected = option ? values.includes(option.value) : false;
   const focused = option ? focusedOptionIndex === index : false;
@@ -808,34 +809,21 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
 
   const styleProps = useMultiSelectOptionStyle({ selected, focused, disabled });
 
-  if (!filteredOptions.length) {
-    return (
-      <PseudoBox
-        ref={ref}
-        style={style}
-        tabIndex={-1}
-        {...styleProps}
-        _active={{
-          bg: "transparent",
-        }}
-        {...rest}
-      >
-        No results found...
-      </PseudoBox>
-    );
-  }
-
   return (
     <PseudoBox
       ref={ref}
       style={style}
       tabIndex={-1}
-      onClick={handleOnClick}
-      onMouseEnter={handleOnMouseEnter}
+      onClick={filteredOptions.length ? handleOnClick : null}
+      onMouseEnter={filteredOptions.length ? handleOnMouseEnter : null}
       {...styleProps}
       {...rest}
     >
-      {option.label}
+      {filteredOptions.length
+        ? children
+          ? children({ option })
+          : option.label
+        : "No Option found!!"}
     </PseudoBox>
   );
 });
@@ -846,7 +834,15 @@ MultiSelectOption.displayName = "MultiSelectOption";
 
 const MultiSelectList = forwardRef(
   (
-    { placement, skid, gutter, itemHeight = 40, pageSize = 10, ...props },
+    {
+      placement,
+      skid,
+      gutter,
+      itemHeight = 40,
+      pageSize = 10,
+      children,
+      ...props
+    },
     ref,
   ) => {
     const {
@@ -892,6 +888,7 @@ const MultiSelectList = forwardRef(
           itemSize={itemHeight}
           itemCount={filteredOptions.length || 1}
           height={height}
+          itemData={{ ...(children && children.props) }}
           {...props}
         >
           {MultiSelectOption}
@@ -945,4 +942,5 @@ export {
   MultiSelectRightAddons,
   MultiSelectCloseButton,
   MultiSelectToggleIcon,
+  MultiSelectOption,
 };
