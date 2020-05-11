@@ -274,100 +274,106 @@ const MultiSelectInput = forwardRef(
       let nextIndex;
 
       if (event.key === "ArrowDown") {
-        if (inputIsHidden) {
-          setInputIsHidden(false);
-        }
-
-        if (!isOpen) {
-          setIsOpen(true);
-
-          if (!isMulti) {
-            if (!values.length) {
-              setFocusedOptionIndex(0);
-            } else {
-              const selectedOption = filteredOptions.find(
-                option => option.value === values[0],
-              );
-
-              const selectedIndex = filteredOptions.indexOf(selectedOption);
-
-              if (selectedIndex !== -1) {
-                setFocusedOptionIndex(selectedIndex);
-              }
-            }
-          } else {
-            setFocusedOptionIndex(0);
+        if (filteredOptions.length) {
+          if (inputIsHidden) {
+            setInputIsHidden(false);
           }
 
-          return;
-        }
+          if (!isOpen) {
+            setIsOpen(true);
 
-        nextIndex = (focusedOptionIndex + 1) % count;
-        setFocusedOptionIndex(nextIndex);
+            if (!isMulti) {
+              if (!values.length) {
+                setFocusedOptionIndex(0);
+              } else {
+                const selectedOption = filteredOptions.find(
+                  option => option.value === values[0],
+                );
+
+                const selectedIndex = filteredOptions.indexOf(selectedOption);
+
+                if (selectedIndex !== -1) {
+                  setFocusedOptionIndex(selectedIndex);
+                }
+              }
+            } else {
+              setFocusedOptionIndex(0);
+            }
+
+            return;
+          }
+
+          nextIndex = (focusedOptionIndex + 1) % count;
+          setFocusedOptionIndex(nextIndex);
+        }
       }
 
       if (event.key === "ArrowUp") {
-        if (inputIsHidden) {
-          setInputIsHidden(false);
-        }
-
-        if (!isOpen) {
-          setIsOpen(true);
-
-          if (!isMulti) {
-            if (!values.length) {
-              setFocusedOptionIndex(filteredOptions.length - 1);
-            } else {
-              const selectedOption = filteredOptions.find(
-                option => option.value === values[0],
-              );
-
-              const selectedIndex = filteredOptions.indexOf(selectedOption);
-
-              if (selectedIndex !== -1) {
-                setFocusedOptionIndex(selectedIndex);
-              }
-            }
-          } else {
-            setFocusedOptionIndex(filteredOptions.length - 1);
+        if (filteredOptions.length) {
+          if (inputIsHidden) {
+            setInputIsHidden(false);
           }
 
-          return;
-        }
+          if (!isOpen) {
+            setIsOpen(true);
 
-        nextIndex = (focusedOptionIndex - 1 + count) % count;
-        setFocusedOptionIndex(nextIndex);
+            if (!isMulti) {
+              if (!values.length) {
+                setFocusedOptionIndex(filteredOptions.length - 1);
+              } else {
+                const selectedOption = filteredOptions.find(
+                  option => option.value === values[0],
+                );
+
+                const selectedIndex = filteredOptions.indexOf(selectedOption);
+
+                if (selectedIndex !== -1) {
+                  setFocusedOptionIndex(selectedIndex);
+                }
+              }
+            } else {
+              setFocusedOptionIndex(filteredOptions.length - 1);
+            }
+
+            return;
+          }
+
+          nextIndex = (focusedOptionIndex - 1 + count) % count;
+          setFocusedOptionIndex(nextIndex);
+        }
       }
 
       if (event.key === "Enter") {
-        if (filteredOptions[focusedOptionIndex].disabled) {
-          return;
-        }
+        if (filteredOptions.length) {
+          const focusedOption = filteredOptions[focusedOptionIndex];
 
-        if (isOpen) {
-          if (!isMulti) {
-            setValues([filteredOptions[focusedOptionIndex].value]);
-
-            if (!inputIsHidden) {
-              setInputIsHidden(true);
-            }
-          } else {
-            setValues(oldOptions => {
-              if (
-                oldOptions.includes(filteredOptions[focusedOptionIndex].value)
-              ) {
-                return oldOptions;
-              }
-
-              return [...oldOptions, filteredOptions[focusedOptionIndex].value];
-            });
+          if (focusedOption.disabled) {
+            return;
           }
-        }
 
-        setInputValue("");
+          if (isOpen) {
+            if (!isMulti) {
+              setValues([focusedOption.value]);
 
-        if (isOpen) {
-          setIsOpen(false);
+              if (!inputIsHidden) {
+                setInputIsHidden(true);
+              }
+            } else {
+              setValues(oldOptions => {
+                if (oldOptions.includes(focusedOption.value)) {
+                  return oldOptions;
+                }
+
+                return [...oldOptions, focusedOption.value];
+              });
+            }
+          }
+
+          setInputValue("");
+
+          if (isOpen) {
+            setIsOpen(false);
+          }
         }
       }
 
@@ -482,9 +488,9 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
   } = useMultiSelectContext();
 
   const option = filteredOptions[index];
-  const selected = values.includes(option.value);
-  const focused = focusedOptionIndex === index;
-  const disabled = option.disabled;
+  const selected = option ? values.includes(option.value) : false;
+  const focused = option ? focusedOptionIndex === index : false;
+  const disabled = option ? option.disabled : false;
 
   const handleOnClick = event => {
     if (disabled) {
@@ -522,6 +528,23 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
   };
 
   const styleProps = useMultiSelectOptionStyle({ selected, focused, disabled });
+
+  if (!filteredOptions.length) {
+    return (
+      <PseudoBox
+        ref={ref}
+        style={style}
+        tabIndex={-1}
+        {...styleProps}
+        _active={{
+          bg: "transparent",
+        }}
+        {...rest}
+      >
+        No results found...
+      </PseudoBox>
+    );
+  }
 
   return (
     <PseudoBox
@@ -588,7 +611,7 @@ const MultiSelectList = forwardRef(
         <List
           ref={listRef}
           itemSize={itemHeight}
-          itemCount={filteredOptions.length}
+          itemCount={filteredOptions.length || 1}
           height={height}
           {...props}
         >
