@@ -265,38 +265,6 @@ MultiSelectInputGroup.displayName = "MultiSelectInputGroup";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const DefaultMultiSelectOptions = forwardRef(
-  ({ selectedOptions, onClick, ...props }, ref) => {
-    return (
-      <>
-        {selectedOptions.map((selectedOption, i) => (
-          <Box
-            key={`i-${i}`}
-            ref={ref}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            m="2px"
-            {...props}
-          >
-            <Tag size="md" variant="solid" variantColor="blue">
-              <TagLabel>{selectedOption.label}</TagLabel>
-              <TagCloseButton
-                tabIndex={-1}
-                onClick={e => onClick(e, selectedOption.value)}
-              />
-            </Tag>
-          </Box>
-        ))}
-      </>
-    );
-  },
-);
-
-DefaultMultiSelectOptions.displayName = "DefaultMultiSelectOptions";
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 const MultiSelectSelectedOption = ({ children, ...props }) => {
   const {
     isMulti,
@@ -321,17 +289,31 @@ const MultiSelectSelectedOption = ({ children, ...props }) => {
   if (isMulti) {
     return (
       <>
-        {typeof children === "function" ? (
-          children({
-            selectedOptions: selectedOptions,
-            onClick: handleOnClick,
-          })
-        ) : (
-          <DefaultMultiSelectOptions
-            selectedOptions={selectedOptions}
-            onClick={handleOnClick}
-          />
-        )}
+        {selectedOptions.map((selectedOption, i) => (
+          <Box
+            key={`i-${i}`}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            m="2px"
+            {...props}
+          >
+            {typeof children === "function" ? (
+              children({
+                selectedOption: selectedOption,
+                handleOnClick: e => handleOnClick(e, selectedOption.value),
+              })
+            ) : (
+              <Tag size="md" variant="solid" variantColor="blue">
+                <TagLabel>{selectedOption.label}</TagLabel>
+                <TagCloseButton
+                  tabIndex={-1}
+                  onClick={e => handleOnClick(e, selectedOption.value)}
+                />
+              </Tag>
+            )}
+          </Box>
+        ))}
       </>
     );
   }
