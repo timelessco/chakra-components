@@ -457,6 +457,7 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
     isMulti,
     filteredOptions,
     focusedOptionIndex,
+    setFocusedOptionIndex,
   } = useMultiSelectContext();
 
   const option = filteredOptions[index];
@@ -486,6 +487,10 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
     }
   };
 
+  const handleOnMouseEnter = event => {
+    setFocusedOptionIndex(index);
+  };
+
   const styleProps = useMultiSelectOptionStyle({ selected, focused });
 
   return (
@@ -494,6 +499,7 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
       style={style}
       tabIndex={-1}
       onClick={handleOnClick}
+      onMouseEnter={handleOnMouseEnter}
       {...styleProps}
       {...rest}
     >
