@@ -340,22 +340,28 @@ const MultiSelectInput = forwardRef(
       }
 
       if (event.key === "Enter") {
-        if (!isMulti) {
-          setValues([filteredOptions[focusedOptionIndex].value]);
+        if (filteredOptions[focusedOptionIndex].disabled) {
+          return;
+        }
 
-          if (!inputIsHidden) {
-            setInputIsHidden(true);
-          }
-        } else {
-          setValues(oldOptions => {
-            if (
-              oldOptions.includes(filteredOptions[focusedOptionIndex].value)
-            ) {
-              return oldOptions;
+        if (isOpen) {
+          if (!isMulti) {
+            setValues([filteredOptions[focusedOptionIndex].value]);
+
+            if (!inputIsHidden) {
+              setInputIsHidden(true);
             }
+          } else {
+            setValues(oldOptions => {
+              if (
+                oldOptions.includes(filteredOptions[focusedOptionIndex].value)
+              ) {
+                return oldOptions;
+              }
 
-            return [...oldOptions, filteredOptions[focusedOptionIndex].value];
-          });
+              return [...oldOptions, filteredOptions[focusedOptionIndex].value];
+            });
+          }
         }
 
         setInputValue("");
@@ -478,8 +484,13 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
   const option = filteredOptions[index];
   const selected = values.includes(option.value);
   const focused = focusedOptionIndex === index;
+  const disabled = option.disabled;
 
   const handleOnClick = event => {
+    if (disabled) {
+      return;
+    }
+
     if (!isMulti) {
       setValues([option.value]);
 
@@ -503,10 +514,14 @@ const MultiSelectOption = forwardRef(({ index, style, ...rest }, ref) => {
   };
 
   const handleOnMouseEnter = event => {
+    if (disabled) {
+      return;
+    }
+
     setFocusedOptionIndex(index);
   };
 
-  const styleProps = useMultiSelectOptionStyle({ selected, focused });
+  const styleProps = useMultiSelectOptionStyle({ selected, focused, disabled });
 
   return (
     <PseudoBox
