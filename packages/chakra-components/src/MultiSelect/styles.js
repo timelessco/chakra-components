@@ -166,7 +166,6 @@ export const useMultiSelectOptionStyle = optionState => {
 
   const interactionProps = ({ colorMode, selected, focused, disabled }) => {
     const _focusColor = { light: "gray.100", dark: "whiteAlpha.100" };
-    const _activeColor = { light: "gray.200", dark: "whiteAlpha.200" };
     const _bgSelectedColor = { light: "blue.300", dark: "blue.500" };
 
     return {
@@ -177,9 +176,6 @@ export const useMultiSelectOptionStyle = optionState => {
           ? _focusColor[colorMode]
           : "transparent"
       }`,
-      _active: {
-        bg: _activeColor[colorMode],
-      },
       _focus: {
         shadow: "outline",
         outline: 0,
