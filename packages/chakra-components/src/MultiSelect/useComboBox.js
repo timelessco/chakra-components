@@ -13,9 +13,10 @@ const defaultFilter = (options, input) => {
 export const useComboBox = ({
   options,
   value: initialValues,
-  isMulti,
   onChange,
   filteredBy = defaultFilter,
+  isMulti,
+  isListBox,
 }) => {
   const listRef = useRef(null);
   const inputRef = useRef(null);
@@ -36,6 +37,7 @@ export const useComboBox = ({
   const [isFocused, setIsFocused] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [listBoxInputValue, setListBoxInputValue] = useState("");
   const [inputIsHidden, setInputIsHidden] = useState(false);
   const [focusedOptionIndex, setFocusedOptionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -86,6 +88,14 @@ export const useComboBox = ({
     }
   }, [isMulti, filteredOptions, values]);
 
+  useEffect(() => {
+    const filteredOption = filteredBy(options, listBoxInputValue);
+    const filteredIndex = options.indexOf(filteredOption[0]);
+    if (listBoxInputValue && filteredOption !== [] && filteredIndex !== -1) {
+      setFocusedOptionIndex(filteredIndex);
+    }
+  }, [options, filteredBy, listBoxInputValue]);
+
   const getWrapperProps = () => {
     return {
       tabIndex: -1,
@@ -129,6 +139,20 @@ export const useComboBox = ({
   const getInputProps = () => {
     return {
       onChange: event => {
+        if (isListBox) {
+          if (!isOpen) {
+            setIsOpen(true);
+          }
+
+          setListBoxInputValue(event.currentTarget.value);
+
+          setTimeout(() => {
+            setListBoxInputValue("");
+          }, 700);
+
+          return;
+        }
+
         setInputValue(event.currentTarget.value);
 
         if (inputIsHidden) {
@@ -157,6 +181,7 @@ export const useComboBox = ({
         let nextIndex;
 
         if (event.key === "ArrowDown") {
+          event.preventDefault();
           if (filteredOptions.length) {
             if (inputIsHidden) {
               setInputIsHidden(false);
@@ -192,6 +217,7 @@ export const useComboBox = ({
         }
 
         if (event.key === "ArrowUp") {
+          event.preventDefault();
           if (filteredOptions.length) {
             if (inputIsHidden) {
               setInputIsHidden(false);
@@ -230,7 +256,7 @@ export const useComboBox = ({
           if (filteredOptions.length) {
             const focusedOption = filteredOptions[focusedOptionIndex];
 
-            if (focusedOption.disabled) {
+            if (focusedOption.disabled && focusedOption.disabled) {
               return;
             }
 
@@ -385,6 +411,7 @@ export const useComboBox = ({
     isFocused,
     isOpen,
     inputValue,
+    listBoxInputValue,
     inputIsHidden,
     focusedOptionIndex,
     selectedOptions,

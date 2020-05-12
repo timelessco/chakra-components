@@ -2,6 +2,7 @@ import React, { forwardRef, createContext } from "react";
 import {
   Box,
   PseudoBox,
+  VisuallyHidden,
   Icon,
   Tag,
   TagLabel,
@@ -37,6 +38,7 @@ const MultiSelect = forwardRef(
       onChange,
       filteredBy,
       isMulti,
+      isListBox,
       placement,
       skid,
       gutter,
@@ -61,6 +63,7 @@ const MultiSelect = forwardRef(
       isFocused,
       isOpen,
       inputValue,
+      listBoxInputValue,
       inputIsHidden,
       focusedOptionIndex,
       selectedOptions,
@@ -78,8 +81,9 @@ const MultiSelect = forwardRef(
       options,
       value,
       onChange,
-      isMulti,
       filteredBy,
+      isMulti,
+      isListBox,
     });
 
     const context = {
@@ -88,6 +92,7 @@ const MultiSelect = forwardRef(
       options,
       onChange,
       isMulti,
+      isListBox,
       placeholder,
       renderCustomPlaceholder,
       renderCustomSelectedOption,
@@ -100,6 +105,7 @@ const MultiSelect = forwardRef(
       isFocused,
       isOpen,
       inputValue,
+      listBoxInputValue,
       inputIsHidden,
       focusedOptionIndex,
       selectedOptions,
@@ -257,8 +263,10 @@ const MultiSelectInput = forwardRef(
     const {
       inputRef,
       inputValue,
+      listBoxInputValue,
       inputIsHidden,
       getInputProps,
+      isListBox,
     } = useMultiSelectContext();
 
     const ariaAttributes = {
@@ -270,6 +278,7 @@ const MultiSelectInput = forwardRef(
     const { inputWrapperStyle, inputStyle } = useMultiSelectInputStyle({
       isDisabled,
       inputIsHidden,
+      isListBox,
     });
 
     const _inputRef = useForkRef(inputRef, ref);
@@ -280,7 +289,7 @@ const MultiSelectInput = forwardRef(
           type="text"
           inputRef={_inputRef}
           disabled={isDisabled}
-          value={inputValue}
+          value={isListBox ? listBoxInputValue : inputValue}
           inputStyle={inputStyle}
           autoCapitalize="none"
           autoComplete="off"

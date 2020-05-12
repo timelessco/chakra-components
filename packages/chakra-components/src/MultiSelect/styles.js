@@ -84,7 +84,11 @@ export const useMultiSelectStyle = ({
   useMultiSelectInputStyle
   ========================================================================== */
 
-export const useMultiSelectInputStyle = ({ isDisabled, inputIsHidden }) => {
+export const useMultiSelectInputStyle = ({
+  isDisabled,
+  inputIsHidden,
+  isListBox,
+}) => {
   const inputWrapperStyle = {
     m: "2px",
     py: "2px",
@@ -97,7 +101,7 @@ export const useMultiSelectInputStyle = ({ isDisabled, inputIsHidden }) => {
     background: 0,
     border: 0,
     fontSize: "inherit",
-    opacity: inputIsHidden ? 0 : 1,
+    opacity: isListBox ? 0 : inputIsHidden ? 0 : 1,
     outline: 0,
     padding: 0,
     color: "inherit",
