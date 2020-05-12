@@ -56,6 +56,7 @@ const ComboBox = forwardRef(
       children,
       size = "md",
       enableGhost = "true",
+      isListBox,
       ...props
     },
     ref,
@@ -96,7 +97,9 @@ const ComboBox = forwardRef(
       isOpen,
       inputRef,
       deselectIndex,
+      setOpen,
     } = useSelect({
+      isListBox,
       multi,
       cacheOptions,
       options: async ? asyncOptions : options,
@@ -163,6 +166,8 @@ const ComboBox = forwardRef(
       asyncErrorMessage,
       isInputDebouncing: debounceState,
       deselectIndex,
+      isListBox,
+      setOpen,
     };
 
     const { sizes } = useTheme();
@@ -222,11 +227,15 @@ const ComboBoxInput = forwardRef(
       selectedOption,
       enableGhost,
       isOpen,
+      isListBox,
     } = useComboBoxContext();
     const { value } = getInputProps();
     const ghostProps = splitProps(props);
 
     const _placeholder = () => {
+      if (isListBox) {
+        return undefined;
+      }
       if (!enableGhost) {
         return placeholder;
       } else if (!value && !selectedOption.value) {
@@ -240,29 +249,34 @@ const ComboBoxInput = forwardRef(
     // Also ghost get enabled when we typed something and set its value and the dropdown is closed
     // This is how use select handles that it sets the input value when we select an option
     const _enableGhost =
-      enableGhost &&
-      selectedOption &&
-      selectedOption.value &&
-      (!value || (value && !isOpen)); // condition for ghost to enable
-
+      (enableGhost &&
+        selectedOption &&
+        selectedOption.value &&
+        (!value || (value && !isOpen))) ||
+      isListBox;
     return (
       <>
         <Input
-          cursor="default"
+          cursor={isListBox ? "grabbing" : "default"}
           placeholder={_placeholder()}
           {...getInputProps({ ref })}
           {...props}
           color={_enableGhost ? "transparent" : "inherit"}
+          onClick={() => {
+            console.log("clicked ");
+          }}
         />
 
         {_enableGhost ? (
           renderSelectedOption && typeof renderSelectedOption === "function" ? (
             <ComboBoxSelectedGhost {...ghostProps}>
-              {renderSelectedOption(selectedOption)}
+              {selectedOption.value
+                ? renderSelectedOption(selectedOption)
+                : placeholder}
             </ComboBoxSelectedGhost>
           ) : (
             <ComboBoxSelectedGhost {...ghostProps}>
-              {selectedOption.value}
+              {selectedOption.value ? selectedOption.value : placeholder}
             </ComboBoxSelectedGhost>
           )
         ) : null}
@@ -276,21 +290,24 @@ const ComboBoxInput = forwardRef(
   ========================================================================== */
 
 const ComboBoxSelectedGhost = forwardRef(({ size, ...props }, ref) => {
+  const { isListBox, isOpen, setOpen } = useComboBoxContext();
+
   const baseInputProps = inputSizes[size] && inputSizes[size];
 
   return (
     <Box
       display="flex"
       alignItems="center"
-      justifyContent="center"
       position="absolute"
       top="0"
       left="1px"
       zIndex={2}
       ref={ref}
-      pointerEvents="none"
+      width={isListBox ? "100%" : null}
+      cursor="default"
       {...baseInputProps}
       {...props}
+      onClick={() => setOpen(!isOpen)}
     />
   );
 });
