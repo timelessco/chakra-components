@@ -10,7 +10,20 @@ function MultiSelectExample() {
     disabled: i % 4 === 0,
   }));
 
-  return <MultiSelect options={options} placeholder="Select a fruit..." />;
+  const handleFruitChange = fruit => {
+    setFruit(fruit);
+  };
+
+  const [fruit, setFruit] = React.useState(null);
+
+  return (
+    <MultiSelect
+      options={options}
+      value={fruit}
+      onChange={handleFruitChange}
+      placeholder="Select a fruit..."
+    />
+  );
 }
 ```
 
@@ -36,8 +49,20 @@ function MultiSelectExample() {
     disabled: i % 4 === 0,
   }));
 
+  const handleFruitChange = fruit => {
+    setFruit(fruit);
+  };
+
+  const [fruit, setFruit] = React.useState(["Apples", "Bananas"]);
+
   return (
-    <MultiSelect isMulti options={options} placeholder="Select a fruit..." />
+    <MultiSelect
+      isMulti
+      options={options}
+      value={fruit}
+      onChange={handleFruitChange}
+      placeholder="Select a fruit..."
+    />
   );
 }
 ```

@@ -33,7 +33,7 @@ const MultiSelect = forwardRef(
   (
     {
       options,
-      value: initialValues,
+      value,
       onChange,
       isMulti,
       placement,
@@ -75,7 +75,8 @@ const MultiSelect = forwardRef(
       removeAllSelectedOption,
     } = useComboBox({
       options,
-      initialValues,
+      value,
+      onChange,
       isMulti,
     });
 

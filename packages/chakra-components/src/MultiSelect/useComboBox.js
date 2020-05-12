@@ -1,6 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 
-export const useComboBox = ({ options, initialValues, isMulti }) => {
+export const useComboBox = ({
+  options,
+  value: initialValues,
+  isMulti,
+  onChange,
+}) => {
   const listRef = useRef(null);
   const inputRef = useRef(null);
   const multiSelectRef = useRef(null);
@@ -41,6 +46,14 @@ export const useComboBox = ({ options, initialValues, isMulti }) => {
       values.map((value, i) => options.find(option => option.value === value)),
     );
   }, [options, values]);
+
+  useEffect(() => {
+    if (!isMulti) {
+      onChange(values[0] || "");
+    } else {
+      onChange(values);
+    }
+  }, [isMulti, onChange, values]);
 
   useEffect(() => {
     if (isMulti) {
