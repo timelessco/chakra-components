@@ -245,61 +245,6 @@ MultiSelect.displayName = "MultiSelect";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectInputGroup = props => {
-  const {
-    isMulti,
-    placeholder,
-    renderCustomPlaceholder,
-    renderCustomSelectedOption,
-    renderCustomInput,
-  } = useMultiSelectContext();
-
-  const renderSelectedOption = () => {
-    if (isMulti) {
-      return (
-        <MultiSelectSelectedOption>
-          {({ selectedOption, handleOnClick }) => (
-            <Tag size="md" variant="solid" variantColor="blue">
-              <TagLabel>{selectedOption.label}</TagLabel>
-              <TagCloseButton tabIndex={-1} onClick={handleOnClick} />
-            </Tag>
-          )}
-        </MultiSelectSelectedOption>
-      );
-    }
-
-    return (
-      <MultiSelectSelectedOption>
-        {({ selectedOption }) => selectedOption.label}
-      </MultiSelectSelectedOption>
-    );
-  };
-
-  return (
-    <PseudoBox
-      position="relative"
-      display="flex"
-      alignItems="center"
-      flexWrap="wrap"
-      flex=" 1 1 0%"
-      px={2}
-      overflow="hidden"
-      minHeight="2.5rem"
-      {...props}
-    >
-      {renderCustomSelectedOption || renderSelectedOption()}
-      {renderCustomPlaceholder || (
-        <MultiSelectPlaceholder>{placeholder}</MultiSelectPlaceholder>
-      )}
-      {renderCustomInput || <MultiSelectInput />}
-    </PseudoBox>
-  );
-};
-
-MultiSelectInputGroup.displayName = "MultiSelectInputGroup";
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 const MultiSelectSelectedOption = ({ children, ...props }) => {
   const {
     isMulti,
@@ -665,6 +610,61 @@ const MultiSelectInput = forwardRef(
 );
 
 MultiSelectInput.displayName = "MultiSelectInput";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const MultiSelectInputGroup = props => {
+  const {
+    isMulti,
+    placeholder,
+    renderCustomPlaceholder,
+    renderCustomSelectedOption,
+    renderCustomInput,
+  } = useMultiSelectContext();
+
+  const renderSelectedOption = () => {
+    if (isMulti) {
+      return (
+        <MultiSelectSelectedOption>
+          {({ selectedOption, handleOnClick }) => (
+            <Tag size="md" variant="solid" variantColor="blue">
+              <TagLabel>{selectedOption.label}</TagLabel>
+              <TagCloseButton tabIndex={-1} onClick={handleOnClick} />
+            </Tag>
+          )}
+        </MultiSelectSelectedOption>
+      );
+    }
+
+    return (
+      <MultiSelectSelectedOption>
+        {({ selectedOption }) => selectedOption.label}
+      </MultiSelectSelectedOption>
+    );
+  };
+
+  return (
+    <PseudoBox
+      position="relative"
+      display="flex"
+      alignItems="center"
+      flexWrap="wrap"
+      flex=" 1 1 0%"
+      px={2}
+      overflow="hidden"
+      minHeight="2.5rem"
+      {...props}
+    >
+      {renderCustomSelectedOption || renderSelectedOption()}
+      {renderCustomPlaceholder || (
+        <MultiSelectPlaceholder>{placeholder}</MultiSelectPlaceholder>
+      )}
+      {renderCustomInput || <MultiSelectInput />}
+    </PseudoBox>
+  );
+};
+
+MultiSelectInputGroup.displayName = "MultiSelectInputGroup";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
