@@ -17,6 +17,7 @@ module.exports = withMDX({
     return {
       "/": { page: "/" },
       "/menubar": { page: "/menubar" },
+      "/combobox": { page: "/combobox" },
     };
   },
 });
