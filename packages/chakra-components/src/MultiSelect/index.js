@@ -51,6 +51,12 @@ const MultiSelect = forwardRef(
       renderCustomInput,
       renderCustomCloseButton,
       renderCustomToggleIcon,
+      placement,
+      skid,
+      gutter,
+      itemHeight = 40,
+      pageSize = 10,
+      renderCustomOption,
       ...rest
     },
     ref,
@@ -201,6 +207,7 @@ const MultiSelect = forwardRef(
       renderCustomInput,
       renderCustomCloseButton,
       renderCustomToggleIcon,
+      renderCustomOption,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -224,7 +231,9 @@ const MultiSelect = forwardRef(
             <MultiSelectInputGroup />
             <MultiSelectRightElements />
           </PseudoBox>
-          <MultiSelectList />
+          <MultiSelectList
+            {...{ placement, skid, gutter, itemHeight, pageSize }}
+          />
           <MultiSelectHiddenInput />
         </PseudoBox>
       </MultiSelectContext.Provider>
@@ -762,6 +771,7 @@ const MultiSelectOption = forwardRef(({ index, style }, ref) => {
     filteredOptions,
     focusedOptionIndex,
     setFocusedOptionIndex,
+    renderCustomOption,
   } = useMultiSelectContext();
 
   const option = filteredOptions[index];
@@ -804,18 +814,58 @@ const MultiSelectOption = forwardRef(({ index, style }, ref) => {
     setFocusedOptionIndex(index);
   };
 
-  const styleProps = useMultiSelectOptionStyle({ selected, focused, disabled });
+  const styleProps = useMultiSelectOptionStyle({
+    selected,
+    focused,
+    disabled,
+  });
+
+  if (renderCustomOption && typeof renderCustomOption === "function") {
+    return (
+      <PseudoBox
+        ref={ref}
+        style={style}
+        tabIndex={-1}
+        onClick={filteredOptions.length ? handleOnClick : null}
+        onMouseEnter={filteredOptions.length ? handleOnMouseEnter : null}
+        {...styleProps}
+      >
+        {renderCustomOption({
+          option,
+          selected,
+          focused,
+          disabled,
+        })}
+      </PseudoBox>
+    );
+  }
+
+  if (!filteredOptions.length) {
+    return (
+      <PseudoBox
+        ref={ref}
+        style={style}
+        tabIndex={-1}
+        {...styleProps}
+        _active={{
+          bg: "transparent",
+        }}
+      >
+        No results found...
+      </PseudoBox>
+    );
+  }
 
   return (
     <PseudoBox
       ref={ref}
       style={style}
       tabIndex={-1}
-      onClick={filteredOptions.length ? handleOnClick : null}
-      onMouseEnter={filteredOptions.length ? handleOnMouseEnter : null}
+      onClick={handleOnClick}
+      onMouseEnter={handleOnMouseEnter}
       {...styleProps}
     >
-      {filteredOptions.length ? option.label : "No Option found!!"}
+      {option.label}
     </PseudoBox>
   );
 });
@@ -825,10 +875,7 @@ MultiSelectOption.displayName = "MultiSelectOption";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectList = forwardRef(
-  (
-    { placement, skid, gutter, itemHeight = 40, pageSize = 10, ...props },
-    ref,
-  ) => {
+  ({ placement, skid, gutter, itemHeight, pageSize, ...props }, ref) => {
     const {
       multiSelectRef,
       filteredOptions,
