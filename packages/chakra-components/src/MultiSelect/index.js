@@ -229,7 +229,35 @@ MultiSelect.displayName = "MultiSelect";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectInputGroup = props => {
-  const { placeholder, renderCustomPlaceholder } = useMultiSelectContext();
+  const {
+    placeholder,
+    renderCustomPlaceholder,
+    selectedOptions,
+    isMulti,
+  } = useMultiSelectContext();
+
+  const renderSelectedOption = () => {
+    if (selectedOptions.length) {
+      if (isMulti) {
+        return (
+          <MultiSelectSelectedOption>
+            {({ selectedOption, handleOnClick }) => (
+              <Tag size="md" variant="solid" variantColor="blue">
+                <TagLabel>{selectedOption.label}</TagLabel>
+                <TagCloseButton tabIndex={-1} onClick={handleOnClick} />
+              </Tag>
+            )}
+          </MultiSelectSelectedOption>
+        );
+      }
+
+      return (
+        <MultiSelectSelectedOption>
+          {selectedOptions[0].label}
+        </MultiSelectSelectedOption>
+      );
+    }
+  };
 
   return (
     <PseudoBox
@@ -243,7 +271,7 @@ const MultiSelectInputGroup = props => {
       minHeight="2.5rem"
       {...props}
     >
-      <MultiSelectSelectedOption />
+      {renderSelectedOption()}
       {renderCustomPlaceholder || (
         <MultiSelectPlaceholder>{placeholder}</MultiSelectPlaceholder>
       )}
@@ -256,7 +284,7 @@ MultiSelectInputGroup.displayName = "MultiSelectInputGroup";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectSelectedOption = props => {
+const MultiSelectSelectedOption = ({ children, ...props }) => {
   const {
     isMulti,
     inputValue,
@@ -289,13 +317,10 @@ const MultiSelectSelectedOption = props => {
             m="2px"
             {...props}
           >
-            <Tag size="md" variant="solid" variantColor="blue">
-              <TagLabel>{selectedOption.label}</TagLabel>
-              <TagCloseButton
-                tabIndex={-1}
-                onClick={e => handleOnClick(e, selectedOption.value)}
-              />
-            </Tag>
+            {children({
+              selectedOption,
+              handleOnClick: e => handleOnClick(e, selectedOption.value),
+            })}
           </Box>
         ))}
       </>
@@ -306,24 +331,20 @@ const MultiSelectSelectedOption = props => {
     return null;
   }
 
-  if (selectedOptions.length) {
-    return (
-      <PseudoBox
-        position="absolute"
-        textOverflow="ellipsis"
-        whiteSpace="nowrap"
-        top="50%"
-        transform="translateY(-50%)"
-        mx="2px"
-        maxW="calc(100% - 8px)"
-        {...props}
-      >
-        {selectedOptions[0].label}
-      </PseudoBox>
-    );
-  }
-
-  return null;
+  return (
+    <PseudoBox
+      position="absolute"
+      textOverflow="ellipsis"
+      whiteSpace="nowrap"
+      top="50%"
+      transform="translateY(-50%)"
+      mx="2px"
+      maxW="calc(100% - 8px)"
+      {...props}
+    >
+      {children}
+    </PseudoBox>
+  );
 };
 
 MultiSelectSelectedOption.displayName = "MultiSelectSelectedOption";
