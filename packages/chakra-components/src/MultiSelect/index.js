@@ -1,10 +1,4 @@
-import React, {
-  forwardRef,
-  createContext,
-  useRef,
-  useState,
-  useEffect,
-} from "react";
+import React, { forwardRef, createContext, useRef } from "react";
 import {
   Box,
   PseudoBox,
@@ -20,6 +14,7 @@ import Popper from "@chakra-ui/core/dist/Popper";
 import { useMultiSelectContext } from "./useMultiSelectContext";
 import { FixedSizeList as List } from "react-window";
 import AutosizeInput from "react-input-autosize";
+import { useComboBox } from "./useComboBox";
 
 import {
   useMultiSelectStyle,
@@ -62,84 +57,34 @@ const MultiSelect = forwardRef(
     },
     ref,
   ) => {
-    const [isFocused, setIsFocused] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
-    const [inputValue, setInputValue] = useState("");
-    const [inputIsHidden, setInputIsHidden] = useState(false);
-    const [focusedOptionIndex, setFocusedOptionIndex] = useState(0);
-
-    let _initialValues = [];
-
-    if (initialValues) {
-      if (
-        typeof initialValues === "string" ||
-        initialValues instanceof String
-      ) {
-        _initialValues = [initialValues];
-      } else if (Array.isArray(initialValues)) {
-        _initialValues = initialValues;
-      }
-    }
-
-    const [values, setValues] = useState(_initialValues);
-
-    const [selectedOptions, setSelectedOptions] = useState([]);
-    const [notSelectedOptions, setNotSelectedOptions] = useState(options);
-    const [filteredOptions, setFilteredOptions] = useState(notSelectedOptions);
-
     const multiSelectWrapperRef = useRef(null);
     const multiSelectRef = useRef(null);
     const inputRef = useRef(null);
     const popperRef = useRef(null);
     const listRef = useRef(null);
 
-    useEffect(() => {
-      setSelectedOptions(
-        values.map((value, i) =>
-          options.find(option => option.value === value),
-        ),
-      );
-    }, [options, values]);
-
-    useEffect(() => {
-      if (isMulti) {
-        setNotSelectedOptions(
-          options.filter(option => !values.includes(option.value)),
-        );
-      }
-    }, [isMulti, options, values]);
-
-    const filter = (options, input) => {
-      if (input) {
-        return options.filter(option =>
-          option.label.toLowerCase().includes(input.toLowerCase()),
-        );
-      } else {
-        return options;
-      }
-    };
-
-    useEffect(() => {
-      setFilteredOptions(filter(notSelectedOptions, inputValue));
-    }, [notSelectedOptions, inputValue]);
-
-    useEffect(() => {
-      listRef.current && listRef.current.scrollToItem(focusedOptionIndex);
-    }, [isOpen, focusedOptionIndex]);
-
-    useEffect(() => {
-      if (!isMulti) {
-        const selectedOption = filteredOptions.find(
-          option => option.value === values[0],
-        );
-
-        const selectedIndex = filteredOptions.indexOf(selectedOption);
-
-        if (selectedIndex !== -1) {
-          setFocusedOptionIndex(selectedIndex);
-        }
-      }
-    }, [isMulti, filteredOptions, values]);
+    const {
+      values,
+      setValues,
+      isFocused,
+      setIsFocused,
+      isOpen,
+      setIsOpen,
+      inputValue,
+      setInputValue,
+      inputIsHidden,
+      setInputIsHidden,
+      focusedOptionIndex,
+      setFocusedOptionIndex,
+      selectedOptions,
+      filteredOptions,
+      setFilteredOptions,
+    } = useComboBox({
+      options,
+      initialValues,
+      isMulti,
+      listRef,
+    });
 
     const handleOnClick = e => {
       if (!isFocused) {
