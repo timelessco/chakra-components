@@ -42,6 +42,7 @@ const MultiSelect = forwardRef(
       name,
       value: initialValues,
       onChange,
+      placeholder = "Select one...",
       isMulti,
       focusBorderColor = "blue.500",
       errorBorderColor = "red.500",
@@ -189,6 +190,7 @@ const MultiSelect = forwardRef(
       focusedOptionIndex,
       setFocusedOptionIndex,
       selectedOptions,
+      placeholder,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -323,7 +325,7 @@ MultiSelectSelectedOption.displayName = "MultiSelectSelectedOption";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectPlaceholder = props => {
-  const { values, inputValue } = useMultiSelectContext();
+  const { values, inputValue, placeholder } = useMultiSelectContext();
 
   const theme = useTheme();
   const { colorMode } = useColorMode();
@@ -343,7 +345,7 @@ const MultiSelectPlaceholder = props => {
         color={placeholderColor[colorMode]}
         {...props}
       >
-        Select one...
+        {placeholder}
       </PseudoBox>
     );
   }
