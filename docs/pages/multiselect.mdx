@@ -1,4 +1,4 @@
-### Basic Searchable Select
+## Basic Searchable Select
 
 ```jsx
 function MultiSelectExample() {
@@ -88,7 +88,7 @@ function MultiSelectExample() {
 }
 ```
 
-### Searchable Multi Select
+## Searchable Multi Select
 
 ```jsx
 function MultiSelectExample() {
@@ -180,7 +180,7 @@ function MultiSelectExample() {
 }
 ```
 
-# Render Custom Placeholder
+## Render Custom Placeholder
 
 ```jsx
 function MultiSelectExample() {
@@ -231,6 +231,110 @@ function MultiSelectExample() {
         <MultiSelectPlaceholder color="teal.500">
           Select an issue category...
         </MultiSelectPlaceholder>
+      }
+    />
+  );
+}
+```
+
+## Render Custom Single SelectedOptions
+
+```jsx
+function MultiSelectExample() {
+  const options = [
+    { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1" },
+    {
+      label: "Kola Tioluwani",
+      img: "https://bit.ly/tioluwani-kolawole",
+      value: "2",
+    },
+    { label: "Kent Dodds", img: "https://bit.ly/kent-c-dodds", value: "3" },
+    { label: "Ryan Florence", img: "https://bit.ly/ryan-florence", value: "4" },
+    {
+      label: "Prosper Otemuyiwa",
+      img: "https://bit.ly/prosper-baba",
+      value: "5",
+    },
+    { label: "Christian Nwamba", img: "https://bit.ly/code-beast", value: "6" },
+    { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
+  ];
+
+  return (
+    <MultiSelect
+      options={options}
+      placeholder="Select a person you like..."
+      renderCustomSelectedOption={
+        <MultiSelectSelectedOption>
+          {({ selectedOption }) => (
+            <Flex w="100%" alignItems="center">
+              <Avatar
+                name={selectedOption.label}
+                src={selectedOption.img}
+                size="xs"
+                mr={2}
+              />
+              <Box as="h4" fontWeight="bold">
+                {selectedOption.label}
+              </Box>
+            </Flex>
+          )}
+        </MultiSelectSelectedOption>
+      }
+    />
+  );
+}
+```
+
+## Render Custom Single SelectedOptions
+
+```jsx
+function MultiSelectExample() {
+  const options = [
+    { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1" },
+    {
+      label: "Kola Tioluwani",
+      img: "https://bit.ly/tioluwani-kolawole",
+      value: "2",
+    },
+    { label: "Kent Dodds", img: "https://bit.ly/kent-c-dodds", value: "3" },
+    { label: "Ryan Florence", img: "https://bit.ly/ryan-florence", value: "4" },
+    {
+      label: "Prosper Otemuyiwa",
+      img: "https://bit.ly/prosper-baba",
+      value: "5",
+    },
+    { label: "Christian Nwamba", img: "https://bit.ly/code-beast", value: "6" },
+    { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
+  ];
+
+  return (
+    <MultiSelect
+      isMulti
+      options={options}
+      placeholder="Select a person you like..."
+      renderCustomSelectedOption={
+        <MultiSelectSelectedOption>
+          {({ selectedOption, handleOnClick }) => {
+            return (
+              <Tag size="md" variant="solid" variantColor="blue">
+                <TagLabel>
+                  <Flex w="100%" alignItems="center">
+                    <Avatar
+                      name={selectedOption.label}
+                      src={selectedOption.img}
+                      size="xs"
+                      mr={2}
+                    />
+                    <Box as="h4" fontWeight="bold">
+                      {selectedOption.label}
+                    </Box>
+                  </Flex>
+                </TagLabel>
+                <TagCloseButton tabIndex={-1} onClick={handleOnClick} />
+              </Tag>
+            );
+          }}
+        </MultiSelectSelectedOption>
       }
     />
   );
