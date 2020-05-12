@@ -1,4 +1,4 @@
-import React, { forwardRef, createContext, useRef } from "react";
+import React, { forwardRef, createContext } from "react";
 import {
   Box,
   PseudoBox,
@@ -57,20 +57,13 @@ const MultiSelect = forwardRef(
   ) => {
     const {
       values,
-      setValues,
       isFocused,
-      setIsFocused,
       isOpen,
-      setIsOpen,
       inputValue,
-      setInputValue,
       inputIsHidden,
-      setInputIsHidden,
       focusedOptionIndex,
-      setFocusedOptionIndex,
       selectedOptions,
       filteredOptions,
-      setFilteredOptions,
       multiSelectRef,
       inputRef,
       popperRef,
@@ -78,6 +71,8 @@ const MultiSelect = forwardRef(
       getWrapperProps,
       getInputProps,
       getOptionProps,
+      removeOneSelectedOption,
+      removeAllSelectedOption,
     } = useComboBox({
       options,
       initialValues,
@@ -88,27 +83,8 @@ const MultiSelect = forwardRef(
       id,
       name,
       options,
-      values,
-      setValues,
       onChange,
-      multiSelectRef,
       isMulti,
-      inputRef,
-      setIsFocused,
-      isFocused,
-      isOpen,
-      setIsOpen,
-      popperRef,
-      inputValue,
-      setInputValue,
-      inputIsHidden,
-      setInputIsHidden,
-      filteredOptions,
-      setFilteredOptions,
-      listRef,
-      focusedOptionIndex,
-      setFocusedOptionIndex,
-      selectedOptions,
       placeholder,
       renderCustomPlaceholder,
       renderCustomSelectedOption,
@@ -117,8 +93,23 @@ const MultiSelect = forwardRef(
       renderCustomToggleIcon,
       renderCustomOption,
       renderCustomNoOption,
+      values,
+      isFocused,
+      isOpen,
+      inputValue,
+      inputIsHidden,
+      focusedOptionIndex,
+      selectedOptions,
+      filteredOptions,
+      multiSelectRef,
+      inputRef,
+      popperRef,
+      listRef,
+      getWrapperProps,
       getInputProps,
       getOptionProps,
+      removeOneSelectedOption,
+      removeAllSelectedOption,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -159,22 +150,9 @@ const MultiSelectSelectedOption = ({ children, ...props }) => {
   const {
     isMulti,
     inputValue,
-    isFocused,
-    inputRef,
-    setValues,
     selectedOptions,
+    removeOneSelectedOption,
   } = useMultiSelectContext();
-
-  const handleOnClick = (event, value) => {
-    event.stopPropagation();
-    setValues(oldValues =>
-      oldValues.filter(oldValue => !oldValue.includes(value)),
-    );
-
-    if (!isFocused) {
-      inputRef.current.focus();
-    }
-  };
 
   if (selectedOptions.length) {
     if (isMulti) {
@@ -191,7 +169,8 @@ const MultiSelectSelectedOption = ({ children, ...props }) => {
             >
               {children({
                 selectedOption,
-                handleOnClick: e => handleOnClick(e, selectedOption.value),
+                handleOnClick: e =>
+                  removeOneSelectedOption(e, selectedOption.value),
               })}
             </Box>
           ))}
@@ -279,9 +258,6 @@ const MultiSelectInput = forwardRef(
       getInputProps,
     } = useMultiSelectContext();
 
-    // const formControl = useFormControl(props);
-    const _inputRef = useForkRef(inputRef, ref);
-
     const ariaAttributes = {
       "aria-autocomplete": "list",
       "aria-label": ariaLabel,
@@ -292,6 +268,8 @@ const MultiSelectInput = forwardRef(
       isDisabled,
       inputIsHidden,
     });
+
+    const _inputRef = useForkRef(inputRef, ref);
 
     return (
       <PseudoBox {...inputWrapperStyle} {...props}>
@@ -394,30 +372,13 @@ MultiSelectRightAddons.displayName = "MultiSelectRightAddons";
 const MultiSelectCloseButton = props => {
   const {
     values,
-    setValues,
-    isFocused,
-    inputRef,
-    isOpen,
-    setIsOpen,
     renderCustomCloseButton,
+    removeAllSelectedOption,
   } = useMultiSelectContext();
-
-  const handleOnClick = event => {
-    event.stopPropagation();
-    setValues([]);
-
-    if (isOpen) {
-      setIsOpen(false);
-    }
-
-    if (!isFocused) {
-      inputRef.current.focus();
-    }
-  };
 
   if (values.length) {
     return (
-      <MultiSelectRightAddons onClick={handleOnClick} {...props}>
+      <MultiSelectRightAddons onClick={removeAllSelectedOption} {...props}>
         {renderCustomCloseButton || <Icon name="close" fontSize="0.8rem" />}
       </MultiSelectRightAddons>
     );

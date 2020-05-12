@@ -342,22 +342,39 @@ export const useComboBox = ({ options, initialValues, isMulti }) => {
     };
   };
 
+  const removeOneSelectedOption = (event, value) => {
+    event.stopPropagation();
+    setValues(oldValues =>
+      oldValues.filter(oldValue => !oldValue.includes(value)),
+    );
+
+    if (!isFocused) {
+      inputRef.current.focus();
+    }
+  };
+
+  const removeAllSelectedOption = event => {
+    event.stopPropagation();
+    setValues([]);
+
+    if (isOpen) {
+      setIsOpen(false);
+    }
+
+    if (!isFocused) {
+      inputRef.current.focus();
+    }
+  };
+
   return {
     values,
-    setValues,
     isFocused,
-    setIsFocused,
     isOpen,
-    setIsOpen,
     inputValue,
-    setInputValue,
     inputIsHidden,
-    setInputIsHidden,
     focusedOptionIndex,
-    setFocusedOptionIndex,
     selectedOptions,
     filteredOptions,
-    setFilteredOptions,
     multiSelectRef,
     inputRef,
     popperRef,
@@ -365,5 +382,7 @@ export const useComboBox = ({ options, initialValues, isMulti }) => {
     getWrapperProps,
     getInputProps,
     getOptionProps,
+    removeOneSelectedOption,
+    removeAllSelectedOption,
   };
 };
