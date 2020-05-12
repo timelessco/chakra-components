@@ -33,36 +33,28 @@ const MultiSelect = forwardRef(
   (
     {
       options,
-      id,
-      name,
       value: initialValues,
       onChange,
-      placeholder = "Select one...",
       isMulti,
-      focusBorderColor = "blue.500",
-      errorBorderColor = "red.500",
-      renderCustomPlaceholder,
-      renderCustomSelectedOption,
-      renderCustomInput,
-      renderCustomCloseButton,
-      renderCustomToggleIcon,
       placement,
       skid,
       gutter,
       itemHeight = 40,
       pageSize = 10,
+      id,
+      name,
+      placeholder = "Select one...",
+      renderCustomPlaceholder,
+      renderCustomSelectedOption,
+      renderCustomInput,
+      renderCustomCloseButton,
+      renderCustomToggleIcon,
       renderCustomOption,
       renderCustomNoOption,
       ...rest
     },
     ref,
   ) => {
-    const multiSelectWrapperRef = useRef(null);
-    const multiSelectRef = useRef(null);
-    const inputRef = useRef(null);
-    const popperRef = useRef(null);
-    const listRef = useRef(null);
-
     const {
       values,
       setValues,
@@ -79,47 +71,17 @@ const MultiSelect = forwardRef(
       selectedOptions,
       filteredOptions,
       setFilteredOptions,
+      multiSelectRef,
+      inputRef,
+      popperRef,
+      listRef,
+      getWrapperProps,
+      getInputProps,
     } = useComboBox({
       options,
       initialValues,
       isMulti,
-      listRef,
     });
-
-    const handleOnClick = e => {
-      if (!isFocused) {
-        inputRef.current.focus();
-      }
-
-      if (inputIsHidden) {
-        setInputIsHidden(false);
-      }
-
-      if (isOpen) {
-        setIsOpen(false);
-        setInputValue("");
-      } else {
-        setIsOpen(true);
-
-        if (!isMulti) {
-          if (!values.length) {
-            setFocusedOptionIndex(0);
-          } else {
-            const selectedOption = filteredOptions.find(
-              option => option.value === values[0],
-            );
-
-            const selectedIndex = filteredOptions.indexOf(selectedOption);
-
-            if (selectedIndex !== -1) {
-              setFocusedOptionIndex(selectedIndex);
-            }
-          }
-        } else {
-          setFocusedOptionIndex(0);
-        }
-      }
-    };
 
     const context = {
       id,
@@ -129,7 +91,6 @@ const MultiSelect = forwardRef(
       setValues,
       onChange,
       multiSelectRef,
-      multiSelectWrapperRef,
       isMulti,
       inputRef,
       setIsFocused,
@@ -155,12 +116,13 @@ const MultiSelect = forwardRef(
       renderCustomToggleIcon,
       renderCustomOption,
       renderCustomNoOption,
+      getInputProps,
     };
 
     const styleProps = useMultiSelectStyle({
       isFocused,
-      focusBorderColor,
-      errorBorderColor,
+      focusBorderColor: "blue.500",
+      errorBorderColor: "red.500",
     });
 
     const _multiSelectRef = useForkRef(multiSelectRef, ref);
@@ -170,8 +132,7 @@ const MultiSelect = forwardRef(
         <PseudoBox pos="relative">
           <PseudoBox
             ref={_multiSelectRef}
-            tabIndex={-1}
-            onClick={handleOnClick}
+            {...getWrapperProps()}
             {...styleProps}
             {...rest}
           >
@@ -311,216 +272,13 @@ const MultiSelectInput = forwardRef(
   ) => {
     const {
       inputRef,
-      isFocused,
-      setIsFocused,
-      isOpen,
-      setIsOpen,
-      multiSelectRef,
-      popperRef,
       inputValue,
-      setInputValue,
       inputIsHidden,
-      setInputIsHidden,
-      filteredOptions,
-      focusedOptionIndex,
-      setFocusedOptionIndex,
-      isMulti,
-      values,
-      setValues,
+      getInputProps,
     } = useMultiSelectContext();
 
     // const formControl = useFormControl(props);
     const _inputRef = useForkRef(inputRef, ref);
-
-    const handleOnChange = event => {
-      setInputValue(event.currentTarget.value);
-
-      if (inputIsHidden) {
-        setInputIsHidden(false);
-      }
-
-      if (focusedOptionIndex !== 0) {
-        setFocusedOptionIndex(0);
-      }
-
-      if (!isOpen) {
-        setIsOpen(true);
-      }
-    };
-
-    const handleOnFocus = event => {
-      if (!isFocused) {
-        setIsFocused(true);
-      }
-
-      if (inputIsHidden) {
-        setInputIsHidden(false);
-      }
-    };
-
-    const handleOnKeyDown = event => {
-      const count = filteredOptions.length;
-      let nextIndex;
-
-      if (event.key === "ArrowDown") {
-        if (filteredOptions.length) {
-          if (inputIsHidden) {
-            setInputIsHidden(false);
-          }
-
-          if (!isOpen) {
-            setIsOpen(true);
-
-            if (!isMulti) {
-              if (!values.length) {
-                setFocusedOptionIndex(0);
-              } else {
-                const selectedOption = filteredOptions.find(
-                  option => option.value === values[0],
-                );
-
-                const selectedIndex = filteredOptions.indexOf(selectedOption);
-
-                if (selectedIndex !== -1) {
-                  setFocusedOptionIndex(selectedIndex);
-                }
-              }
-            } else {
-              setFocusedOptionIndex(0);
-            }
-
-            return;
-          }
-
-          nextIndex = (focusedOptionIndex + 1) % count;
-          setFocusedOptionIndex(nextIndex);
-        }
-      }
-
-      if (event.key === "ArrowUp") {
-        if (filteredOptions.length) {
-          if (inputIsHidden) {
-            setInputIsHidden(false);
-          }
-
-          if (!isOpen) {
-            setIsOpen(true);
-
-            if (!isMulti) {
-              if (!values.length) {
-                setFocusedOptionIndex(filteredOptions.length - 1);
-              } else {
-                const selectedOption = filteredOptions.find(
-                  option => option.value === values[0],
-                );
-
-                const selectedIndex = filteredOptions.indexOf(selectedOption);
-
-                if (selectedIndex !== -1) {
-                  setFocusedOptionIndex(selectedIndex);
-                }
-              }
-            } else {
-              setFocusedOptionIndex(filteredOptions.length - 1);
-            }
-
-            return;
-          }
-
-          nextIndex = (focusedOptionIndex - 1 + count) % count;
-          setFocusedOptionIndex(nextIndex);
-        }
-      }
-
-      if (event.key === "Enter") {
-        if (filteredOptions.length) {
-          const focusedOption = filteredOptions[focusedOptionIndex];
-
-          if (focusedOption.disabled) {
-            return;
-          }
-
-          if (isOpen) {
-            if (!isMulti) {
-              setValues([focusedOption.value]);
-
-              if (!inputIsHidden) {
-                setInputIsHidden(true);
-              }
-            } else {
-              setValues(oldOptions => {
-                if (oldOptions.includes(focusedOption.value)) {
-                  return oldOptions;
-                }
-
-                return [...oldOptions, focusedOption.value];
-              });
-            }
-          }
-
-          setInputValue("");
-
-          if (isOpen) {
-            setIsOpen(false);
-          }
-        }
-      }
-
-      if (event.key === "Escape") {
-        if (isOpen) {
-          setIsOpen(false);
-        }
-      }
-
-      if (event.key === "Backspace") {
-        if (!inputValue) {
-          if (inputIsHidden) {
-            setInputIsHidden(false);
-          }
-
-          if (!isMulti) {
-            setValues([]);
-          } else {
-            if (values.length) {
-              const newValues = values.slice(0, values.length - 1);
-              setValues(newValues);
-            }
-          }
-        }
-      }
-    };
-
-    const handleOnBlur = event => {
-      if (!isOpen && !multiSelectRef.current.contains(event.relatedTarget)) {
-        if (isFocused) {
-          setIsFocused(false);
-        }
-
-        setInputValue("");
-
-        return;
-      }
-
-      if (
-        isOpen &&
-        !popperRef.current.contains(event.relatedTarget) &&
-        !multiSelectRef.current.contains(event.relatedTarget)
-      ) {
-        if (isFocused) {
-          setIsFocused(false);
-        }
-
-        if (isOpen) {
-          setIsOpen(false);
-        }
-
-        setInputValue("");
-
-        return;
-      }
-
-      inputRef.current.focus();
-    };
 
     const ariaAttributes = {
       "aria-autocomplete": "list",
@@ -540,16 +298,13 @@ const MultiSelectInput = forwardRef(
           inputRef={_inputRef}
           disabled={isDisabled}
           value={inputValue}
-          onChange={handleOnChange}
-          onFocus={handleOnFocus}
-          onBlur={handleOnBlur}
-          onKeyDown={handleOnKeyDown}
           inputStyle={inputStyle}
           autoCapitalize="none"
           autoComplete="off"
           autoCorrect="off"
           spellCheck="false"
           {...ariaAttributes}
+          {...getInputProps()}
         />
       </PseudoBox>
     );
