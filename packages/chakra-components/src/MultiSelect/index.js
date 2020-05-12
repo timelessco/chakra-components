@@ -47,6 +47,7 @@ const MultiSelect = forwardRef(
       focusBorderColor = "blue.500",
       errorBorderColor = "red.500",
       renderCustomPlaceholder,
+      renderCustomSelectedOption,
       ...rest
     },
     ref,
@@ -193,6 +194,7 @@ const MultiSelect = forwardRef(
       selectedOptions,
       placeholder,
       renderCustomPlaceholder,
+      renderCustomSelectedOption,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -234,6 +236,7 @@ const MultiSelectInputGroup = props => {
     renderCustomPlaceholder,
     selectedOptions,
     isMulti,
+    renderCustomSelectedOption,
   } = useMultiSelectContext();
 
   const renderSelectedOption = () => {
@@ -253,7 +256,7 @@ const MultiSelectInputGroup = props => {
 
       return (
         <MultiSelectSelectedOption>
-          {selectedOptions[0].label}
+          {({ selectedOption }) => selectedOption.label}
         </MultiSelectSelectedOption>
       );
     }
@@ -271,7 +274,7 @@ const MultiSelectInputGroup = props => {
       minHeight="2.5rem"
       {...props}
     >
-      {renderSelectedOption()}
+      {renderCustomSelectedOption || renderSelectedOption()}
       {renderCustomPlaceholder || (
         <MultiSelectPlaceholder>{placeholder}</MultiSelectPlaceholder>
       )}
@@ -305,46 +308,50 @@ const MultiSelectSelectedOption = ({ children, ...props }) => {
     }
   };
 
-  if (isMulti) {
+  if (selectedOptions.length) {
+    if (isMulti) {
+      return (
+        <>
+          {selectedOptions.map((selectedOption, i) => (
+            <Box
+              key={`i-${i}`}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              m="2px"
+              {...props}
+            >
+              {children({
+                selectedOption,
+                handleOnClick: e => handleOnClick(e, selectedOption.value),
+              })}
+            </Box>
+          ))}
+        </>
+      );
+    }
+
+    if (inputValue) {
+      return null;
+    }
+
     return (
-      <>
-        {selectedOptions.map((selectedOption, i) => (
-          <Box
-            key={`i-${i}`}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            m="2px"
-            {...props}
-          >
-            {children({
-              selectedOption,
-              handleOnClick: e => handleOnClick(e, selectedOption.value),
-            })}
-          </Box>
-        ))}
-      </>
+      <PseudoBox
+        position="absolute"
+        textOverflow="ellipsis"
+        whiteSpace="nowrap"
+        top="50%"
+        transform="translateY(-50%)"
+        mx="2px"
+        maxW="calc(100% - 8px)"
+        {...props}
+      >
+        {children({ selectedOption: selectedOptions[0] })}
+      </PseudoBox>
     );
   }
 
-  if (inputValue) {
-    return null;
-  }
-
-  return (
-    <PseudoBox
-      position="absolute"
-      textOverflow="ellipsis"
-      whiteSpace="nowrap"
-      top="50%"
-      transform="translateY(-50%)"
-      mx="2px"
-      maxW="calc(100% - 8px)"
-      {...props}
-    >
-      {children}
-    </PseudoBox>
-  );
+  return null;
 };
 
 MultiSelectSelectedOption.displayName = "MultiSelectSelectedOption";
