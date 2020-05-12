@@ -15,7 +15,7 @@ import {
   useTheme,
   useColorMode,
 } from "@chakra-ui/core";
-import { useForkRef, cleanChildren } from "@chakra-ui/core/dist/utils";
+import { useForkRef } from "@chakra-ui/core/dist/utils";
 import Popper from "@chakra-ui/core/dist/Popper";
 import { useMultiSelectContext } from "./useMultiSelectContext";
 import { FixedSizeList as List } from "react-window";
@@ -45,7 +45,6 @@ const MultiSelect = forwardRef(
       isMulti,
       focusBorderColor = "blue.500",
       errorBorderColor = "red.500",
-      children,
       ...rest
     },
     ref,
@@ -200,16 +199,6 @@ const MultiSelect = forwardRef(
 
     const _multiSelectRef = useForkRef(multiSelectRef, ref);
 
-    const validChildren = cleanChildren(children);
-
-    const InputGroup = validChildren.find(
-      child => child.type === MultiSelectInputGroup,
-    );
-    const RightElements = validChildren.find(
-      child => child.type === MultiSelectRightElements,
-    );
-    const List = validChildren.find(child => child.type === MultiSelectList);
-
     return (
       <MultiSelectContext.Provider value={context}>
         <PseudoBox pos="relative">
@@ -220,10 +209,10 @@ const MultiSelect = forwardRef(
             {...styleProps}
             {...rest}
           >
-            {InputGroup || <MultiSelectInputGroup />}
-            {RightElements || <MultiSelectRightElements />}
+            <MultiSelectInputGroup />
+            <MultiSelectRightElements />
           </PseudoBox>
-          {List || <MultiSelectList />}
+          <MultiSelectList />
           <MultiSelectHiddenInput />
         </PseudoBox>
       </MultiSelectContext.Provider>
@@ -235,17 +224,7 @@ MultiSelect.displayName = "MultiSelect";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectInputGroup = ({ children, ...props }) => {
-  const validChildren = cleanChildren(children);
-
-  const SelectedOption = validChildren.find(
-    child => child.type === MultiSelectSelectedOption,
-  );
-  const Placeholder = validChildren.find(
-    child => child.type === MultiSelectPlaceholder,
-  );
-  const Input = validChildren.find(child => child.type === MultiSelectInput);
-
+const MultiSelectInputGroup = props => {
   return (
     <PseudoBox
       position="relative"
@@ -258,9 +237,9 @@ const MultiSelectInputGroup = ({ children, ...props }) => {
       minHeight="2.5rem"
       {...props}
     >
-      {SelectedOption || <MultiSelectSelectedOption />}
-      {Placeholder || <MultiSelectPlaceholder />}
-      {Input || <MultiSelectInput />}
+      <MultiSelectSelectedOption />
+      <MultiSelectPlaceholder />
+      <MultiSelectInput />
     </PseudoBox>
   );
 };
@@ -269,7 +248,7 @@ MultiSelectInputGroup.displayName = "MultiSelectInputGroup";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectSelectedOption = ({ children, ...props }) => {
+const MultiSelectSelectedOption = props => {
   const {
     isMulti,
     inputValue,
@@ -302,20 +281,13 @@ const MultiSelectSelectedOption = ({ children, ...props }) => {
             m="2px"
             {...props}
           >
-            {typeof children === "function" ? (
-              children({
-                selectedOption: selectedOption,
-                handleOnClick: e => handleOnClick(e, selectedOption.value),
-              })
-            ) : (
-              <Tag size="md" variant="solid" variantColor="blue">
-                <TagLabel>{selectedOption.label}</TagLabel>
-                <TagCloseButton
-                  tabIndex={-1}
-                  onClick={e => handleOnClick(e, selectedOption.value)}
-                />
-              </Tag>
-            )}
+            <Tag size="md" variant="solid" variantColor="blue">
+              <TagLabel>{selectedOption.label}</TagLabel>
+              <TagCloseButton
+                tabIndex={-1}
+                onClick={e => handleOnClick(e, selectedOption.value)}
+              />
+            </Tag>
           </Box>
         ))}
       </>
@@ -338,11 +310,7 @@ const MultiSelectSelectedOption = ({ children, ...props }) => {
         maxW="calc(100% - 8px)"
         {...props}
       >
-        {typeof children === "function"
-          ? children({
-              selectedOption: selectedOptions[0],
-            })
-          : selectedOptions[0].label}
+        {selectedOptions[0].label}
       </PseudoBox>
     );
   }
@@ -354,7 +322,7 @@ MultiSelectSelectedOption.displayName = "MultiSelectSelectedOption";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectPlaceholder = ({ children = "Select one..", ...props }) => {
+const MultiSelectPlaceholder = props => {
   const { values, inputValue } = useMultiSelectContext();
 
   const theme = useTheme();
@@ -375,7 +343,7 @@ const MultiSelectPlaceholder = ({ children = "Select one..", ...props }) => {
         color={placeholderColor[colorMode]}
         {...props}
       >
-        {children}
+        Select one...
       </PseudoBox>
     );
   }
@@ -651,7 +619,7 @@ MultiSelectInput.displayName = "MultiSelectInput";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectRightAddons = forwardRef(({ children, ...props }, ref) => {
+const MultiSelectRightAddons = forwardRef((props, ref) => {
   return (
     <Box
       ref={ref}
@@ -662,9 +630,7 @@ const MultiSelectRightAddons = forwardRef(({ children, ...props }, ref) => {
       width="2.5rem"
       p="7px"
       {...props}
-    >
-      {children}
-    </Box>
+    />
   );
 });
 
@@ -672,7 +638,7 @@ MultiSelectRightAddons.displayName = "MultiSelectRightAddons";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectCloseButton = ({ children, ...props }) => {
+const MultiSelectCloseButton = props => {
   const {
     values,
     setValues,
@@ -698,7 +664,7 @@ const MultiSelectCloseButton = ({ children, ...props }) => {
   if (values.length) {
     return (
       <MultiSelectRightAddons onClick={handleOnClick} {...props}>
-        {children || <Icon name="close" fontSize="0.8rem" />}
+        <Icon name="close" fontSize="0.8rem" />
       </MultiSelectRightAddons>
     );
   }
@@ -710,10 +676,10 @@ MultiSelectCloseButton.displayName = "MultiSelectCloseButton";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectToggleIcon = ({ children, ...props }) => {
+const MultiSelectToggleIcon = props => {
   return (
     <MultiSelectRightAddons {...props}>
-      {children || <Icon name="chevron-down" fontSize="1.5rem" />}
+      <Icon name="chevron-down" fontSize="1.5rem" />
     </MultiSelectRightAddons>
   );
 };
@@ -722,17 +688,7 @@ MultiSelectToggleIcon.displayName = "MultiSelectToggleIcon";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectRightElements = ({ children, ...props }) => {
-  const validChildren = cleanChildren(children);
-
-  const CloseButton = validChildren.find(
-    child => child.type === MultiSelectCloseButton,
-  );
-
-  const ToggleIcon = validChildren.find(
-    child => child.type === MultiSelectToggleIcon,
-  );
-
+const MultiSelectRightElements = props => {
   return (
     <PseudoBox
       display="flex"
@@ -741,8 +697,8 @@ const MultiSelectRightElements = ({ children, ...props }) => {
       flexShrink="0"
       {...props}
     >
-      {CloseButton || <MultiSelectCloseButton />}
-      {ToggleIcon || <MultiSelectToggleIcon />}
+      <MultiSelectCloseButton />
+      <MultiSelectToggleIcon />
     </PseudoBox>
   );
 };
@@ -751,7 +707,7 @@ MultiSelectRightElements.displayName = "MultiSelectRightElements";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectOption = forwardRef(({ index, style, data }, ref) => {
+const MultiSelectOption = forwardRef(({ index, style }, ref) => {
   const {
     values,
     setValues,
@@ -766,7 +722,6 @@ const MultiSelectOption = forwardRef(({ index, style, data }, ref) => {
     setFocusedOptionIndex,
   } = useMultiSelectContext();
 
-  const { children, ...rest } = data;
   const option = filteredOptions[index];
   const selected = option ? values.includes(option.value) : false;
   const focused = option ? focusedOptionIndex === index : false;
@@ -817,13 +772,8 @@ const MultiSelectOption = forwardRef(({ index, style, data }, ref) => {
       onClick={filteredOptions.length ? handleOnClick : null}
       onMouseEnter={filteredOptions.length ? handleOnMouseEnter : null}
       {...styleProps}
-      {...rest}
     >
-      {filteredOptions.length
-        ? children
-          ? children({ option })
-          : option.label
-        : "No Option found!!"}
+      {filteredOptions.length ? option.label : "No Option found!!"}
     </PseudoBox>
   );
 });
@@ -834,15 +784,7 @@ MultiSelectOption.displayName = "MultiSelectOption";
 
 const MultiSelectList = forwardRef(
   (
-    {
-      placement,
-      skid,
-      gutter,
-      itemHeight = 40,
-      pageSize = 10,
-      children,
-      ...props
-    },
+    { placement, skid, gutter, itemHeight = 40, pageSize = 10, ...props },
     ref,
   ) => {
     const {
@@ -888,7 +830,6 @@ const MultiSelectList = forwardRef(
           itemSize={itemHeight}
           itemCount={filteredOptions.length || 1}
           height={height}
-          itemData={{ ...(children && children.props) }}
           {...props}
         >
           {MultiSelectOption}
