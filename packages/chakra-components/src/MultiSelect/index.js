@@ -57,6 +57,7 @@ const MultiSelect = forwardRef(
       itemHeight = 40,
       pageSize = 10,
       renderCustomOption,
+      renderCustomNoOption,
       ...rest
     },
     ref,
@@ -208,6 +209,7 @@ const MultiSelect = forwardRef(
       renderCustomCloseButton,
       renderCustomToggleIcon,
       renderCustomOption,
+      renderCustomNoOption,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -772,6 +774,7 @@ const MultiSelectOption = forwardRef(({ index, style }, ref) => {
     focusedOptionIndex,
     setFocusedOptionIndex,
     renderCustomOption,
+    renderCustomNoOption,
   } = useMultiSelectContext();
 
   const option = filteredOptions[index];
@@ -820,50 +823,49 @@ const MultiSelectOption = forwardRef(({ index, style }, ref) => {
     disabled,
   });
 
-  if (renderCustomOption && typeof renderCustomOption === "function") {
-    return (
-      <PseudoBox
-        ref={ref}
-        style={style}
-        tabIndex={-1}
-        onClick={filteredOptions.length ? handleOnClick : null}
-        onMouseEnter={filteredOptions.length ? handleOnMouseEnter : null}
-        {...styleProps}
-      >
-        {renderCustomOption({
-          option,
-          selected,
-          focused,
-          disabled,
-        })}
-      </PseudoBox>
-    );
-  }
+  const getOptionProps = {
+    ref,
+    style,
+    tabIndex: -1,
+    onClick: handleOnClick,
+    onMouseEnter: handleOnMouseEnter,
+    ...styleProps,
+  };
+
+  const getNoOptionProps = {
+    ref,
+    style,
+    tabIndex: -1,
+    ...styleProps,
+    _active: {
+      bg: "transparent",
+    },
+  };
 
   if (!filteredOptions.length) {
-    return (
-      <PseudoBox
-        ref={ref}
-        style={style}
-        tabIndex={-1}
-        {...styleProps}
-        _active={{
-          bg: "transparent",
-        }}
-      >
-        No results found...
-      </PseudoBox>
-    );
+    if (renderCustomNoOption && typeof renderCustomNoOption === "function") {
+      return renderCustomNoOption({ getNoOptionProps });
+    }
+
+    return <PseudoBox {...getNoOptionProps}>No results found...</PseudoBox>;
+  }
+
+  if (renderCustomOption && typeof renderCustomOption === "function") {
+    return renderCustomOption({
+      option,
+      selected,
+      focused,
+      disabled,
+      options: filteredOptions,
+      getOptionProps,
+    });
   }
 
   return (
     <PseudoBox
-      ref={ref}
-      style={style}
-      tabIndex={-1}
       onClick={handleOnClick}
       onMouseEnter={handleOnMouseEnter}
-      {...styleProps}
+      {...getOptionProps}
     >
       {option.label}
     </PseudoBox>
