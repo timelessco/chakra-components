@@ -49,6 +49,8 @@ const MultiSelect = forwardRef(
       renderCustomPlaceholder,
       renderCustomSelectedOption,
       renderCustomInput,
+      renderCustomCloseButton,
+      renderCustomToggleIcon,
       ...rest
     },
     ref,
@@ -197,6 +199,8 @@ const MultiSelect = forwardRef(
       renderCustomPlaceholder,
       renderCustomSelectedOption,
       renderCustomInput,
+      renderCustomCloseButton,
+      renderCustomToggleIcon,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -682,6 +686,7 @@ const MultiSelectCloseButton = props => {
     inputRef,
     isOpen,
     setIsOpen,
+    renderCustomCloseButton,
   } = useMultiSelectContext();
 
   const handleOnClick = event => {
@@ -700,7 +705,7 @@ const MultiSelectCloseButton = props => {
   if (values.length) {
     return (
       <MultiSelectRightAddons onClick={handleOnClick} {...props}>
-        <Icon name="close" fontSize="0.8rem" />
+        {renderCustomCloseButton || <Icon name="close" fontSize="0.8rem" />}
       </MultiSelectRightAddons>
     );
   }
@@ -713,9 +718,10 @@ MultiSelectCloseButton.displayName = "MultiSelectCloseButton";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectToggleIcon = props => {
+  const { renderCustomToggleIcon } = useMultiSelectContext();
   return (
     <MultiSelectRightAddons {...props}>
-      <Icon name="chevron-down" fontSize="1.5rem" />
+      {renderCustomToggleIcon || <Icon name="chevron-down" fontSize="1.5rem" />}
     </MultiSelectRightAddons>
   );
 };
