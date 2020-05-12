@@ -1,10 +1,21 @@
 import { useState, useEffect, useRef } from "react";
 
+const defaultFilter = (options, input) => {
+  if (input) {
+    return options.filter(option =>
+      option.label.toLowerCase().includes(input.toLowerCase()),
+    );
+  } else {
+    return options;
+  }
+};
+
 export const useComboBox = ({
   options,
   value: initialValues,
   isMulti,
   onChange,
+  filteredBy = defaultFilter,
 }) => {
   const listRef = useRef(null);
   const inputRef = useRef(null);
@@ -31,16 +42,6 @@ export const useComboBox = ({
   const [notSelectedOptions, setNotSelectedOptions] = useState(options);
   const [filteredOptions, setFilteredOptions] = useState(notSelectedOptions);
 
-  const defaultFilter = (options, input) => {
-    if (input) {
-      return options.filter(option =>
-        option.label.toLowerCase().includes(input.toLowerCase()),
-      );
-    } else {
-      return options;
-    }
-  };
-
   useEffect(() => {
     setSelectedOptions(
       values.map((value, i) => options.find(option => option.value === value)),
@@ -64,8 +65,8 @@ export const useComboBox = ({
   }, [isMulti, options, values]);
 
   useEffect(() => {
-    setFilteredOptions(defaultFilter(notSelectedOptions, inputValue));
-  }, [notSelectedOptions, inputValue]);
+    setFilteredOptions(filteredBy(notSelectedOptions, inputValue));
+  }, [filteredBy, notSelectedOptions, inputValue]);
 
   useEffect(() => {
     listRef.current && listRef.current.scrollToItem(focusedOptionIndex);

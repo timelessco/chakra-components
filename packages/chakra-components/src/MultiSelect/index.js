@@ -35,6 +35,7 @@ const MultiSelect = forwardRef(
       options,
       value,
       onChange,
+      filteredBy,
       isMulti,
       placement,
       skid,
@@ -78,6 +79,7 @@ const MultiSelect = forwardRef(
       value,
       onChange,
       isMulti,
+      filteredBy,
     });
 
     const context = {
