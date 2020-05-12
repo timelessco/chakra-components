@@ -18,6 +18,7 @@ export const useComboBox = ({
   isMulti,
   isListBox,
 }) => {
+  // Refs
   const listRef = useRef(null);
   const inputRef = useRef(null);
   const multiSelectRef = useRef(null);
@@ -33,6 +34,7 @@ export const useComboBox = ({
     }
   }
 
+  // States
   const [values, setValues] = useState(_initialValues);
   const [isFocused, setIsFocused] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -44,6 +46,7 @@ export const useComboBox = ({
   const [notSelectedOptions, setNotSelectedOptions] = useState(options);
   const [filteredOptions, setFilteredOptions] = useState(notSelectedOptions);
 
+  // Effects
   useEffect(() => {
     setSelectedOptions(
       values.map((value, i) => options.find(option => option.value === value)),
@@ -96,6 +99,7 @@ export const useComboBox = ({
     }
   }, [options, filteredBy, listBoxInputValue]);
 
+  // getters
   const getWrapperProps = () => {
     return {
       tabIndex: -1,
@@ -382,6 +386,7 @@ export const useComboBox = ({
     };
   };
 
+  // Extra Functions
   const removeOneSelectedOption = (event, value) => {
     event.stopPropagation();
     setValues(oldValues =>
