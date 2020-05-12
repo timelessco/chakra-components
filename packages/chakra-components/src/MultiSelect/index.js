@@ -48,6 +48,7 @@ const MultiSelect = forwardRef(
       errorBorderColor = "red.500",
       renderCustomPlaceholder,
       renderCustomSelectedOption,
+      renderCustomInput,
       ...rest
     },
     ref,
@@ -195,6 +196,7 @@ const MultiSelect = forwardRef(
       placeholder,
       renderCustomPlaceholder,
       renderCustomSelectedOption,
+      renderCustomInput,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -232,34 +234,32 @@ MultiSelect.displayName = "MultiSelect";
 
 const MultiSelectInputGroup = props => {
   const {
+    isMulti,
     placeholder,
     renderCustomPlaceholder,
-    selectedOptions,
-    isMulti,
     renderCustomSelectedOption,
+    renderCustomInput,
   } = useMultiSelectContext();
 
   const renderSelectedOption = () => {
-    if (selectedOptions.length) {
-      if (isMulti) {
-        return (
-          <MultiSelectSelectedOption>
-            {({ selectedOption, handleOnClick }) => (
-              <Tag size="md" variant="solid" variantColor="blue">
-                <TagLabel>{selectedOption.label}</TagLabel>
-                <TagCloseButton tabIndex={-1} onClick={handleOnClick} />
-              </Tag>
-            )}
-          </MultiSelectSelectedOption>
-        );
-      }
-
+    if (isMulti) {
       return (
         <MultiSelectSelectedOption>
-          {({ selectedOption }) => selectedOption.label}
+          {({ selectedOption, handleOnClick }) => (
+            <Tag size="md" variant="solid" variantColor="blue">
+              <TagLabel>{selectedOption.label}</TagLabel>
+              <TagCloseButton tabIndex={-1} onClick={handleOnClick} />
+            </Tag>
+          )}
         </MultiSelectSelectedOption>
       );
     }
+
+    return (
+      <MultiSelectSelectedOption>
+        {({ selectedOption }) => selectedOption.label}
+      </MultiSelectSelectedOption>
+    );
   };
 
   return (
@@ -278,7 +278,7 @@ const MultiSelectInputGroup = props => {
       {renderCustomPlaceholder || (
         <MultiSelectPlaceholder>{placeholder}</MultiSelectPlaceholder>
       )}
-      <MultiSelectInput />
+      {renderCustomInput || <MultiSelectInput />}
     </PseudoBox>
   );
 };
