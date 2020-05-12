@@ -303,6 +303,45 @@ export const useComboBox = ({ options, initialValues, isMulti }) => {
     };
   };
 
+  const getOptionProps = ({ index, disabled, option, ...rest }) => {
+    return {
+      onClick: event => {
+        if (disabled) {
+          return;
+        }
+
+        if (!isMulti) {
+          setValues([option.value]);
+
+          if (!inputIsHidden) {
+            setInputIsHidden(true);
+          }
+        } else {
+          setValues(oldOptions => {
+            if (oldOptions.includes(option.value)) {
+              return oldOptions;
+            }
+
+            return [...oldOptions, option.value];
+          });
+        }
+        setInputValue("");
+
+        if (isOpen) {
+          setIsOpen(false);
+        }
+      },
+      onMouseEnter: event => {
+        if (disabled) {
+          return;
+        }
+
+        setFocusedOptionIndex(index);
+      },
+      ...rest,
+    };
+  };
+
   return {
     values,
     setValues,
@@ -325,5 +364,6 @@ export const useComboBox = ({ options, initialValues, isMulti }) => {
     listRef,
     getWrapperProps,
     getInputProps,
+    getOptionProps,
   };
 };

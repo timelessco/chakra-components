@@ -77,6 +77,7 @@ const MultiSelect = forwardRef(
       listRef,
       getWrapperProps,
       getInputProps,
+      getOptionProps,
     } = useComboBox({
       options,
       initialValues,
@@ -117,6 +118,7 @@ const MultiSelect = forwardRef(
       renderCustomOption,
       renderCustomNoOption,
       getInputProps,
+      getOptionProps,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -463,18 +465,11 @@ MultiSelectRightElements.displayName = "MultiSelectRightElements";
 const MultiSelectOption = forwardRef(({ index, style }, ref) => {
   const {
     values,
-    setValues,
-    isOpen,
-    setIsOpen,
-    setInputValue,
-    inputIsHidden,
-    setInputIsHidden,
-    isMulti,
     filteredOptions,
     focusedOptionIndex,
-    setFocusedOptionIndex,
     renderCustomOption,
     renderCustomNoOption,
+    getOptionProps: _getOptionProps,
   } = useMultiSelectContext();
 
   const option = filteredOptions[index];
@@ -482,55 +477,21 @@ const MultiSelectOption = forwardRef(({ index, style }, ref) => {
   const focused = option ? focusedOptionIndex === index : false;
   const disabled = option ? option.disabled : false;
 
-  const handleOnClick = event => {
-    if (disabled) {
-      return;
-    }
-
-    if (!isMulti) {
-      setValues([option.value]);
-
-      if (!inputIsHidden) {
-        setInputIsHidden(true);
-      }
-    } else {
-      setValues(oldOptions => {
-        if (oldOptions.includes(option.value)) {
-          return oldOptions;
-        }
-
-        return [...oldOptions, option.value];
-      });
-    }
-    setInputValue("");
-
-    if (isOpen) {
-      setIsOpen(false);
-    }
-  };
-
-  const handleOnMouseEnter = event => {
-    if (disabled) {
-      return;
-    }
-
-    setFocusedOptionIndex(index);
-  };
-
   const styleProps = useMultiSelectOptionStyle({
     selected,
     focused,
     disabled,
   });
 
-  const getOptionProps = {
+  const getOptionProps = _getOptionProps({
+    index,
+    disabled,
+    option,
     ref,
     style,
     tabIndex: -1,
-    onClick: handleOnClick,
-    onMouseEnter: handleOnMouseEnter,
     ...styleProps,
-  };
+  });
 
   const getNoOptionProps = {
     ref,
@@ -561,15 +522,7 @@ const MultiSelectOption = forwardRef(({ index, style }, ref) => {
     });
   }
 
-  return (
-    <PseudoBox
-      onClick={handleOnClick}
-      onMouseEnter={handleOnMouseEnter}
-      {...getOptionProps}
-    >
-      {option.label}
-    </PseudoBox>
-  );
+  return <PseudoBox {...getOptionProps}>{option.label}</PseudoBox>;
 });
 
 MultiSelectOption.displayName = "MultiSelectOption";
