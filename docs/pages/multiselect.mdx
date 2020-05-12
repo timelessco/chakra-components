@@ -1,7 +1,7 @@
 ### Basic Searchable Select
 
 ```jsx
-function ComboBoxExample() {
+function MultiSelectExample() {
   const fruits = [
     "Acai",
     "Apples",
@@ -84,14 +84,14 @@ function ComboBoxExample() {
     disabled: i % 4 === 0,
   }));
 
-  return <MultiSelect options={options} />;
+  return <MultiSelect options={options} placeholder="Select a fruit..." />;
 }
 ```
 
 ### Searchable Multi Select
 
 ```jsx
-function ComboBoxExample() {
+function MultiSelectExample() {
   const fruits = [
     "Acai",
     "Apples",
@@ -174,6 +174,63 @@ function ComboBoxExample() {
     disabled: i % 4 === 0,
   }));
 
-  return <MultiSelect options={options} isMulti />;
+  return (
+    <MultiSelect isMulti options={options} placeholder="Select a fruit..." />
+  );
+}
+```
+
+```jsx
+function MultiSelectExample() {
+  const options = [
+    {
+      label: "bug",
+      description: `Something isn't working`,
+      value: "bug",
+      color: "#ff0000",
+    },
+    {
+      label: "documentation",
+      description: `Improvements or addition to documentation`,
+      value: "documentation",
+      color: "#0000ff",
+    },
+    {
+      label: "duplicate",
+      description: `This issue or pull requests already exists`,
+      value: "duplicate",
+      color: "#7f00ff",
+    },
+    {
+      label: "enhancement",
+      description: `New feature or request`,
+      value: "enhancement",
+      color: "#00ff00",
+    },
+    {
+      label: "good first issue",
+      description: `Good for beginners`,
+      value: "first-issue",
+      color: "#ffa500",
+    },
+    {
+      label: "help wanted",
+      description: `Need more help`,
+      value: "help-wanted",
+      color: "#844f38",
+    },
+  ];
+
+  return (
+    <MultiSelect
+      isMulti
+      options={options}
+      renderCustomPlaceholder={
+        <MultiSelectPlaceholder color="teal.500">
+          Select an issue category...
+        </MultiSelectPlaceholder>
+      }
+    />
+  );
 }
 ```

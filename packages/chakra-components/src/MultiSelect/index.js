@@ -46,6 +46,7 @@ const MultiSelect = forwardRef(
       isMulti,
       focusBorderColor = "blue.500",
       errorBorderColor = "red.500",
+      renderCustomPlaceholder,
       ...rest
     },
     ref,
@@ -191,6 +192,7 @@ const MultiSelect = forwardRef(
       setFocusedOptionIndex,
       selectedOptions,
       placeholder,
+      renderCustomPlaceholder,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -227,6 +229,8 @@ MultiSelect.displayName = "MultiSelect";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectInputGroup = props => {
+  const { placeholder, renderCustomPlaceholder } = useMultiSelectContext();
+
   return (
     <PseudoBox
       position="relative"
@@ -240,7 +244,9 @@ const MultiSelectInputGroup = props => {
       {...props}
     >
       <MultiSelectSelectedOption />
-      <MultiSelectPlaceholder />
+      {renderCustomPlaceholder || (
+        <MultiSelectPlaceholder>{placeholder}</MultiSelectPlaceholder>
+      )}
       <MultiSelectInput />
     </PseudoBox>
   );
@@ -324,8 +330,8 @@ MultiSelectSelectedOption.displayName = "MultiSelectSelectedOption";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectPlaceholder = props => {
-  const { values, inputValue, placeholder } = useMultiSelectContext();
+const MultiSelectPlaceholder = ({ children, ...props }) => {
+  const { values, inputValue } = useMultiSelectContext();
 
   const theme = useTheme();
   const { colorMode } = useColorMode();
@@ -345,7 +351,7 @@ const MultiSelectPlaceholder = props => {
         color={placeholderColor[colorMode]}
         {...props}
       >
-        {placeholder}
+        {children}
       </PseudoBox>
     );
   }
