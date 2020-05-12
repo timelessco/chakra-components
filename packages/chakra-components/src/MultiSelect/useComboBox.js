@@ -89,9 +89,9 @@ export const useComboBox = ({
   }, [isMulti, filteredOptions, values]);
 
   useEffect(() => {
-    const filteredOption = filteredBy(options, listBoxInputValue);
-    const filteredIndex = options.indexOf(filteredOption[0]);
-    if (listBoxInputValue && filteredOption !== [] && filteredIndex !== -1) {
+    const optionsFiltered = filteredBy(options, listBoxInputValue);
+    const filteredIndex = options.indexOf(optionsFiltered[0]);
+    if (listBoxInputValue && filteredIndex !== -1) {
       setFocusedOptionIndex(filteredIndex);
     }
   }, [options, filteredBy, listBoxInputValue]);
