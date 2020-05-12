@@ -2,7 +2,81 @@
 
 ```jsx
 function MultiSelectExample() {
-  const fruits = ["Acai", "Apples", "Apricots", "Avocado", "Ackee", "Bananas"];
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+    "Cantaloupes(cantalope)",
+    "Chocolate - Fruit",
+    "Cherimoya",
+    "Cherries",
+    "Cranberries",
+    "Cucumbers",
+    "Currants",
+    "Dates",
+    "Durian",
+    "Eggplant",
+    "Elderberries",
+    "Figs",
+    "Gooseberries",
+    "Grapes",
+    "Grapefruit",
+    "Guava",
+    "Honeydew melons",
+    "Horned melon(Kiwano)",
+    "Huckleberries",
+    "Ita Palm",
+    "Jujubes",
+    "Kiwis",
+    "Kumquat",
+    "Lemons",
+    "Limes",
+    "Lychees",
+    "Mangos",
+    "Mangosteen",
+    "Mulberries",
+    "Muskmelon",
+    "Nectarines",
+    "Ogden melons",
+    "Olives",
+    "Oranges",
+    "Papaya",
+    "Passion fruit",
+    "Peaches",
+    "Pears",
+    "Peppers",
+    "Persimmon",
+    "Pineapple",
+    "Plums",
+    "Pluot",
+    "Pomegranate",
+    "Prickly Pear",
+    "Quince",
+    "Rambuton",
+    "Raspberries",
+    "Rose Apple",
+    "Starfruit",
+    "Sapadilla",
+    "Strawberries",
+    "Tamarind",
+    "Tangelo",
+    "Tangerines",
+    "Tomatoes",
+    "Ugli fruit",
+    "Voavanga(Spanish Tamarind)",
+    "Watermelons",
+    "Xigua melon",
+    "Yellow watermelon",
+    "Zucchini",
+  ];
 
   const options = fruits.map((d, i) => ({
     value: d,
@@ -10,17 +84,13 @@ function MultiSelectExample() {
     disabled: i % 4 === 0,
   }));
 
-  const handleFruitChange = fruit => {
-    setFruit(fruit);
-  };
-
-  const [fruit, setFruit] = React.useState(null);
+  const [fruit, setFruit] = useState(null);
 
   return (
     <MultiSelect
       options={options}
       value={fruit}
-      onChange={handleFruitChange}
+      onChange={setFruit}
       placeholder="Select a fruit..."
     />
   );
@@ -41,6 +111,70 @@ function MultiSelectExample() {
     "Bilberries",
     "Blueberries",
     "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+    "Cantaloupes(cantalope)",
+    "Chocolate - Fruit",
+    "Cherimoya",
+    "Cherries",
+    "Cranberries",
+    "Cucumbers",
+    "Currants",
+    "Dates",
+    "Durian",
+    "Eggplant",
+    "Elderberries",
+    "Figs",
+    "Gooseberries",
+    "Grapes",
+    "Grapefruit",
+    "Guava",
+    "Honeydew melons",
+    "Horned melon(Kiwano)",
+    "Huckleberries",
+    "Ita Palm",
+    "Jujubes",
+    "Kiwis",
+    "Kumquat",
+    "Lemons",
+    "Limes",
+    "Lychees",
+    "Mangos",
+    "Mangosteen",
+    "Mulberries",
+    "Muskmelon",
+    "Nectarines",
+    "Ogden melons",
+    "Olives",
+    "Oranges",
+    "Papaya",
+    "Passion fruit",
+    "Peaches",
+    "Pears",
+    "Peppers",
+    "Persimmon",
+    "Pineapple",
+    "Plums",
+    "Pluot",
+    "Pomegranate",
+    "Prickly Pear",
+    "Quince",
+    "Rambuton",
+    "Raspberries",
+    "Rose Apple",
+    "Starfruit",
+    "Sapadilla",
+    "Strawberries",
+    "Tamarind",
+    "Tangelo",
+    "Tangerines",
+    "Tomatoes",
+    "Ugli fruit",
+    "Voavanga(Spanish Tamarind)",
+    "Watermelons",
+    "Xigua melon",
+    "Yellow watermelon",
+    "Zucchini",
   ];
 
   const options = fruits.map((d, i) => ({
@@ -49,10 +183,6 @@ function MultiSelectExample() {
     disabled: i % 4 === 0,
   }));
 
-  const handleFruitChange = fruit => {
-    setFruit(fruit);
-  };
-
   const [fruit, setFruit] = React.useState(["Apples", "Bananas"]);
 
   return (
@@ -60,14 +190,116 @@ function MultiSelectExample() {
       isMulti
       options={options}
       value={fruit}
-      onChange={handleFruitChange}
+      onChange={setFruit}
       placeholder="Select a fruit..."
     />
   );
 }
 ```
 
-<!-- ## Render Custom Placeholder
+## Searchable Single Select with match-sorter
+
+```jsx
+function MultiSelectExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+    "Cantaloupes(cantalope)",
+    "Chocolate - Fruit",
+    "Cherimoya",
+    "Cherries",
+    "Cranberries",
+    "Cucumbers",
+    "Currants",
+    "Dates",
+    "Durian",
+    "Eggplant",
+    "Elderberries",
+    "Figs",
+    "Gooseberries",
+    "Grapes",
+    "Grapefruit",
+    "Guava",
+    "Honeydew melons",
+    "Horned melon(Kiwano)",
+    "Huckleberries",
+    "Ita Palm",
+    "Jujubes",
+    "Kiwis",
+    "Kumquat",
+    "Lemons",
+    "Limes",
+    "Lychees",
+    "Mangos",
+    "Mangosteen",
+    "Mulberries",
+    "Muskmelon",
+    "Nectarines",
+    "Ogden melons",
+    "Olives",
+    "Oranges",
+    "Papaya",
+    "Passion fruit",
+    "Peaches",
+    "Pears",
+    "Peppers",
+    "Persimmon",
+    "Pineapple",
+    "Plums",
+    "Pluot",
+    "Pomegranate",
+    "Prickly Pear",
+    "Quince",
+    "Rambuton",
+    "Raspberries",
+    "Rose Apple",
+    "Starfruit",
+    "Sapadilla",
+    "Strawberries",
+    "Tamarind",
+    "Tangelo",
+    "Tangerines",
+    "Tomatoes",
+    "Ugli fruit",
+    "Voavanga(Spanish Tamarind)",
+    "Watermelons",
+    "Xigua melon",
+    "Yellow watermelon",
+    "Zucchini",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+    disabled: i % 4 === 0,
+  }));
+
+  const [fruit, setFruit] = useState(null);
+
+  return (
+    <MultiSelect
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+      filteredBy={(options, value) =>
+        matchSorter(options, value, { keys: ["label"] })
+      }
+    />
+  );
+}
+```
+
+## Render Custom Placeholder
 
 ```jsx
 function MultiSelectExample() {
@@ -110,10 +342,14 @@ function MultiSelectExample() {
     },
   ];
 
+  const [tag, setTag] = useState(null);
+
   return (
     <MultiSelect
       isMulti
       options={options}
+      value={tag}
+      onChange={setTag}
       renderCustomPlaceholder={
         <MultiSelectPlaceholder color="teal.500">
           Select an issue category...
@@ -146,9 +382,13 @@ function MultiSelectExample() {
     { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
   ];
 
+  const [user, setUser] = React.useState(null);
+
   return (
     <MultiSelect
       options={options}
+      value={user}
+      onChange={setUser}
       placeholder="Select a person you like..."
       renderCustomSelectedOption={
         <MultiSelectSelectedOption>
@@ -194,10 +434,14 @@ function MultiSelectExample() {
     { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
   ];
 
+  const [user, setUser] = React.useState(null);
+
   return (
     <MultiSelect
       isMulti
       options={options}
+      value={user}
+      onChange={setUser}
       placeholder="Select a person you like..."
       renderCustomSelectedOption={
         <MultiSelectSelectedOption>
@@ -250,10 +494,14 @@ function MultiSelectExample() {
     { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
   ];
 
+  const [user, setUser] = React.useState(null);
+
   return (
     <MultiSelect
       isMulti
       options={options}
+      value={user}
+      onChange={setUser}
       placeholder="Select a person you like..."
       renderCustomInput={<MultiSelectInput color="orange.500" />}
     />
@@ -283,10 +531,14 @@ function MultiSelectExample() {
     { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
   ];
 
+  const [user, setUser] = React.useState(null);
+
   return (
     <MultiSelect
       isMulti
       options={options}
+      value={user}
+      onChange={setUser}
       placeholder="Select a person you like..."
       renderCustomCloseButton={<Icon name="delete" />}
       renderCustomToggleIcon={<Icon name="arrow-up-down" fontSize="1rem" />}
@@ -317,10 +569,14 @@ function MultiSelectExample() {
     { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
   ];
 
+  const [user, setUser] = React.useState(null);
+
   return (
     <MultiSelect
       isMulti
       options={options}
+      value={user}
+      onChange={setUser}
       placeholder="Select a person you like..."
       itemHeight={60}
       renderCustomOption={({ option, getOptionProps }) => (
@@ -383,9 +639,13 @@ function MultiSelectExample() {
     },
   ];
 
+  const [tag, setTag] = useState(null);
+
   return (
     <MultiSelect
       options={options}
+      value={tag}
+      onChange={setTag}
       placeholder="Select an issue category..."
       itemHeight={60}
       renderCustomSelectedOption={
@@ -519,9 +779,13 @@ function MultiSelectExample() {
     },
   ];
 
+  const [tag, setTag] = useState(null);
+
   return (
     <MultiSelect
       options={options}
+      value={tag}
+      onChange={setTag}
       placeholder="Select a person you like..."
       itemHeight={60}
       renderCustomSelectedOption={
@@ -582,4 +846,4 @@ function MultiSelectExample() {
     />
   );
 }
-``` -->
+```
