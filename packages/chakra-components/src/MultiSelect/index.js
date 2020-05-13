@@ -36,8 +36,8 @@ const MultiSelect = forwardRef(
       value,
       onChange,
       filteredBy,
-      isMulti,
       isListBox,
+      isMulti,
       placement,
       skid,
       gutter,
@@ -68,7 +68,6 @@ const MultiSelect = forwardRef(
       selectedOptions,
       filteredOptions,
       multiSelectRef,
-      inputRef,
       popperRef,
       listRef,
       getWrapperProps,
@@ -110,7 +109,6 @@ const MultiSelect = forwardRef(
       selectedOptions,
       filteredOptions,
       multiSelectRef,
-      inputRef,
       popperRef,
       listRef,
       getWrapperProps,
@@ -259,14 +257,7 @@ const MultiSelectInput = forwardRef(
     },
     ref,
   ) => {
-    const {
-      inputRef,
-      inputValue,
-      listBoxInputValue,
-      inputIsHidden,
-      getInputProps,
-      isListBox,
-    } = useMultiSelectContext();
+    const { inputIsHidden, getInputProps, isListBox } = useMultiSelectContext();
 
     const ariaAttributes = {
       "aria-autocomplete": "list",
@@ -280,20 +271,16 @@ const MultiSelectInput = forwardRef(
       isListBox,
     });
 
-    const _inputRef = useForkRef(inputRef, ref);
-
     return (
       <PseudoBox {...inputWrapperStyle} {...props}>
         <AutosizeInput
           type="text"
-          inputRef={_inputRef}
-          disabled={isDisabled}
-          value={isListBox ? listBoxInputValue : inputValue}
-          inputStyle={inputStyle}
           autoCapitalize="none"
           autoComplete="off"
           autoCorrect="off"
           spellCheck="false"
+          inputStyle={inputStyle}
+          disabled={isDisabled}
           {...ariaAttributes}
           {...getInputProps()}
         />
@@ -404,6 +391,7 @@ MultiSelectCloseButton.displayName = "MultiSelectCloseButton";
 
 const MultiSelectToggleIcon = props => {
   const { renderCustomToggleIcon } = useMultiSelectContext();
+
   return (
     <MultiSelectRightAddons {...props}>
       {renderCustomToggleIcon || <Icon name="chevron-down" fontSize="1.5rem" />}
@@ -504,11 +492,11 @@ MultiSelectOption.displayName = "MultiSelectOption";
 const MultiSelectList = forwardRef(
   ({ placement, skid, gutter, itemHeight, pageSize, ...props }, ref) => {
     const {
-      multiSelectRef,
-      filteredOptions,
-      isOpen,
       popperRef,
+      multiSelectRef,
+      isOpen,
       listRef,
+      filteredOptions,
     } = useMultiSelectContext();
 
     const popperModifiers = {

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useForkRef } from "@chakra-ui/core/dist/utils";
 
 const defaultFilter = (options, input) => {
   if (input) {
@@ -144,8 +145,11 @@ export const useComboBox = ({
     };
   };
 
-  const getInputProps = () => {
+  const getInputProps = ref => {
     return {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      inputRef: useForkRef(inputRef, ref),
+      value: isListBox ? listBoxInputValue : inputValue,
       onChange: event => {
         if (isListBox) {
           setListBoxInputValue(event.currentTarget.value);
