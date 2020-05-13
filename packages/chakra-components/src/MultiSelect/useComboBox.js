@@ -32,9 +32,7 @@ export const useComboBox = ({
     if (Array.isArray(initialValues)) {
       _initialValues = initialValues;
     } else {
-      if (initialValues) {
-        _initialValues = [initialValues];
-      }
+      if (initialValues) _initialValues = [initialValues];
     }
   }
 
@@ -54,9 +52,7 @@ export const useComboBox = ({
   const focusSelectedOption = useCallback(() => {
     const selectedIndex = options.indexOf(selectedOptions[0]);
 
-    if (selectedIndex !== -1) {
-      setFocusedOptionIndex(selectedIndex);
-    }
+    if (selectedIndex !== -1) setFocusedOptionIndex(selectedIndex);
   }, [options, selectedOptions]);
 
   // Effects
@@ -87,13 +83,11 @@ export const useComboBox = ({
   }, [filteredBy, notSelectedOptions, inputValue]);
 
   useEffect(() => {
-    listRef.current && listRef.current.scrollToItem(focusedOptionIndex);
+    if (listRef.current) listRef.current.scrollToItem(focusedOptionIndex);
   }, [isOpen, focusedOptionIndex]);
 
   useEffect(() => {
-    if (!isMulti) {
-      focusSelectedOption();
-    }
+    if (!isMulti) focusSelectedOption();
   }, [isMulti, focusSelectedOption]);
 
   useEffect(() => {
@@ -116,11 +110,8 @@ export const useComboBox = ({
     return {
       tabIndex: -1,
       onClick: () => {
-        if (!isFocused) {
-          focusInput();
-        }
-
-        showInput();
+        if (!isFocused) focusInput();
+        if (inputIsHidden) setInputIsHidden(false);
 
         if (isOpen) {
           setIsOpen(false);
@@ -149,37 +140,28 @@ export const useComboBox = ({
           return;
         }
 
+        if (inputIsHidden) setInputIsHidden(false);
+        if (focusedOptionIndex !== 0) setFocusedOptionIndex(0);
+        if (!isOpen) setIsOpen(true);
+
         setInputValue(event.currentTarget.value);
-
-        showInput();
-
-        if (focusedOptionIndex !== 0) {
-          setFocusedOptionIndex(0);
-        }
-
-        if (!isOpen) {
-          setIsOpen(true);
-        }
       },
       onFocus: () => {
-        if (!isFocused) {
-          setIsFocused(true);
-        }
-
-        showInput();
+        if (!isFocused) setIsFocused(true);
+        if (inputIsHidden) setInputIsHidden(false);
       },
       onKeyDown: event => {
         const count = filteredOptions.length;
         let nextIndex;
 
         if (event.key === "ArrowDown") {
-          event.preventDefault();
           if (filteredOptions.length) {
-            showInput();
+            if (inputIsHidden) setInputIsHidden(false);
 
             if (!isOpen) {
               setIsOpen(true);
               focusOption(0);
+
               return;
             }
 
@@ -189,13 +171,13 @@ export const useComboBox = ({
         }
 
         if (event.key === "ArrowUp") {
-          event.preventDefault();
           if (filteredOptions.length) {
-            showInput();
+            if (inputIsHidden) setInputIsHidden(false);
 
             if (!isOpen) {
               setIsOpen(true);
               focusOption(filteredOptions.length - 1);
+
               return;
             }
 
@@ -208,59 +190,35 @@ export const useComboBox = ({
           if (filteredOptions.length) {
             const focusedOption = filteredOptions[focusedOptionIndex];
 
-            if (focusedOption.disabled && focusedOption.disabled) {
+            if (
+              focusedOption.hasOwnProperty("disabled") &&
+              focusedOption.disabled
+            ) {
               return;
             }
 
-            if (isOpen) {
-              if (!isMulti) {
-                setValues([focusedOption.value]);
-                hideInput();
-              } else {
-                setValues(oldOptions => {
-                  if (oldOptions.includes(focusedOption.value)) {
-                    return oldOptions;
-                  }
-
-                  return [...oldOptions, focusedOption.value];
-                });
-              }
-            }
+            if (isOpen) selectOption(focusedOption);
+            if (isOpen) setIsOpen(false);
 
             setInputValue("");
-
-            if (isOpen) {
-              setIsOpen(false);
-            }
           }
         }
 
         if (event.key === "Escape") {
-          if (isOpen) {
-            setIsOpen(false);
-          }
+          if (isOpen) setIsOpen(false);
         }
 
         if (event.key === "Backspace") {
           if (!inputValue) {
-            showInput();
+            if (inputIsHidden) setInputIsHidden(false);
 
-            if (!isMulti) {
-              setValues([]);
-            } else {
-              if (values.length) {
-                const newValues = values.slice(0, values.length - 1);
-                setValues(newValues);
-              }
-            }
+            removeLastSelectedValue();
           }
         }
       },
       onBlur: event => {
         if (!isOpen && !multiSelectRef.current.contains(event.relatedTarget)) {
-          if (isFocused) {
-            setIsFocused(false);
-          }
+          if (isFocused) setIsFocused(false);
 
           setInputValue("");
 
@@ -272,13 +230,8 @@ export const useComboBox = ({
           !popperRef.current.contains(event.relatedTarget) &&
           !multiSelectRef.current.contains(event.relatedTarget)
         ) {
-          if (isFocused) {
-            setIsFocused(false);
-          }
-
-          if (isOpen) {
-            setIsOpen(false);
-          }
+          if (isFocused) setIsFocused(false);
+          if (isOpen) setIsOpen(false);
 
           setInputValue("");
 
@@ -292,33 +245,17 @@ export const useComboBox = ({
 
   const getOptionProps = ({ index, disabled, option, ...rest }) => {
     return {
-      onClick: event => {
-        if (disabled) {
-          return;
-        }
+      onClick: () => {
+        if (disabled) return;
 
-        if (!isMulti) {
-          setValues([option.value]);
-          hideInput();
-        } else {
-          setValues(oldOptions => {
-            if (oldOptions.includes(option.value)) {
-              return oldOptions;
-            }
+        selectOption(option);
 
-            return [...oldOptions, option.value];
-          });
-        }
+        if (isOpen) setIsOpen(false);
+
         setInputValue("");
-
-        if (isOpen) {
-          setIsOpen(false);
-        }
       },
-      onMouseEnter: event => {
-        if (disabled) {
-          return;
-        }
+      onMouseEnter: () => {
+        if (disabled) return;
 
         setFocusedOptionIndex(index);
       },
@@ -327,45 +264,48 @@ export const useComboBox = ({
   };
 
   // Extra Functions
-  const removeOneSelectedOption = (event, value) => {
-    event.stopPropagation();
-    setValues(oldValues =>
-      oldValues.filter(oldValue => !oldValue.includes(value)),
-    );
+  const selectOption = option => {
+    if (!isMulti) {
+      if (!inputIsHidden) setInputIsHidden(true);
 
-    if (!isFocused) {
-      focusInput();
+      setValues([option.value]);
+    } else {
+      setValues(oldOptions => {
+        if (oldOptions.includes(option.value)) {
+          return oldOptions;
+        }
+
+        return [...oldOptions, option.value];
+      });
     }
   };
 
-  const removeAllSelectedOption = event => {
-    event.stopPropagation();
+  const removeLastSelectedValue = () => {
+    if (!isMulti) {
+      setValues([]);
+    } else {
+      if (values.length) {
+        setValues(oldValues => oldValues.slice(0, oldValues.length - 1));
+      }
+    }
+  };
+
+  const removeSelectedValue = value => {
+    setValues(oldValues =>
+      oldValues.filter(oldValue => !oldValue.includes(value)),
+    );
+    if (!isFocused) focusInput();
+  };
+
+  const removeAllSelectedValues = () => {
     setValues([]);
-
-    if (isOpen) {
-      setIsOpen(false);
-    }
-
-    if (!isFocused) {
-      focusInput();
-    }
+    if (isOpen) setIsOpen(false);
+    if (!isFocused) focusInput();
   };
 
   const focusInput = () => {
     if (!inputRef.current) return;
     inputRef.current.focus();
-  };
-
-  const showInput = () => {
-    if (inputIsHidden) {
-      setInputIsHidden(false);
-    }
-  };
-
-  const hideInput = () => {
-    if (!inputIsHidden) {
-      setInputIsHidden(true);
-    }
   };
 
   const focusOption = index => {
@@ -397,7 +337,7 @@ export const useComboBox = ({
     getWrapperProps,
     getInputProps,
     getOptionProps,
-    removeOneSelectedOption,
-    removeAllSelectedOption,
+    removeSelectedValue,
+    removeAllSelectedValues,
   };
 };

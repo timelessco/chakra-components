@@ -73,8 +73,8 @@ const MultiSelect = forwardRef(
       getWrapperProps,
       getInputProps,
       getOptionProps,
-      removeOneSelectedOption,
-      removeAllSelectedOption,
+      removeSelectedValue,
+      removeAllSelectedValues,
     } = useComboBox({
       options,
       value,
@@ -114,8 +114,8 @@ const MultiSelect = forwardRef(
       getWrapperProps,
       getInputProps,
       getOptionProps,
-      removeOneSelectedOption,
-      removeAllSelectedOption,
+      removeSelectedValue,
+      removeAllSelectedValues,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -157,8 +157,13 @@ const MultiSelectSelectedOption = ({ children, ...props }) => {
     isMulti,
     inputValue,
     selectedOptions,
-    removeOneSelectedOption,
+    removeSelectedValue,
   } = useMultiSelectContext();
+
+  const handleOnClick = (event, value) => {
+    event.stopPropagation();
+    removeSelectedValue(value);
+  };
 
   if (selectedOptions.length) {
     if (isMulti) {
@@ -175,8 +180,7 @@ const MultiSelectSelectedOption = ({ children, ...props }) => {
             >
               {children({
                 selectedOption,
-                handleOnClick: e =>
-                  removeOneSelectedOption(e, selectedOption.value),
+                handleOnClick: e => handleOnClick(e, selectedOption.value),
               })}
             </Box>
           ))}
@@ -371,12 +375,17 @@ const MultiSelectCloseButton = props => {
   const {
     values,
     renderCustomCloseButton,
-    removeAllSelectedOption,
+    removeAllSelectedValues,
   } = useMultiSelectContext();
+
+  const handleOnClick = event => {
+    event.stopPropagation();
+    removeAllSelectedValues();
+  };
 
   if (values.length) {
     return (
-      <MultiSelectRightAddons onClick={removeAllSelectedOption} {...props}>
+      <MultiSelectRightAddons onClick={handleOnClick} {...props}>
         {renderCustomCloseButton || <Icon name="close" fontSize="0.8rem" />}
       </MultiSelectRightAddons>
     );
