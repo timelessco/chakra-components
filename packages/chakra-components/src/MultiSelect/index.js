@@ -2,7 +2,6 @@ import React, { forwardRef, createContext } from "react";
 import {
   Box,
   PseudoBox,
-  VisuallyHidden,
   Icon,
   Tag,
   TagLabel,

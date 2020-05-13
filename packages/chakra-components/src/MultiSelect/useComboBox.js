@@ -92,12 +92,18 @@ export const useComboBox = ({
   }, [isMulti, filteredOptions, values]);
 
   useEffect(() => {
-    const optionsFiltered = filteredBy(options, listBoxInputValue);
-    const filteredIndex = options.indexOf(optionsFiltered[0]);
-    if (listBoxInputValue && filteredIndex !== -1) {
-      setFocusedOptionIndex(filteredIndex);
+    if (isListBox) {
+      const optionsFiltered = filteredBy(options, listBoxInputValue);
+      const filteredIndex = options.indexOf(optionsFiltered[0]);
+      if (listBoxInputValue && filteredIndex !== -1) {
+        if (!isOpen) {
+          setValues([optionsFiltered[0].value]);
+        } else {
+          setFocusedOptionIndex(filteredIndex);
+        }
+      }
     }
-  }, [options, filteredBy, listBoxInputValue]);
+  }, [isListBox, options, filteredBy, isOpen, listBoxInputValue]);
 
   // getters
   const getWrapperProps = () => {
@@ -144,10 +150,6 @@ export const useComboBox = ({
     return {
       onChange: event => {
         if (isListBox) {
-          if (!isOpen) {
-            setIsOpen(true);
-          }
-
           setListBoxInputValue(event.currentTarget.value);
 
           setTimeout(() => {
