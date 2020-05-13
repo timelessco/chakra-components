@@ -15,6 +15,7 @@ import { useMultiSelectContext } from "./useMultiSelectContext";
 import { FixedSizeList as List } from "react-window";
 import AutosizeInput from "react-input-autosize";
 import { useComboBox } from "./useComboBox";
+import { useAsyncFetching } from "./useAsyncFetching";
 
 import {
   useMultiSelectStyle,
@@ -38,6 +39,8 @@ const MultiSelect = forwardRef(
       filteredBy,
       isListBox,
       isMulti,
+      isAsync,
+      loadOptions = null,
       placement,
       skid,
       gutter,
@@ -57,6 +60,19 @@ const MultiSelect = forwardRef(
     },
     ref,
   ) => {
+    const {
+      state: {
+        data: asyncOptions,
+        initiated: isAsyncInitiated,
+        success: isAsyncSuccess,
+        failed: isAsyncFailure,
+        completedOnce: isAsyncCompletedOnce,
+        errorMessage: asyncErrorMessage,
+      },
+      onAsyncStart,
+      onAsyncSuccess,
+      onAsyncFailure,
+    } = useAsyncFetching(loadOptions);
     const {
       values,
       isFocused,
@@ -80,8 +96,9 @@ const MultiSelect = forwardRef(
       value,
       onChange,
       filteredBy,
-      isMulti,
       isListBox,
+      isMulti,
+      isAsync,
     });
 
     const context = {

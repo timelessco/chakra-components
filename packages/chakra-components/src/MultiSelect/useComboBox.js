@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useForkRef } from "@chakra-ui/core/dist/utils";
 import debounce from "lodash.debounce";
+import { useForkRef } from "@chakra-ui/core/dist/utils";
+import { useConstant } from "./useConstant";
 
 const defaultFilter = (options, input) => {
   if (input) {
@@ -25,7 +26,6 @@ export const useComboBox = ({
   const inputRef = useRef(null);
   const multiSelectRef = useRef(null);
   const popperRef = useRef(null);
-  const resetListBoxInputvalueRef = useRef(null);
 
   let _initialValues = [];
 
@@ -50,12 +50,16 @@ export const useComboBox = ({
   const [isOpen, setIsOpen] = useState(false);
   const [focusedOptionIndex, setFocusedOptionIndex] = useState(0);
 
-  // Functions to be used in useEffect
+  // Functions needed before useEffect
   const focusSelectedOption = useCallback(() => {
     const selectedIndex = options.indexOf(selectedOptions[0]);
 
     if (selectedIndex !== -1) setFocusedOptionIndex(selectedIndex);
   }, [options, selectedOptions]);
+
+  const debouncedResetListBoxInputvalue = useConstant(() =>
+    debounce(() => setListBoxInputValue(""), 700),
+  );
 
   // Effects
   useEffect(() => {
@@ -107,12 +111,6 @@ export const useComboBox = ({
     }
   }, [isListBox, options, filteredBy, isOpen, listBoxInputValue]);
 
-  useEffect(() => {
-    resetListBoxInputvalueRef.current = debounce(() => {
-      setListBoxInputValue("");
-    }, 700);
-  }, []);
-
   // getters
   const getWrapperProps = () => {
     return {
@@ -140,7 +138,7 @@ export const useComboBox = ({
       onChange: event => {
         if (isListBox) {
           setListBoxInputValue(event.currentTarget.value);
-          resetListBoxInputvalueRef.current();
+          debouncedResetListBoxInputvalue();
 
           return;
         }

@@ -46,7 +46,7 @@ function reducer(state, action) {
       return state;
   }
 }
-const useAsyncFetching = () => {
+export const useAsyncFetching = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return {
@@ -58,5 +58,3 @@ const useAsyncFetching = () => {
       dispatch({ type: "PROMISE_RESOLVE_FAILURE", payload: { errorMessage } }),
   };
 };
-
-export default useAsyncFetching;
