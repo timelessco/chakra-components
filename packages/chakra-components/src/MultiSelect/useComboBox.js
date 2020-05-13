@@ -27,10 +27,12 @@ export const useComboBox = ({
   let _initialValues = [];
 
   if (initialValues) {
-    if (typeof initialValues === "string" || initialValues instanceof String) {
-      _initialValues = [initialValues];
-    } else if (Array.isArray(initialValues)) {
+    if (Array.isArray(initialValues)) {
       _initialValues = initialValues;
+    } else {
+      if (initialValues) {
+        _initialValues = [initialValues];
+      }
     }
   }
 
@@ -49,7 +51,7 @@ export const useComboBox = ({
   // Effects
   useEffect(() => {
     setSelectedOptions(
-      values.map((value, i) => options.find(option => option.value === value)),
+      values.map(value => options.find(option => option.value === value)),
     );
   }, [options, values]);
 
@@ -79,17 +81,13 @@ export const useComboBox = ({
 
   useEffect(() => {
     if (!isMulti) {
-      const selectedOption = filteredOptions.find(
-        option => option.value === values[0],
-      );
-
-      const selectedIndex = filteredOptions.indexOf(selectedOption);
+      const selectedIndex = options.indexOf(selectedOptions[0]);
 
       if (selectedIndex !== -1) {
         setFocusedOptionIndex(selectedIndex);
       }
     }
-  }, [isMulti, filteredOptions, values]);
+  }, [isMulti, options, selectedOptions]);
 
   useEffect(() => {
     if (isListBox) {
