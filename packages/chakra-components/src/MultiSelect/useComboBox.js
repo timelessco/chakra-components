@@ -2,15 +2,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useForkRef } from "@chakra-ui/core/dist/utils";
 import debounce from "lodash.debounce";
 
-// function debounse(callback, wait) {
-//   let timeout;
-//   return (...args) => {
-//     const context = this;
-//     clearTimeout(timeout);
-//     timeout = setTimeout(() => callback.apply(context, args), wait);
-//   };
-// }
-
 const defaultFilter = (options, input) => {
   if (input) {
     return options.filter(option =>
