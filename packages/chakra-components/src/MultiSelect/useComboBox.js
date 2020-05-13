@@ -1,5 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useForkRef } from "@chakra-ui/core/dist/utils";
+import debounce from "lodash.debounce";
+
+// function debounse(callback, wait) {
+//   let timeout;
+//   return (...args) => {
+//     const context = this;
+//     clearTimeout(timeout);
+//     timeout = setTimeout(() => callback.apply(context, args), wait);
+//   };
+// }
 
 const defaultFilter = (options, input) => {
   if (input) {
@@ -24,6 +34,7 @@ export const useComboBox = ({
   const inputRef = useRef(null);
   const multiSelectRef = useRef(null);
   const popperRef = useRef(null);
+  const resetListBoxInputvalueRef = useRef(null);
 
   let _initialValues = [];
 
@@ -105,6 +116,12 @@ export const useComboBox = ({
     }
   }, [isListBox, options, filteredBy, isOpen, listBoxInputValue]);
 
+  useEffect(() => {
+    resetListBoxInputvalueRef.current = debounce(() => {
+      setListBoxInputValue("");
+    }, 700);
+  }, []);
+
   // getters
   const getWrapperProps = () => {
     return {
@@ -132,10 +149,7 @@ export const useComboBox = ({
       onChange: event => {
         if (isListBox) {
           setListBoxInputValue(event.currentTarget.value);
-
-          setTimeout(() => {
-            setListBoxInputValue("");
-          }, 700);
+          resetListBoxInputvalueRef.current();
 
           return;
         }

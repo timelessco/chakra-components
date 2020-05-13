@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@reach/auto-id": "^0.10.2",
+    "lodash.debounce": "^4.0.8",
     "match-sorter": "^4.1.0",
     "react-input-autosize": "^2.2.2",
     "react-window": "^1.8.5"
