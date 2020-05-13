@@ -50,6 +50,9 @@
     "library"
   ],
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.5.0"
+    "@testing-library/jest-dom": "^5.5.0",
+    "@testing-library/user-event": "^10.1.2",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2"
   }
 }

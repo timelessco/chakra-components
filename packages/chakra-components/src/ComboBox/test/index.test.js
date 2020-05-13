@@ -7,6 +7,7 @@ import {
   waitForElement,
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { mount } from 'enzyme';
 import { ThemeProvider, CSSReset } from "@chakra-ui/core";
 import {
   ComboBox,
@@ -15,7 +16,8 @@ import {
   ComboBoxClearElement,
   ComboBoxRightElement,
 } from "../index.js";
-
+import { act } from "react-dom/test-utils";
+import { unmountComponentAtNode } from "react-dom";
 import { Flex, Box, Avatar, Button } from "@chakra-ui/core";
 
 const options = [
@@ -75,7 +77,6 @@ const Combo_Box = () => {
           )}
         />
       </ComboBox>
-      <Button data-testid="button">button</Button>
     </ThemeProvider>
   );
 };
@@ -91,7 +92,7 @@ it("combo-box", () => {
 
 // on input focus
 it("combo-box", () => {
-  const { getAllByTestId, getByTestId, queryAllByTestId } = render(
+  const { getAllByTestId, getByTestId, queryAllByTestId, getByRole } = render(
     <Combo_Box />,
   );
   const inputBox = getByTestId("input");
@@ -102,6 +103,7 @@ it("combo-box", () => {
   expect(options.map(item => item.nodeName)).toEqual(
     expect.arrayContaining(["LI", "LI", "LI", "LI", "LI"]),
   );
+  expect(getByRole("popper").nodeName).toBe("UL");
 
   // on blur of input box
   fireEvent.click(options[0]);
@@ -111,3 +113,22 @@ it("combo-box", () => {
 
   expect(queryAllByTestId("option")).toHaveLength(0);
 });
+
+
+// on input fucus and select.
+it("combo-box", () => {
+  const wrapper = mount(
+    <Combo_Box />,
+  );
+
+  wrapper.find('input').simulate('focus');
+  expect(wrapper.find('li').exists()).toEqual(true);
+  expect(wrapper.find('li')).toHaveLength(5);
+
+  wrapper.find('li').at(0).simulate('click');
+  expect(wrapper.find('li')).toHaveLength(0); 
+  expect(wrapper.find('li').exists()).toEqual(false); 
+  expect(wrapper.find('input').prop('value')).toBe("Dan Abrahmov");
+});
+
+

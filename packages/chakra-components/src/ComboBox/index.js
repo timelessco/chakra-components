@@ -365,6 +365,8 @@ const ComboBoxPopper = forwardRef(
 
     return (
       <Popper
+        role="popper"
+        as="ul"
         usePortal={false}
         anchorEl={inputRef.current}
         ref={_optionsRef}
