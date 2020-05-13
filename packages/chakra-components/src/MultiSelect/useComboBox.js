@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useForkRef } from "@chakra-ui/core/dist/utils";
 
 const defaultFilter = (options, input) => {
@@ -27,6 +27,7 @@ export const useComboBox = ({
 
   let _initialValues = [];
 
+  // TODO: Check if this calculation for the initial value is battle proven
   if (initialValues) {
     if (Array.isArray(initialValues)) {
       _initialValues = initialValues;
@@ -39,15 +40,24 @@ export const useComboBox = ({
 
   // States
   const [values, setValues] = useState(_initialValues);
-  const [isFocused, setIsFocused] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [listBoxInputValue, setListBoxInputValue] = useState("");
-  const [inputIsHidden, setInputIsHidden] = useState(false);
-  const [focusedOptionIndex, setFocusedOptionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [notSelectedOptions, setNotSelectedOptions] = useState(options);
   const [filteredOptions, setFilteredOptions] = useState(notSelectedOptions);
+  const [inputValue, setInputValue] = useState("");
+  const [listBoxInputValue, setListBoxInputValue] = useState("");
+  const [inputIsHidden, setInputIsHidden] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [focusedOptionIndex, setFocusedOptionIndex] = useState(0);
+
+  // Functions to be used in useEffect
+  const focusSelectedOption = useCallback(() => {
+    const selectedIndex = options.indexOf(selectedOptions[0]);
+
+    if (selectedIndex !== -1) {
+      setFocusedOptionIndex(selectedIndex);
+    }
+  }, [options, selectedOptions]);
 
   // Effects
   useEffect(() => {
@@ -82,21 +92,18 @@ export const useComboBox = ({
 
   useEffect(() => {
     if (!isMulti) {
-      const selectedIndex = options.indexOf(selectedOptions[0]);
-
-      if (selectedIndex !== -1) {
-        setFocusedOptionIndex(selectedIndex);
-      }
+      focusSelectedOption();
     }
-  }, [isMulti, options, selectedOptions]);
+  }, [isMulti, focusSelectedOption]);
 
   useEffect(() => {
     if (isListBox) {
-      const optionsFiltered = filteredBy(options, listBoxInputValue);
-      const filteredIndex = options.indexOf(optionsFiltered[0]);
+      const optionsFiltered = filteredBy(options, listBoxInputValue)[0];
+      const filteredIndex = options.indexOf(optionsFiltered);
+
       if (listBoxInputValue && filteredIndex !== -1) {
         if (!isOpen) {
-          setValues([optionsFiltered[0].value]);
+          setValues([optionsFiltered.value]);
         } else {
           setFocusedOptionIndex(filteredIndex);
         }
@@ -108,38 +115,19 @@ export const useComboBox = ({
   const getWrapperProps = () => {
     return {
       tabIndex: -1,
-      onClick: e => {
+      onClick: () => {
         if (!isFocused) {
-          inputRef.current.focus();
+          focusInput();
         }
 
-        if (inputIsHidden) {
-          setInputIsHidden(false);
-        }
+        showInput();
 
         if (isOpen) {
           setIsOpen(false);
           setInputValue("");
         } else {
           setIsOpen(true);
-
-          if (!isMulti) {
-            if (!values.length) {
-              setFocusedOptionIndex(0);
-            } else {
-              const selectedOption = filteredOptions.find(
-                option => option.value === values[0],
-              );
-
-              const selectedIndex = filteredOptions.indexOf(selectedOption);
-
-              if (selectedIndex !== -1) {
-                setFocusedOptionIndex(selectedIndex);
-              }
-            }
-          } else {
-            setFocusedOptionIndex(0);
-          }
+          focusOption(0);
         }
       },
     };
@@ -163,9 +151,7 @@ export const useComboBox = ({
 
         setInputValue(event.currentTarget.value);
 
-        if (inputIsHidden) {
-          setInputIsHidden(false);
-        }
+        showInput();
 
         if (focusedOptionIndex !== 0) {
           setFocusedOptionIndex(0);
@@ -175,14 +161,12 @@ export const useComboBox = ({
           setIsOpen(true);
         }
       },
-      onFocus: event => {
+      onFocus: () => {
         if (!isFocused) {
           setIsFocused(true);
         }
 
-        if (inputIsHidden) {
-          setInputIsHidden(false);
-        }
+        showInput();
       },
       onKeyDown: event => {
         const count = filteredOptions.length;
@@ -191,31 +175,11 @@ export const useComboBox = ({
         if (event.key === "ArrowDown") {
           event.preventDefault();
           if (filteredOptions.length) {
-            if (inputIsHidden) {
-              setInputIsHidden(false);
-            }
+            showInput();
 
             if (!isOpen) {
               setIsOpen(true);
-
-              if (!isMulti) {
-                if (!values.length) {
-                  setFocusedOptionIndex(0);
-                } else {
-                  const selectedOption = filteredOptions.find(
-                    option => option.value === values[0],
-                  );
-
-                  const selectedIndex = filteredOptions.indexOf(selectedOption);
-
-                  if (selectedIndex !== -1) {
-                    setFocusedOptionIndex(selectedIndex);
-                  }
-                }
-              } else {
-                setFocusedOptionIndex(0);
-              }
-
+              focusOption(0);
               return;
             }
 
@@ -227,31 +191,11 @@ export const useComboBox = ({
         if (event.key === "ArrowUp") {
           event.preventDefault();
           if (filteredOptions.length) {
-            if (inputIsHidden) {
-              setInputIsHidden(false);
-            }
+            showInput();
 
             if (!isOpen) {
               setIsOpen(true);
-
-              if (!isMulti) {
-                if (!values.length) {
-                  setFocusedOptionIndex(filteredOptions.length - 1);
-                } else {
-                  const selectedOption = filteredOptions.find(
-                    option => option.value === values[0],
-                  );
-
-                  const selectedIndex = filteredOptions.indexOf(selectedOption);
-
-                  if (selectedIndex !== -1) {
-                    setFocusedOptionIndex(selectedIndex);
-                  }
-                }
-              } else {
-                setFocusedOptionIndex(filteredOptions.length - 1);
-              }
-
+              focusOption(filteredOptions.length - 1);
               return;
             }
 
@@ -271,10 +215,7 @@ export const useComboBox = ({
             if (isOpen) {
               if (!isMulti) {
                 setValues([focusedOption.value]);
-
-                if (!inputIsHidden) {
-                  setInputIsHidden(true);
-                }
+                hideInput();
               } else {
                 setValues(oldOptions => {
                   if (oldOptions.includes(focusedOption.value)) {
@@ -302,9 +243,7 @@ export const useComboBox = ({
 
         if (event.key === "Backspace") {
           if (!inputValue) {
-            if (inputIsHidden) {
-              setInputIsHidden(false);
-            }
+            showInput();
 
             if (!isMulti) {
               setValues([]);
@@ -346,7 +285,7 @@ export const useComboBox = ({
           return;
         }
 
-        inputRef.current.focus();
+        focusInput();
       },
     };
   };
@@ -360,10 +299,7 @@ export const useComboBox = ({
 
         if (!isMulti) {
           setValues([option.value]);
-
-          if (!inputIsHidden) {
-            setInputIsHidden(true);
-          }
+          hideInput();
         } else {
           setValues(oldOptions => {
             if (oldOptions.includes(option.value)) {
@@ -398,7 +334,7 @@ export const useComboBox = ({
     );
 
     if (!isFocused) {
-      inputRef.current.focus();
+      focusInput();
     }
   };
 
@@ -411,7 +347,36 @@ export const useComboBox = ({
     }
 
     if (!isFocused) {
-      inputRef.current.focus();
+      focusInput();
+    }
+  };
+
+  const focusInput = () => {
+    if (!inputRef.current) return;
+    inputRef.current.focus();
+  };
+
+  const showInput = () => {
+    if (inputIsHidden) {
+      setInputIsHidden(false);
+    }
+  };
+
+  const hideInput = () => {
+    if (!inputIsHidden) {
+      setInputIsHidden(true);
+    }
+  };
+
+  const focusOption = index => {
+    if (!isMulti) {
+      if (!values.length) {
+        setFocusedOptionIndex(index);
+      } else {
+        focusSelectedOption();
+      }
+    } else {
+      setFocusedOptionIndex(index);
     }
   };
 
