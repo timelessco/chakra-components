@@ -131,4 +131,22 @@ it("combo-box", () => {
   expect(wrapper.find('input').prop('value')).toBe("Dan Abrahmov");
 });
 
+// combobox clear.
+it("combo-box", () => {
+  const wrapper = mount(
+    <Combo_Box />,
+  );
+
+  wrapper.find('input').simulate('focus');
+  wrapper.find('input').simulate('change', { target: { value: "Dan" } });
+  
+  // selecting a option
+  expect(wrapper.find('input').prop('value')).toBe("Dan");
+  wrapper.find('li').at(0).simulate('click');  
+
+  // clear the selection
+  wrapper.find('#clear').at(0).simulate('click');
+  expect(wrapper.find('input').prop('value')).toBe("");
+});
+
 

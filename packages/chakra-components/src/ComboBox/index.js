@@ -578,6 +578,7 @@ const ComboBoxClearElement = forwardRef((props, ref) => {
           <Spinner size="sm" />
         ) : selectedOption.value ? (
           <Icon
+            id="clear"
             name="close"
             fontSize="12px"
             cursor="pointer"
@@ -597,6 +598,8 @@ const ComboBoxClearElement = forwardRef((props, ref) => {
     />
   );
 });
+
+ComboBoxClearElement.displayName = "ComboBoxClearElement";
 
 export {
   ComboBox,
