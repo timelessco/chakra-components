@@ -20,6 +20,7 @@ export const useComboBox = ({
   filteredBy = defaultFilter,
   isMulti,
   isListBox,
+  isAsync,
 }) => {
   // Refs
   const listRef = useRef(null);
@@ -40,6 +41,7 @@ export const useComboBox = ({
 
   // States
   const [values, setValues] = useState(_initialValues);
+  const [originalOptions, setOriginalOptions] = useState(options);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [notSelectedOptions, setNotSelectedOptions] = useState(options);
   const [filteredOptions, setFilteredOptions] = useState(notSelectedOptions);
@@ -64,9 +66,11 @@ export const useComboBox = ({
   // Effects
   useEffect(() => {
     setSelectedOptions(
-      values.map(value => options.find(option => option.value === value)),
+      values.map(value =>
+        originalOptions.find(option => option.value === value),
+      ),
     );
-  }, [options, values]);
+  }, [originalOptions, values]);
 
   useEffect(() => {
     if (!isMulti) {
@@ -81,12 +85,25 @@ export const useComboBox = ({
       setNotSelectedOptions(
         options.filter(option => !values.includes(option.value)),
       );
+      return;
     }
-  }, [isMulti, options, values]);
+
+    if (isAsync) {
+      setNotSelectedOptions(options);
+    }
+  }, [isAsync, isMulti, options, values]);
 
   useEffect(() => {
-    setFilteredOptions(filteredBy(notSelectedOptions, inputValue));
-  }, [filteredBy, notSelectedOptions, inputValue]);
+    if (!isAsync) {
+      setFilteredOptions(filteredBy(notSelectedOptions, inputValue));
+    }
+  }, [isAsync, filteredBy, notSelectedOptions, inputValue]);
+
+  useEffect(() => {
+    if (isAsync) {
+      setFilteredOptions(notSelectedOptions);
+    }
+  }, [isAsync, filteredBy, notSelectedOptions]);
 
   useEffect(() => {
     if (listRef.current) listRef.current.scrollToItem(focusedOptionIndex);
@@ -136,6 +153,7 @@ export const useComboBox = ({
       inputRef: useForkRef(inputRef, ref),
       value: isListBox ? listBoxInputValue : inputValue,
       onChange: event => {
+        // TODO: find a way to handle it better with single inputValue
         if (isListBox) {
           setListBoxInputValue(event.currentTarget.value);
           debouncedResetListBoxInputvalue();
@@ -145,7 +163,12 @@ export const useComboBox = ({
 
         if (inputIsHidden) setInputIsHidden(false);
         if (focusedOptionIndex !== 0) setFocusedOptionIndex(0);
-        if (!isOpen) setIsOpen(true);
+
+        if (isAsync) {
+          if (isOpen) setIsOpen(false);
+        } else {
+          if (!isOpen) setIsOpen(true);
+        }
 
         setInputValue(event.currentTarget.value);
       },
@@ -154,37 +177,36 @@ export const useComboBox = ({
         if (inputIsHidden) setInputIsHidden(false);
       },
       onKeyDown: event => {
-        const count = filteredOptions.length;
-        let nextIndex;
-
         if (event.key === "ArrowDown") {
-          if (filteredOptions.length) {
-            if (inputIsHidden) setInputIsHidden(false);
+          if (inputIsHidden) setInputIsHidden(false);
 
-            if (!isOpen) {
-              setIsOpen(true);
-              focusOption(0);
+          if (!isOpen) {
+            setIsOpen(true);
+            focusOption(0);
 
-              return;
-            }
+            return;
+          }
 
-            nextIndex = (focusedOptionIndex + 1) % count;
+          if (filteredOptions && filteredOptions.length) {
+            const count = filteredOptions.length;
+            const nextIndex = (focusedOptionIndex + 1) % count;
             setFocusedOptionIndex(nextIndex);
           }
         }
 
         if (event.key === "ArrowUp") {
+          if (inputIsHidden) setInputIsHidden(false);
+
+          if (!isOpen) {
+            setIsOpen(true);
+            focusOption(filteredOptions.length - 1);
+
+            return;
+          }
+
           if (filteredOptions.length) {
-            if (inputIsHidden) setInputIsHidden(false);
-
-            if (!isOpen) {
-              setIsOpen(true);
-              focusOption(filteredOptions.length - 1);
-
-              return;
-            }
-
-            nextIndex = (focusedOptionIndex - 1 + count) % count;
+            const count = filteredOptions.length;
+            const nextIndex = (focusedOptionIndex - 1 + count) % count;
             setFocusedOptionIndex(nextIndex);
           }
         }
@@ -342,5 +364,7 @@ export const useComboBox = ({
     getOptionProps,
     removeSelectedValue,
     removeAllSelectedValues,
+    setOriginalOptions,
+    setIsOpen,
   };
 };

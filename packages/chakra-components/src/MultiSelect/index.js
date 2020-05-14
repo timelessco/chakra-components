@@ -1,8 +1,9 @@
-import React, { forwardRef, createContext } from "react";
+import React, { forwardRef, createContext, useEffect, useRef } from "react";
 import {
   Box,
   PseudoBox,
   Icon,
+  Spinner,
   Tag,
   TagLabel,
   TagCloseButton,
@@ -15,6 +16,8 @@ import { useMultiSelectContext } from "./useMultiSelectContext";
 import { FixedSizeList as List } from "react-window";
 import AutosizeInput from "react-input-autosize";
 import { useComboBox } from "./useComboBox";
+import debounce from "lodash.debounce";
+import { useConstant } from "./useConstant";
 import { useAsyncFetching } from "./useAsyncFetching";
 
 import {
@@ -28,12 +31,18 @@ import {
 
 export const MultiSelectContext = createContext();
 
+// TODO: Move everything to useReducers
+// TODO: Listbox selects the disabled values - Fix
+// TODO: Get a link for default caching options
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelect = forwardRef(
   (
     {
       options,
+      defaultOptions,
+      cacheOptions,
       value,
       onChange,
       filteredBy,
@@ -60,19 +69,25 @@ const MultiSelect = forwardRef(
     },
     ref,
   ) => {
+    // TODO: Get promise from outside instead of resolved options
+    const cachedOptions = useRef({});
+
     const {
       state: {
-        data: asyncOptions,
-        initiated: isAsyncInitiated,
+        data: loadedOptions,
+        initiated: isLoading,
         success: isAsyncSuccess,
         failed: isAsyncFailure,
-        completedOnce: isAsyncCompletedOnce,
         errorMessage: asyncErrorMessage,
       },
-      onAsyncStart,
+      onEmptyInputValue,
+      setCachedOptions,
+      onAsyncStart: setIsLoading,
       onAsyncSuccess,
+      onAsyncEnd: setIsLoaded,
       onAsyncFailure,
-    } = useAsyncFetching(loadOptions);
+    } = useAsyncFetching();
+
     const {
       values,
       isFocused,
@@ -91,8 +106,10 @@ const MultiSelect = forwardRef(
       getOptionProps,
       removeSelectedValue,
       removeAllSelectedValues,
+      setOriginalOptions,
+      setIsOpen,
     } = useComboBox({
-      options,
+      options: isAsync ? loadedOptions : options,
       value,
       onChange,
       filteredBy,
@@ -100,6 +117,99 @@ const MultiSelect = forwardRef(
       isMulti,
       isAsync,
     });
+
+    // TODO: Better cache functions
+    // TODO: Handle Open Dropdown after options fetched better
+    // TODO: Handle the debouncing of the last letter deletion better
+
+    const debouncedLoadOptions = useConstant(() =>
+      debounce(inputValue => {
+        if (!inputValue) {
+          setIsLoaded();
+          return;
+        }
+
+        loadOptions(
+          inputValue,
+          options => {
+            if (cacheOptions) cachedOptions.current[inputValue] = options;
+            onAsyncSuccess(options);
+          },
+          errorMessage => {
+            if (cacheOptions)
+              cachedOptions.current[inputValue] = [{ label: errorMessage }];
+            onAsyncFailure(errorMessage);
+          },
+        );
+      }, 700),
+    );
+
+    useEffect(() => {
+      if (isAsync) {
+        if (!inputValue) {
+          debouncedLoadOptions(inputValue);
+          if (cacheOptions && cachedOptions.current.default) {
+            onEmptyInputValue(cachedOptions.current.default);
+            setOriginalOptions(cachedOptions.current.default);
+          } else {
+            const cacheAndSetOptions = (options, status) => {
+              if (cacheOptions) {
+                cachedOptions.current["default"] = {};
+                if (status) {
+                  cachedOptions.current["default"] = options;
+                } else {
+                  cachedOptions.current["default"] = [{ label: options }];
+                }
+              }
+              onEmptyInputValue(options);
+              setOriginalOptions(options);
+            };
+
+            // TODO: improve the initial fetch API
+            // TODO: Better way to load complete options
+            if (typeof defaultOptions === "boolean" && defaultOptions) {
+              loadOptions(
+                "a",
+                options => cacheAndSetOptions(options, true),
+                errorMessage => cacheAndSetOptions(errorMessage, false),
+              );
+            }
+
+            if (defaultOptions && defaultOptions.length) {
+              cacheAndSetOptions(defaultOptions);
+            }
+          }
+        } else {
+          if (cacheOptions && cachedOptions.current[inputValue]) {
+            setCachedOptions(cachedOptions.current[inputValue]);
+            setIsOpen(true);
+          } else {
+            setIsLoading();
+            debouncedLoadOptions(inputValue);
+          }
+        }
+      }
+    }, [
+      isAsync,
+      defaultOptions,
+      loadOptions,
+      onEmptyInputValue,
+      cacheOptions,
+      setCachedOptions,
+      setIsLoading,
+      debouncedLoadOptions,
+      inputValue,
+      setOriginalOptions,
+      setIsOpen,
+    ]);
+
+    useEffect(() => {
+      if (isAsync) {
+        if (isAsyncSuccess || isAsyncFailure) {
+          setIsOpen(true);
+        }
+      }
+    }, [isAsync, isAsyncSuccess, isAsyncFailure, setIsOpen]);
 
     const context = {
       id,
@@ -133,6 +243,9 @@ const MultiSelect = forwardRef(
       getOptionProps,
       removeSelectedValue,
       removeAllSelectedValues,
+      isLoading,
+      isAsyncFailure,
+      asyncErrorMessage,
     };
 
     const styleProps = useMultiSelectStyle({
@@ -391,6 +504,7 @@ MultiSelectRightAddons.displayName = "MultiSelectRightAddons";
 const MultiSelectCloseButton = props => {
   const {
     values,
+    isLoading,
     renderCustomCloseButton,
     removeAllSelectedValues,
   } = useMultiSelectContext();
@@ -400,7 +514,7 @@ const MultiSelectCloseButton = props => {
     removeAllSelectedValues();
   };
 
-  if (values.length) {
+  if (values.length && !isLoading) {
     return (
       <MultiSelectRightAddons onClick={handleOnClick} {...props}>
         {renderCustomCloseButton || <Icon name="close" fontSize="0.8rem" />}
@@ -412,6 +526,24 @@ const MultiSelectCloseButton = props => {
 };
 
 MultiSelectCloseButton.displayName = "MultiSelectCloseButton";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const MultiSelectLoader = props => {
+  const { isLoading } = useMultiSelectContext();
+
+  if (isLoading) {
+    return (
+      <MultiSelectRightAddons {...props}>
+        <Spinner size="sm" />
+      </MultiSelectRightAddons>
+    );
+  }
+
+  return null;
+};
+
+MultiSelectLoader.displayName = "MultiSelectLoader";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -438,6 +570,7 @@ const MultiSelectRightElements = props => {
       flexShrink="0"
       {...props}
     >
+      <MultiSelectLoader />
       <MultiSelectCloseButton />
       <MultiSelectToggleIcon />
     </PseudoBox>
@@ -456,6 +589,8 @@ const MultiSelectOption = forwardRef(({ index, style }, ref) => {
     renderCustomOption,
     renderCustomNoOption,
     getOptionProps: _getOptionProps,
+    isAsyncFailure,
+    asyncErrorMessage,
   } = useMultiSelectContext();
 
   const option = filteredOptions[index];
@@ -492,6 +627,10 @@ const MultiSelectOption = forwardRef(({ index, style }, ref) => {
   if (!filteredOptions.length) {
     if (renderCustomNoOption && typeof renderCustomNoOption === "function") {
       return renderCustomNoOption({ getNoOptionProps });
+    }
+
+    if (isAsyncFailure) {
+      return <PseudoBox {...getNoOptionProps}>{asyncErrorMessage}</PseudoBox>;
     }
 
     return <PseudoBox {...getNoOptionProps}>No results found...</PseudoBox>;

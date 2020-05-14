@@ -1,24 +1,29 @@
-import { useReducer } from "react";
+import { useReducer, useCallback } from "react";
 
 const initialState = {
   initiated: false,
   success: false,
   failed: false,
-  errorMessage: false,
+  errorMessage: "",
   data: [],
   completedOnce: false,
 };
 
 function reducer(state, action) {
   switch (action.type) {
+    case "EMPTY_INPUT":
+      return { ...state, data: action.payload.data };
+
+    case "SET_CACHED_OPTIONS":
+      return { ...state, data: action.payload.data };
+
     case "PROMISE_STARTED":
       return {
         ...state,
         initiated: true,
         success: false,
         failed: false,
-        errorMessage: null,
-        data: [],
+        errorMessage: "",
       };
 
     case "PROMISE_RESOLVE_SUCCESS":
@@ -27,9 +32,15 @@ function reducer(state, action) {
         initiated: false,
         success: true,
         failed: false,
-        errorMessage: null,
+        errorMessage: "",
         data: action.payload.data,
         completedOnce: true,
+      };
+
+    case "END_INITIATION":
+      return {
+        ...state,
+        initiated: false,
       };
 
     case "PROMISE_RESOLVE_FAILURE":
@@ -39,6 +50,7 @@ function reducer(state, action) {
         success: false,
         failed: true,
         errorMessage: action.payload.errorMessage,
+        data: [],
         completedOnce: true,
       };
 
@@ -51,10 +63,27 @@ export const useAsyncFetching = () => {
 
   return {
     state,
-    onAsyncStart: () => dispatch({ type: "PROMISE_STARTED" }),
-    onAsyncSuccess: data =>
-      dispatch({ type: "PROMISE_RESOLVE_SUCCESS", payload: { data } }),
-    onAsyncFailure: errorMessage =>
-      dispatch({ type: "PROMISE_RESOLVE_FAILURE", payload: { errorMessage } }),
+    onEmptyInputValue: useCallback(
+      data => dispatch({ type: "EMPTY_INPUT", payload: { data } }),
+      [],
+    ),
+    setCachedOptions: useCallback(
+      data => dispatch({ type: "SET_CACHED_OPTIONS", payload: { data } }),
+      [],
+    ),
+    onAsyncStart: useCallback(() => dispatch({ type: "PROMISE_STARTED" }), []),
+    onAsyncSuccess: useCallback(
+      data => dispatch({ type: "PROMISE_RESOLVE_SUCCESS", payload: { data } }),
+      [],
+    ),
+    onAsyncEnd: useCallback(() => dispatch({ type: "END_INITIATION" }), []),
+    onAsyncFailure: useCallback(
+      errorMessage =>
+        dispatch({
+          type: "PROMISE_RESOLVE_FAILURE",
+          payload: { errorMessage },
+        }),
+      [],
+    ),
   };
 };
