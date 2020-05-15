@@ -44,6 +44,8 @@ export const useComboBox = ({
     values: _initialValues,
     originalOptions: options,
     selectedOptions: [],
+    notSelectedOptions: options,
+    filteredOptions: options,
   };
 
   const reducer = (state, { type, payload }) => {
@@ -57,10 +59,21 @@ export const useComboBox = ({
           ),
         };
 
-      case "SET_SELECTED_OPTIONS":
+      case "SET_NOT_SELECTED_OPTIONS":
         return {
           ...state,
-          selectedOptions: payload.data,
+          notSelectedOptions: isMulti
+            ? payload.data.filter(
+                option => !state.values.includes(option.value),
+              )
+            : payload.data,
+          filteredOptions: isAsync ? payload.data : state.filteredOptions,
+        };
+
+      case "SET_FILTERED_OPTIONS":
+        return {
+          ...state,
+          filteredOptions: payload.data,
         };
 
       case "SET_VALUES":
@@ -70,6 +83,11 @@ export const useComboBox = ({
           selectedOptions: payload.data.map(value =>
             state.originalOptions.find(option => option.value === value),
           ),
+          notSelectedOptions: isMulti
+            ? state.notSelectedOptions.filter(
+                option => !payload.data.includes(option.value),
+              )
+            : payload.data,
         };
 
       default:
@@ -80,7 +98,12 @@ export const useComboBox = ({
   const [state, dispatch] = useReducer(reducer, initialState);
   console.log("%c state", "color: #00bf00", state);
 
-  const { selectedOptions, values } = state;
+  const {
+    values,
+    selectedOptions,
+    notSelectedOptions,
+    filteredOptions,
+  } = state;
 
   const setOriginalOptions = useCallback(
     data =>
@@ -100,10 +123,25 @@ export const useComboBox = ({
     [],
   );
 
+  const setNotSelectedOptions = useCallback(
+    data =>
+      dispatch({
+        type: "SET_NOT_SELECTED_OPTIONS",
+        payload: { data },
+      }),
+    [],
+  );
+
+  const setFilteredOptions = useCallback(
+    data =>
+      dispatch({
+        type: "SET_FILTERED_OPTIONS",
+        payload: { data },
+      }),
+    [],
+  );
+
   // States
-  // const [values, setValues] = useState(_initialValues);
-  const [notSelectedOptions, setNotSelectedOptions] = useState(options);
-  const [filteredOptions, setFilteredOptions] = useState(notSelectedOptions);
   const [inputValue, setInputValue] = useState("");
   const [listBoxInputValue, setListBoxInputValue] = useState("");
   const [inputIsHidden, setInputIsHidden] = useState(false);
@@ -132,29 +170,14 @@ export const useComboBox = ({
   }, [isMulti, onChange, values]);
 
   useEffect(() => {
-    if (isMulti) {
-      setNotSelectedOptions(
-        options.filter(option => !values.includes(option.value)),
-      );
-      return;
-    }
-
-    if (isAsync) {
-      setNotSelectedOptions(options);
-    }
-  }, [isAsync, isMulti, options, values]);
+    setNotSelectedOptions(options);
+  }, [setNotSelectedOptions, options]);
 
   useEffect(() => {
     if (!isAsync) {
       setFilteredOptions(filteredBy(notSelectedOptions, inputValue));
     }
-  }, [isAsync, filteredBy, notSelectedOptions, inputValue]);
-
-  useEffect(() => {
-    if (isAsync) {
-      setFilteredOptions(notSelectedOptions);
-    }
-  }, [isAsync, filteredBy, notSelectedOptions]);
+  }, [isAsync, filteredBy, setFilteredOptions, notSelectedOptions, inputValue]);
 
   useEffect(() => {
     if (listRef.current) listRef.current.scrollToItem(focusedOptionIndex);
@@ -346,13 +369,9 @@ export const useComboBox = ({
 
       setValues([option.value]);
     } else {
-      setValues(oldOptions => {
-        if (oldOptions.includes(option.value)) {
-          return oldOptions;
-        }
+      if (values.includes(option.value)) return;
 
-        return [...oldOptions, option.value];
-      });
+      setValues([...values, option.value]);
     }
   };
 
@@ -360,27 +379,26 @@ export const useComboBox = ({
     if (!isMulti) {
       setValues([]);
     } else {
-      if (values.length) {
-        setValues(oldValues => oldValues.slice(0, oldValues.length - 1));
-      }
+      if (values.length) setValues(values.slice(0, values.length - 1));
     }
   };
 
   const removeSelectedValue = value => {
-    setValues(oldValues =>
-      oldValues.filter(oldValue => !oldValue.includes(value)),
-    );
+    setValues(values.filter(oldValue => oldValue !== value));
+
     if (!isFocused) focusInput();
   };
 
   const removeAllSelectedValues = () => {
     setValues([]);
+
     if (isOpen) setIsOpen(false);
     if (!isFocused) focusInput();
   };
 
   const focusInput = () => {
     if (!inputRef.current) return;
+
     inputRef.current.focus();
   };
 

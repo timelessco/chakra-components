@@ -188,8 +188,11 @@ const MultiSelect = forwardRef(
             debouncedLoadOptions(inputValue);
           }
         }
+      } else {
+        setOriginalOptions(options);
       }
     }, [
+      options,
       isAsync,
       defaultOptions,
       loadOptions,
