@@ -93,8 +93,7 @@ const MultiSelect = forwardRef(
       isFocused,
       isOpen,
       inputValue,
-      listBoxInputValue,
-      inputIsHidden,
+      isInputHidden,
       focusedOptionIndex,
       selectedOptions,
       filteredOptions,
@@ -233,8 +232,7 @@ const MultiSelect = forwardRef(
       isFocused,
       isOpen,
       inputValue,
-      listBoxInputValue,
-      inputIsHidden,
+      isInputHidden,
       focusedOptionIndex,
       selectedOptions,
       filteredOptions,
@@ -394,7 +392,7 @@ const MultiSelectInput = forwardRef(
     },
     ref,
   ) => {
-    const { inputIsHidden, getInputProps, isListBox } = useMultiSelectContext();
+    const { isInputHidden, getInputProps, isListBox } = useMultiSelectContext();
 
     const ariaAttributes = {
       "aria-autocomplete": "list",
@@ -404,7 +402,7 @@ const MultiSelectInput = forwardRef(
 
     const { inputWrapperStyle, inputStyle } = useMultiSelectInputStyle({
       isDisabled,
-      inputIsHidden,
+      isInputHidden,
       isListBox,
     });
 

@@ -47,7 +47,11 @@ export const useComboBox = ({
     notSelectedOptions: options,
     filteredOptions: options,
     inputValue: "",
+    listBoxInputValue: "",
     focusedOptionIndex: 0,
+    isInputHidden: false,
+    isFocused: false,
+    isOpen: false,
   };
 
   const reducer = (state, { type, payload }) => {
@@ -114,10 +118,34 @@ export const useComboBox = ({
             : filteredBy(state.notSelectedOptions, payload.data),
         };
 
+      case "SET_LISTBOXINPUT_VALUE":
+        return {
+          ...state,
+          listBoxInputValue: payload.data,
+        };
+
       case "SET_FOCUSEDOPTION_INDEX":
         return {
           ...state,
           focusedOptionIndex: payload.data,
+        };
+
+      case "SET_IS_INPUT_HIDDEN":
+        return {
+          ...state,
+          isInputHidden: payload.data,
+        };
+
+      case "SET_IS_FOCUSED":
+        return {
+          ...state,
+          isFocused: payload.data,
+        };
+
+      case "SET_IS_OPEN":
+        return {
+          ...state,
+          isOpen: payload.data,
         };
 
       default:
@@ -133,7 +161,11 @@ export const useComboBox = ({
     selectedOptions,
     filteredOptions,
     inputValue,
+    listBoxInputValue,
     focusedOptionIndex,
+    isFocused,
+    isOpen,
+    isInputHidden,
   } = state;
 
   const setOriginalOptions = useCallback(
@@ -181,19 +213,41 @@ export const useComboBox = ({
     [],
   );
 
-  // States
-  const [listBoxInputValue, setListBoxInputValue] = useState("");
-  const [inputIsHidden, setInputIsHidden] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  // const [focusedOptionIndex, setFocusedOptionIndex] = useState(0);
+  const setListBoxInputValue = useCallback(
+    data =>
+      dispatch({
+        type: "SET_LISTBOXINPUT_VALUE",
+        payload: { data },
+      }),
+    [],
+  );
 
-  // Functions needed before useEffect
-  const focusSelectedOption = useCallback(() => {
-    const selectedIndex = options.indexOf(selectedOptions[0]);
+  const setIsInputHidden = useCallback(
+    data =>
+      dispatch({
+        type: "SET_IS_INPUT_HIDDEN",
+        payload: { data },
+      }),
+    [],
+  );
 
-    if (selectedIndex !== -1) setFocusedOptionIndex(selectedIndex);
-  }, [options, selectedOptions, setFocusedOptionIndex]);
+  const setIsFocused = useCallback(
+    data =>
+      dispatch({
+        type: "SET_IS_FOCUSED",
+        payload: { data },
+      }),
+    [],
+  );
+
+  const setIsOpen = useCallback(
+    data =>
+      dispatch({
+        type: "SET_IS_OPEN",
+        payload: { data },
+      }),
+    [],
+  );
 
   const debouncedResetListBoxInputvalue = useConstant(() =>
     debounce(() => setListBoxInputValue(""), 700),
@@ -201,16 +255,16 @@ export const useComboBox = ({
 
   // Effects
   useEffect(() => {
+    setNotSelectedOptions(options);
+  }, [setNotSelectedOptions, options]);
+
+  useEffect(() => {
     if (!isMulti) {
       onChange(values[0] || "");
     } else {
       onChange(values);
     }
   }, [isMulti, onChange, values]);
-
-  useEffect(() => {
-    setNotSelectedOptions(options);
-  }, [setNotSelectedOptions, options]);
 
   useEffect(() => {
     if (listRef.current) listRef.current.scrollToItem(focusedOptionIndex);
@@ -245,7 +299,7 @@ export const useComboBox = ({
       tabIndex: -1,
       onClick: () => {
         if (!isFocused) focusInput();
-        if (inputIsHidden) setInputIsHidden(false);
+        if (isInputHidden) setIsInputHidden(false);
 
         if (isOpen) {
           setIsOpen(false);
@@ -264,15 +318,15 @@ export const useComboBox = ({
       inputRef: useForkRef(inputRef, ref),
       value: isListBox ? listBoxInputValue : inputValue,
       onChange: event => {
-        // TODO: find a way to handle it better with single inputValue
         if (isListBox) {
+          // ? Separate InputValue state is essential for selecting option as we type
           setListBoxInputValue(event.currentTarget.value);
           debouncedResetListBoxInputvalue();
 
           return;
         }
 
-        if (inputIsHidden) setInputIsHidden(false);
+        if (isInputHidden) setIsInputHidden(false);
         if (focusedOptionIndex !== 0) setFocusedOptionIndex(0);
 
         if (isAsync) {
@@ -285,11 +339,11 @@ export const useComboBox = ({
       },
       onFocus: () => {
         if (!isFocused) setIsFocused(true);
-        if (inputIsHidden) setInputIsHidden(false);
+        if (isInputHidden) setIsInputHidden(false);
       },
       onKeyDown: event => {
         if (event.key === "ArrowDown") {
-          if (inputIsHidden) setInputIsHidden(false);
+          if (isInputHidden) setIsInputHidden(false);
 
           if (!isOpen) {
             setIsOpen(true);
@@ -306,7 +360,7 @@ export const useComboBox = ({
         }
 
         if (event.key === "ArrowUp") {
-          if (inputIsHidden) setInputIsHidden(false);
+          if (isInputHidden) setIsInputHidden(false);
 
           if (!isOpen) {
             setIsOpen(true);
@@ -346,7 +400,7 @@ export const useComboBox = ({
 
         if (event.key === "Backspace") {
           if (!inputValue) {
-            if (inputIsHidden) setInputIsHidden(false);
+            if (isInputHidden) setIsInputHidden(false);
 
             removeLastSelectedValue();
           }
@@ -402,7 +456,7 @@ export const useComboBox = ({
   // Extra Functions
   const selectOption = option => {
     if (!isMulti) {
-      if (!inputIsHidden) setInputIsHidden(true);
+      if (!isInputHidden) setIsInputHidden(true);
 
       setValues([option.value]);
     } else {
@@ -444,7 +498,9 @@ export const useComboBox = ({
       if (!values.length) {
         setFocusedOptionIndex(index);
       } else {
-        focusSelectedOption();
+        const selectedIndex = options.indexOf(selectedOptions[0]);
+
+        if (selectedIndex !== -1) setFocusedOptionIndex(selectedIndex);
       }
     } else {
       setFocusedOptionIndex(index);
@@ -456,8 +512,7 @@ export const useComboBox = ({
     isFocused,
     isOpen,
     inputValue,
-    listBoxInputValue,
-    inputIsHidden,
+    isInputHidden,
     focusedOptionIndex,
     selectedOptions,
     filteredOptions,
