@@ -44,11 +44,19 @@ export const useComboBox = ({
     values: _initialValues,
     originalOptions: options,
     selectedOptions: [],
+    notSelectedOptions: options,
     filteredOptions: options,
     inputValue: "",
+    focusedOptionIndex: 0,
   };
 
   const reducer = (state, { type, payload }) => {
+    const _selectedIndex = state.notSelectedOptions.indexOf(
+      state.selectedOptions[0],
+    );
+    const selectedIndex =
+      _selectedIndex !== -1 ? _selectedIndex : state.focusedOptionIndex;
+
     switch (type) {
       case "SET_ORIGINAL_OPTIONS":
         return {
@@ -57,18 +65,27 @@ export const useComboBox = ({
           selectedOptions: state.values.map(value =>
             payload.data.find(option => option.value === value),
           ),
+          focusedOptionIndex: !isMulti
+            ? selectedIndex
+            : state.focusedOptionIndex,
         };
 
-      case "SET_FILTERED_OPTIONS":
-        const options = isMulti
-          ? payload.data.filter(option => !state.values.includes(option.value))
-          : payload.data;
-
+      case "SET_NOT_SELECTED_OPTIONS":
         return {
           ...state,
-          filteredOptions: isAsync
-            ? options
-            : filteredBy(options, state.inputValue),
+          notSelectedOptions: isMulti
+            ? payload.data.filter(
+                option => !state.values.includes(option.value),
+              )
+            : payload.data,
+          filteredOptions: isMulti
+            ? payload.data.filter(
+                option => !state.values.includes(option.value),
+              )
+            : payload.data,
+          focusedOptionIndex: !isMulti
+            ? selectedIndex
+            : state.focusedOptionIndex,
         };
 
       case "SET_VALUES":
@@ -78,6 +95,14 @@ export const useComboBox = ({
           selectedOptions: payload.data.map(value =>
             state.originalOptions.find(option => option.value === value),
           ),
+          notSelectedOptions: isMulti
+            ? state.notSelectedOptions.filter(
+                option => !payload.data.includes(option.value),
+              )
+            : state.notSelectedOptions,
+          focusedOptionIndex: !isMulti
+            ? selectedIndex
+            : state.focusedOptionIndex,
         };
 
       case "SET_INPUT_VALUE":
@@ -85,8 +110,14 @@ export const useComboBox = ({
           ...state,
           inputValue: payload.data,
           filteredOptions: isAsync
-            ? state.filteredOptions
-            : filteredBy(state.filteredOptions, payload.data),
+            ? state.notSelectedOptions
+            : filteredBy(state.notSelectedOptions, payload.data),
+        };
+
+      case "SET_FOCUSEDOPTION_INDEX":
+        return {
+          ...state,
+          focusedOptionIndex: payload.data,
         };
 
       default:
@@ -97,7 +128,13 @@ export const useComboBox = ({
   const [state, dispatch] = useReducer(reducer, initialState);
   console.log("%c state", "color: #00bf00", state);
 
-  const { values, selectedOptions, filteredOptions, inputValue } = state;
+  const {
+    values,
+    selectedOptions,
+    filteredOptions,
+    inputValue,
+    focusedOptionIndex,
+  } = state;
 
   const setOriginalOptions = useCallback(
     data =>
@@ -117,10 +154,10 @@ export const useComboBox = ({
     [],
   );
 
-  const setFilteredOptions = useCallback(
+  const setNotSelectedOptions = useCallback(
     data =>
       dispatch({
-        type: "SET_FILTERED_OPTIONS",
+        type: "SET_NOT_SELECTED_OPTIONS",
         payload: { data },
       }),
     [],
@@ -135,19 +172,28 @@ export const useComboBox = ({
     [],
   );
 
+  const setFocusedOptionIndex = useCallback(
+    data =>
+      dispatch({
+        type: "SET_FOCUSEDOPTION_INDEX",
+        payload: { data },
+      }),
+    [],
+  );
+
   // States
   const [listBoxInputValue, setListBoxInputValue] = useState("");
   const [inputIsHidden, setInputIsHidden] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [focusedOptionIndex, setFocusedOptionIndex] = useState(0);
+  // const [focusedOptionIndex, setFocusedOptionIndex] = useState(0);
 
   // Functions needed before useEffect
   const focusSelectedOption = useCallback(() => {
     const selectedIndex = options.indexOf(selectedOptions[0]);
 
     if (selectedIndex !== -1) setFocusedOptionIndex(selectedIndex);
-  }, [options, selectedOptions]);
+  }, [options, selectedOptions, setFocusedOptionIndex]);
 
   const debouncedResetListBoxInputvalue = useConstant(() =>
     debounce(() => setListBoxInputValue(""), 700),
@@ -163,16 +209,12 @@ export const useComboBox = ({
   }, [isMulti, onChange, values]);
 
   useEffect(() => {
-    setFilteredOptions(options);
-  }, [setFilteredOptions, options]);
+    setNotSelectedOptions(options);
+  }, [setNotSelectedOptions, options]);
 
   useEffect(() => {
     if (listRef.current) listRef.current.scrollToItem(focusedOptionIndex);
   }, [isOpen, focusedOptionIndex]);
-
-  useEffect(() => {
-    if (!isMulti) focusSelectedOption();
-  }, [isMulti, focusSelectedOption]);
 
   useEffect(() => {
     if (isListBox) {
@@ -187,7 +229,15 @@ export const useComboBox = ({
         }
       }
     }
-  }, [isListBox, options, filteredBy, setValues, isOpen, listBoxInputValue]);
+  }, [
+    isListBox,
+    options,
+    filteredBy,
+    setValues,
+    isOpen,
+    listBoxInputValue,
+    setFocusedOptionIndex,
+  ]);
 
   // getters
   const getWrapperProps = () => {
