@@ -154,7 +154,6 @@ export const useComboBox = ({
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
-  console.log("%c state", "color: #00bf00", state);
 
   const {
     values,
