@@ -44,8 +44,8 @@ export const useComboBox = ({
     values: _initialValues,
     originalOptions: options,
     selectedOptions: [],
-    notSelectedOptions: options,
     filteredOptions: options,
+    inputValue: "",
   };
 
   const reducer = (state, { type, payload }) => {
@@ -59,21 +59,16 @@ export const useComboBox = ({
           ),
         };
 
-      case "SET_NOT_SELECTED_OPTIONS":
-        return {
-          ...state,
-          notSelectedOptions: isMulti
-            ? payload.data.filter(
-                option => !state.values.includes(option.value),
-              )
-            : payload.data,
-          filteredOptions: isAsync ? payload.data : state.filteredOptions,
-        };
-
       case "SET_FILTERED_OPTIONS":
+        const options = isMulti
+          ? payload.data.filter(option => !state.values.includes(option.value))
+          : payload.data;
+
         return {
           ...state,
-          filteredOptions: payload.data,
+          filteredOptions: isAsync
+            ? options
+            : filteredBy(options, state.inputValue),
         };
 
       case "SET_VALUES":
@@ -83,11 +78,15 @@ export const useComboBox = ({
           selectedOptions: payload.data.map(value =>
             state.originalOptions.find(option => option.value === value),
           ),
-          notSelectedOptions: isMulti
-            ? state.notSelectedOptions.filter(
-                option => !payload.data.includes(option.value),
-              )
-            : payload.data,
+        };
+
+      case "SET_INPUT_VALUE":
+        return {
+          ...state,
+          inputValue: payload.data,
+          filteredOptions: isAsync
+            ? state.filteredOptions
+            : filteredBy(state.filteredOptions, payload.data),
         };
 
       default:
@@ -98,12 +97,7 @@ export const useComboBox = ({
   const [state, dispatch] = useReducer(reducer, initialState);
   console.log("%c state", "color: #00bf00", state);
 
-  const {
-    values,
-    selectedOptions,
-    notSelectedOptions,
-    filteredOptions,
-  } = state;
+  const { values, selectedOptions, filteredOptions, inputValue } = state;
 
   const setOriginalOptions = useCallback(
     data =>
@@ -123,15 +117,6 @@ export const useComboBox = ({
     [],
   );
 
-  const setNotSelectedOptions = useCallback(
-    data =>
-      dispatch({
-        type: "SET_NOT_SELECTED_OPTIONS",
-        payload: { data },
-      }),
-    [],
-  );
-
   const setFilteredOptions = useCallback(
     data =>
       dispatch({
@@ -141,8 +126,16 @@ export const useComboBox = ({
     [],
   );
 
+  const setInputValue = useCallback(
+    data =>
+      dispatch({
+        type: "SET_INPUT_VALUE",
+        payload: { data },
+      }),
+    [],
+  );
+
   // States
-  const [inputValue, setInputValue] = useState("");
   const [listBoxInputValue, setListBoxInputValue] = useState("");
   const [inputIsHidden, setInputIsHidden] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -170,14 +163,8 @@ export const useComboBox = ({
   }, [isMulti, onChange, values]);
 
   useEffect(() => {
-    setNotSelectedOptions(options);
-  }, [setNotSelectedOptions, options]);
-
-  useEffect(() => {
-    if (!isAsync) {
-      setFilteredOptions(filteredBy(notSelectedOptions, inputValue));
-    }
-  }, [isAsync, filteredBy, setFilteredOptions, notSelectedOptions, inputValue]);
+    setFilteredOptions(options);
+  }, [setFilteredOptions, options]);
 
   useEffect(() => {
     if (listRef.current) listRef.current.scrollToItem(focusedOptionIndex);
