@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useReducer } from "react";
 import debounce from "lodash.debounce";
 import { useForkRef } from "@chakra-ui/core/dist/utils";
 import { useConstant } from "./useConstant";
@@ -39,10 +39,69 @@ export const useComboBox = ({
     }
   }
 
+  // Reducers
+  const initialState = {
+    values: _initialValues,
+    originalOptions: options,
+    selectedOptions: [],
+  };
+
+  const reducer = (state, { type, payload }) => {
+    switch (type) {
+      case "SET_ORIGINAL_OPTIONS":
+        return {
+          ...state,
+          originalOptions: payload.data,
+          selectedOptions: state.values.map(value =>
+            payload.data.find(option => option.value === value),
+          ),
+        };
+
+      case "SET_SELECTED_OPTIONS":
+        return {
+          ...state,
+          selectedOptions: payload.data,
+        };
+
+      case "SET_VALUES":
+        return {
+          ...state,
+          values: payload.data,
+          selectedOptions: payload.data.map(value =>
+            state.originalOptions.find(option => option.value === value),
+          ),
+        };
+
+      default:
+        return state;
+    }
+  };
+
+  const [state, dispatch] = useReducer(reducer, initialState);
+  console.log("%c state", "color: #00bf00", state);
+
+  const { selectedOptions, values } = state;
+
+  const setOriginalOptions = useCallback(
+    data =>
+      dispatch({
+        type: "SET_ORIGINAL_OPTIONS",
+        payload: { data },
+      }),
+    [],
+  );
+
+  const setValues = useCallback(
+    data =>
+      dispatch({
+        type: "SET_VALUES",
+        payload: { data },
+      }),
+    [],
+  );
+
   // States
-  const [values, setValues] = useState(_initialValues);
-  const [originalOptions, setOriginalOptions] = useState(options);
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  // const [values, setValues] = useState(_initialValues);
   const [notSelectedOptions, setNotSelectedOptions] = useState(options);
   const [filteredOptions, setFilteredOptions] = useState(notSelectedOptions);
   const [inputValue, setInputValue] = useState("");
@@ -64,14 +123,6 @@ export const useComboBox = ({
   );
 
   // Effects
-  useEffect(() => {
-    setSelectedOptions(
-      values.map(value =>
-        originalOptions.find(option => option.value === value),
-      ),
-    );
-  }, [originalOptions, values]);
-
   useEffect(() => {
     if (!isMulti) {
       onChange(values[0] || "");
@@ -126,7 +177,7 @@ export const useComboBox = ({
         }
       }
     }
-  }, [isListBox, options, filteredBy, isOpen, listBoxInputValue]);
+  }, [isListBox, options, filteredBy, setValues, isOpen, listBoxInputValue]);
 
   // getters
   const getWrapperProps = () => {
