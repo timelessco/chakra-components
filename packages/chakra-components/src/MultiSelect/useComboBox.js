@@ -167,86 +167,18 @@ export const useComboBox = ({
     isInputHidden,
   } = state;
 
-  const setOriginalOptions = useCallback(
-    data =>
-      dispatch({
-        type: "SET_ORIGINAL_OPTIONS",
-        payload: { data },
-      }),
-    [],
-  );
+  const useDispatchCallback = type =>
+    useCallback(data => dispatch({ type, payload: { data } }), [type]);
 
-  const setValues = useCallback(
-    data =>
-      dispatch({
-        type: "SET_VALUES",
-        payload: { data },
-      }),
-    [],
-  );
-
-  const setNotSelectedOptions = useCallback(
-    data =>
-      dispatch({
-        type: "SET_NOT_SELECTED_OPTIONS",
-        payload: { data },
-      }),
-    [],
-  );
-
-  const setInputValue = useCallback(
-    data =>
-      dispatch({
-        type: "SET_INPUT_VALUE",
-        payload: { data },
-      }),
-    [],
-  );
-
-  const setFocusedOptionIndex = useCallback(
-    data =>
-      dispatch({
-        type: "SET_FOCUSEDOPTION_INDEX",
-        payload: { data },
-      }),
-    [],
-  );
-
-  const setListBoxInputValue = useCallback(
-    data =>
-      dispatch({
-        type: "SET_LISTBOXINPUT_VALUE",
-        payload: { data },
-      }),
-    [],
-  );
-
-  const setIsInputHidden = useCallback(
-    data =>
-      dispatch({
-        type: "SET_IS_INPUT_HIDDEN",
-        payload: { data },
-      }),
-    [],
-  );
-
-  const setIsFocused = useCallback(
-    data =>
-      dispatch({
-        type: "SET_IS_FOCUSED",
-        payload: { data },
-      }),
-    [],
-  );
-
-  const setIsOpen = useCallback(
-    data =>
-      dispatch({
-        type: "SET_IS_OPEN",
-        payload: { data },
-      }),
-    [],
-  );
+  const setOriginalOptions = useDispatchCallback("SET_ORIGINAL_OPTIONS");
+  const setValues = useDispatchCallback("SET_VALUES");
+  const setNotSelectedOptions = useDispatchCallback("SET_NOT_SELECTED_OPTIONS");
+  const setInputValue = useDispatchCallback("SET_INPUT_VALUE");
+  const setFocusedOptionIndex = useDispatchCallback("SET_FOCUSEDOPTION_INDEX");
+  const setListBoxInputValue = useDispatchCallback("SET_LISTBOXINPUT_VALUE");
+  const setIsInputHidden = useDispatchCallback("SET_IS_INPUT_HIDDEN");
+  const setIsFocused = useDispatchCallback("SET_IS_FOCUSED");
+  const setIsOpen = useDispatchCallback("SET_IS_OPEN");
 
   const debouncedResetListBoxInputvalue = useConstant(() =>
     debounce(() => setListBoxInputValue(""), 700),
