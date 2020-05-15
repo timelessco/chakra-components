@@ -18,7 +18,7 @@ import {
 } from "../index.js";
 import { act } from "react-dom/test-utils";
 import { unmountComponentAtNode } from "react-dom";
-import { Flex, Box, Avatar, Button } from "@chakra-ui/core";
+import { Flex, Box, Avatar, Button, Input } from "@chakra-ui/core";
 
 const options = [
   { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1", disabled: false },
@@ -165,3 +165,72 @@ it("combo-box", () => {
   expect(wrapper.find('input').prop('value')).toBe("");
 });
 
+// keyboard escape event.
+it("combo-box", () => {
+  const wrapper = mount(
+    <Combo_Box />,
+  );
+
+  // selecting a option
+  wrapper.find('input').simulate('focus');
+  wrapper.find('input').simulate('change', { target: { value: "Dan" } });
+
+  // escape event
+  wrapper.find('input').simulate('keyDown', {key: 'Escape'});
+
+  expect(wrapper.find('input').prop('value')).toBe("");
+});
+
+
+// input blur event.
+// it("combo-box", () => {
+//   const wrapper = mount(
+//     <Combo_Box />
+//   );
+
+//   // selecting a option
+//   wrapper.find('input').simulate('focus');
+//   wrapper.find('input').simulate('change', { target: { value: "Dan" } });
+//   wrapper.find('input').simulate('focus');
+
+//   expect(wrapper.find('input').prop('value')).toBe("");
+// });
+
+// onChange list sort.
+// it("combo-box", () => {
+//   const wrapper = mount(
+//     <Combo_Box />,
+//   );
+//   wrapper.find('input').simulate('focus');
+//   expect(wrapper.find('li').exists()).toEqual(true);
+//   expect(wrapper.find('li')).toHaveLength(5);
+//   wrapper.find('input').simulate('change', { target: { value: 'dan' } });
+//   expect(wrapper.find('li')).toHaveLength(1);
+// });
+
+/** 
+ * keyboard navigation for out of bounds doesn't navigate.
+ * For example up arrow on first element 
+*/
+it("combo-box", () => {
+  const wrapper = mount(
+    <Combo_Box />,
+  );
+  wrapper.find('input').simulate('focus');
+  wrapper.find('input').simulate('keyDown', {key: 'ArrowUp'});
+  wrapper.find('input').simulate('keyDown', {key: 'Enter'});
+  expect(wrapper.find('input').prop('value')).toBe("Dan Abrahmov");
+});
+
+/**
+ * keyboard navigation works correctly to scroll the list
+ */
+it("combo-box", () => {
+  const wrapper = mount(
+    <Combo_Box />,
+  );
+  wrapper.find('input').simulate('focus');
+  wrapper.find('input').simulate('keyDown', {key: 'ArrowDown'});
+  wrapper.find('input').simulate('keyDown', {key: 'Enter'});
+  expect(wrapper.find('input').prop('value')).toBe("Kola Tioluwani");
+});
