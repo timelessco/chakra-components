@@ -21,18 +21,20 @@ import { unmountComponentAtNode } from "react-dom";
 import { Flex, Box, Avatar, Button } from "@chakra-ui/core";
 
 const options = [
-  { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1" },
+  { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1", disabled: false },
   {
     label: "Kola Tioluwani",
     img: "https://bit.ly/tioluwani-kolawole",
     value: "2",
+    disabled: false
   },
-  { label: "Kent Dodds", img: "https://bit.ly/kent-c-dodds", value: "3" },
-  { label: "Ryan Florence", img: "https://bit.ly/ryan-florence", value: "4" },
+  { label: "Kent Dodds", img: "https://bit.ly/kent-c-dodds", value: "3", disabled: false },
+  { label: "Ryan Florence", img: "https://bit.ly/ryan-florence", value: "4", disabled: false },
   {
     label: "Prosper Otemuyiwa",
     img: "https://bit.ly/prosper-baba",
     value: "5",
+    disabled: true
   },
 ];
 
@@ -131,6 +133,7 @@ it("combo-box", () => {
   expect(wrapper.find('input').prop('value')).toBe("Dan Abrahmov");
 });
 
+
 // combobox clear.
 it("combo-box", () => {
   const wrapper = mount(
@@ -149,4 +152,16 @@ it("combo-box", () => {
   expect(wrapper.find('input').prop('value')).toBe("");
 });
 
+// disabled state not selectable.
+it("combo-box", () => {
+  const wrapper = mount(
+    <Combo_Box />,
+  );
+
+  // selecting a option
+  wrapper.find('input').simulate('focus');
+  wrapper.find('li').at(4).simulate('contextmenu');  
+
+  expect(wrapper.find('input').prop('value')).toBe("");
+});
 
