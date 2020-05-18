@@ -28,14 +28,26 @@ export const useComboBox = ({
   const multiSelectRef = useRef(null);
   const popperRef = useRef(null);
 
+  /**
+   * Check if the provided initial value/values are valid against the given options.
+   */
+  const isValuesValid = values =>
+    options.find(option => option.value === values);
+
+  /**
+   * Initial Values should be converted to an array if a value is given for basic & listbox
+   */
   let _initialValues = [];
 
-  // TODO: Check if this calculation for the initial value is battle proven
   if (initialValues) {
     if (Array.isArray(initialValues)) {
       _initialValues = initialValues;
     } else {
-      if (initialValues) _initialValues = [initialValues];
+      if (isValuesValid(initialValues)) {
+        _initialValues = [initialValues];
+      } else {
+        _initialValues = [];
+      }
     }
   }
 
