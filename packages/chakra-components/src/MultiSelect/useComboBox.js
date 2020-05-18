@@ -49,14 +49,17 @@ export const useComboBox = ({
   let _initialValues = [];
 
   if (initialValues) {
-    if (Array.isArray(initialValues)) {
-      _initialValues = initialValues;
-    } else {
-      if (isValuesValid(initialValues)) {
+    if (!isMulti) {
+      if (!Array.isArray(initialValues) && isValuesValid(initialValues)) {
         _initialValues = [initialValues];
       } else {
         invalidValueWarning(initialValues);
-        _initialValues = [];
+      }
+    } else {
+      if (Array.isArray(initialValues)) {
+        _initialValues = initialValues;
+      } else {
+        invalidValueWarning(initialValues);
       }
     }
   }
