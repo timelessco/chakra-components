@@ -38,9 +38,7 @@ export const useComboBox = ({
    * Warn users on the value provided being invalid.
    */
   const invalidValueWarning = value => {
-    if (process.env.NODE_ENV !== "production") {
-      console.warn(`Provided value "${value}" is not valid`);
-    }
+    console.warn(`Provided value "${value}" is not valid`);
   };
 
   /**
@@ -48,7 +46,10 @@ export const useComboBox = ({
    */
   let _initialValues = [];
 
-  if (initialValues) {
+  if (initialValues !== undefined && initialValues !== null) {
+    /**
+     * Single Select - Accepts only string/number.
+     */
     if (!isMulti) {
       if (!Array.isArray(initialValues) && isValuesValid(initialValues)) {
         _initialValues = [initialValues];
@@ -56,6 +57,9 @@ export const useComboBox = ({
         invalidValueWarning(initialValues);
       }
     } else {
+      /**
+       * Multi Select - Accepts only an array.
+       */
       if (Array.isArray(initialValues)) {
         _initialValues = initialValues;
       } else {
