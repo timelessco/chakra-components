@@ -31,14 +31,21 @@ export const useComboBox = ({
   /**
    * Check if the provided initial value/values are valid against the given options.
    */
-  const isValuesValid = values =>
-    options.find(option => option.value === values);
+  const isValuesValid = values => {
+    if (!isMulti) {
+      return options.some(option => option.value === values);
+    } else {
+      let isValid = true;
 
-  /**
-   * Warn users on the value provided being invalid.
-   */
-  const invalidValueWarning = value => {
-    console.warn(`Provided value "${value}" is not valid`);
+      for (let i = 0; i < values.length; i++) {
+        if (!options.some(option => option.value === values[i])) {
+          isValid = false;
+          break;
+        }
+      }
+
+      return isValid;
+    }
   };
 
   /**
@@ -53,17 +60,13 @@ export const useComboBox = ({
     if (!isMulti) {
       if (!Array.isArray(initialValues) && isValuesValid(initialValues)) {
         _initialValues = [initialValues];
-      } else {
-        invalidValueWarning(initialValues);
       }
     } else {
       /**
        * Multi Select - Accepts only an array.
        */
-      if (Array.isArray(initialValues)) {
+      if (Array.isArray(initialValues) && isValuesValid(initialValues)) {
         _initialValues = initialValues;
-      } else {
-        invalidValueWarning(initialValues);
       }
     }
   }
