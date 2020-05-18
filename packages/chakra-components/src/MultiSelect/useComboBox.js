@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, useReducer } from "react";
+import { useEffect, useRef, useCallback, useReducer } from "react";
 import debounce from "lodash.debounce";
 import { useForkRef } from "@chakra-ui/core/dist/utils";
 import { useConstant } from "./useConstant";

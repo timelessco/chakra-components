@@ -31,10 +31,6 @@ import {
 
 export const MultiSelectContext = createContext();
 
-// TODO: Move everything to useReducers
-// TODO: Listbox selects the disabled values - Fix
-// TODO: Get a link for default caching options
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelect = forwardRef(
@@ -69,7 +65,6 @@ const MultiSelect = forwardRef(
     },
     ref,
   ) => {
-    // TODO: Get promise from outside instead of resolved options
     const cachedOptions = useRef({});
 
     const {
@@ -117,10 +112,6 @@ const MultiSelect = forwardRef(
       isAsync,
     });
 
-    // TODO: Better cache functions
-    // TODO: Handle Open Dropdown after options fetched better
-    // TODO: Handle the debouncing of the last letter deletion better
-
     const debouncedLoadOptions = useConstant(() =>
       debounce(inputValue => {
         if (!inputValue) {
@@ -164,8 +155,6 @@ const MultiSelect = forwardRef(
               setOriginalOptions(options);
             };
 
-            // TODO: improve the initial fetch API
-            // TODO: Better way to load complete options
             if (typeof defaultOptions === "boolean" && defaultOptions) {
               loadOptions(
                 "a",
