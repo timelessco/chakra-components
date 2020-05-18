@@ -35,6 +35,15 @@ export const useComboBox = ({
     options.find(option => option.value === values);
 
   /**
+   * Warn users on the value provided being invalid.
+   */
+  const invalidValueWarning = value => {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn(`Provided value "${value}" is not valid`);
+    }
+  };
+
+  /**
    * Initial Values should be converted to an array if a value is given for basic & listbox
    */
   let _initialValues = [];
@@ -46,6 +55,7 @@ export const useComboBox = ({
       if (isValuesValid(initialValues)) {
         _initialValues = [initialValues];
       } else {
+        invalidValueWarning(initialValues);
         _initialValues = [];
       }
     }
