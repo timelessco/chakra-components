@@ -382,10 +382,11 @@ export const useComboBox = ({
               return;
             }
 
-            if (isOpen) selectOption(focusedOption);
-            if (isOpen) setIsOpen(false);
-
-            setInputValue("");
+            if (isOpen) {
+              setInputValue("");
+              selectOption(focusedOption);
+              setIsOpen(false);
+            }
           }
         }
 
