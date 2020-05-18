@@ -19,6 +19,7 @@ module.exports = withMDX({
       "/menubar": { page: "/menubar" },
       "/combobox": { page: "/combobox" },
       "/multiselect": { page: "/multiselect" },
+      "/playground": { page: "/playground" },
     };
   },
 });

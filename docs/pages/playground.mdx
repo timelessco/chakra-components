@@ -1,0 +1,351 @@
+## Basic Async
+
+```jsx
+function MultiSelectExample() {
+  const [defaultOptions, setDefaultOptions] = useState([]);
+
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
+
+  useEffect(() => {
+    axios.get(`https://restcountries.eu/rest/v2/all`).then(response => {
+      setDefaultOptions(
+        response.data.map(ep => ({
+          label: `${ep.name}`,
+          value: `${ep.name}`,
+          code: `${ep.alpha2Code}`,
+          timeZone: `${ep.timezones[0]}`,
+        })),
+      );
+    });
+  }, []);
+
+  const [country, setCountry] = useState("Australia");
+
+  return (
+    <MultiSelect
+      isAsync
+      loadOptions={loadOptions}
+      cacheOptions
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
+    />
+  );
+}
+```
+
+<!-- ## Basic Listbox
+
+```jsx
+function MultiSelectExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+    "Cantaloupes(cantalope)",
+    "Chocolate - Fruit",
+    "Cherimoya",
+    "Cherries",
+    "Cranberries",
+    "Cucumbers",
+    "Currants",
+    "Dates",
+    "Durian",
+    "Eggplant",
+    "Elderberries",
+    "Figs",
+    "Gooseberries",
+    "Grapes",
+    "Grapefruit",
+    "Guava",
+    "Honeydew melons",
+    "Horned melon(Kiwano)",
+    "Huckleberries",
+    "Ita Palm",
+    "Jujubes",
+    "Kiwis",
+    "Kumquat",
+    "Lemons",
+    "Limes",
+    "Lychees",
+    "Mangos",
+    "Mangosteen",
+    "Mulberries",
+    "Muskmelon",
+    "Nectarines",
+    "Ogden melons",
+    "Olives",
+    "Oranges",
+    "Papaya",
+    "Passion fruit",
+    "Peaches",
+    "Pears",
+    "Peppers",
+    "Persimmon",
+    "Pineapple",
+    "Plums",
+    "Pluot",
+    "Pomegranate",
+    "Prickly Pear",
+    "Quince",
+    "Rambuton",
+    "Raspberries",
+    "Rose Apple",
+    "Starfruit",
+    "Sapadilla",
+    "Strawberries",
+    "Tamarind",
+    "Tangelo",
+    "Tangerines",
+    "Tomatoes",
+    "Ugli fruit",
+    "Voavanga(Spanish Tamarind)",
+    "Watermelons",
+    "Xigua melon",
+    "Yellow watermelon",
+    "Zucchini",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+    disabled: i % 4 === 0,
+  }));
+
+  const [fruit, setFruit] = useState(null);
+
+  return (
+    <MultiSelect
+      isListBox
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+    />
+  );
+}
+``` -->
+
+<!-- ## Basic Searchable Select
+
+```jsx
+function MultiSelectExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+    "Cantaloupes(cantalope)",
+    "Chocolate - Fruit",
+    "Cherimoya",
+    "Cherries",
+    "Cranberries",
+    "Cucumbers",
+    "Currants",
+    "Dates",
+    "Durian",
+    "Eggplant",
+    "Elderberries",
+    "Figs",
+    "Gooseberries",
+    "Grapes",
+    "Grapefruit",
+    "Guava",
+    "Honeydew melons",
+    "Horned melon(Kiwano)",
+    "Huckleberries",
+    "Ita Palm",
+    "Jujubes",
+    "Kiwis",
+    "Kumquat",
+    "Lemons",
+    "Limes",
+    "Lychees",
+    "Mangos",
+    "Mangosteen",
+    "Mulberries",
+    "Muskmelon",
+    "Nectarines",
+    "Ogden melons",
+    "Olives",
+    "Oranges",
+    "Papaya",
+    "Passion fruit",
+    "Peaches",
+    "Pears",
+    "Peppers",
+    "Persimmon",
+    "Pineapple",
+    "Plums",
+    "Pluot",
+    "Pomegranate",
+    "Prickly Pear",
+    "Quince",
+    "Rambuton",
+    "Raspberries",
+    "Rose Apple",
+    "Starfruit",
+    "Sapadilla",
+    "Strawberries",
+    "Tamarind",
+    "Tangelo",
+    "Tangerines",
+    "Tomatoes",
+    "Ugli fruit",
+    "Voavanga(Spanish Tamarind)",
+    "Watermelons",
+    "Xigua melon",
+    "Yellow watermelon",
+    "Zucchini",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+    disabled: i % 4 === 0,
+  }));
+
+  const [fruit, setFruit] = useState(null);
+
+  return (
+    <MultiSelect
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+    />
+  );
+}
+``` -->
+
+<!-- ## Searchable Multi Select
+
+```jsx
+function MultiSelectExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+    "Cantaloupes(cantalope)",
+    "Chocolate - Fruit",
+    "Cherimoya",
+    "Cherries",
+    "Cranberries",
+    "Cucumbers",
+    "Currants",
+    "Dates",
+    "Durian",
+    "Eggplant",
+    "Elderberries",
+    "Figs",
+    "Gooseberries",
+    "Grapes",
+    "Grapefruit",
+    "Guava",
+    "Honeydew melons",
+    "Horned melon(Kiwano)",
+    "Huckleberries",
+    "Ita Palm",
+    "Jujubes",
+    "Kiwis",
+    "Kumquat",
+    "Lemons",
+    "Limes",
+    "Lychees",
+    "Mangos",
+    "Mangosteen",
+    "Mulberries",
+    "Muskmelon",
+    "Nectarines",
+    "Ogden melons",
+    "Olives",
+    "Oranges",
+    "Papaya",
+    "Passion fruit",
+    "Peaches",
+    "Pears",
+    "Peppers",
+    "Persimmon",
+    "Pineapple",
+    "Plums",
+    "Pluot",
+    "Pomegranate",
+    "Prickly Pear",
+    "Quince",
+    "Rambuton",
+    "Raspberries",
+    "Rose Apple",
+    "Starfruit",
+    "Sapadilla",
+    "Strawberries",
+    "Tamarind",
+    "Tangelo",
+    "Tangerines",
+    "Tomatoes",
+    "Ugli fruit",
+    "Voavanga(Spanish Tamarind)",
+    "Watermelons",
+    "Xigua melon",
+    "Yellow watermelon",
+    "Zucchini",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+    disabled: i % 4 === 0,
+  }));
+
+  const [fruit, setFruit] = React.useState(["Apples", "Bananas"]);
+
+  return (
+    <MultiSelect
+      isMulti
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+    />
+  );
+}
+``` -->
