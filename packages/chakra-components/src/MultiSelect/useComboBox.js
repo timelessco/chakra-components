@@ -31,12 +31,15 @@ export const useComboBox = ({
   /**
    * Check if the provided initial value/values are valid against the given options.
    */
-  const isValuesValid = values => {
+  const isValuesValid = (values, options) => {
     if (!isMulti) {
       return options.some(option => option.value === values);
     } else {
       let isValid = true;
 
+      /**
+       * Used forEach to break the loop when it is not valid.
+       */
       for (let i = 0; i < values.length; i++) {
         if (!options.some(option => option.value === values[i])) {
           isValid = false;
@@ -51,29 +54,36 @@ export const useComboBox = ({
   /**
    * Initial Values should be converted to an array if a value is given for basic & listbox
    */
-  let _initialValues = [];
-
-  if (initialValues !== undefined && initialValues !== null) {
-    /**
-     * Single Select - Accepts only string/number.
-     */
-    if (!isMulti) {
-      if (!Array.isArray(initialValues) && isValuesValid(initialValues)) {
-        _initialValues = [initialValues];
+  const setInitialValues = (values, options) => {
+    if (values !== undefined && values !== null) {
+      /**
+       * Single Select - Accepts only string/number.
+       */
+      if (!isMulti) {
+        if (!Array.isArray(values) && isValuesValid(values, options)) {
+          return [values];
+        } else {
+          return [];
+        }
+      } else {
+        /**
+         * Multi Select - Accepts only an array.
+         */
+        if (Array.isArray(values) && isValuesValid(values, options)) {
+          return values;
+        } else {
+          return [];
+        }
       }
     } else {
-      /**
-       * Multi Select - Accepts only an array.
-       */
-      if (Array.isArray(initialValues) && isValuesValid(initialValues)) {
-        _initialValues = initialValues;
-      }
+      return [];
     }
-  }
+  };
 
   // Reducers
   const initialState = {
-    values: _initialValues,
+    values: setInitialValues(initialValues, options),
+    originalValues: initialValues,
     originalOptions: options,
     selectedOptions: [],
     notSelectedOptions: options,
@@ -87,26 +97,39 @@ export const useComboBox = ({
   };
 
   const reducer = (state, { type, payload }) => {
-    const _selectedIndex = state.notSelectedOptions.indexOf(
-      state.selectedOptions[0],
-    );
-    const selectedIndex =
-      _selectedIndex !== -1 ? _selectedIndex : state.focusedOptionIndex;
-
     switch (type) {
       case "SET_ORIGINAL_OPTIONS":
+        const setOriginalValues = setInitialValues(
+          state.originalValues,
+          payload.data,
+        );
+        const setOriginalSelectedOptions = setOriginalValues.map(value =>
+          payload.data.find(option => option.value === value),
+        );
+        const setOriginalOptionsIndex = payload.data.indexOf(
+          setOriginalSelectedOptions[0],
+        );
+
         return {
           ...state,
+          values: setOriginalValues,
           originalOptions: payload.data,
-          selectedOptions: state.values.map(value =>
-            payload.data.find(option => option.value === value),
-          ),
+          selectedOptions: setOriginalSelectedOptions,
           focusedOptionIndex: !isMulti
-            ? selectedIndex
-            : state.focusedOptionIndex,
+            ? setOriginalOptionsIndex !== -1
+              ? setOriginalOptionsIndex
+              : 0
+            : 0,
         };
 
       case "SET_NOT_SELECTED_OPTIONS":
+        const _selectedNotOption = state.values.map(value =>
+          payload.data.find(option => option.value === value),
+        );
+        const setNotSelectedOptionsIndex = payload.data.indexOf(
+          _selectedNotOption[0],
+        );
+
         return {
           ...state,
           notSelectedOptions: isMulti
@@ -120,25 +143,34 @@ export const useComboBox = ({
               )
             : payload.data,
           focusedOptionIndex: !isMulti
-            ? selectedIndex
-            : state.focusedOptionIndex,
+            ? setNotSelectedOptionsIndex !== -1
+              ? setNotSelectedOptionsIndex
+              : 0
+            : 0,
         };
 
       case "SET_VALUES":
+        const _selectedOption = payload.data.map(value =>
+          state.notSelectedOptions.find(option => option.value === value),
+        );
+        const setValuesIndex = state.notSelectedOptions.indexOf(
+          _selectedOption[0],
+        );
+
         return {
           ...state,
           values: payload.data,
-          selectedOptions: payload.data.map(value =>
-            state.originalOptions.find(option => option.value === value),
-          ),
+          selectedOptions: _selectedOption,
           notSelectedOptions: isMulti
             ? state.notSelectedOptions.filter(
                 option => !payload.data.includes(option.value),
               )
             : state.notSelectedOptions,
           focusedOptionIndex: !isMulti
-            ? selectedIndex
-            : state.focusedOptionIndex,
+            ? setValuesIndex !== -1
+              ? setValuesIndex
+              : 0
+            : 0,
         };
 
       case "SET_INPUT_VALUE":

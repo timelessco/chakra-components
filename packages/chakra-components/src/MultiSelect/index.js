@@ -140,7 +140,6 @@ const MultiSelect = forwardRef(
           debouncedLoadOptions(inputValue);
           if (cacheOptions && cachedOptions.current.default) {
             onEmptyInputValue(cachedOptions.current.default);
-            setOriginalOptions(cachedOptions.current.default);
           } else {
             const cacheAndSetOptions = (options, status) => {
               if (cacheOptions) {
@@ -176,8 +175,6 @@ const MultiSelect = forwardRef(
             debouncedLoadOptions(inputValue);
           }
         }
-      } else {
-        setOriginalOptions(options);
       }
     }, [
       options,
