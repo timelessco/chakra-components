@@ -244,10 +244,6 @@ export const useComboBox = ({
   const setIsFocused = useDispatchCallback("SET_IS_FOCUSED");
   const setIsOpen = useDispatchCallback("SET_IS_OPEN");
 
-  const debouncedResetListBoxInputvalue = useConstant(() =>
-    debounce(() => setListBoxInputValue(""), 700),
-  );
-
   // Effects
   useEffect(() => {
     setNotSelectedOptions(options);
@@ -314,10 +310,26 @@ export const useComboBox = ({
       value: isListBox ? listBoxInputValue : inputValue,
       onChange: event => {
         if (isListBox) {
+          /**
+           * When listBoxInputValue is empty and space bar is pressed, return.
+           * It will be handled via onKeyDown handler
+           */
+          if (!listBoxInputValue && event.target.value === " ") {
+            return;
+          }
+
           // ? Separate InputValue state is essential for selecting option as we type
           setListBoxInputValue(event.currentTarget.value);
           debouncedResetListBoxInputvalue();
 
+          return;
+        }
+
+        /**
+         * When inputValue is empty and space bar is pressed, return.
+         * It will be handled via onKeyDown handler
+         */
+        if (!inputValue && event.target.value === " ") {
           return;
         }
 
@@ -371,23 +383,29 @@ export const useComboBox = ({
           }
         }
 
-        if (event.key === "Enter") {
-          if (filteredOptions.length) {
-            const focusedOption = filteredOptions[focusedOptionIndex];
-
-            if (
-              focusedOption.hasOwnProperty("disabled") &&
-              focusedOption.disabled
-            ) {
-              return;
-            }
-
-            if (isOpen) {
-              setInputValue("");
-              selectOption(focusedOption);
-              setIsOpen(false);
-            }
+        if (event.key === " ") {
+          /**
+           * When there is an inputValue/listBoxInputValue, return.
+           * Space Bar will insert a space in the existing inputValue.
+           */
+          if (inputValue || listBoxInputValue) {
+            return;
           }
+
+          /**
+           * When there is no inputValue.
+           * If the dropdown is closed, show the input and open the dropdown.
+           */
+          if (!isOpen) {
+            if (isInputHidden) setIsInputHidden(false);
+            setIsOpen(true);
+          }
+
+          handleCurrentOptionSelection();
+        }
+
+        if (event.key === "Enter") {
+          handleCurrentOptionSelection();
         }
 
         if (event.key === "Escape") {
@@ -502,6 +520,42 @@ export const useComboBox = ({
       setFocusedOptionIndex(index);
     }
   };
+
+  /**
+   * If the dropdown is open, get the focusedOption.
+   *
+   * If the focusedOption is disabled, return.
+   *
+   * Reset the inputValue and hide the input.
+   *
+   * Select the Option and close the dropdown.
+   */
+  const handleCurrentOptionSelection = () => {
+    if (isOpen) {
+      if (filteredOptions.length) {
+        const focusedOption = filteredOptions[focusedOptionIndex];
+
+        if (
+          focusedOption.hasOwnProperty("disabled") &&
+          focusedOption.disabled
+        ) {
+          return;
+        }
+
+        setInputValue("");
+        if (!isInputHidden) setIsInputHidden(true);
+        selectOption(focusedOption);
+        setIsOpen(false);
+      }
+    }
+  };
+
+  /**
+   * Debounce and reset the listboxInputValue.
+   */
+  const debouncedResetListBoxInputvalue = useConstant(() =>
+    debounce(() => setListBoxInputValue(""), 700),
+  );
 
   return {
     values,
