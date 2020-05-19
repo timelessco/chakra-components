@@ -205,7 +205,9 @@ export const useComboBox = ({
           inputValue: payload.data,
           filteredOptions: isAsync
             ? state.notSelectedOptions
-            : filteredBy(state.notSelectedOptions, payload.data),
+            : typeof filteredBy === "function"
+            ? filteredBy(state.notSelectedOptions, payload.data)
+            : state.notSelectedOptions,
         };
 
       case "SET_LISTBOXINPUT_VALUE":
@@ -297,7 +299,10 @@ export const useComboBox = ({
   useEffect(() => {
     if (isListBox) {
       const _options = setValidOptions(options);
-      const optionsFiltered = filteredBy(_options, listBoxInputValue)[0];
+      const optionsFiltered =
+        typeof filteredBy === "function"
+          ? filteredBy(_options, listBoxInputValue)[0]
+          : _options;
       const filteredIndex = _options.indexOf(optionsFiltered);
 
       if (listBoxInputValue && filteredIndex !== -1) {
@@ -516,11 +521,15 @@ export const useComboBox = ({
     if (!isMulti) {
       if (!isInputHidden) setIsInputHidden(true);
 
-      setValues([option.value]);
+      if (option.value !== null && option.value !== undefined) {
+        setValues([option.value]);
+      }
     } else {
       if (values.includes(option.value)) return;
 
-      setValues([...values, option.value]);
+      if (option.value !== null && option.value !== undefined) {
+        setValues([...values, option.value]);
+      }
     }
   };
 
