@@ -468,7 +468,9 @@ const MultiSelectInputGroup = props => {
     >
       {renderCustomSelectedOption || renderSelectedOption()}
       {renderCustomPlaceholder || (
-        <MultiSelectPlaceholder>{placeholder}</MultiSelectPlaceholder>
+        <MultiSelectPlaceholder>
+          {placeholder.toString()}
+        </MultiSelectPlaceholder>
       )}
       {renderCustomInput || <MultiSelectInput />}
     </PseudoBox>
