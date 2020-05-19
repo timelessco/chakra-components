@@ -101,6 +101,7 @@ const MultiSelect = forwardRef(
       getOptionProps,
       removeSelectedValue,
       removeAllSelectedValues,
+      originalOptions,
       setOriginalOptions,
       setIsOpen,
     } = useComboBox({
@@ -152,7 +153,7 @@ const MultiSelect = forwardRef(
                 }
               }
               onEmptyInputValue(options);
-              setOriginalOptions(options);
+              if (!originalOptions.length) setOriginalOptions(options);
             };
 
             if (typeof defaultOptions === "boolean" && defaultOptions) {
@@ -179,6 +180,7 @@ const MultiSelect = forwardRef(
       }
     }, [
       options,
+      originalOptions,
       isAsync,
       defaultOptions,
       loadOptions,

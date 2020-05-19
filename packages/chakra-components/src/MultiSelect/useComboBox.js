@@ -234,6 +234,7 @@ export const useComboBox = ({
   const {
     values,
     selectedOptions,
+    originalOptions,
     filteredOptions,
     inputValue,
     listBoxInputValue,
@@ -606,6 +607,7 @@ export const useComboBox = ({
     getOptionProps,
     removeSelectedValue,
     removeAllSelectedValues,
+    originalOptions,
     setOriginalOptions,
     setIsOpen,
   };
