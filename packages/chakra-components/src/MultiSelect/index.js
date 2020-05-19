@@ -743,6 +743,7 @@ export {
   MultiSelectPlaceholder,
   MultiSelectInput,
   MultiSelectRightAddons,
+  MultiSelectLoader,
   MultiSelectCloseButton,
   MultiSelectToggleIcon,
   MultiSelectOption,
