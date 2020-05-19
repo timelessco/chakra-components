@@ -165,16 +165,16 @@ const MultiSelect = forwardRef(
               setOriginalOptions(setValidOptions(options));
             };
 
-            if (typeof defaultOptions === "boolean" && defaultOptions) {
-              loadOptions(
-                "a",
-                options => cacheAndSetOptions(options, true),
-                errorMessage => cacheAndSetOptions(errorMessage, false),
-              );
-            }
-
-            if (defaultOptions && defaultOptions.length) {
-              cacheAndSetOptions(defaultOptions);
+            if (defaultOptions) {
+              if (typeof defaultOptions === "boolean") {
+                loadOptions(
+                  "a",
+                  options => cacheAndSetOptions(options, true),
+                  errorMessage => cacheAndSetOptions(errorMessage, false),
+                );
+              } else {
+                cacheAndSetOptions(setValidOptions(defaultOptions));
+              }
             }
           }
         } else {
