@@ -21,7 +21,7 @@ Chakra Components exports 12 components to render MultiSelect:
   input.
 - `MultiSelectSelectedOption`: The component that renders the selected options.
 - `MultiSelectRightElements`: A wrapper to group
-  ` MultiSelectLoader,``MultiSelectCloseButton ` and `MultiSelectToggleIcon`
+  `MultiSelectLoader`,`MultiSelectCloseButton` and `MultiSelectToggleIcon`
 - `MultiSelectLoader`: The component that renders the spinner icon.
 - `MultiSelectCloseButton`: The component that renders the close button.
 - `MultiSelectToggleIcon`: The component that renders the toggle icon.
@@ -46,4 +46,153 @@ import {
   MultiSelectList,
   MultiSelectOption,
 } from "@chakra-components/core";
+```
+
+## Searchable Single Option Select
+
+```jsx
+function MultiSelectExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+  }));
+
+  const [fruit, setFruit] = useState(null);
+
+  return (
+    <MultiSelect
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+    />
+  );
+}
+```
+
+## Searchable Multi Option Select
+
+```jsx
+function MultiSelectExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+  }));
+
+  const [fruit, setFruit] = useState(null);
+
+  return (
+    <MultiSelect
+      isMulti
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+    />
+  );
+}
+```
+
+## ListBox Option Select
+
+```jsx
+function MultiSelectExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+  }));
+
+  const [fruit, setFruit] = useState(null);
+
+  return (
+    <MultiSelect
+      isListBox
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+    />
+  );
+}
+```
+
+## Async
+
+### Async Single Searchable Option Select
+
+```jsx
+function MultiSelectExample() {
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
+
+  const [country, setCountry] = useState(null);
+
+  return (
+    <MultiSelect
+      isAsync
+      loadOptions={loadOptions}
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
+    />
+  );
+}
 ```
