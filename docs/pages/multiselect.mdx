@@ -148,7 +148,7 @@ function MultiSelectExample() {
 
   return (
     <MultiSelect
-      isListBox
+      isAsync
       options={options}
       value={fruit}
       onChange={setFruit}
@@ -196,3 +196,28 @@ function MultiSelectExample() {
   );
 }
 ```
+
+## Props Table
+
+### MenuBar Props
+
+| Name                       | Type                        | Default           | Description                                                                                                |
+| -------------------------- | --------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| options                    | `array`                     | []                | List of options to select a value                                                                          |
+| value                      | `array`, `string`, `number` | []                | Single value or list of controlled values                                                                  |
+| onChange                   | `function`                  |                   | Handler to change the controlled value                                                                     |
+| placeholder                | `string`                    | `Select one...`   | Placeholder to show inside the input                                                                       |
+| isMulit                    | `boolean`                   | `false`           | If `true`, behaves as a multi-select component                                                             |
+| isListBox                  | `boolean`                   | `false`           | If `true`, behaves as a listbox component                                                                  |
+| isAsync                    | `boolean`                   | `false`           | If `true`, adds the async functionality                                                                    |
+| loadOptions                | `function`                  |                   | Handler to get the resolved options with arguments `inputValue`, `successCb` & `errorCb`                   |
+| defaultOptions             | `array`, `boolean`          | []                | If `true`, default options will be fetched from loadOptions. If `array`, it will use the provided options. |
+| cacheOptions               | `boolean`                   | `false`           | If `true`, all the async options will be cached                                                            |
+| filteredBy                 | `function`                  | `in-build filter` | Handler to pass custom filter to filter the option                                                         |
+| renderCustomPlaceholder    | `React.ReactNode`           |                   | Custom Placeholder JSX made with `MultiSelectPlaceholder` with context support                             |
+| renderCustomSelectedOption | `React.ReactNode`           |                   | Custom SelectedOption JSX made with `MultiSelectSelectedOption` with context support                       |
+| renderCustomInput          | `React.ReactNode`           |                   | Custom Input JSX made with `MultiSelectInput` with context support                                         |
+| renderCustomCloseButton    | `React.ReactNode`           |                   | Custom CloseButton JSX                                                                                     |
+| renderCustomSpinner        | `React.ReactNode`           |                   | Custom Spinner JSX                                                                                         |
+| renderCustomOption         | `React.ReactNode`           |                   | Custom Option JSX with context support                                                                     |
+| renderCustomNoOption       | `React.ReactNode`           |                   | Custom NoOption JSX with context support                                                                   |
