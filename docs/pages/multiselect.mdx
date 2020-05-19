@@ -8,3 +8,40 @@ An extensible combobox component with below set of features,
 4. ListBox select with Rapid-Typeahead support
 5. Render custom components with/without built-in components
 6. Virtualized options list within Popper JS
+
+## Import
+
+Chakra Components exports 11 components to render MultiSelect:
+
+- `MultiSelect`: The wrapper component that provides context, manages hooks and
+  renders the default components.
+- `MultiSelectInputGroup`: A wrapper to group the below 3 components in place.
+- `MultiSelectInput`: An auto-size input with text field.
+- `MultiSelectPlaceholder`: The component that renders the placeholder for the
+  input.
+- `MultiSelectSelectedOption`: The component that renders the selected options.
+- `MultiSelectRightElements`: A wrapper to group `MultiSelectCloseButton` and
+  `MultiSelectToggleIcon`
+- `MultiSelectCloseButton`: The component that renders the close button.
+- `MultiSelectToggleIcon`: The component that renders the toggle icon.
+- `MultiSelectRightAddons`: The component that used to properly place all the
+  right elements.
+- `MultiSelectList`: The component that holds the Popper and Virtualized list.
+- `MultiSelectOption`: The component that show the options in a virtualized
+  list.
+
+```js
+import {
+  MultiSelect,
+  MultiSelectInputGroup,
+  MultiSelectInput,
+  MultiSelectPlaceholder,
+  MultiSelectSelectedOption,
+  MultiSelectRightElements,
+  MultiSelectRightAddons,
+  MultiSelectCloseButton,
+  MultiSelectToggleIcon,
+  MultiSelectList,
+  MultiSelectOption,
+} from "@chakra-components/core";
+```
