@@ -276,10 +276,12 @@ export const useComboBox = ({
   }, [setNotSelectedOptions, options]);
 
   useEffect(() => {
-    if (!isMulti) {
-      onChange(values[0] || "");
-    } else {
-      onChange(values);
+    if (onChange && typeof onChange === "function") {
+      if (!isMulti) {
+        onChange(values[0] || "");
+      } else {
+        onChange(values);
+      }
     }
   }, [isMulti, onChange, values]);
 
