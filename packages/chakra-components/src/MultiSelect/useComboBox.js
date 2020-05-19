@@ -29,29 +29,6 @@ export const useComboBox = ({
   const popperRef = useRef(null);
 
   /**
-   * Check if the provided initial value/values are valid against the given options.
-   */
-  const isValuesValid = (values, options) => {
-    if (!isMulti) {
-      return options.some(option => option.value === values);
-    } else {
-      let isValid = true;
-
-      /**
-       * Used forEach to break the loop when it is not valid.
-       */
-      for (let i = 0; i < values.length; i++) {
-        if (!options.some(option => option.value === values[i])) {
-          isValid = false;
-          break;
-        }
-      }
-
-      return isValid;
-    }
-  };
-
-  /**
    * Initial Values should be converted to an array if a value is given for basic & listbox
    */
   const setInitialValues = (values, options) => {
@@ -60,7 +37,12 @@ export const useComboBox = ({
        * Single Select - Accepts only string/number.
        */
       if (!isMulti) {
-        if (!Array.isArray(values) && isValuesValid(values, options)) {
+        /**
+         * Check if the provided initial value/values are valid against the given options.
+         */
+        const isValuesValid = options.some(option => option.value === values);
+
+        if (!Array.isArray(values) && isValuesValid) {
           return [values];
         } else {
           return [];
@@ -69,8 +51,16 @@ export const useComboBox = ({
         /**
          * Multi Select - Accepts only an array.
          */
-        if (Array.isArray(values) && isValuesValid(values, options)) {
-          return values;
+        if (Array.isArray(values)) {
+          /**
+           * Allow only the valid values to be passed to the OriginalValues Array.
+           * Invalid values are neglected.
+           */
+          let validValues = values.filter(value =>
+            options.some(option => option.value === value),
+          );
+
+          return validValues;
         } else {
           return [];
         }
@@ -123,15 +113,30 @@ export const useComboBox = ({
         };
 
       case "SET_NOT_SELECTED_OPTIONS":
-        const _selectedNotOption = state.values.map(value =>
+        /**
+         * Selected Option should only be selected from Original Options.
+         */
+        const _originalSelectedOptions = state.values.map(value =>
+          state.originalOptions.find(option => option.value === value),
+        );
+
+        /**
+         * Get the selectedOptions from the newly fetched options.
+         */
+        const _payloadDataSelectedOptions = state.values.map(value =>
           payload.data.find(option => option.value === value),
         );
+
+        /**
+         * Set the index based on the newly fetched options.
+         */
         const setNotSelectedOptionsIndex = payload.data.indexOf(
-          _selectedNotOption[0],
+          _payloadDataSelectedOptions[0],
         );
 
         return {
           ...state,
+          selectedOptions: _originalSelectedOptions,
           notSelectedOptions: isMulti
             ? payload.data.filter(
                 option => !state.values.includes(option.value),
@@ -150,9 +155,16 @@ export const useComboBox = ({
         };
 
       case "SET_VALUES":
+        /**
+         * Selected Option should only be selected from Original Options.
+         */
         const _selectedOption = payload.data.map(value =>
-          state.notSelectedOptions.find(option => option.value === value),
+          state.originalOptions.find(option => option.value === value),
         );
+
+        /**
+         * ?Note: indexOf only works with the same set of arrays.
+         */
         const setValuesIndex = state.notSelectedOptions.indexOf(
           _selectedOption[0],
         );
@@ -542,10 +554,14 @@ export const useComboBox = ({
           return;
         }
 
-        setInputValue("");
         if (!isInputHidden) setIsInputHidden(true);
         selectOption(focusedOption);
         setIsOpen(false);
+
+        /**
+         * You should not reset the input value before selectOption which introduces a bug.
+         */
+        setInputValue("");
       }
     }
   };
