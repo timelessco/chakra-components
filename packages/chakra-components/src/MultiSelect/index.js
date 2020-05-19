@@ -136,6 +136,17 @@ const MultiSelect = forwardRef(
 
     useEffect(() => {
       if (isAsync) {
+        const setValidOptions = options => {
+          if (
+            Array.isArray(options) &&
+            options.every(option => typeof option === "object")
+          ) {
+            return options;
+          } else {
+            return [];
+          }
+        };
+
         if (!inputValue) {
           debouncedLoadOptions(inputValue);
           if (cacheOptions && cachedOptions.current.default) {
@@ -150,8 +161,8 @@ const MultiSelect = forwardRef(
                   cachedOptions.current["default"] = [{ label: options }];
                 }
               }
-              onEmptyInputValue(options);
-              setOriginalOptions(options);
+              onEmptyInputValue(setValidOptions(options));
+              setOriginalOptions(setValidOptions(options));
             };
 
             if (typeof defaultOptions === "boolean" && defaultOptions) {
@@ -202,7 +213,6 @@ const MultiSelect = forwardRef(
     const context = {
       id,
       name,
-      options,
       onChange,
       isMulti,
       isListBox,

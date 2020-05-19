@@ -29,6 +29,20 @@ export const useComboBox = ({
   const popperRef = useRef(null);
 
   /**
+   * Set valid Options which is an Array of Objects
+   */
+  const setValidOptions = options => {
+    if (
+      Array.isArray(options) &&
+      options.every(option => typeof option === "object")
+    ) {
+      return options;
+    } else {
+      return [];
+    }
+  };
+
+  /**
    * Initial Values should be converted to an array if a value is given for basic & listbox
    */
   const setInitialValues = (values, options) => {
@@ -72,12 +86,12 @@ export const useComboBox = ({
 
   // Reducers
   const initialState = {
-    values: setInitialValues(initialValues, options),
+    values: setInitialValues(initialValues, setValidOptions(options)),
     originalValues: initialValues,
-    originalOptions: options,
+    originalOptions: setValidOptions(options),
     selectedOptions: [],
-    notSelectedOptions: options,
-    filteredOptions: options,
+    notSelectedOptions: setValidOptions(options),
+    filteredOptions: setValidOptions(options),
     inputValue: "",
     listBoxInputValue: "",
     focusedOptionIndex: 0,
@@ -258,7 +272,7 @@ export const useComboBox = ({
 
   // Effects
   useEffect(() => {
-    setNotSelectedOptions(options);
+    setNotSelectedOptions(setValidOptions(options));
   }, [setNotSelectedOptions, options]);
 
   useEffect(() => {
@@ -280,8 +294,9 @@ export const useComboBox = ({
 
   useEffect(() => {
     if (isListBox) {
-      const optionsFiltered = filteredBy(options, listBoxInputValue)[0];
-      const filteredIndex = options.indexOf(optionsFiltered);
+      const _options = setValidOptions(options);
+      const optionsFiltered = filteredBy(_options, listBoxInputValue)[0];
+      const filteredIndex = _options.indexOf(optionsFiltered);
 
       if (listBoxInputValue && filteredIndex !== -1) {
         if (!isOpen) {
