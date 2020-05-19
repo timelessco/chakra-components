@@ -343,6 +343,8 @@ const MultiSelectPlaceholder = ({ children, ...props }) => {
     dark: theme.colors.whiteAlpha[400],
   };
 
+  const placeholderProps = { values, inputValue };
+
   if (!values.length) {
     return inputValue ? null : (
       <PseudoBox
@@ -353,7 +355,7 @@ const MultiSelectPlaceholder = ({ children, ...props }) => {
         color={placeholderColor[colorMode]}
         {...props}
       >
-        {children}
+        {typeof children === "function" ? children(placeholderProps) : children}
       </PseudoBox>
     );
   }
