@@ -45,7 +45,7 @@ const MultiSelect = forwardRef(
       isListBox,
       isMulti,
       isAsync,
-      loadOptions = null,
+      loadOptions,
       placement,
       skid,
       gutter,
@@ -135,7 +135,7 @@ const MultiSelect = forwardRef(
     );
 
     useEffect(() => {
-      if (isAsync) {
+      if (isAsync && typeof loadOptions === "function") {
         const setValidOptions = options => {
           if (
             Array.isArray(options) &&
