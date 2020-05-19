@@ -58,6 +58,7 @@ const MultiSelect = forwardRef(
       renderCustomSelectedOption,
       renderCustomInput,
       renderCustomCloseButton,
+      renderCustomSpinner,
       renderCustomToggleIcon,
       renderCustomOption,
       renderCustomNoOption,
@@ -211,6 +212,7 @@ const MultiSelect = forwardRef(
       renderCustomSelectedOption,
       renderCustomInput,
       renderCustomCloseButton,
+      renderCustomSpinner,
       renderCustomToggleIcon,
       renderCustomOption,
       renderCustomNoOption,
@@ -519,12 +521,12 @@ MultiSelectCloseButton.displayName = "MultiSelectCloseButton";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectLoader = props => {
-  const { isLoading } = useMultiSelectContext();
+  const { isLoading, renderCustomSpinner } = useMultiSelectContext();
 
   if (isLoading) {
     return (
       <MultiSelectRightAddons {...props}>
-        <Spinner size="sm" />
+        {renderCustomSpinner || <Spinner size="sm" />}
       </MultiSelectRightAddons>
     );
   }
