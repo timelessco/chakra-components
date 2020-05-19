@@ -269,8 +269,13 @@ export const useComboBox = ({
     }
   }, [isMulti, onChange, values]);
 
+  /**
+   * Scroll to focusedOptionIndex when dropdown opens.
+   */
   useEffect(() => {
-    if (listRef.current) listRef.current.scrollToItem(focusedOptionIndex);
+    if (isOpen && listRef.current) {
+      listRef.current.scrollToItem(focusedOptionIndex);
+    }
   }, [isOpen, focusedOptionIndex]);
 
   useEffect(() => {
@@ -280,6 +285,16 @@ export const useComboBox = ({
 
       if (listBoxInputValue && filteredIndex !== -1) {
         if (!isOpen) {
+          /**
+           * Cannot set disabled values.
+           */
+          if (
+            optionsFiltered.hasOwnProperty("disabled") &&
+            optionsFiltered.disabled
+          ) {
+            return;
+          }
+
           setValues([optionsFiltered.value]);
         } else {
           setFocusedOptionIndex(filteredIndex);
