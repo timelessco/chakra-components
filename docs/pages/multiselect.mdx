@@ -61,6 +61,10 @@ import {
 - It behaves as a
   [WAI-ARAI-Combobox](//www.w3.org/TR/wai-aria-practices/#combobox) - List
   autocomplete with manual selection.
+- `options` should have a `label` and `value` key pairs to get the expected
+  behaviour
+- `value` can be an `array` or `string`.
+- `onChange` handler is required to get the updated from the component.
 
 ```jsx
 function MultiSelectExample() {
@@ -104,6 +108,7 @@ function MultiSelectExample() {
 - It also behaves as a
   [WAI-ARAI-Combobox](//www.w3.org/TR/wai-aria-practices/#combobox) - List
   autocomplete with manual selection.
+- `value` should be an `array`.
 
 ```jsx
 function MultiSelectExample() {
@@ -470,7 +475,7 @@ function MultiSelectExample() {
 }
 ```
 
-## Searchable Options filtered with match-sorter
+## Custom option filtering function
 
 Using `filteredBy` with access to options and the values that are typed, you can
 provide your own filtering functions.
@@ -551,6 +556,79 @@ function MultiSelectExample() {
     "Xigua melon",
     "Yellow watermelon",
     "Zucchini",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+  }));
+
+  const [fruit, setFruit] = useState(null);
+
+  return (
+    <MultiSelect
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+      filteredBy={(options, value) =>
+        matchSorter(options, value, { keys: ["label"] })
+      }
+    />
+  );
+}
+```
+
+## Disabled Options
+
+Options can look disabled only when they are passed as key along with label and
+value.
+
+```jsx
+function MultiSelectExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+    "Cantaloupes(cantalope)",
+    "Chocolate - Fruit",
+    "Cherimoya",
+    "Cherries",
+    "Cranberries",
+    "Cucumbers",
+    "Currants",
+    "Dates",
+    "Durian",
+    "Eggplant",
+    "Elderberries",
+    "Figs",
+    "Gooseberries",
+    "Grapes",
+    "Grapefruit",
+    "Guava",
+    "Honeydew melons",
+    "Horned melon(Kiwano)",
+    "Huckleberries",
+    "Ita Palm",
+    "Jujubes",
+    "Kiwis",
+    "Kumquat",
+    "Lemons",
+    "Limes",
+    "Lychees",
+    "Mangos",
+    "Mangosteen",
+    "Mulberries",
+    "Muskmelon",
+    "Nectarines",
   ];
 
   const options = fruits.map((d, i) => ({
