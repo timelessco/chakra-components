@@ -8,6 +8,11 @@ An extensible combobox component with below set of features,
 4. ListBox select with Rapid-Typeahead support
 5. Render custom components with/without built-in components
 6. Virtualized options list within Popper JS
+7. List autocomplete with manual selection.
+8. List autocomplete with automatic selection.
+
+Most of the composition/behaviour built in this component is based on the
+inspiration from [React-Select](//react-select.com/async).
 
 ## Import
 
@@ -50,6 +55,13 @@ import {
 
 ## Searchable Single Option Select
 
+- This component lets you manually choose a single options by matching certain
+  number of characters typed in the textbox or manually selecting it via
+  keyboard/mouse.
+- It behaves as a
+  [WAI-ARAI-Combobox](//www.w3.org/TR/wai-aria-practices/#combobox) - List
+  autocomplete with manual selection.
+
 ```jsx
 function MultiSelectExample() {
   const fruits = [
@@ -85,6 +97,13 @@ function MultiSelectExample() {
 ```
 
 ## Searchable Multi Option Select
+
+- This component lets you manually choose a multiple options by matching certain
+  number of characters typed in the textbox or manually selecting it via
+  keyboard/mouse.
+- It also behaves as a
+  [WAI-ARAI-Combobox](//www.w3.org/TR/wai-aria-practices/#combobox) - List
+  autocomplete with manual selection.
 
 ```jsx
 function MultiSelectExample() {
@@ -123,6 +142,15 @@ function MultiSelectExample() {
 
 ## ListBox Option Select
 
+- This component lets you automatically choose a single options by matching
+  certain number of characters typed in the textbox with Rapid Typeahead support
+  when listbox is closed.
+- Also with listbox open, this lets you manually select a single option as
+  previous components.
+- It behaves as a
+  [WAI-ARAI-Combobox](//www.w3.org/TR/wai-aria-practices/#combobox) - List
+  autocomplete with both automatic & manual selection.
+
 ```jsx
 function MultiSelectExample() {
   const fruits = [
@@ -148,7 +176,7 @@ function MultiSelectExample() {
 
   return (
     <MultiSelect
-      isAsync
+      isListBox
       options={options}
       value={fruit}
       onChange={setFruit}
@@ -160,7 +188,24 @@ function MultiSelectExample() {
 
 ## Async
 
-### Async Single Searchable Option Select
+- Using `isAsync` prop, lets you load options from a remote source as you type.
+- Async component supports single and multi options selection completely.
+- ListBox behaviour is support only with `cacheOptions` and filtering is done by
+  `filteredBy` prop.
+
+### Async Single Searchable Option Select with defaultOptions
+
+- Use `loadOption` function to send resolved callback or errored callback from
+  promises.
+- The defaultOptions prop determines "when" your remote request is initially
+  fired.
+- There are two valid values for this property.
+
+1. **`defaultOptions` - true**
+
+Providing the prop by itself (or with 'true') tells the control to immediately
+fire the remote request, described by your loadOptions, to get those initial
+values for the Select.
 
 ```jsx
 function MultiSelectExample() {
@@ -181,6 +226,62 @@ function MultiSelectExample() {
         errorCb("Remote fetch failed");
       });
   };
+
+  const [country, setCountry] = useState(null);
+
+  return (
+    <MultiSelect
+      isAsync
+      loadOptions={loadOptions}
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
+    />
+  );
+}
+```
+
+2. **`defaultOptions` - [{}]**
+
+Providing an option array to this prop will populate the initial set of options
+used when opening the select, at which point the remote load only occurs when
+filtering the options (typing in the control).
+
+```jsx
+function MultiSelectExample() {
+  const [defaultOptions, setDefaultOptions] = useState([]);
+
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
+
+  useEffect(() => {
+    axios.get(`https://restcountries.eu/rest/v2/all`).then(response => {
+      setDefaultOptions(
+        response.data.map(ep => ({
+          label: `${ep.name}`,
+          value: `${ep.name}`,
+          code: `${ep.alpha2Code}`,
+          timeZone: `${ep.timezones[0]}`,
+        })),
+      );
+    });
+  }, []);
 
   const [country, setCountry] = useState(null);
 
