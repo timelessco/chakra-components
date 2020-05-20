@@ -4,28 +4,30 @@ An extensible combobox component with below set of features,
 
 1. Single option searchable select
 2. Multiple option searchable select
-3. Async options fetch in above modes
-4. ListBox select with Rapid-Typeahead support
-5. Render custom components with/without built-in components
-6. Virtualized options list within Popper JS
-7. List autocomplete with manual selection.
-8. List autocomplete with automatic selection.
+3. Fetch options from remote sources
+4. Select options with Rapid-Typeahead support
+5. Virtualized options list within Popper JS
+6. Filter options via both built-in or custom filters
+7. Render custom components with/without built-in components
+8. Autocomplete with manual selection.
+9. Autocomplete with automatic selection.
 
-Most of the composition/behaviour built in this component is based on the
-inspiration from [React-Select](//react-select.com/async).
+Most of the composition and behaviours seen in this component was built on the
+inspiration from an awesome library [React-Select](//react-select.com/async).
 
 ## Import
 
 Chakra Components exports 5 components to render MultiSelect:
 
-- `MultiSelect`: The wrapper component that provides context, manages hooks and
-  renders the default components.
-- `MultiSelectInput`: An auto-size input with text field.
+- `MultiSelect`: The wrapper component that manages the components functionality
+  altogether.
+- `MultiSelectInput`: An auto-size input with text field exposed for custom
+  styling.
 - `MultiSelectPlaceholder`: The component that renders the placeholder for the
   input.
 - `MultiSelectSelectedOption`: The component that renders the selected options.
-- `MultiSelectOption`: The component that show the options in a virtualized
-  list.
+- `MultiSelectOption`: The component that shows each options which is in a
+  virtualized list.
 
 ```js
 import {
@@ -38,19 +40,18 @@ import {
 
 ## Searchable Single Option Select
 
-- This component lets you manually choose a single options by matching certain
-  number of characters typed in the textbox or manually selecting it via
-  keyboard/mouse.
+- You can manually choose a single option which gets filtered as you type in the
+  textbox or manually selecting it via keyboard/mouse.
 - It behaves as a
   [WAI-ARAI-Combobox](//www.w3.org/TR/wai-aria-practices/#combobox) - List
   autocomplete with manual selection.
 
 **Important Props**
 
-- `options` should have a `label` and `value` key pairs to get the expected
-  behaviour
+- `options` should have a `label` and `value` key-value pairs to expect the
+  normal behaviour
 - `value` can be an `array` or `string`.
-- `onChange` handler is required to get the updated value from the component.
+- `onChange` handler is necessary to update your controlled value.
 
 ```jsx
 function MultiSelectExample() {
@@ -81,13 +82,19 @@ function MultiSelectExample() {
 
 ## Searchable Multi Option Select
 
-- This component lets you manually choose a multiple options by matching certain
-  number of characters typed in the textbox or manually selecting it via
-  keyboard/mouse.
+- You can manually choose multiple options which gets filtered as you type in
+  the textbox or manually selecting it via keyboard/mouse.
+- Selected options will not be shown in the list of options.
 - It also behaves as a
   [WAI-ARAI-Combobox](//www.w3.org/TR/wai-aria-practices/#combobox) - List
   autocomplete with manual selection.
+
+**Important Props**
+
+- `options` should have a `label` and `value` key-value pairs to expect the
+  normal behaviour
 - `value` should be an `array`.
+- `onChange` handler is necessary to update your controlled value.
 
 ```jsx
 function MultiSelectExample() {
@@ -126,11 +133,15 @@ function MultiSelectExample() {
 
 ## ListBox Option Select
 
-- This component lets you automatically choose a single options by matching
+You can manually choose multiple options which gets filtered as you type in the
+textbox or manually selecting it via keyboard/mouse.
+
+- When dropdown is closed, option gets selected automatically by matching
   certain number of characters typed in the textbox with Rapid Typeahead support
-  when listbox is closed.
-- Also with listbox open, this lets you manually select a single option as
-  previous components.
+  .
+- When the dropdown is open, you can manually choose a single option which gets
+  filtered as you type in the textbox or manually selecting it via
+  keyboard/mouse.
 - It behaves as a
   [WAI-ARAI-Combobox](//www.w3.org/TR/wai-aria-practices/#combobox) - List
   autocomplete with both automatic & manual selection.
@@ -170,19 +181,18 @@ function MultiSelectExample() {
 }
 ```
 
-## Remote Fetch Options via `Async`
+## Remote Fetch Options via `isAsync`
 
-- Using `isAsync` prop, lets you load options from a remote source as you type.
-- Async component supports single and multi options selection completely.
-- ListBox behaviour is support only with `cacheOptions` and filtering is done by
-  `filteredBy` prop.
+- Load options from a remote source as you type.
+- Supports both single and multi options selection completely.
+- In-built filtering is disabled.
+- ListBox behaviour is supported only with `cacheOptions` and filtering is done
+  by `filteredBy` prop.
 
 ### Async Single Searchable Option Select with `defaultOptions`
 
-- Use `loadOption` function to send resolved callback or errored callback from
-  promises.
-- The defaultOptions prop determines "when" your remote request is initially
-  fired.
+- Use `loadOption` prop function to send promise resolved or errored callbacks.
+- `defaultOptions` prop determines when your remote request is initially fired.
 - There are two valid values for this property.
 
 1. **`defaultOptions` - true**
@@ -456,8 +466,8 @@ function MultiSelectExample() {
 
 ## Custom option filtering function
 
-Using `filteredBy` with access to options and the values that are typed, you can
-provide your own filtering functions.
+Using `filteredBy` prop will give you access to internal options and textbox
+values. With this you can provide your own filtering functions.
 
 ```jsx
 function MultiSelectExample() {
