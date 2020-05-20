@@ -126,7 +126,7 @@ function MultiSelectExample() {
     label: d,
   }));
 
-  const [fruit, setFruit] = useState(null);
+  const [fruit, setFruit] = useState(["Acai"]);
 
   return (
     <MultiSelect
@@ -172,7 +172,7 @@ function MultiSelectExample() {
     label: d,
   }));
 
-  const [fruit, setFruit] = useState(null);
+  const [fruit, setFruit] = useState(["Apples"]);
 
   return (
     <MultiSelect
@@ -186,14 +186,14 @@ function MultiSelectExample() {
 }
 ```
 
-## Async
+## Remote Fetch Options via `Async`
 
 - Using `isAsync` prop, lets you load options from a remote source as you type.
 - Async component supports single and multi options selection completely.
 - ListBox behaviour is support only with `cacheOptions` and filtering is done by
   `filteredBy` prop.
 
-### Async Single Searchable Option Select with defaultOptions
+### Async Single Searchable Option Select with `defaultOptions`
 
 - Use `loadOption` function to send resolved callback or errored callback from
   promises.
@@ -289,6 +289,119 @@ function MultiSelectExample() {
     <MultiSelect
       isAsync
       loadOptions={loadOptions}
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
+    />
+  );
+}
+```
+
+### Async Single Searchable Option Select with `cacheOptions`
+
+- With `cacheOptions` prop, each and every request is being cached locally so
+  the next time you type the same string, same results are fetched from the
+  cache instead from a remote source everytime.
+- If `defaultOptions` is boolean, options are fetched from the remote source and
+  stored in the cache when the component mounts.
+
+```jsx
+function MultiSelectExample() {
+  const [defaultOptions, setDefaultOptions] = useState([]);
+
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
+
+  useEffect(() => {
+    axios.get(`https://restcountries.eu/rest/v2/all`).then(response => {
+      setDefaultOptions(
+        response.data.map(ep => ({
+          label: `${ep.name}`,
+          value: `${ep.name}`,
+          code: `${ep.alpha2Code}`,
+          timeZone: `${ep.timezones[0]}`,
+        })),
+      );
+    });
+  }, []);
+
+  const [country, setCountry] = useState(["India"]);
+
+  return (
+    <MultiSelect
+      isAsync
+      loadOptions={loadOptions}
+      cacheOptions
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
+    />
+  );
+}
+```
+
+### Async Multi Searchable Option Select with `cacheOptions` & `defaultOptions`
+
+```jsx
+function MultiSelectExample() {
+  const [defaultOptions, setDefaultOptions] = useState([]);
+
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
+
+  useEffect(() => {
+    axios.get(`https://restcountries.eu/rest/v2/all`).then(response => {
+      setDefaultOptions(
+        response.data.map(ep => ({
+          label: `${ep.name}`,
+          value: `${ep.name}`,
+          code: `${ep.alpha2Code}`,
+          timeZone: `${ep.timezones[0]}`,
+        })),
+      );
+    });
+  }, []);
+
+  const [country, setCountry] = useState(["India", "Australia"]);
+
+  return (
+    <MultiSelect
+      isAsync
+      isMulti
+      loadOptions={loadOptions}
+      cacheOptions
       defaultOptions
       value={country}
       onChange={setCountry}

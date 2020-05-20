@@ -44,6 +44,16 @@ export const useComboBox = ({
 
         if (!Array.isArray(values) && isValuesValid) {
           return [values];
+        } else if (Array.isArray(values)) {
+          /**
+           * Allow only the valid values to be passed to the OriginalValues Array.
+           * Invalid values are neglected.
+           */
+          let validValues = values.filter(value =>
+            options.some(option => option.value === value),
+          );
+
+          return validValues;
         } else {
           return [];
         }
