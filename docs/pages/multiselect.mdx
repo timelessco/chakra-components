@@ -1,4 +1,240 @@
-## Basic Async
+# MultiSelect
+
+An extensible combobox component with below set of features,
+
+1. Single option searchable select
+2. Multiple option searchable select
+3. Async options fetch in above modes
+4. ListBox select with Rapid-Typeahead support
+5. Render custom components with/without built-in components
+6. Virtualized options list within Popper JS
+7. List autocomplete with manual selection.
+8. List autocomplete with automatic selection.
+
+Most of the composition/behaviour built in this component is based on the
+inspiration from [React-Select](//react-select.com/async).
+
+## Import
+
+Chakra Components exports 5 components to render MultiSelect:
+
+- `MultiSelect`: The wrapper component that provides context, manages hooks and
+  renders the default components.
+- `MultiSelectInput`: An auto-size input with text field.
+- `MultiSelectPlaceholder`: The component that renders the placeholder for the
+  input.
+- `MultiSelectSelectedOption`: The component that renders the selected options.
+- `MultiSelectOption`: The component that show the options in a virtualized
+  list.
+
+```js
+import {
+  MultiSelect,
+  MultiSelectInput,
+  MultiSelectPlaceholder,
+  MultiSelectSelectedOption,
+} from "@chakra-components/core";
+```
+
+## Searchable Single Option Select
+
+- This component lets you manually choose a single options by matching certain
+  number of characters typed in the textbox or manually selecting it via
+  keyboard/mouse.
+- It behaves as a
+  [WAI-ARAI-Combobox](//www.w3.org/TR/wai-aria-practices/#combobox) - List
+  autocomplete with manual selection.
+- `options` should have a `label` and `value` key pairs to get the expected
+  behaviour
+- `value` can be an `array` or `string`.
+- `onChange` handler is required to get the updated from the component.
+
+```jsx
+function MultiSelectExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+  }));
+
+  const [fruit, setFruit] = useState(null);
+
+  return (
+    <MultiSelect
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+    />
+  );
+}
+```
+
+## Searchable Multi Option Select
+
+- This component lets you manually choose a multiple options by matching certain
+  number of characters typed in the textbox or manually selecting it via
+  keyboard/mouse.
+- It also behaves as a
+  [WAI-ARAI-Combobox](//www.w3.org/TR/wai-aria-practices/#combobox) - List
+  autocomplete with manual selection.
+- `value` should be an `array`.
+
+```jsx
+function MultiSelectExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+  }));
+
+  const [fruit, setFruit] = useState(["Acai"]);
+
+  return (
+    <MultiSelect
+      isMulti
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+    />
+  );
+}
+```
+
+## ListBox Option Select
+
+- This component lets you automatically choose a single options by matching
+  certain number of characters typed in the textbox with Rapid Typeahead support
+  when listbox is closed.
+- Also with listbox open, this lets you manually select a single option as
+  previous components.
+- It behaves as a
+  [WAI-ARAI-Combobox](//www.w3.org/TR/wai-aria-practices/#combobox) - List
+  autocomplete with both automatic & manual selection.
+
+```jsx
+function MultiSelectExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+  }));
+
+  const [fruit, setFruit] = useState(["Apples"]);
+
+  return (
+    <MultiSelect
+      isListBox
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+    />
+  );
+}
+```
+
+## Remote Fetch Options via `Async`
+
+- Using `isAsync` prop, lets you load options from a remote source as you type.
+- Async component supports single and multi options selection completely.
+- ListBox behaviour is support only with `cacheOptions` and filtering is done by
+  `filteredBy` prop.
+
+### Async Single Searchable Option Select with `defaultOptions`
+
+- Use `loadOption` function to send resolved callback or errored callback from
+  promises.
+- The defaultOptions prop determines "when" your remote request is initially
+  fired.
+- There are two valid values for this property.
+
+1. **`defaultOptions` - true**
+
+Providing the prop by itself (or with 'true') tells the control to immediately
+fire the remote request, described by your loadOptions, to get those initial
+values for the Select.
+
+```jsx
+function MultiSelectExample() {
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
+
+  const [country, setCountry] = useState(null);
+
+  return (
+    <MultiSelect
+      isAsync
+      loadOptions={loadOptions}
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
+    />
+  );
+}
+```
+
+2. **`defaultOptions` - [{}]**
+
+Providing an option array to this prop will populate the initial set of options
+used when opening the select, at which point the remote load only occurs when
+filtering the options (typing in the control).
 
 ```jsx
 function MultiSelectExample() {
@@ -41,6 +277,64 @@ function MultiSelectExample() {
     <MultiSelect
       isAsync
       loadOptions={loadOptions}
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
+    />
+  );
+}
+```
+
+### Async Single Searchable Option Select with `cacheOptions`
+
+- With `cacheOptions` prop, each and every request is being cached locally so
+  the next time you type the same string, same results are fetched from the
+  cache instead from a remote source everytime.
+- If `defaultOptions` is boolean, options are fetched from the remote source and
+  stored in the cache when the component mounts.
+
+```jsx
+function MultiSelectExample() {
+  const [defaultOptions, setDefaultOptions] = useState([]);
+
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
+
+  useEffect(() => {
+    axios.get(`https://restcountries.eu/rest/v2/all`).then(response => {
+      setDefaultOptions(
+        response.data.map(ep => ({
+          label: `${ep.name}`,
+          value: `${ep.name}`,
+          code: `${ep.alpha2Code}`,
+          timeZone: `${ep.timezones[0]}`,
+        })),
+      );
+    });
+  }, []);
+
+  const [country, setCountry] = useState(["India"]);
+
+  return (
+    <MultiSelect
+      isAsync
+      loadOptions={loadOptions}
       cacheOptions
       defaultOptions
       value={country}
@@ -51,306 +345,123 @@ function MultiSelectExample() {
 }
 ```
 
-## Basic Listbox
+### Async Multi Searchable Option Select with `cacheOptions` & `defaultOptions`
 
 ```jsx
 function MultiSelectExample() {
-  const fruits = [
-    "Acai",
-    "Apples",
-    "Apricots",
-    "Avocado",
-    "Ackee",
-    "Bananas",
-    "Bilberries",
-    "Blueberries",
-    "Blackberries",
-    "Boysenberries",
-    "Bread fruit",
-    "Cantaloupes(cantalope)",
-    "Chocolate - Fruit",
-    "Cherimoya",
-    "Cherries",
-    "Cranberries",
-    "Cucumbers",
-    "Currants",
-    "Dates",
-    "Durian",
-    "Eggplant",
-    "Elderberries",
-    "Figs",
-    "Gooseberries",
-    "Grapes",
-    "Grapefruit",
-    "Guava",
-    "Honeydew melons",
-    "Horned melon(Kiwano)",
-    "Huckleberries",
-    "Ita Palm",
-    "Jujubes",
-    "Kiwis",
-    "Kumquat",
-    "Lemons",
-    "Limes",
-    "Lychees",
-    "Mangos",
-    "Mangosteen",
-    "Mulberries",
-    "Muskmelon",
-    "Nectarines",
-    "Ogden melons",
-    "Olives",
-    "Oranges",
-    "Papaya",
-    "Passion fruit",
-    "Peaches",
-    "Pears",
-    "Peppers",
-    "Persimmon",
-    "Pineapple",
-    "Plums",
-    "Pluot",
-    "Pomegranate",
-    "Prickly Pear",
-    "Quince",
-    "Rambuton",
-    "Raspberries",
-    "Rose Apple",
-    "Starfruit",
-    "Sapadilla",
-    "Strawberries",
-    "Tamarind",
-    "Tangelo",
-    "Tangerines",
-    "Tomatoes",
-    "Ugli fruit",
-    "Voavanga(Spanish Tamarind)",
-    "Watermelons",
-    "Xigua melon",
-    "Yellow watermelon",
-    "Zucchini",
-  ];
+  const [defaultOptions, setDefaultOptions] = useState([]);
 
-  const options = fruits.map((d, i) => ({
-    value: d,
-    label: d,
-    disabled: i % 4 === 0,
-  }));
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
 
-  const [fruit, setFruit] = useState(null);
+  useEffect(() => {
+    axios.get(`https://restcountries.eu/rest/v2/all`).then(response => {
+      setDefaultOptions(
+        response.data.map(ep => ({
+          label: `${ep.name}`,
+          value: `${ep.name}`,
+          code: `${ep.alpha2Code}`,
+          timeZone: `${ep.timezones[0]}`,
+        })),
+      );
+    });
+  }, []);
+
+  const [country, setCountry] = useState(["India", "Australia"]);
 
   return (
     <MultiSelect
-      isListBox
-      options={options}
-      value={fruit}
-      onChange={setFruit}
-      placeholder="Select a fruit..."
-    />
-  );
-}
-```
-
-## Basic Searchable Select
-
-```jsx
-function MultiSelectExample() {
-  const fruits = [
-    "Acai",
-    "Apples",
-    "Apricots",
-    "Avocado",
-    "Ackee",
-    "Bananas",
-    "Bilberries",
-    "Blueberries",
-    "Blackberries",
-    "Boysenberries",
-    "Bread fruit",
-    "Cantaloupes(cantalope)",
-    "Chocolate - Fruit",
-    "Cherimoya",
-    "Cherries",
-    "Cranberries",
-    "Cucumbers",
-    "Currants",
-    "Dates",
-    "Durian",
-    "Eggplant",
-    "Elderberries",
-    "Figs",
-    "Gooseberries",
-    "Grapes",
-    "Grapefruit",
-    "Guava",
-    "Honeydew melons",
-    "Horned melon(Kiwano)",
-    "Huckleberries",
-    "Ita Palm",
-    "Jujubes",
-    "Kiwis",
-    "Kumquat",
-    "Lemons",
-    "Limes",
-    "Lychees",
-    "Mangos",
-    "Mangosteen",
-    "Mulberries",
-    "Muskmelon",
-    "Nectarines",
-    "Ogden melons",
-    "Olives",
-    "Oranges",
-    "Papaya",
-    "Passion fruit",
-    "Peaches",
-    "Pears",
-    "Peppers",
-    "Persimmon",
-    "Pineapple",
-    "Plums",
-    "Pluot",
-    "Pomegranate",
-    "Prickly Pear",
-    "Quince",
-    "Rambuton",
-    "Raspberries",
-    "Rose Apple",
-    "Starfruit",
-    "Sapadilla",
-    "Strawberries",
-    "Tamarind",
-    "Tangelo",
-    "Tangerines",
-    "Tomatoes",
-    "Ugli fruit",
-    "Voavanga(Spanish Tamarind)",
-    "Watermelons",
-    "Xigua melon",
-    "Yellow watermelon",
-    "Zucchini",
-  ];
-
-  const options = fruits.map((d, i) => ({
-    value: d,
-    label: d,
-    disabled: i % 4 === 0,
-  }));
-
-  const [fruit, setFruit] = useState(null);
-
-  return (
-    <MultiSelect
-      options={options}
-      value={fruit}
-      onChange={setFruit}
-      placeholder="Select a fruit..."
-    />
-  );
-}
-```
-
-## Searchable Multi Select
-
-```jsx
-function MultiSelectExample() {
-  const fruits = [
-    "Acai",
-    "Apples",
-    "Apricots",
-    "Avocado",
-    "Ackee",
-    "Bananas",
-    "Bilberries",
-    "Blueberries",
-    "Blackberries",
-    "Boysenberries",
-    "Bread fruit",
-    "Cantaloupes(cantalope)",
-    "Chocolate - Fruit",
-    "Cherimoya",
-    "Cherries",
-    "Cranberries",
-    "Cucumbers",
-    "Currants",
-    "Dates",
-    "Durian",
-    "Eggplant",
-    "Elderberries",
-    "Figs",
-    "Gooseberries",
-    "Grapes",
-    "Grapefruit",
-    "Guava",
-    "Honeydew melons",
-    "Horned melon(Kiwano)",
-    "Huckleberries",
-    "Ita Palm",
-    "Jujubes",
-    "Kiwis",
-    "Kumquat",
-    "Lemons",
-    "Limes",
-    "Lychees",
-    "Mangos",
-    "Mangosteen",
-    "Mulberries",
-    "Muskmelon",
-    "Nectarines",
-    "Ogden melons",
-    "Olives",
-    "Oranges",
-    "Papaya",
-    "Passion fruit",
-    "Peaches",
-    "Pears",
-    "Peppers",
-    "Persimmon",
-    "Pineapple",
-    "Plums",
-    "Pluot",
-    "Pomegranate",
-    "Prickly Pear",
-    "Quince",
-    "Rambuton",
-    "Raspberries",
-    "Rose Apple",
-    "Starfruit",
-    "Sapadilla",
-    "Strawberries",
-    "Tamarind",
-    "Tangelo",
-    "Tangerines",
-    "Tomatoes",
-    "Ugli fruit",
-    "Voavanga(Spanish Tamarind)",
-    "Watermelons",
-    "Xigua melon",
-    "Yellow watermelon",
-    "Zucchini",
-  ];
-
-  const options = fruits.map((d, i) => ({
-    value: d,
-    label: d,
-    disabled: i % 4 === 0,
-  }));
-
-  const [fruit, setFruit] = React.useState(["Apples", "Bananas"]);
-
-  return (
-    <MultiSelect
+      isAsync
       isMulti
-      options={options}
-      value={fruit}
-      onChange={setFruit}
-      placeholder="Select a fruit..."
+      loadOptions={loadOptions}
+      cacheOptions
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
     />
   );
 }
 ```
 
-## Searchable Single Select with match-sorter
+### Async ListBox Select with only `cacheOptions` & `defaultOptions`
+
+To get the listbox behaviour for the remote source, you either fetch all the
+options and provide it using `options` or using `isAsync` with `loadOptions`.
+Inorder for this behaviour to work `cacheOptions` and `defaultOptions` are
+necessary
+
+```jsx
+function MultiSelectExample() {
+  const [defaultOptions, setDefaultOptions] = useState([]);
+
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
+
+  useEffect(() => {
+    axios.get(`https://restcountries.eu/rest/v2/all`).then(response => {
+      setDefaultOptions(
+        response.data.map(ep => ({
+          label: `${ep.name}`,
+          value: `${ep.name}`,
+          code: `${ep.alpha2Code}`,
+          timeZone: `${ep.timezones[0]}`,
+        })),
+      );
+    });
+  }, []);
+
+  const [country, setCountry] = useState(null);
+
+  return (
+    <MultiSelect
+      isAsync
+      isListBox
+      loadOptions={loadOptions}
+      cacheOptions
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
+    />
+  );
+}
+```
+
+## Custom option filtering function
+
+Using `filteredBy` with access to options and the values that are typed, you can
+provide your own filtering functions.
 
 ```jsx
 function MultiSelectExample() {
@@ -428,6 +539,79 @@ function MultiSelectExample() {
     "Xigua melon",
     "Yellow watermelon",
     "Zucchini",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+  }));
+
+  const [fruit, setFruit] = useState(null);
+
+  return (
+    <MultiSelect
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+      filteredBy={(options, value) =>
+        matchSorter(options, value, { keys: ["label"] })
+      }
+    />
+  );
+}
+```
+
+## Disabled Options
+
+Options can look disabled only when they are passed as key along with label and
+value.
+
+```jsx
+function MultiSelectExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+    "Cantaloupes(cantalope)",
+    "Chocolate - Fruit",
+    "Cherimoya",
+    "Cherries",
+    "Cranberries",
+    "Cucumbers",
+    "Currants",
+    "Dates",
+    "Durian",
+    "Eggplant",
+    "Elderberries",
+    "Figs",
+    "Gooseberries",
+    "Grapes",
+    "Grapefruit",
+    "Guava",
+    "Honeydew melons",
+    "Horned melon(Kiwano)",
+    "Huckleberries",
+    "Ita Palm",
+    "Jujubes",
+    "Kiwis",
+    "Kumquat",
+    "Lemons",
+    "Limes",
+    "Lychees",
+    "Mangos",
+    "Mangosteen",
+    "Mulberries",
+    "Muskmelon",
+    "Nectarines",
   ];
 
   const options = fruits.map((d, i) => ({
@@ -452,7 +636,12 @@ function MultiSelectExample() {
 }
 ```
 
-## Render Custom Placeholder
+## Custom Components
+
+You have the flexibility to override the default components with the exposed
+components and the custom functions allowed for each composition.
+
+### Render Custom Placeholder
 
 ```jsx
 function MultiSelectExample() {
@@ -499,7 +688,6 @@ function MultiSelectExample() {
 
   return (
     <MultiSelect
-      isMulti
       options={options}
       value={tag}
       onChange={setTag}
@@ -513,7 +701,7 @@ function MultiSelectExample() {
 }
 ```
 
-## Render Custom Single SelectedOptions
+### Render Custom Single SelectedOptions
 
 ```jsx
 function MultiSelectExample() {
@@ -565,7 +753,7 @@ function MultiSelectExample() {
 }
 ```
 
-## Render Custom Single SelectedOptions
+### Render Custom Multi SelectedOptions
 
 ```jsx
 function MultiSelectExample() {
@@ -625,7 +813,7 @@ function MultiSelectExample() {
 }
 ```
 
-## Render Custom Input
+### Render Custom Input
 
 ```jsx
 function MultiSelectExample() {
@@ -662,7 +850,7 @@ function MultiSelectExample() {
 }
 ```
 
-## Render Custom CloseButton and ToggleIcon
+### Render Custom CloseButton and ToggleIcon
 
 ```jsx
 function MultiSelectExample() {
@@ -700,7 +888,7 @@ function MultiSelectExample() {
 }
 ```
 
-## Render Custom Option
+### Render Custom Option
 
 ```jsx
 function MultiSelectExample() {
@@ -749,7 +937,76 @@ function MultiSelectExample() {
 }
 ```
 
-## More Examples
+### Render Custom Spinner
+
+```jsx
+function MultiSelectExample() {
+  const [defaultOptions, setDefaultOptions] = useState([]);
+
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
+
+  useEffect(() => {
+    axios.get(`https://restcountries.eu/rest/v2/all`).then(response => {
+      setDefaultOptions(
+        response.data.map(ep => ({
+          label: `${ep.name}`,
+          value: `${ep.name}`,
+          code: `${ep.alpha2Code}`,
+          timeZone: `${ep.timezones[0]}`,
+        })),
+      );
+    });
+  }, []);
+
+  const [country, setCountry] = useState(null);
+
+  return (
+    <MultiSelect
+      isAsync
+      loadOptions={loadOptions}
+      cacheOptions
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
+      itemHeight={60}
+      pageSize={7}
+      renderCustomSpinner={<Spinner color="red.500" size="sm" />}
+      renderCustomOption={({ option, getOptionProps }) => (
+        <Flex width="100%" alignItems="center" {...getOptionProps}>
+          <Box w="10%">
+            <Avatar name={option.label} />
+          </Box>
+          <Flex w="90%" flexDirection="column" alignItems="left">
+            <Box as="h4" fontWeight="bold">
+              {option.label}
+            </Box>
+            <Box>{option.timeZone}</Box>
+          </Flex>
+        </Flex>
+      )}
+    />
+  );
+}
+```
+
+### More Examples
 
 ```jsx
 function MultiSelectExample() {
@@ -843,8 +1100,6 @@ function MultiSelectExample() {
   );
 }
 ```
-
-## More Examples
 
 ```jsx
 function MultiSelectExample() {
@@ -1000,3 +1255,60 @@ function MultiSelectExample() {
   );
 }
 ```
+
+## Props Table
+
+### MultiSelect Props
+
+| Name                       | Type                        | Default           | Description                                                                                                |
+| -------------------------- | --------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| options                    | `array`                     | []                | List of options to select a value                                                                          |
+| value                      | `array`, `string`, `number` | []                | Single value or list of controlled values                                                                  |
+| onChange                   | `function`                  |                   | Handler to change the controlled value                                                                     |
+| placeholder                | `string`                    | `Select one...`   | Placeholder to show inside the input                                                                       |
+| isMulit                    | `boolean`                   | `false`           | If `true`, behaves as a multi-select component                                                             |
+| isListBox                  | `boolean`                   | `false`           | If `true`, behaves as a listbox component                                                                  |
+| isAsync                    | `boolean`                   | `false`           | If `true`, adds the async functionality                                                                    |
+| loadOptions                | `function`                  |                   | Handler to get the resolved options with arguments `inputValue`, `successCb` & `errorCb`                   |
+| defaultOptions             | `array`, `boolean`          | []                | If `true`, default options will be fetched from loadOptions. If `array`, it will use the provided options. |
+| cacheOptions               | `boolean`                   | `false`           | If `true`, all the async options will be cached                                                            |
+| filteredBy                 | `function`                  | `in-build filter` | Handler to pass custom filter to filter the option                                                         |
+| renderCustomPlaceholder    | `React.ReactNode`           |                   | Custom Placeholder JSX made with `MultiSelectPlaceholder` with context support                             |
+| renderCustomSelectedOption | `React.ReactNode`           |                   | Custom SelectedOption JSX made with `MultiSelectSelectedOption` with context support                       |
+| renderCustomInput          | `React.ReactNode`           |                   | Custom Input JSX made with `MultiSelectInput` with context support                                         |
+| renderCustomCloseButton    | `React.ReactNode`           |                   | Custom CloseButton JSX                                                                                     |
+| renderCustomSpinner        | `React.ReactNode`           |                   | Custom Spinner JSX                                                                                         |
+| renderCustomOption         | `React.ReactNode`           |                   | Custom Option JSX with context support                                                                     |
+| renderCustomNoOption       | `React.ReactNode`           |                   | Custom NoOption JSX with context support                                                                   |
+
+### MultiSelectInput
+
+Only style props related to fonts are allowed.
+
+### MultiSelectPlaceholder
+
+| Name     | Type                                         | Default | Description                                                       |
+| -------- | -------------------------------------------- | ------- | ----------------------------------------------------------------- |
+| children | `React.ReactNode`, `React.Children` function |         | Children to `MultiSelectPlaceholder` with access to context props |
+
+### MultiSelectSelectedOption
+
+| Name     | Type                      | Default | Description                                                                                                  |
+| -------- | ------------------------- | ------- | ------------------------------------------------------------------------------------------------------------ |
+| children | `React.Children` function |         | Children to `MultiSelectSelectedOption` with access to selected options and onClick handler for multiselect. |
+
+## Accessibility
+
+### Keyboard Interaction
+
+**For `MultiSelect`:**
+
+| Key         | Action                                                                                                                                |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `Enter`     | If dropdown is open, selects the highlighted option.                                                                                  |
+| `Space`     | If dropdown is open and the textbox is empty, selects the highlighted option.                                                         |
+| `ArrowDown` | Opens dropdown and moves focus to first item in the dropdown. If there is a selected options, moves to highlight the selected option. |
+| `ArrowUp`   | Opens dropdown and moves focus to last item in the dropdown. If there is a selected options, moves to highlight the selected option.  |
+| `Escape`    | When the dropdown is open, closes the dropdown.                                                                                       |
+| `Backspace` | When textbox is empty, deletes the last selected option.                                                                              |
+| `Tab`       | no effect - moves the focus away from `MultiSelect`                                                                                   |

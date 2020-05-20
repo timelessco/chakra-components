@@ -565,30 +565,7 @@ function ComboBoxExample() {
         <ComboBoxRightElement />
         <ComboBoxClearElement />
         <ComboBoxInput placeholder="Select a country..." />
-        <ComboBoxPopup
-          itemHeight={60}
-          pageSize={7}
-          renderItem={({
-            index,
-            data,
-            option,
-            selected,
-            highlighted,
-            disabled,
-          }) => (
-            <Flex width="100%" alignItems="center">
-              <Box w="10%">
-                <Avatar name={option.label} />
-              </Box>
-              <Flex w="90%" flexDirection="column" alignItems="left">
-                <Box as="h4" fontWeight="bold">
-                  {option.label}
-                </Box>
-                <Box>{option.timeZone}</Box>
-              </Flex>
-            </Flex>
-          )}
-        />
+        <ComboBoxPopup itemHeight={60} pageSize={7} renderItem={} />
       </ComboBox>
     </>
   );

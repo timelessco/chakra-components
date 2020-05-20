@@ -44,6 +44,16 @@ export const useComboBox = ({
 
         if (!Array.isArray(values) && isValuesValid) {
           return [values];
+        } else if (Array.isArray(values)) {
+          /**
+           * Allow only the valid values to be passed to the OriginalValues Array.
+           * Invalid values are neglected.
+           */
+          let validValues = values.filter(value =>
+            options.some(option => option.value === value),
+          );
+
+          return validValues;
         } else {
           return [];
         }
@@ -540,7 +550,7 @@ export const useComboBox = ({
       if (!values.length) {
         setFocusedOptionIndex(index);
       } else {
-        const selectedIndex = options.indexOf(selectedOptions[0]);
+        const selectedIndex = originalOptions.indexOf(selectedOptions[0]);
 
         if (selectedIndex !== -1) setFocusedOptionIndex(selectedIndex);
       }
