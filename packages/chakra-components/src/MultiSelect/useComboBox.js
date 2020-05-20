@@ -37,51 +37,37 @@ export const useComboBox = ({
       options.every(option => typeof option === "object")
     ) {
       return options;
-    } else {
-      return [];
     }
+
+    return [];
   };
 
   /**
    * Initial Values should be converted to an array if a value is given for basic & listbox
    */
   const setInitialValues = (values, options) => {
-    if (values !== undefined && values !== null) {
+    if (values === undefined && values === null) return [];
+
+    /**
+     * Check if the provided initial value/values are valid against the given options.
+     */
+    const isValuesValid = value =>
+      options.some(option => option.value === value);
+
+    if (Array.isArray(values)) {
       /**
-       * Single Select - Accepts only string/number.
+       * Allow only the valid values to be passed to the OriginalValues Array.
+       * Invalid values are neglected.
        */
-      if (!isMulti) {
-        /**
-         * Check if the provided initial value/values are valid against the given options.
-         */
-        const isValuesValid = options.some(option => option.value === values);
+      let validValues = values.filter(value => isValuesValid(value));
 
-        if (!Array.isArray(values) && isValuesValid) {
-          return [values];
-        } else {
-          return [];
-        }
-      } else {
-        /**
-         * Multi Select - Accepts only an array.
-         */
-        if (Array.isArray(values)) {
-          /**
-           * Allow only the valid values to be passed to the OriginalValues Array.
-           * Invalid values are neglected.
-           */
-          let validValues = values.filter(value =>
-            options.some(option => option.value === value),
-          );
-
-          return validValues;
-        } else {
-          return [];
-        }
-      }
-    } else {
+      if (isMulti) return validValues;
+      if (validValues.length) return [validValues[0]];
       return [];
     }
+
+    if (!isMulti && isValuesValid(values)) return [values];
+    return [];
   };
 
   // Reducers
