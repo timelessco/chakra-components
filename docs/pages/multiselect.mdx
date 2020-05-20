@@ -44,10 +44,13 @@ import {
 - It behaves as a
   [WAI-ARAI-Combobox](//www.w3.org/TR/wai-aria-practices/#combobox) - List
   autocomplete with manual selection.
+
+**Important Props**
+
 - `options` should have a `label` and `value` key pairs to get the expected
   behaviour
 - `value` can be an `array` or `string`.
-- `onChange` handler is required to get the updated from the component.
+- `onChange` handler is required to get the updated value from the component.
 
 ```jsx
 function MultiSelectExample() {
@@ -72,14 +75,7 @@ function MultiSelectExample() {
 
   const [fruit, setFruit] = useState(null);
 
-  return (
-    <MultiSelect
-      options={options}
-      value={fruit}
-      onChange={setFruit}
-      placeholder="Select a fruit..."
-    />
-  );
+  return <MultiSelect options={options} value={fruit} onChange={setFruit} />;
 }
 ```
 
