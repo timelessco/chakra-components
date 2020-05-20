@@ -411,6 +411,65 @@ function MultiSelectExample() {
 }
 ```
 
+### Async ListBox Select with only `cacheOptions` & `defaultOptions`
+
+To get the listbox behaviour for the remote source, you either fetch all the
+options and provide it using `options` or using `isAsync` with `loadOptions`.
+Inorder for this behaviour to work `cacheOptions` and `defaultOptions` are
+necessary
+
+```jsx
+function MultiSelectExample() {
+  const [defaultOptions, setDefaultOptions] = useState([]);
+
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
+
+  useEffect(() => {
+    axios.get(`https://restcountries.eu/rest/v2/all`).then(response => {
+      setDefaultOptions(
+        response.data.map(ep => ({
+          label: `${ep.name}`,
+          value: `${ep.name}`,
+          code: `${ep.alpha2Code}`,
+          timeZone: `${ep.timezones[0]}`,
+        })),
+      );
+    });
+  }, []);
+
+  const [country, setCountry] = useState(null);
+
+  return (
+    <MultiSelect
+      isAsync
+      isListBox
+      loadOptions={loadOptions}
+      cacheOptions
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
+    />
+  );
+}
+```
+
 ## Props Table
 
 ### MenuBar Props
