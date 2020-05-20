@@ -1297,3 +1297,19 @@ function MultiSelectExample() {
 | renderCustomSpinner        | `React.ReactNode`           |                   | Custom Spinner JSX                                                                                         |
 | renderCustomOption         | `React.ReactNode`           |                   | Custom Option JSX with context support                                                                     |
 | renderCustomNoOption       | `React.ReactNode`           |                   | Custom NoOption JSX with context support                                                                   |
+
+## Accessibility
+
+### Keyboard Interaction
+
+**For `MultiSelect`:**
+
+| Key         | Action                                                                                                                                |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `Enter`     | If dropdown is open, selects the highlighted option.                                                                                  |
+| `Space`     | If dropdown is open and the textbox is empty, selects the highlighted option.                                                         |
+| `ArrowDown` | Opens dropdown and moves focus to first item in the dropdown. If there is a selected options, moves to highlight the selected option. |
+| `ArrowUp`   | Opens dropdown and moves focus to last item in the dropdown. If there is a selected options, moves to highlight the selected option.  |
+| `Escape`    | When the dropdown is open, closes the dropdown.                                                                                       |
+| `Backspace` | When textbox is empty, deletes the last selected option.                                                                              |
+| `Tab`       | no effect - moves the focus away from `MultiSelect`                                                                                   |
