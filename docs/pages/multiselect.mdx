@@ -16,40 +16,23 @@ inspiration from [React-Select](//react-select.com/async).
 
 ## Import
 
-Chakra Components exports 12 components to render MultiSelect:
+Chakra Components exports 5 components to render MultiSelect:
 
 - `MultiSelect`: The wrapper component that provides context, manages hooks and
   renders the default components.
-- `MultiSelectInputGroup`: A wrapper to group the below 3 components in place.
 - `MultiSelectInput`: An auto-size input with text field.
 - `MultiSelectPlaceholder`: The component that renders the placeholder for the
   input.
 - `MultiSelectSelectedOption`: The component that renders the selected options.
-- `MultiSelectRightElements`: A wrapper to group
-  `MultiSelectLoader`,`MultiSelectCloseButton` and `MultiSelectToggleIcon`
-- `MultiSelectLoader`: The component that renders the spinner icon.
-- `MultiSelectCloseButton`: The component that renders the close button.
-- `MultiSelectToggleIcon`: The component that renders the toggle icon.
-- `MultiSelectRightAddons`: The component that used to properly place all the
-  right elements.
-- `MultiSelectList`: The component that holds the Popper and Virtualized list.
 - `MultiSelectOption`: The component that show the options in a virtualized
   list.
 
 ```js
 import {
   MultiSelect,
-  MultiSelectInputGroup,
   MultiSelectInput,
   MultiSelectPlaceholder,
   MultiSelectSelectedOption,
-  MultiSelectRightElements,
-  MultiSelectRightAddons,
-  MultiSelectLoader,
-  MultiSelectCloseButton,
-  MultiSelectToggleIcon,
-  MultiSelectList,
-  MultiSelectOption,
 } from "@chakra-components/core";
 ```
 
@@ -1275,7 +1258,7 @@ function MultiSelectExample() {
 
 ## Props Table
 
-### MenuBar Props
+### MultiSelect Props
 
 | Name                       | Type                        | Default           | Description                                                                                                |
 | -------------------------- | --------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------- |
@@ -1297,6 +1280,22 @@ function MultiSelectExample() {
 | renderCustomSpinner        | `React.ReactNode`           |                   | Custom Spinner JSX                                                                                         |
 | renderCustomOption         | `React.ReactNode`           |                   | Custom Option JSX with context support                                                                     |
 | renderCustomNoOption       | `React.ReactNode`           |                   | Custom NoOption JSX with context support                                                                   |
+
+### MultiSelectInput
+
+Only style props related to fonts are allowed.
+
+### MultiSelectPlaceholder
+
+| Name     | Type                                         | Default | Description                                                       |
+| -------- | -------------------------------------------- | ------- | ----------------------------------------------------------------- |
+| children | `React.ReactNode`, `React.Children` function |         | Children to `MultiSelectPlaceholder` with access to context props |
+
+### MultiSelectSelectedOption
+
+| Name     | Type                      | Default | Description                                                                                                  |
+| -------- | ------------------------- | ------- | ------------------------------------------------------------------------------------------------------------ |
+| children | `React.Children` function |         | Children to `MultiSelectSelectedOption` with access to selected options and onClick handler for multiselect. |
 
 ## Accessibility
 

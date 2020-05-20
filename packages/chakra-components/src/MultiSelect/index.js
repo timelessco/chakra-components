@@ -371,50 +371,45 @@ MultiSelectPlaceholder.displayName = "MultiSelectPlaceholder";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectInput = forwardRef(
-  (
-    {
-      "aria-label": ariaLabel,
-      "aria-labelledby": ariaLabelledby,
-      isReadOnly,
-      isDisabled,
-      isInvalid,
-      isRequired,
-      ...props
-    },
-    ref,
-  ) => {
-    const { isInputHidden, getInputProps, isListBox } = useMultiSelectContext();
+const MultiSelectInput = ({
+  ariaLabel,
+  ariaLabelledby,
+  isReadOnly,
+  isDisabled,
+  isInvalid,
+  isRequired,
+  ...props
+}) => {
+  const { isInputHidden, getInputProps, isListBox } = useMultiSelectContext();
 
-    const ariaAttributes = {
-      "aria-autocomplete": "list",
-      "aria-label": ariaLabel,
-      "aria-labelledby": ariaLabelledby,
-    };
+  const ariaAttributes = {
+    "aria-autocomplete": "list",
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledby,
+  };
 
-    const { inputWrapperStyle, inputStyle } = useMultiSelectInputStyle({
-      isDisabled,
-      isInputHidden,
-      isListBox,
-    });
+  const { inputWrapperStyle, inputStyle } = useMultiSelectInputStyle({
+    isDisabled,
+    isInputHidden,
+    isListBox,
+  });
 
-    return (
-      <PseudoBox {...inputWrapperStyle} {...props}>
-        <AutosizeInput
-          type="text"
-          autoCapitalize="none"
-          autoComplete="off"
-          autoCorrect="off"
-          spellCheck="false"
-          inputStyle={inputStyle}
-          disabled={isDisabled}
-          {...ariaAttributes}
-          {...getInputProps()}
-        />
-      </PseudoBox>
-    );
-  },
-);
+  return (
+    <PseudoBox {...inputWrapperStyle} {...props}>
+      <AutosizeInput
+        type="text"
+        autoCapitalize="none"
+        autoComplete="off"
+        autoCorrect="off"
+        spellCheck="false"
+        inputStyle={inputStyle}
+        disabled={isDisabled}
+        {...ariaAttributes}
+        {...getInputProps()}
+      />
+    </PseudoBox>
+  );
+};
 
 MultiSelectInput.displayName = "MultiSelectInput";
 
@@ -747,4 +742,5 @@ export {
   MultiSelectCloseButton,
   MultiSelectToggleIcon,
   MultiSelectOption,
+  MultiSelectHiddenInput,
 };
