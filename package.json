@@ -20,7 +20,8 @@
     "validate": "yarn lint && yarn prettier --list-different",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "test": "NODE_ENV=testing && jest"
+    "unit-test": "NODE_ENV=testing && jest",
+    "inte-test": "yarn workspace @chakra-components/core inte-test"
   },
   "commitlint": {
     "extends": [

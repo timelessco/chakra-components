@@ -1,4 +1,4 @@
-describe("ComboBox Component", function() {
+describe("ComboBox Component Integration test", function() {
     it("iput change list sort", function() {
       browser.url("http://localhost:3000/combobox/");
       const Input = $("main").$("//div[7]/div[1]").$('input');
@@ -9,13 +9,13 @@ describe("ComboBox Component", function() {
       expect(Input.getValue()).toBe('Dan Abrahmov');
     });
 
-    it("input blur clear input close list", function(){
+    it("input blur clear input & close list", function(){
       browser.url("http://localhost:3000/combobox/");
       const Input = $("main").$("//div[7]/div[1]").$('input');
       Input.click();
       Input.setValue('Dan');
       browser.keys('Escape');
-      $("main").$("//h2[3]").click();
+      $("body").click();
       browser.pause(2000)
       expect(Input.getValue()).toBe('');
     });

@@ -1,14 +1,6 @@
 import React, { useState } from "react";
-import {
-  render,
-  fireEvent,
-  cleanup,
-  screen,
-  waitForElement,
-} from "@testing-library/react";
-import "@testing-library/jest-dom";
 import { mount } from 'enzyme';
-import { ThemeProvider, CSSReset } from "@chakra-ui/core";
+import { ThemeProvider } from "@chakra-ui/core";
 import {
   ComboBox,
   ComboBoxInput,
@@ -16,9 +8,7 @@ import {
   ComboBoxClearElement,
   ComboBoxRightElement,
 } from "../index.js";
-import { act } from "react-dom/test-utils";
-import { unmountComponentAtNode } from "react-dom";
-import { Flex, Box, Avatar, Button, Input } from "@chakra-ui/core";
+import { Flex, Box, Avatar } from "@chakra-ui/core";
 
 const options = [
   { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1", disabled: false },
@@ -63,10 +53,9 @@ const Combo_Box = () => {
           )}
         />
         <ComboBoxPopup
-          data-testid="popup"
           itemHeight={60}
           renderItem={({ option }) => (
-            <Flex w="100%" alignItems="center" as="li" data-testid="option">
+            <Flex w="100%" alignItems="center" as="li">
               <Box w="10%">
                 <Avatar name={option.label} src={option.img} />
               </Box>
@@ -82,155 +71,123 @@ const Combo_Box = () => {
     </ThemeProvider>
   );
 };
+describe("Combobox Component Unit Test", function () {
+  /**
+   * by default input box renders
+   */
+  it("by default input box renders", () => {
+    const wrapper = mount(
+      <Combo_Box />,
+    );
+    const Input = wrapper.find('input');
+    expect(Input.props().placeholder).toBe("Select user...");
+  });
 
-afterEach(cleanup);
-// input render
-it("combo-box", () => {
-  const { getByPlaceholderText } = render(<Combo_Box />);
-  expect(getByPlaceholderText("Select user...").placeholder).toBe(
-    "Select user...",
-  );
-});
+  /**
+   * input focused and all option list renders
+   * on selection an option option list close
+   */
+  it("Input Focus and option list renders", () => {
+    const wrapper = mount(
+      <Combo_Box />,
+    );
+    wrapper.find('input').simulate('focus');
+    expect(wrapper.find('ul').exists()).toEqual(true);
+    expect(wrapper.find('li').exists()).toEqual(true);
+    expect(wrapper.find('li')).toHaveLength(5);
 
-// on input focus
-it("combo-box", () => {
-  const { getAllByTestId, getByTestId, queryAllByTestId, getByRole } = render(
-    <Combo_Box />,
-  );
-  const inputBox = getByTestId("input");
-
-  // on focus of input box
-  inputBox.focus();
-  const options = getAllByTestId("option");
-  expect(options.map(item => item.nodeName)).toEqual(
-    expect.arrayContaining(["LI", "LI", "LI", "LI", "LI"]),
-  );
-  expect(getByRole("popper").nodeName).toBe("UL");
-
-  // on blur of input box
-  fireEvent.click(options[0]);
-
-  // checking the input value if 0th item selected.
-  expect(inputBox.value).toBe("Dan Abrahmov");
-
-  expect(queryAllByTestId("option")).toHaveLength(0);
-});
+    wrapper.find('li').at(0).simulate('click');
+    expect(wrapper.find('ul').exists()).toEqual(false);
+    expect(wrapper.find('li').exists()).toEqual(false);
+  });
 
 
-// on input fucus and select.
-it("combo-box", () => {
-  const wrapper = mount(
-    <Combo_Box />,
-  );
-
-  wrapper.find('input').simulate('focus');
-  expect(wrapper.find('li').exists()).toEqual(true);
-  expect(wrapper.find('li')).toHaveLength(5);
-
-  wrapper.find('li').at(0).simulate('click');
-  expect(wrapper.find('li')).toHaveLength(0); 
-  expect(wrapper.find('li').exists()).toEqual(false); 
-  expect(wrapper.find('input').prop('value')).toBe("Dan Abrahmov");
-});
-
-
-// combobox clear.
-it("combo-box", () => {
-  const wrapper = mount(
-    <Combo_Box />,
-  );
-
-  wrapper.find('input').simulate('focus');
-  wrapper.find('input').simulate('change', { target: { value: "Dan" } });
-  
-  // selecting a option
-  expect(wrapper.find('input').prop('value')).toBe("Dan");
-  wrapper.find('li').at(0).simulate('click');  
-
-  // clear the selection
-  wrapper.find('#clear').at(0).simulate('click');
-  expect(wrapper.find('input').prop('value')).toBe("");
-});
-
-// disabled state not selectable.
-it("combo-box", () => {
-  const wrapper = mount(
-    <Combo_Box />,
-  );
-
-  // selecting a option
-  wrapper.find('input').simulate('focus');
-  wrapper.find('li').at(4).simulate('contextmenu');  
-
-  expect(wrapper.find('input').prop('value')).toBe("");
-});
-
-// keyboard escape event.
-it("combo-box", () => {
-  const wrapper = mount(
-    <Combo_Box />,
-  );
-
-  // selecting a option
-  wrapper.find('input').simulate('focus');
-  wrapper.find('input').simulate('change', { target: { value: "Dan" } });
-
-  // escape event
-  wrapper.find('input').simulate('keyDown', {key: 'Escape'});
-
-  expect(wrapper.find('input').prop('value')).toBe("");
-});
+  /**
+   * input focused and selecting an option
+   */
+  it("input focus and selectig an option", () => {
+    const wrapper = mount(
+      <Combo_Box />,
+    );
+    wrapper.find('input').simulate('focus');
+    expect(wrapper.find('li').exists()).toEqual(true);
+    expect(wrapper.find('li')).toHaveLength(5);
+    wrapper.find('li').at(0).simulate('click');
+    expect(wrapper.find('li')).toHaveLength(0);
+    expect(wrapper.find('li').exists()).toEqual(false);
+    expect(wrapper.find('input').prop('value')).toBe("Dan Abrahmov");
+  });
 
 
-// input blur event.
-// it("combo-box", () => {
-//   const wrapper = mount(
-//     <Combo_Box />
-//   );
+  /**
+   * Combobox clear button click event
+   */
+  it("Clear button", () => {
+    const wrapper = mount(
+      <Combo_Box />,
+    );
+    wrapper.find('input').simulate('focus');
+    wrapper.find('input').simulate('change', { target: { value: "Dan" } });
+    // selecting a option
+    expect(wrapper.find('input').prop('value')).toBe("Dan");
+    wrapper.find('li').at(0).simulate('click');
+    // clear the selection
+    wrapper.find('#clear').at(0).simulate('click');
+    expect(wrapper.find('input').prop('value')).toBe("");
+  });
 
-//   // selecting a option
-//   wrapper.find('input').simulate('focus');
-//   wrapper.find('input').simulate('change', { target: { value: "Dan" } });
-//   wrapper.find('input').simulate('focus');
+  /**
+   * Disabled option is not selectable
+   */
+  it("Disabled option is not selectable", () => {
+    const wrapper = mount(
+      <Combo_Box />,
+    );
+    // selecting a option
+    wrapper.find('input').simulate('focus');
+    wrapper.find('li').at(4).simulate('contextmenu');
+    expect(wrapper.find('input').prop('value')).toBe("");
+  });
 
-//   expect(wrapper.find('input').prop('value')).toBe("");
-// });
+  /**
+   * keyboard escape event clear input value.
+   */
+  it("keyboard escape event", () => {
+    const wrapper = mount(
+      <Combo_Box />,
+    );
+    // selecting a option
+    wrapper.find('input').simulate('focus');
+    wrapper.find('input').simulate('change', { target: { value: "Dan" } });
+    // escape event
+    wrapper.find('input').simulate('keyDown', { key: 'Escape' });
+    expect(wrapper.find('input').prop('value')).toBe("");
+  });
 
-// onChange list sort.
-// it("combo-box", () => {
-//   const wrapper = mount(
-//     <Combo_Box />,
-//   );
-//   wrapper.find('input').simulate('focus');
-//   expect(wrapper.find('li').exists()).toEqual(true);
-//   expect(wrapper.find('li')).toHaveLength(5);
-//   wrapper.find('input').simulate('change', { target: { value: 'dan' } });
-//   expect(wrapper.find('li')).toHaveLength(1);
-// });
+  /** 
+   * keyboard navigation for out of bounds doesn't navigate.
+   * For example up arrow on first element 
+  */
+  it("keyboard navigation pageup and pagedown: bound case", () => {
+    const wrapper = mount(
+      <Combo_Box />,
+    );
+    wrapper.find('input').simulate('focus');
+    wrapper.find('input').simulate('keyDown', { key: 'ArrowUp' });
+    wrapper.find('input').simulate('keyDown', { key: 'Enter' });
+    expect(wrapper.find('input').prop('value')).toBe("Dan Abrahmov");
+  });
 
-/** 
- * keyboard navigation for out of bounds doesn't navigate.
- * For example up arrow on first element 
-*/
-it("combo-box", () => {
-  const wrapper = mount(
-    <Combo_Box />,
-  );
-  wrapper.find('input').simulate('focus');
-  wrapper.find('input').simulate('keyDown', {key: 'ArrowUp'});
-  wrapper.find('input').simulate('keyDown', {key: 'Enter'});
-  expect(wrapper.find('input').prop('value')).toBe("Dan Abrahmov");
-});
-
-/**
- * keyboard navigation works correctly to scroll the list
- */
-it("combo-box", () => {
-  const wrapper = mount(
-    <Combo_Box />,
-  );
-  wrapper.find('input').simulate('focus');
-  wrapper.find('input').simulate('keyDown', {key: 'ArrowDown'});
-  wrapper.find('input').simulate('keyDown', {key: 'Enter'});
-  expect(wrapper.find('input').prop('value')).toBe("Kola Tioluwani");
-});
+  /**
+   * keyboard navigation works correctly to scroll the list
+   */
+  it("keyboard navigation pageup and pagedown: normal case", () => {
+    const wrapper = mount(
+      <Combo_Box />,
+    );
+    wrapper.find('input').simulate('focus');
+    wrapper.find('input').simulate('keyDown', { key: 'ArrowDown' });
+    wrapper.find('input').simulate('keyDown', { key: 'Enter' });
+    expect(wrapper.find('input').prop('value')).toBe("Kola Tioluwani");
+  });
+})
