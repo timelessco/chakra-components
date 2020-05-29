@@ -3,10 +3,10 @@
   "version": "0.0.3",
   "private": true,
   "scripts": {
-    "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "export": "yarn build && next export"
+    "dev": "next dev",
+    "export": "yarn build && next export",
+    "start": "next start"
   },
   "dependencies": {
     "@chakra-ui/core": "^0.8.0",

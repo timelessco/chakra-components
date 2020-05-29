@@ -11,11 +11,12 @@
   },
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "yarn build:cjs && yarn build:es",
+    "build": "concurrently yarn:build:*",
+    "start": "nodemon --exec yarn build -e js,jsx --ignore dist/ --ignore \"*.stories.tsx\"",
+    "lint": "eslint src --ext .js,.jsx --config ../../.eslintrc",
     "build:cjs": "cross-env NODE_ENV=production BABEL_ENV=cjs babel --root-mode upward src -d dist",
     "build:esm": "cross-env NODE_ENV=production BABEL_ENV=esm babel --root-mode upward src -d dist/esm",
     "build:es": "cross-env NODE_ENV=production BABEL_ENV=es babel --root-mode upward src -d dist/es",
-    "build:umd": "cross-env NODE_ENV=production-umd rollup -c",
     "version": "yarn build"
   },
   "dependencies": {
