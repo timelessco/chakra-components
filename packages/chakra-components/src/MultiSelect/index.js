@@ -45,7 +45,7 @@ const MultiSelect = forwardRef(
       isListBox,
       isMulti,
       isAsync,
-      loadOptions = null,
+      loadOptions,
       placement,
       skid,
       gutter,
@@ -137,7 +137,18 @@ const MultiSelect = forwardRef(
     );
 
     useEffect(() => {
-      if (isAsync) {
+      if (isAsync && typeof loadOptions === "function") {
+        const setValidOptions = options => {
+          if (
+            Array.isArray(options) &&
+            options.every(option => typeof option === "object")
+          ) {
+            return options;
+          } else {
+            return [];
+          }
+        };
+
         if (!inputValue) {
           debouncedLoadOptions(inputValue);
           if (cacheOptions && cachedOptions.current.default) {
@@ -156,16 +167,16 @@ const MultiSelect = forwardRef(
               if (!originalOptions.length) setOriginalOptions(options);
             };
 
-            if (typeof defaultOptions === "boolean" && defaultOptions) {
-              loadOptions(
-                "a",
-                options => cacheAndSetOptions(options, true),
-                errorMessage => cacheAndSetOptions(errorMessage, false),
-              );
-            }
-
-            if (defaultOptions && defaultOptions.length) {
-              cacheAndSetOptions(defaultOptions);
+            if (defaultOptions) {
+              if (typeof defaultOptions === "boolean") {
+                loadOptions(
+                  "a",
+                  options => cacheAndSetOptions(options, true),
+                  errorMessage => cacheAndSetOptions(errorMessage, false),
+                );
+              } else {
+                cacheAndSetOptions(setValidOptions(defaultOptions));
+              }
             }
           }
         } else {
@@ -205,7 +216,6 @@ const MultiSelect = forwardRef(
     const context = {
       id,
       name,
-      options,
       onChange,
       isMulti,
       isListBox,
@@ -459,7 +469,9 @@ const MultiSelectInputGroup = props => {
     >
       {renderCustomSelectedOption || renderSelectedOption()}
       {renderCustomPlaceholder || (
-        <MultiSelectPlaceholder>{placeholder}</MultiSelectPlaceholder>
+        <MultiSelectPlaceholder>
+          {placeholder.toString()}
+        </MultiSelectPlaceholder>
       )}
       {renderCustomInput || <MultiSelectInput />}
     </PseudoBox>

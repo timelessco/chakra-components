@@ -29,65 +29,55 @@ export const useComboBox = ({
   const popperRef = useRef(null);
 
   /**
+   * Set valid Options which is an Array of Objects
+   */
+  const setValidOptions = options => {
+    if (
+      Array.isArray(options) &&
+      options.every(option => typeof option === "object")
+    ) {
+      return options;
+    }
+
+    return [];
+  };
+
+  /**
    * Initial Values should be converted to an array if a value is given for basic & listbox
    */
   const setInitialValues = (values, options) => {
-    if (values !== undefined && values !== null) {
+    if (values === undefined && values === null) return [];
+
+    /**
+     * Check if the provided initial value/values are valid against the given options.
+     */
+    const isValuesValid = value =>
+      options.some(option => option.value === value);
+
+    if (Array.isArray(values)) {
       /**
-       * Single Select - Accepts only string/number.
+       * Allow only the valid values to be passed to the OriginalValues Array.
+       * Invalid values are neglected.
        */
-      if (!isMulti) {
-        /**
-         * Check if the provided initial value/values are valid against the given options.
-         */
-        const isValuesValid = options.some(option => option.value === values);
+      let validValues = values.filter(value => isValuesValid(value));
 
-        if (!Array.isArray(values) && isValuesValid) {
-          return [values];
-        } else if (Array.isArray(values)) {
-          /**
-           * Allow only the valid values to be passed to the OriginalValues Array.
-           * Invalid values are neglected.
-           */
-          let validValues = values.filter(value =>
-            options.some(option => option.value === value),
-          );
-
-          return validValues;
-        } else {
-          return [];
-        }
-      } else {
-        /**
-         * Multi Select - Accepts only an array.
-         */
-        if (Array.isArray(values)) {
-          /**
-           * Allow only the valid values to be passed to the OriginalValues Array.
-           * Invalid values are neglected.
-           */
-          let validValues = values.filter(value =>
-            options.some(option => option.value === value),
-          );
-
-          return validValues;
-        } else {
-          return [];
-        }
-      }
-    } else {
+      if (isMulti) return validValues;
+      if (validValues.length) return [validValues[0]];
       return [];
     }
+
+    if (!isMulti && isValuesValid(values)) return [values];
+    return [];
   };
 
   // Reducers
   const initialState = {
-    values: setInitialValues(initialValues, options),
+    values: setInitialValues(initialValues, setValidOptions(options)),
     originalValues: initialValues,
-    originalOptions: options,
+    originalOptions: setValidOptions(options),
     selectedOptions: [],
-    notSelectedOptions: options,
-    filteredOptions: options,
+    notSelectedOptions: setValidOptions(options),
+    filteredOptions: setValidOptions(options),
     inputValue: "",
     listBoxInputValue: "",
     focusedOptionIndex: 0,
@@ -201,7 +191,9 @@ export const useComboBox = ({
           inputValue: payload.data,
           filteredOptions: isAsync
             ? state.notSelectedOptions
-            : filteredBy(state.notSelectedOptions, payload.data),
+            : typeof filteredBy === "function"
+            ? filteredBy(state.notSelectedOptions, payload.data)
+            : state.notSelectedOptions,
         };
 
       case "SET_LISTBOXINPUT_VALUE":
@@ -269,14 +261,16 @@ export const useComboBox = ({
 
   // Effects
   useEffect(() => {
-    setNotSelectedOptions(options);
+    setNotSelectedOptions(setValidOptions(options));
   }, [setNotSelectedOptions, options]);
 
   useEffect(() => {
-    if (!isMulti) {
-      onChange(values[0] || "");
-    } else {
-      onChange(values);
+    if (onChange && typeof onChange === "function") {
+      if (!isMulti) {
+        onChange(values[0] || "");
+      } else {
+        onChange(values);
+      }
     }
   }, [isMulti, onChange, values]);
 
@@ -291,8 +285,12 @@ export const useComboBox = ({
 
   useEffect(() => {
     if (isListBox) {
-      const optionsFiltered = filteredBy(options, listBoxInputValue)[0];
-      const filteredIndex = options.indexOf(optionsFiltered);
+      const _options = setValidOptions(options);
+      const optionsFiltered =
+        typeof filteredBy === "function"
+          ? filteredBy(_options, listBoxInputValue)[0]
+          : _options;
+      const filteredIndex = _options.indexOf(optionsFiltered);
 
       if (listBoxInputValue && filteredIndex !== -1) {
         if (!isOpen) {
@@ -510,11 +508,15 @@ export const useComboBox = ({
     if (!isMulti) {
       if (!isInputHidden) setIsInputHidden(true);
 
-      setValues([option.value]);
+      if (option.value !== null && option.value !== undefined) {
+        setValues([option.value]);
+      }
     } else {
       if (values.includes(option.value)) return;
 
-      setValues([...values, option.value]);
+      if (option.value !== null && option.value !== undefined) {
+        setValues([...values, option.value]);
+      }
     }
   };
 
