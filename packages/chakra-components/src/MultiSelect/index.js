@@ -58,6 +58,7 @@ const MultiSelect = forwardRef(
       renderCustomSelectedOption,
       renderCustomInput,
       renderCustomCloseButton,
+      renderCustomSpinner,
       renderCustomToggleIcon,
       renderCustomOption,
       renderCustomNoOption,
@@ -100,6 +101,7 @@ const MultiSelect = forwardRef(
       getOptionProps,
       removeSelectedValue,
       removeAllSelectedValues,
+      originalOptions,
       setOriginalOptions,
       setIsOpen,
     } = useComboBox({
@@ -161,8 +163,8 @@ const MultiSelect = forwardRef(
                   cachedOptions.current["default"] = [{ label: options }];
                 }
               }
-              onEmptyInputValue(setValidOptions(options));
-              setOriginalOptions(setValidOptions(options));
+              onEmptyInputValue(options);
+              if (!originalOptions.length) setOriginalOptions(options);
             };
 
             if (defaultOptions) {
@@ -189,6 +191,7 @@ const MultiSelect = forwardRef(
       }
     }, [
       options,
+      originalOptions,
       isAsync,
       defaultOptions,
       loadOptions,
@@ -221,6 +224,7 @@ const MultiSelect = forwardRef(
       renderCustomSelectedOption,
       renderCustomInput,
       renderCustomCloseButton,
+      renderCustomSpinner,
       renderCustomToggleIcon,
       renderCustomOption,
       renderCustomNoOption,
@@ -353,6 +357,8 @@ const MultiSelectPlaceholder = ({ children, ...props }) => {
     dark: theme.colors.whiteAlpha[400],
   };
 
+  const placeholderProps = { values, inputValue };
+
   if (!values.length) {
     return inputValue ? null : (
       <PseudoBox
@@ -363,7 +369,7 @@ const MultiSelectPlaceholder = ({ children, ...props }) => {
         color={placeholderColor[colorMode]}
         {...props}
       >
-        {children}
+        {typeof children === "function" ? children(placeholderProps) : children}
       </PseudoBox>
     );
   }
@@ -375,50 +381,45 @@ MultiSelectPlaceholder.displayName = "MultiSelectPlaceholder";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const MultiSelectInput = forwardRef(
-  (
-    {
-      "aria-label": ariaLabel,
-      "aria-labelledby": ariaLabelledby,
-      isReadOnly,
-      isDisabled,
-      isInvalid,
-      isRequired,
-      ...props
-    },
-    ref,
-  ) => {
-    const { isInputHidden, getInputProps, isListBox } = useMultiSelectContext();
+const MultiSelectInput = ({
+  ariaLabel,
+  ariaLabelledby,
+  isReadOnly,
+  isDisabled,
+  isInvalid,
+  isRequired,
+  ...props
+}) => {
+  const { isInputHidden, getInputProps, isListBox } = useMultiSelectContext();
 
-    const ariaAttributes = {
-      "aria-autocomplete": "list",
-      "aria-label": ariaLabel,
-      "aria-labelledby": ariaLabelledby,
-    };
+  const ariaAttributes = {
+    "aria-autocomplete": "list",
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledby,
+  };
 
-    const { inputWrapperStyle, inputStyle } = useMultiSelectInputStyle({
-      isDisabled,
-      isInputHidden,
-      isListBox,
-    });
+  const { inputWrapperStyle, inputStyle } = useMultiSelectInputStyle({
+    isDisabled,
+    isInputHidden,
+    isListBox,
+  });
 
-    return (
-      <PseudoBox {...inputWrapperStyle} {...props}>
-        <AutosizeInput
-          type="text"
-          autoCapitalize="none"
-          autoComplete="off"
-          autoCorrect="off"
-          spellCheck="false"
-          inputStyle={inputStyle}
-          disabled={isDisabled}
-          {...ariaAttributes}
-          {...getInputProps()}
-        />
-      </PseudoBox>
-    );
-  },
-);
+  return (
+    <PseudoBox {...inputWrapperStyle} {...props}>
+      <AutosizeInput
+        type="text"
+        autoCapitalize="none"
+        autoComplete="off"
+        autoCorrect="off"
+        spellCheck="false"
+        inputStyle={inputStyle}
+        disabled={isDisabled}
+        {...ariaAttributes}
+        {...getInputProps()}
+      />
+    </PseudoBox>
+  );
+};
 
 MultiSelectInput.displayName = "MultiSelectInput";
 
@@ -529,12 +530,12 @@ MultiSelectCloseButton.displayName = "MultiSelectCloseButton";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MultiSelectLoader = props => {
-  const { isLoading } = useMultiSelectContext();
+  const { isLoading, renderCustomSpinner } = useMultiSelectContext();
 
   if (isLoading) {
     return (
       <MultiSelectRightAddons {...props}>
-        <Spinner size="sm" />
+        {renderCustomSpinner || <Spinner size="sm" />}
       </MultiSelectRightAddons>
     );
   }
@@ -749,7 +750,9 @@ export {
   MultiSelectPlaceholder,
   MultiSelectInput,
   MultiSelectRightAddons,
+  MultiSelectLoader,
   MultiSelectCloseButton,
   MultiSelectToggleIcon,
   MultiSelectOption,
+  MultiSelectHiddenInput,
 };
