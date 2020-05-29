@@ -35,14 +35,17 @@ jobs:
         working-directory: ./docs
         run: yarn export
 
-      - name: Deploy to Now
+      - name: Deploy Docs to Now
         working-directory: ./docs/out
         env:
           NOW_TOKEN: ${{ secrets.NOW_TOKEN }}
         run: |
           now --token ${NOW_TOKEN} --confirm --name chakra-components --no-clipboard
 
-      - name: Deploy to Now
+      - name: Build Storybook
+        run: yarn build-storybook
+
+      - name: Deploy Storybook to Now
         working-directory: ./storybook-static
         env:
           NOW_TOKEN: ${{ secrets.NOW_TOKEN }}
