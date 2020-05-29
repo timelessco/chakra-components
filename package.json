@@ -6,7 +6,7 @@
     "boot": "yarn clean && yarn install && yarn bootstrap && yarn build && lerna link",
     "bootstrap": "lerna bootstrap --use-workspaces",
     "build": "lerna run build --no-private --stream",
-    "build-storybook": "build-storybook -s public",
+    "build-storybook": "build-storybook",
     "clean": "git clean -fdx .",
     "commit": "git-cz",
     "contributors:add": "all-contributors add",
@@ -19,7 +19,7 @@
     "release": "lerna publish",
     "start": "yarn build && yarn storybook",
     "start:all": "concurrently \"yarn core start\" \"yarn docs dev\" \"yarn storybook\" ",
-    "storybook": "start-storybook -p 9009 -s public",
+    "storybook": "start-storybook -p 9009",
     "validate": "yarn lint && yarn prettier --list-different",
     "version": "lerna version --no-push"
   },

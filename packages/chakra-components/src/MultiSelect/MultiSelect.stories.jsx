@@ -1,21 +1,31 @@
 import React, { useState } from "react";
 import axios from "axios";
-import {
-  MultiSelect,
-  MultiSelectInput,
-  MultiSelectPlaceholder,
-  MultiSelectSelectedOption,
-} from "@chakra-components/core";
+import { Box } from "@chakra-ui/core";
+import { MultiSelect } from "@chakra-components/core";
 import { options } from "./options";
 
 export default {
   title: "MultiSelect",
+  decorators: [
+    story => (
+      <Box maxWidth="500px" mx="auto">
+        {story()}
+      </Box>
+    ),
+  ],
 };
 
 export const SingleSelect = () => {
   const [fruit, setFruit] = useState(null);
 
-  return <MultiSelect options={options} value={fruit} onChange={setFruit} />;
+  return (
+    <MultiSelect
+      options={options}
+      placement="bottom"
+      value={fruit}
+      onChange={setFruit}
+    />
+  );
 };
 
 export const MultipleSelect = () => {

@@ -41,3 +41,10 @@ jobs:
           NOW_TOKEN: ${{ secrets.NOW_TOKEN }}
         run: |
           now --token ${NOW_TOKEN} --confirm --name chakra-components --no-clipboard
+
+      - name: Deploy to Now
+        working-directory: ./storybook-static
+        env:
+          NOW_TOKEN: ${{ secrets.NOW_TOKEN }}
+        run: |
+          now --token ${NOW_TOKEN} --confirm --name chakra-components-storybook --no-clipboard

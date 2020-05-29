@@ -27,3 +27,4 @@ packages/*/.rts2_cache*
 # Cruft
 .DS_Store
 .idea
+.vercel
