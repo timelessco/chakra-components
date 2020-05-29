@@ -1,50 +1,80 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import {
-  Box,
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
-} from "@chakra-ui/core";
+  MultiSelect,
+  MultiSelectInput,
+  MultiSelectPlaceholder,
+  MultiSelectSelectedOption,
+} from "@chakra-components/core";
+import { options } from "./options";
 
 export default {
-  title: "Alert",
+  title: "MultiSelect",
 };
 
-export const Basic = () => (
-  <Alert status="error" variant="solid" borderRadius="md">
-    <AlertIcon />
-    <AlertTitle mr={2}>Outdated</AlertTitle>
-    <AlertDescription>Your Chakra experience may be degraded.</AlertDescription>
-  </Alert>
-);
+export const SingleSelect = () => {
+  const [fruit, setFruit] = useState(null);
 
-export const Subtle = () => (
-  <Alert status="success" mx="auto" alignItems="start">
-    <AlertIcon />
-    <Box flex="1">
-      <AlertTitle>Holy Smokes</AlertTitle>
-      <AlertDescription>Something just happened!</AlertDescription>
-    </Box>
-  </Alert>
-);
+  return <MultiSelect options={options} value={fruit} onChange={setFruit} />;
+};
 
-export const LeftAccent = () => (
-  <Alert variant="left-accent" mx="auto" alignItems="start">
-    <AlertIcon />
-    <Box flex="1">
-      <AlertTitle>Holy Smokes</AlertTitle>
-      <AlertDescription>Something just happened!</AlertDescription>
-    </Box>
-  </Alert>
-);
+export const MultipleSelect = () => {
+  const [fruit, setFruit] = useState(["Acai"]);
 
-export const TopAccent = () => (
-  <Alert variant="top-accent" mx="auto" alignItems="start">
-    <AlertIcon />
-    <Box flex="1">
-      <AlertTitle>Holy Smokes</AlertTitle>
-      <AlertDescription>Something just happened!</AlertDescription>
-    </Box>
-  </Alert>
-);
+  return (
+    <MultiSelect
+      isMulti
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+    />
+  );
+};
+
+export const ListboxSelect = () => {
+  const [fruit, setFruit] = useState(["Apples"]);
+
+  return (
+    <MultiSelect
+      isListBox
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+    />
+  );
+};
+
+export const AsyncSingleSelect = () => {
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
+
+  const [country, setCountry] = useState(null);
+
+  return (
+    <MultiSelect
+      isAsync
+      loadOptions={loadOptions}
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
+    />
+  );
+};
