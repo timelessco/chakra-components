@@ -1,0 +1,242 @@
+import { Fragment, useState } from "react";
+import {
+  Meta,
+  Story,
+  Props,
+  Preview,
+  Title,
+} from "@storybook/addon-docs/blocks";
+import axios from "axios";
+import { action } from "@storybook/addon-actions";
+import { MultiSelect } from "./";
+
+<Meta title="MultiSelect" component={MultiSelect} id="addons-docs-mdx-id" />
+
+# MultiSelect
+
+An extensible combobox component with below set of features,
+
+1. Single option searchable select
+2. Multiple option searchable select
+3. Fetch options from remote sources
+4. Select options with Rapid-Typeahead support
+5. Virtualized options list within Popper JS
+6. Filter options via both built-in or custom filters
+7. Render custom components with/without built-in components
+8. Autocomplete with manual selection.
+9. Autocomplete with automatic selection.
+
+Most of the composition and behaviours seen in this component was built on the
+inspiration from an awesome library
+[React-Select](https://react-select.com/async).
+
+## Import
+
+Chakra Components exports 5 components to render MultiSelect:
+
+- `MultiSelect`: The wrapper component that manages the components functionality
+  altogether.
+- `MultiSelectInput`: An auto-size input with text field exposed for custom
+  styling.
+- `MultiSelectPlaceholder`: The component that renders the placeholder for the
+  input.
+- `MultiSelectSelectedOption`: The component that renders the selected options.
+- `MultiSelectOption`: The component that shows each options which is in a
+  virtualized list.
+
+```js
+import {
+  MultiSelect,
+  MultiSelectInput,
+  MultiSelectPlaceholder,
+  MultiSelectSelectedOption,
+} from "@chakra-components/core";
+```
+
+## Searchable Single Option Select
+
+- You can manually choose a single option which gets filtered as you type in the
+  textbox or manually selecting it via keyboard/mouse.
+- It behaves as a
+  [WAI-ARAI-Combobox](https://www.w3.org/TR/wai-aria-practices/#combobox) - List
+  autocomplete with manual selection.
+
+**Important Props**
+
+- `options` should have a `label` and `value` key-value pairs to expect the
+  normal behaviour
+- `value` can be an `array` or `string`.
+- `onChange` handler is necessary to update your controlled value.
+
+export const fruits = [
+  "Acai",
+  "Apples",
+  "Apricots",
+  "Avocado",
+  "Ackee",
+  "Bananas",
+  "Bilberries",
+  "Blueberries",
+  "Blackberries",
+  "Boysenberries",
+  "Bread fruit",
+];
+
+export const options = fruits.map((d, i) => ({
+  label: d,
+  value: d,
+}));
+
+<Preview>
+  <Story
+    name="SingleSelect"
+    args={{
+      options: options,
+      value: "Apples",
+      isMulti: false,
+      isListBox: false,
+    }}
+    argTypes={{
+      onChange: { action: "Value Selected" },
+    }}
+  >
+    {({ value, ...args }) => {
+      console.log("%c args", "color: #d0bfff", args);
+      const [fruit, setFruit] = useState(value);
+      return <MultiSelect value={fruit} onChange={setFruit} {...args} />;
+    }}
+  </Story>
+</Preview>
+
+## Searchable Multi Option Select
+
+- You can manually choose multiple options which gets filtered as you type in
+  the textbox or manually selecting it via keyboard/mouse.
+- Selected options will not be shown in the list of options.
+- It also behaves as a
+  [WAI-ARAI-Combobox](https://www.w3.org/TR/wai-aria-practices/#combobox) - List
+  autocomplete with manual selection.
+
+**Important Props**
+
+- `options` should have a `label` and `value` key-value pairs to expect the
+  normal behaviour
+- `value` should be an `array`.
+- `onChange` handler is necessary to update your controlled value.
+
+<Preview>
+  <Story
+    name="MultipleSelect"
+    args={{
+      isMulti: true,
+      options: options,
+      value: ["Acai"],
+      placeholder: "Select a fruit...",
+    }}
+    argTypes={{ onChange: { action: "Value Selected" } }}
+  >
+    {({ value, ...args }) => {
+      const [fruit, setFruit] = useState(value);
+      return <MultiSelect value={fruit} onChange={setFruit} {...args} />;
+    }}
+  </Story>
+</Preview>
+
+## ListBox Option Select
+
+You can manually choose multiple options which gets filtered as you type in the
+textbox or manually selecting it via keyboard/mouse.
+
+- When dropdown is closed, option gets selected automatically by matching
+  certain number of characters typed in the textbox with Rapid Typeahead support
+  .
+- When the dropdown is open, you can manually choose a single option which gets
+  filtered as you type in the textbox or manually selecting it via
+  keyboard/mouse.
+- It behaves as a
+  [WAI-ARAI-Combobox](https://www.w3.org/TR/wai-aria-practices/#combobox) - List
+  autocomplete with both automatic & manual selection.
+
+<Preview>
+  <Story
+    name="ListboxSelect"
+    args={{
+      isListBox: true,
+      options: options,
+      value: ["Apricots"],
+      placeholder: "Select a fruit...",
+    }}
+    argTypes={{ onChange: { action: "Value Selected" } }}
+  >
+    {({ value, ...args }) => {
+      const [fruit, setFruit] = useState(value);
+      return <MultiSelect value={fruit} onChange={setFruit} {...args} />;
+    }}
+  </Story>
+</Preview>
+
+## Remote Fetch Options via `isAsync`
+
+- Load options from a remote source as you type.
+- Supports both single and multi options selection completely.
+- In-built filtering is disabled.
+- ListBox behaviour is supported only with `cacheOptions` and filtering is done
+  by `filteredBy` prop.
+
+### Async Single Searchable Option Select with `defaultOptions`
+
+- Use `loadOption` prop function to send promise resolved or errored callbacks.
+- `defaultOptions` prop determines when your remote request is initially fired.
+- There are two valid values for this property.
+
+1. **`defaultOptions` - true**
+
+Providing the prop by itself (or with 'true') tells the control to immediately
+fire the remote request, described by your loadOptions, to get those initial
+values for the Select.
+
+<Preview>
+  <Story
+    name="AsyncSingleSelect"
+    args={{
+      isAsync: true,
+      isMulti: false,
+      isListBox: false,
+      defaultOptions: true,
+      value: ["India"],
+      placeholder: "Select a country...",
+    }}
+    argTypes={{ onChange: { action: "Value Selected" } }}
+  >
+    {({ value, ...args }) => {
+      const loadOptions = (inputValue, successCb, errorCb) => {
+        axios
+          .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+          .then(response => {
+            successCb(
+              response.data.map(ep => ({
+                label: `${ep.name}`,
+                value: `${ep.name}`,
+                code: `${ep.alpha2Code}`,
+                timeZone: `${ep.timezones[0]}`,
+              })),
+            );
+          })
+          .catch(e => {
+            errorCb("Remote fetch failed");
+          });
+      };
+      const [country, setCountry] = useState(value);
+      return (
+        <MultiSelect
+          loadOptions={loadOptions}
+          value={country}
+          onChange={setCountry}
+          {...args}
+        />
+      );
+    }}
+  </Story>
+</Preview>
+
+<Props of={MultiSelect} />

@@ -1,0 +1,1320 @@
+# MultiSelect
+
+An extensible combobox component with below set of features,
+
+1. Single option searchable select
+2. Multiple option searchable select
+3. Fetch options from remote sources
+4. Select options with Rapid-Typeahead support
+5. Virtualized options list within Popper JS
+6. Filter options via both built-in or custom filters
+7. Render custom components with/without built-in components
+8. Autocomplete with manual selection.
+9. Autocomplete with automatic selection.
+
+Most of the composition and behaviours seen in this component was built on the
+inspiration from an awesome library [React-Select](//react-select.com/async).
+
+## Import
+
+Chakra Components exports 5 components to render MultiSelect:
+
+- `MultiSelect`: The wrapper component that manages the components functionality
+  altogether.
+- `MultiSelectInput`: An auto-size input with text field exposed for custom
+  styling.
+- `MultiSelectPlaceholder`: The component that renders the placeholder for the
+  input.
+- `MultiSelectSelectedOption`: The component that renders the selected options.
+- `MultiSelectOption`: The component that shows each options which is in a
+  virtualized list.
+
+```js
+import {
+  MultiSelect,
+  MultiSelectInput,
+  MultiSelectPlaceholder,
+  MultiSelectSelectedOption,
+} from "@chakra-components/core";
+```
+
+## Searchable Single Option Select
+
+- You can manually choose a single option which gets filtered as you type in the
+  textbox or manually selecting it via keyboard/mouse.
+- It behaves as a
+  [WAI-ARAI-Combobox](//www.w3.org/TR/wai-aria-practices/#combobox) - List
+  autocomplete with manual selection.
+
+**Important Props**
+
+- `options` should have a `label` and `value` key-value pairs to expect the
+  normal behaviour
+- `value` can be an `array` or `string`.
+- `onChange` handler is necessary to update your controlled value.
+
+```jsx
+function MultiSelectExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+  }));
+
+  const [fruit, setFruit] = useState(null);
+
+  return <MultiSelect options={options} value={fruit} onChange={setFruit} />;
+}
+```
+
+## Searchable Multi Option Select
+
+- You can manually choose multiple options which gets filtered as you type in
+  the textbox or manually selecting it via keyboard/mouse.
+- Selected options will not be shown in the list of options.
+- It also behaves as a
+  [WAI-ARAI-Combobox](//www.w3.org/TR/wai-aria-practices/#combobox) - List
+  autocomplete with manual selection.
+
+**Important Props**
+
+- `options` should have a `label` and `value` key-value pairs to expect the
+  normal behaviour
+- `value` should be an `array`.
+- `onChange` handler is necessary to update your controlled value.
+
+```jsx
+function MultiSelectExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+  }));
+
+  const [fruit, setFruit] = useState(["Acai"]);
+
+  return (
+    <MultiSelect
+      isMulti
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+    />
+  );
+}
+```
+
+## ListBox Option Select
+
+You can manually choose multiple options which gets filtered as you type in the
+textbox or manually selecting it via keyboard/mouse.
+
+- When dropdown is closed, option gets selected automatically by matching
+  certain number of characters typed in the textbox with Rapid Typeahead support
+  .
+- When the dropdown is open, you can manually choose a single option which gets
+  filtered as you type in the textbox or manually selecting it via
+  keyboard/mouse.
+- It behaves as a
+  [WAI-ARAI-Combobox](//www.w3.org/TR/wai-aria-practices/#combobox) - List
+  autocomplete with both automatic & manual selection.
+
+```jsx
+function MultiSelectExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+  }));
+
+  const [fruit, setFruit] = useState(["Apples"]);
+
+  return (
+    <MultiSelect
+      isListBox
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+    />
+  );
+}
+```
+
+## Remote Fetch Options via `isAsync`
+
+- Load options from a remote source as you type.
+- Supports both single and multi options selection completely.
+- In-built filtering is disabled.
+- ListBox behaviour is supported only with `cacheOptions` and filtering is done
+  by `filteredBy` prop.
+
+### Async Single Searchable Option Select with `defaultOptions`
+
+- Use `loadOption` prop function to send promise resolved or errored callbacks.
+- `defaultOptions` prop determines when your remote request is initially fired.
+- There are two valid values for this property.
+
+1. **`defaultOptions` - true**
+
+Providing the prop by itself (or with 'true') tells the control to immediately
+fire the remote request, described by your loadOptions, to get those initial
+values for the Select.
+
+```jsx
+function MultiSelectExample() {
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
+
+  const [country, setCountry] = useState(null);
+
+  return (
+    <MultiSelect
+      isAsync
+      loadOptions={loadOptions}
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
+    />
+  );
+}
+```
+
+2. **`defaultOptions` - [{}]**
+
+Providing an option array to this prop will populate the initial set of options
+used when opening the select, at which point the remote load only occurs when
+filtering the options (typing in the control).
+
+```jsx
+function MultiSelectExample() {
+  const [defaultOptions, setDefaultOptions] = useState([]);
+
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
+
+  useEffect(() => {
+    axios.get(`https://restcountries.eu/rest/v2/all`).then(response => {
+      setDefaultOptions(
+        response.data.map(ep => ({
+          label: `${ep.name}`,
+          value: `${ep.name}`,
+          code: `${ep.alpha2Code}`,
+          timeZone: `${ep.timezones[0]}`,
+        })),
+      );
+    });
+  }, []);
+
+  const [country, setCountry] = useState(null);
+
+  return (
+    <MultiSelect
+      isAsync
+      loadOptions={loadOptions}
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
+    />
+  );
+}
+```
+
+### Async Single Searchable Option Select with `cacheOptions`
+
+- With `cacheOptions` prop, each and every request is being cached locally so
+  the next time you type the same string, same results are fetched from the
+  cache instead from a remote source everytime.
+- If `defaultOptions` is boolean, options are fetched from the remote source and
+  stored in the cache when the component mounts.
+
+```jsx
+function MultiSelectExample() {
+  const [defaultOptions, setDefaultOptions] = useState([]);
+
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
+
+  useEffect(() => {
+    axios.get(`https://restcountries.eu/rest/v2/all`).then(response => {
+      setDefaultOptions(
+        response.data.map(ep => ({
+          label: `${ep.name}`,
+          value: `${ep.name}`,
+          code: `${ep.alpha2Code}`,
+          timeZone: `${ep.timezones[0]}`,
+        })),
+      );
+    });
+  }, []);
+
+  const [country, setCountry] = useState(["India"]);
+
+  return (
+    <MultiSelect
+      isAsync
+      loadOptions={loadOptions}
+      cacheOptions
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
+    />
+  );
+}
+```
+
+### Async Multi Searchable Option Select with `cacheOptions` & `defaultOptions`
+
+```jsx
+function MultiSelectExample() {
+  const [defaultOptions, setDefaultOptions] = useState([]);
+
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
+
+  useEffect(() => {
+    axios.get(`https://restcountries.eu/rest/v2/all`).then(response => {
+      setDefaultOptions(
+        response.data.map(ep => ({
+          label: `${ep.name}`,
+          value: `${ep.name}`,
+          code: `${ep.alpha2Code}`,
+          timeZone: `${ep.timezones[0]}`,
+        })),
+      );
+    });
+  }, []);
+
+  const [country, setCountry] = useState(["India", "Australia"]);
+
+  return (
+    <MultiSelect
+      isAsync
+      isMulti
+      loadOptions={loadOptions}
+      cacheOptions
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
+    />
+  );
+}
+```
+
+### Async ListBox Select with only `cacheOptions` & `defaultOptions`
+
+To get the listbox behaviour for the remote source, you either fetch all the
+options and provide it using `options` or using `isAsync` with `loadOptions`.
+Inorder for this behaviour to work `cacheOptions` and `defaultOptions` are
+necessary
+
+```jsx
+function MultiSelectExample() {
+  const [defaultOptions, setDefaultOptions] = useState([]);
+
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
+
+  useEffect(() => {
+    axios.get(`https://restcountries.eu/rest/v2/all`).then(response => {
+      setDefaultOptions(
+        response.data.map(ep => ({
+          label: `${ep.name}`,
+          value: `${ep.name}`,
+          code: `${ep.alpha2Code}`,
+          timeZone: `${ep.timezones[0]}`,
+        })),
+      );
+    });
+  }, []);
+
+  const [country, setCountry] = useState(null);
+
+  return (
+    <MultiSelect
+      isAsync
+      isListBox
+      loadOptions={loadOptions}
+      cacheOptions
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
+    />
+  );
+}
+```
+
+## Custom option filtering function
+
+Using `filteredBy` prop will give you access to internal options and textbox
+values. With this you can provide your own filtering functions.
+
+```jsx
+function MultiSelectExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+    "Cantaloupes(cantalope)",
+    "Chocolate - Fruit",
+    "Cherimoya",
+    "Cherries",
+    "Cranberries",
+    "Cucumbers",
+    "Currants",
+    "Dates",
+    "Durian",
+    "Eggplant",
+    "Elderberries",
+    "Figs",
+    "Gooseberries",
+    "Grapes",
+    "Grapefruit",
+    "Guava",
+    "Honeydew melons",
+    "Horned melon(Kiwano)",
+    "Huckleberries",
+    "Ita Palm",
+    "Jujubes",
+    "Kiwis",
+    "Kumquat",
+    "Lemons",
+    "Limes",
+    "Lychees",
+    "Mangos",
+    "Mangosteen",
+    "Mulberries",
+    "Muskmelon",
+    "Nectarines",
+    "Ogden melons",
+    "Olives",
+    "Oranges",
+    "Papaya",
+    "Passion fruit",
+    "Peaches",
+    "Pears",
+    "Peppers",
+    "Persimmon",
+    "Pineapple",
+    "Plums",
+    "Pluot",
+    "Pomegranate",
+    "Prickly Pear",
+    "Quince",
+    "Rambuton",
+    "Raspberries",
+    "Rose Apple",
+    "Starfruit",
+    "Sapadilla",
+    "Strawberries",
+    "Tamarind",
+    "Tangelo",
+    "Tangerines",
+    "Tomatoes",
+    "Ugli fruit",
+    "Voavanga(Spanish Tamarind)",
+    "Watermelons",
+    "Xigua melon",
+    "Yellow watermelon",
+    "Zucchini",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+  }));
+
+  const [fruit, setFruit] = useState(null);
+
+  return (
+    <MultiSelect
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+      filteredBy={(options, value) =>
+        matchSorter(options, value, { keys: ["label"] })
+      }
+    />
+  );
+}
+```
+
+## Disabled Options
+
+Options can look disabled only when they are passed as key along with label and
+value.
+
+```jsx
+function MultiSelectExample() {
+  const fruits = [
+    "Acai",
+    "Apples",
+    "Apricots",
+    "Avocado",
+    "Ackee",
+    "Bananas",
+    "Bilberries",
+    "Blueberries",
+    "Blackberries",
+    "Boysenberries",
+    "Bread fruit",
+    "Cantaloupes(cantalope)",
+    "Chocolate - Fruit",
+    "Cherimoya",
+    "Cherries",
+    "Cranberries",
+    "Cucumbers",
+    "Currants",
+    "Dates",
+    "Durian",
+    "Eggplant",
+    "Elderberries",
+    "Figs",
+    "Gooseberries",
+    "Grapes",
+    "Grapefruit",
+    "Guava",
+    "Honeydew melons",
+    "Horned melon(Kiwano)",
+    "Huckleberries",
+    "Ita Palm",
+    "Jujubes",
+    "Kiwis",
+    "Kumquat",
+    "Lemons",
+    "Limes",
+    "Lychees",
+    "Mangos",
+    "Mangosteen",
+    "Mulberries",
+    "Muskmelon",
+    "Nectarines",
+  ];
+
+  const options = fruits.map((d, i) => ({
+    value: d,
+    label: d,
+    disabled: i % 4 === 0,
+  }));
+
+  const [fruit, setFruit] = useState(null);
+
+  return (
+    <MultiSelect
+      options={options}
+      value={fruit}
+      onChange={setFruit}
+      placeholder="Select a fruit..."
+      filteredBy={(options, value) =>
+        matchSorter(options, value, { keys: ["label"] })
+      }
+    />
+  );
+}
+```
+
+## Custom Components
+
+You have the flexibility to override the default components with the exposed
+components and the custom functions allowed for each composition.
+
+### Render Custom Placeholder
+
+```jsx
+function MultiSelectExample() {
+  const options = [
+    {
+      label: "bug",
+      description: `Something isn't working`,
+      value: "bug",
+      color: "#ff0000",
+    },
+    {
+      label: "documentation",
+      description: `Improvements or addition to documentation`,
+      value: "documentation",
+      color: "#0000ff",
+    },
+    {
+      label: "duplicate",
+      description: `This issue or pull requests already exists`,
+      value: "duplicate",
+      color: "#7f00ff",
+    },
+    {
+      label: "enhancement",
+      description: `New feature or request`,
+      value: "enhancement",
+      color: "#00ff00",
+    },
+    {
+      label: "good first issue",
+      description: `Good for beginners`,
+      value: "first-issue",
+      color: "#ffa500",
+    },
+    {
+      label: "help wanted",
+      description: `Need more help`,
+      value: "help-wanted",
+      color: "#844f38",
+    },
+  ];
+
+  const [tag, setTag] = useState(null);
+
+  return (
+    <MultiSelect
+      options={options}
+      value={tag}
+      onChange={setTag}
+      renderCustomPlaceholder={
+        <MultiSelectPlaceholder color="teal.500">
+          Select an issue category...
+        </MultiSelectPlaceholder>
+      }
+    />
+  );
+}
+```
+
+### Render Custom Single SelectedOptions
+
+```jsx
+function MultiSelectExample() {
+  const options = [
+    { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1" },
+    {
+      label: "Kola Tioluwani",
+      img: "https://bit.ly/tioluwani-kolawole",
+      value: "2",
+    },
+    { label: "Kent Dodds", img: "https://bit.ly/kent-c-dodds", value: "3" },
+    { label: "Ryan Florence", img: "https://bit.ly/ryan-florence", value: "4" },
+    {
+      label: "Prosper Otemuyiwa",
+      img: "https://bit.ly/prosper-baba",
+      value: "5",
+    },
+    { label: "Christian Nwamba", img: "https://bit.ly/code-beast", value: "6" },
+    { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
+  ];
+
+  const [user, setUser] = React.useState(null);
+
+  return (
+    <MultiSelect
+      options={options}
+      value={user}
+      onChange={setUser}
+      placeholder="Select a person you like..."
+      renderCustomSelectedOption={
+        <MultiSelectSelectedOption>
+          {({ selectedOption }) => (
+            <Flex w="100%" alignItems="center">
+              <Avatar
+                name={selectedOption.label}
+                src={selectedOption.img}
+                size="xs"
+                mr={2}
+              />
+              <Box as="h4" fontWeight="bold">
+                {selectedOption.label}
+              </Box>
+            </Flex>
+          )}
+        </MultiSelectSelectedOption>
+      }
+    />
+  );
+}
+```
+
+### Render Custom Multi SelectedOptions
+
+```jsx
+function MultiSelectExample() {
+  const options = [
+    { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1" },
+    {
+      label: "Kola Tioluwani",
+      img: "https://bit.ly/tioluwani-kolawole",
+      value: "2",
+    },
+    { label: "Kent Dodds", img: "https://bit.ly/kent-c-dodds", value: "3" },
+    { label: "Ryan Florence", img: "https://bit.ly/ryan-florence", value: "4" },
+    {
+      label: "Prosper Otemuyiwa",
+      img: "https://bit.ly/prosper-baba",
+      value: "5",
+    },
+    { label: "Christian Nwamba", img: "https://bit.ly/code-beast", value: "6" },
+    { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
+  ];
+
+  const [user, setUser] = React.useState(null);
+
+  return (
+    <MultiSelect
+      isMulti
+      options={options}
+      value={user}
+      onChange={setUser}
+      placeholder="Select a person you like..."
+      renderCustomSelectedOption={
+        <MultiSelectSelectedOption>
+          {({ selectedOption, handleOnClick }) => {
+            return (
+              <Tag size="md" variant="solid" variantColor="blue">
+                <TagLabel>
+                  <Flex w="100%" alignItems="center">
+                    <Avatar
+                      name={selectedOption.label}
+                      src={selectedOption.img}
+                      size="xs"
+                      mr={2}
+                    />
+                    <Box as="h4" fontWeight="bold">
+                      {selectedOption.label}
+                    </Box>
+                  </Flex>
+                </TagLabel>
+                <TagCloseButton tabIndex={-1} onClick={handleOnClick} />
+              </Tag>
+            );
+          }}
+        </MultiSelectSelectedOption>
+      }
+    />
+  );
+}
+```
+
+### Render Custom Input
+
+```jsx
+function MultiSelectExample() {
+  const options = [
+    { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1" },
+    {
+      label: "Kola Tioluwani",
+      img: "https://bit.ly/tioluwani-kolawole",
+      value: "2",
+    },
+    { label: "Kent Dodds", img: "https://bit.ly/kent-c-dodds", value: "3" },
+    { label: "Ryan Florence", img: "https://bit.ly/ryan-florence", value: "4" },
+    {
+      label: "Prosper Otemuyiwa",
+      img: "https://bit.ly/prosper-baba",
+      value: "5",
+    },
+    { label: "Christian Nwamba", img: "https://bit.ly/code-beast", value: "6" },
+    { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
+  ];
+
+  const [user, setUser] = React.useState(null);
+
+  return (
+    <MultiSelect
+      isMulti
+      options={options}
+      value={user}
+      onChange={setUser}
+      placeholder="Select a person you like..."
+      renderCustomInput={<MultiSelectInput color="orange.500" />}
+    />
+  );
+}
+```
+
+### Render Custom CloseButton and ToggleIcon
+
+```jsx
+function MultiSelectExample() {
+  const options = [
+    { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1" },
+    {
+      label: "Kola Tioluwani",
+      img: "https://bit.ly/tioluwani-kolawole",
+      value: "2",
+    },
+    { label: "Kent Dodds", img: "https://bit.ly/kent-c-dodds", value: "3" },
+    { label: "Ryan Florence", img: "https://bit.ly/ryan-florence", value: "4" },
+    {
+      label: "Prosper Otemuyiwa",
+      img: "https://bit.ly/prosper-baba",
+      value: "5",
+    },
+    { label: "Christian Nwamba", img: "https://bit.ly/code-beast", value: "6" },
+    { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
+  ];
+
+  const [user, setUser] = React.useState(null);
+
+  return (
+    <MultiSelect
+      isMulti
+      options={options}
+      value={user}
+      onChange={setUser}
+      placeholder="Select a person you like..."
+      renderCustomCloseButton={<Icon name="delete" />}
+      renderCustomToggleIcon={<Icon name="arrow-up-down" fontSize="1rem" />}
+    />
+  );
+}
+```
+
+### Render Custom Option
+
+```jsx
+function MultiSelectExample() {
+  const options = [
+    { label: "Dan Abrahmov", img: "https://bit.ly/dan-abramov", value: "1" },
+    {
+      label: "Kola Tioluwani",
+      img: "https://bit.ly/tioluwani-kolawole",
+      value: "2",
+    },
+    { label: "Kent Dodds", img: "https://bit.ly/kent-c-dodds", value: "3" },
+    { label: "Ryan Florence", img: "https://bit.ly/ryan-florence", value: "4" },
+    {
+      label: "Prosper Otemuyiwa",
+      img: "https://bit.ly/prosper-baba",
+      value: "5",
+    },
+    { label: "Christian Nwamba", img: "https://bit.ly/code-beast", value: "6" },
+    { label: "Segun Adebayo", img: "https://bit.ly/sage-adebayo", value: "7" },
+  ];
+
+  const [user, setUser] = React.useState(null);
+
+  return (
+    <MultiSelect
+      isMulti
+      options={options}
+      value={user}
+      onChange={setUser}
+      placeholder="Select a person you like..."
+      itemHeight={60}
+      renderCustomOption={({ option, getOptionProps }) => (
+        <Flex w="100%" alignItems="center" {...getOptionProps}>
+          <Box w="10%">
+            <Avatar name={option.label} src={option.img} />
+          </Box>
+          <Flex w="90%" flexDirection="column" alignItems="left">
+            <Box as="h4" fontWeight="bold">
+              {option.label}
+            </Box>
+          </Flex>
+        </Flex>
+      )}
+    />
+  );
+}
+```
+
+### Render Custom Spinner
+
+```jsx
+function MultiSelectExample() {
+  const [defaultOptions, setDefaultOptions] = useState([]);
+
+  const loadOptions = (inputValue, successCb, errorCb) => {
+    axios
+      .get(`https://restcountries.eu/rest/v2/name/${inputValue}`)
+      .then(response => {
+        successCb(
+          response.data.map(ep => ({
+            label: `${ep.name}`,
+            value: `${ep.name}`,
+            code: `${ep.alpha2Code}`,
+            timeZone: `${ep.timezones[0]}`,
+          })),
+        );
+      })
+      .catch(e => {
+        errorCb("Remote fetch failed");
+      });
+  };
+
+  useEffect(() => {
+    axios.get(`https://restcountries.eu/rest/v2/all`).then(response => {
+      setDefaultOptions(
+        response.data.map(ep => ({
+          label: `${ep.name}`,
+          value: `${ep.name}`,
+          code: `${ep.alpha2Code}`,
+          timeZone: `${ep.timezones[0]}`,
+        })),
+      );
+    });
+  }, []);
+
+  const [country, setCountry] = useState(null);
+
+  return (
+    <MultiSelect
+      isAsync
+      loadOptions={loadOptions}
+      cacheOptions
+      defaultOptions
+      value={country}
+      onChange={setCountry}
+      placeholder="Select a country..."
+      itemHeight={60}
+      pageSize={7}
+      renderCustomSpinner={<Spinner color="red.500" size="sm" />}
+      renderCustomOption={({ option, getOptionProps }) => (
+        <Flex width="100%" alignItems="center" {...getOptionProps}>
+          <Box w="10%">
+            <Avatar name={option.label} />
+          </Box>
+          <Flex w="90%" flexDirection="column" alignItems="left">
+            <Box as="h4" fontWeight="bold">
+              {option.label}
+            </Box>
+            <Box>{option.timeZone}</Box>
+          </Flex>
+        </Flex>
+      )}
+    />
+  );
+}
+```
+
+### More Examples
+
+```jsx
+function MultiSelectExample() {
+  const options = [
+    {
+      label: "bug",
+      description: `Something isn't working`,
+      value: "bug",
+      color: "#ff0000",
+    },
+    {
+      label: "documentation",
+      description: `Improvements or addition to documentation`,
+      value: "documentation",
+      color: "#0000ff",
+    },
+    {
+      label: "duplicate",
+      description: `This issue or pull requests already exists`,
+      value: "duplicate",
+      color: "#7f00ff",
+    },
+    {
+      label: "enhancement",
+      description: `New feature or request`,
+      value: "enhancement",
+      color: "#00ff00",
+    },
+    {
+      label: "good first issue",
+      description: `Good for beginners`,
+      value: "first-issue",
+      color: "#ffa500",
+    },
+    {
+      label: "help wanted",
+      description: `Need more help`,
+      value: "help-wanted",
+      color: "#844f38",
+    },
+  ];
+
+  const [tag, setTag] = useState(null);
+
+  return (
+    <MultiSelect
+      options={options}
+      value={tag}
+      onChange={setTag}
+      placeholder="Select an issue category..."
+      itemHeight={60}
+      renderCustomSelectedOption={
+        <MultiSelectSelectedOption>
+          {({ selectedOption }) => (
+            <Flex width="100%" alignItems="center">
+              <Box>
+                <Box
+                  backgroundColor={selectedOption.color}
+                  width="20px"
+                  height="20px"
+                />
+              </Box>
+              <Flex flexDirection="column" alignItems="left" ml={2}>
+                <Box as="h4" fontWeight="bold">
+                  {selectedOption.label}
+                </Box>
+              </Flex>
+            </Flex>
+          )}
+        </MultiSelectSelectedOption>
+      }
+      renderCustomOption={({ option, options, getOptionProps }) => (
+        <Flex width="100%" alignItems="center" {...getOptionProps}>
+          <Box w="5%">
+            <Box backgroundColor={option.color} width="20px" height="20px" />
+          </Box>
+          <Flex w="95%" flexDirection="column" alignItems="left">
+            <Box as="h4" fontWeight="bold">
+              {option.label}
+            </Box>
+            <Box>{option.description}</Box>
+          </Flex>
+        </Flex>
+      )}
+      renderCustomNoOption={({ getNoOptionProps }) => (
+        <PseudoBox {...getNoOptionProps} color="orange.500">
+          Typed issue category is not found...
+        </PseudoBox>
+      )}
+    />
+  );
+}
+```
+
+```jsx
+function MultiSelectExample() {
+  const getOptionStyles = (selected, focused, disabled) => {
+    // Here, the default hover, selected and disabled style has been changed.
+    // Also complete control of select box styling has been changed.
+
+    const styles = {
+      display: "flex",
+      alignItems: "center",
+      flex: "0 0 auto",
+      width: "full",
+      userSelect: "none",
+      transition: "background-color 220ms, color 220ms",
+      rounded: "sm",
+      outline: "none",
+      textAlign: "left",
+      textDecoration: "none",
+      color: disabled ? "gray.400" : "inherit",
+      pointerEvents: disabled ? "none" : "auto",
+      px: 4,
+      bg: selected ? `teal.300` : focused ? `teal.100` : "transparent",
+      _active: {
+        bg: "gray.200",
+      },
+      _focus: {
+        shadow: "outline",
+        outline: 0,
+      },
+      _disabled: {
+        opacity: 0.4,
+        cursor: "not-allowed",
+      },
+      _before: {
+        position: "absolute",
+        content: "''",
+        left: 0,
+        top: "50%",
+        right: 0,
+        borderTop: disabled ? "1px solid" : null,
+        borderColor: "red",
+      },
+    };
+
+    return styles;
+  };
+
+  const options = [
+    {
+      label: "bug",
+      description: `Something isn't working`,
+      value: "bug",
+      color: "#ff0000",
+      disabled: true,
+    },
+    {
+      label: "documentation",
+      description: `Improvements or addition to documentation`,
+      value: "documentation",
+      color: "#0000ff",
+    },
+    {
+      label: "duplicate",
+      description: `This issue or pull requests already exists`,
+      value: "duplicate",
+      color: "#7f00ff",
+    },
+    {
+      label: "enhancement",
+      description: `New feature or request`,
+      value: "enhancement",
+      color: "#00ff00",
+    },
+    {
+      label: "good first issue",
+      description: `Good for beginners`,
+      value: "first-issue",
+      color: "#ffa500",
+    },
+    {
+      label: "help wanted",
+      description: `Need more help`,
+      value: "help-wanted",
+      color: "#844f38",
+    },
+  ];
+
+  const [tag, setTag] = useState(null);
+
+  return (
+    <MultiSelect
+      options={options}
+      value={tag}
+      onChange={setTag}
+      placeholder="Select a person you like..."
+      itemHeight={60}
+      renderCustomSelectedOption={
+        <MultiSelectSelectedOption>
+          {({ selectedOption }) => (
+            <Flex width="100%" alignItems="center">
+              <Box>
+                <Box
+                  backgroundColor={selectedOption.color}
+                  width="20px"
+                  height="20px"
+                />
+              </Box>
+              <Flex flexDirection="column" alignItems="left" ml={2}>
+                <Box as="h4" fontWeight="bold">
+                  {selectedOption.label}
+                </Box>
+              </Flex>
+            </Flex>
+          )}
+        </MultiSelectSelectedOption>
+      }
+      renderCustomOption={({
+        option,
+        options,
+        selected,
+        focused,
+        disabled,
+        getOptionProps,
+      }) => (
+        <PseudoBox
+          {...getOptionProps}
+          {...getOptionStyles(selected, focused, disabled)}
+        >
+          <Box w="5%">
+            <Box backgroundColor={option.color} width="20px" height="20px" />
+          </Box>
+          <Flex w="95%" flexDirection="column" alignItems="left">
+            <Box as="h4" fontWeight="bold">
+              {option.label}
+            </Box>
+            <Box>{option.description}</Box>
+          </Flex>
+        </PseudoBox>
+      )}
+      renderCustomNoOption={({ getNoOptionProps }) => (
+        <PseudoBox {...getNoOptionProps} color="pink.500">
+          <Box w="5%">
+            <Box backgroundColor="pink.500" width="20px" height="20px" />
+          </Box>
+          <Flex w="95%" flexDirection="column" alignItems="left">
+            <Box as="h4" fontWeight="bold">
+              Typed issue category is not found...
+            </Box>
+          </Flex>
+        </PseudoBox>
+      )}
+    />
+  );
+}
+```
+
+## Props Table
+
+### MultiSelect Props
+
+| Name                       | Type                        | Default           | Description                                                                                                |
+| -------------------------- | --------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| options                    | `array`                     | []                | List of options to select a value                                                                          |
+| value                      | `array`, `string`, `number` | []                | Single value or list of controlled values                                                                  |
+| onChange                   | `function`                  |                   | Handler to change the controlled value                                                                     |
+| placeholder                | `string`                    | `Select one...`   | Placeholder to show inside the input                                                                       |
+| isMulit                    | `boolean`                   | `false`           | If `true`, behaves as a multi-select component                                                             |
+| isListBox                  | `boolean`                   | `false`           | If `true`, behaves as a listbox component                                                                  |
+| isAsync                    | `boolean`                   | `false`           | If `true`, adds the async functionality                                                                    |
+| loadOptions                | `function`                  |                   | Handler to get the resolved options with arguments `inputValue`, `successCb` & `errorCb`                   |
+| defaultOptions             | `array`, `boolean`          | []                | If `true`, default options will be fetched from loadOptions. If `array`, it will use the provided options. |
+| cacheOptions               | `boolean`                   | `false`           | If `true`, all the async options will be cached                                                            |
+| filteredBy                 | `function`                  | `in-build filter` | Handler to pass custom filter to filter the option                                                         |
+| renderCustomPlaceholder    | `React.ReactNode`           |                   | Custom Placeholder JSX made with `MultiSelectPlaceholder` with context support                             |
+| renderCustomSelectedOption | `React.ReactNode`           |                   | Custom SelectedOption JSX made with `MultiSelectSelectedOption` with context support                       |
+| renderCustomInput          | `React.ReactNode`           |                   | Custom Input JSX made with `MultiSelectInput` with context support                                         |
+| renderCustomCloseButton    | `React.ReactNode`           |                   | Custom CloseButton JSX                                                                                     |
+| renderCustomSpinner        | `React.ReactNode`           |                   | Custom Spinner JSX                                                                                         |
+| renderCustomOption         | `React.ReactNode`           |                   | Custom Option JSX with context support                                                                     |
+| renderCustomNoOption       | `React.ReactNode`           |                   | Custom NoOption JSX with context support                                                                   |
+
+### MultiSelectInput
+
+Only style props related to fonts are allowed.
+
+### MultiSelectPlaceholder
+
+| Name     | Type                                         | Default | Description                                                       |
+| -------- | -------------------------------------------- | ------- | ----------------------------------------------------------------- |
+| children | `React.ReactNode`, `React.Children` function |         | Children to `MultiSelectPlaceholder` with access to context props |
+
+### MultiSelectSelectedOption
+
+| Name     | Type                      | Default | Description                                                                                                  |
+| -------- | ------------------------- | ------- | ------------------------------------------------------------------------------------------------------------ |
+| children | `React.Children` function |         | Children to `MultiSelectSelectedOption` with access to selected options and onClick handler for multiselect. |
+
+## Accessibility
+
+### Keyboard Interaction
+
+**For `MultiSelect`:**
+
+| Key         | Action                                                                                                                                |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `Enter`     | If dropdown is open, selects the highlighted option.                                                                                  |
+| `Space`     | If dropdown is open and the textbox is empty, selects the highlighted option.                                                         |
+| `ArrowDown` | Opens dropdown and moves focus to first item in the dropdown. If there is a selected options, moves to highlight the selected option. |
+| `ArrowUp`   | Opens dropdown and moves focus to last item in the dropdown. If there is a selected options, moves to highlight the selected option.  |
+| `Escape`    | When the dropdown is open, closes the dropdown.                                                                                       |
+| `Backspace` | When textbox is empty, deletes the last selected option.                                                                              |
+| `Tab`       | no effect - moves the focus away from `MultiSelect`                                                                                   |

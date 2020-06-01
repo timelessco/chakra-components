@@ -5,6 +5,7 @@ import { mdx } from "@mdx-js/react";
 import * as Chakra from "@chakra-ui/core";
 import * as ChakraComp from "@chakra-components/core";
 import axios from "axios";
+import matchSorter from "match-sorter";
 
 const { Box, Button, useClipboard } = Chakra;
 
@@ -116,10 +117,12 @@ const CodeBlock = ({
     code: editorCode,
     transformCode: code => "/** @jsx mdx */" + code,
     scope: {
+      mdx,
+      ...React,
       ...Chakra,
       ...ChakraComp,
+      matchSorter,
       axios,
-      mdx,
       StarIcon,
     },
     noInline: isManual,
