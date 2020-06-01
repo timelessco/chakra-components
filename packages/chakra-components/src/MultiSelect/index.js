@@ -19,6 +19,7 @@ import { useComboBox } from "./useComboBox";
 import debounce from "lodash.debounce";
 import { useConstant } from "./useConstant";
 import { useAsyncFetching } from "./useAsyncFetching";
+import PropTypes from "prop-types";
 
 import {
   useMultiSelectStyle,
@@ -37,10 +38,13 @@ const MultiSelect = forwardRef(
   (
     {
       options,
-      defaultOptions,
-      cacheOptions,
       value,
       onChange,
+      placeholder,
+      pageSize,
+      itemHeight,
+      cacheOptions,
+      defaultOptions,
       filteredBy,
       isListBox,
       isMulti,
@@ -49,11 +53,8 @@ const MultiSelect = forwardRef(
       placement,
       skid,
       gutter,
-      itemHeight = 40,
-      pageSize = 10,
       id,
       name,
-      placeholder = "Select one...",
       renderCustomPlaceholder,
       renderCustomSelectedOption,
       renderCustomInput,
@@ -279,7 +280,39 @@ const MultiSelect = forwardRef(
   },
 );
 
-MultiSelect.displayName = "MultiSelect";
+MultiSelect.propTypes = {
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string,
+      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    }),
+  ),
+  loadOptions: PropTypes.func,
+  defaultOptions: PropTypes.bool,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.arrayOf([PropTypes.string, PropTypes.number]),
+  ]).isRequired,
+  onChange: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+  pageSize: PropTypes.number,
+  itemHeight: PropTypes.number,
+  isMulti: PropTypes.bool,
+  isListBox: PropTypes.bool,
+  isAsync: PropTypes.bool,
+};
+
+MultiSelect.defaultProps = {
+  options: [],
+  placeholder: "Select one...",
+  pageSize: 8,
+  itemHeight: 35,
+  defaultOptions: false,
+  isMulti: false,
+  isListBox: false,
+  isAsync: false,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

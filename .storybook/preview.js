@@ -11,6 +11,10 @@ export const Chakra = ({ children }) => (
   </ThemeProvider>
 );
 
+export const parameters = {
+  controls: { expanded: true },
+};
+
 addDecorator(StoryFn => (
   <Chakra>
     <StoryFn />
